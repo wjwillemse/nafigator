@@ -26,12 +26,26 @@ from .utils import remove_illegal_chars
 @click.command()
 @click.option('--input', default="data/example.pdf", prompt="input file", help='The input file')
 @click.option('--output', default='data/example.naf', prompt="output file", help='The output file')
+@click.option('--engine', default='stanza', prompt="NLP-package", help="The package to parse the text")
 @click.option('--language', default='en', prompt="language", help="The language of the input file")
 @click.option('--naf_version', default='v3.1', prompt="naf version", help="NAF version to convert to")
 @click.option('--dtd_validation', default=False, prompt="dtd validation", help="Validate the NAF dtd")
 
+def nafigator(input: str, 
+              output: str, 
+              engine: str, 
+              language: str, 
+              naf_version: str, 
+              dtd_validation: bool):
 
-def file2naf(input: str, output: str, language: str, naf_version: str, dtd_validation: bool):
+    tree = generate_naf(input, engine, language, naf_version, dtd_validation)
+    NAF2file(tree, output)
+
+def generate_naf(input: str, 
+                 engine: str, 
+                 language: str, 
+                 naf_version: str, 
+                 dtd_validation: bool):
 
     params = dict()
 
@@ -40,16 +54,14 @@ def file2naf(input: str, output: str, language: str, naf_version: str, dtd_valid
     params['creationtime'] = datetime.now()
     params['uri'] = input
     params['language'] = language
-
     params['title'] = None
 
-    params['engine'] = spacyProcessor(language)
+    if engine.lower() == 'stanza':
+        params['engine'] = stanzaProcessor(language)
+    elif engine.lower() == 'spacy':
+        params['engine'] = spacyProcessor(language)
 
-    #params['preprocess_processor'] = preprocessprocessor.PDFMiner()
-    params['preprocess_layers'] = ['xml']
-
-    params['linguistic_layers'] = ['raw', 'text', 'terms', 'entities', 'deps', 'chunks']
-
+    params['linguistic_layers'] = ['raw', 'text', 'terms', 'entities', 'deps']
     params['cdata'] = True
     params['map_udpos2naf_pos'] = False
     params['layer_to_attributes_to_ignore'] = {'terms' : {'morphofeat', 'type'}}  # this will not add these attributes to the term element
@@ -61,6 +73,8 @@ def file2naf(input: str, output: str, language: str, naf_version: str, dtd_valid
         with open(input) as f:
             params['text'] = f.read()
     elif input[-3:].lower()=='pdf':
+        params['preprocess_layers'] = ['xml']
+        #params['preprocess_processor'] = preprocessprocessor.PDFMiner()
         params['xml'] = convert_pdf(input, format='xml', params=params)
         params['text'] = convert_pdf(input, format='text', params=params)
     
@@ -80,8 +94,8 @@ def file2naf(input: str, output: str, language: str, naf_version: str, dtd_valid
     # check it lengths match
     doc_text = params['engine'].document_text(params['doc'])
     raw_layer = params['raw_layer']
-#    assert raw_layer.text == doc_text, f'{len(raw_layer.text)} - {len(doc_text)}'
     assert raw_layer.text.strip() == doc_text.strip(), f'{len(raw_layer.text)} - {len(doc_text)}'
+    assert raw_layer.text.strip() == text_to_use.strip(), f'{len(raw_layer.text)} - {len(text_to_use)}'
 
     # validate naf tree
     tree = params['tree']
@@ -89,8 +103,7 @@ def file2naf(input: str, output: str, language: str, naf_version: str, dtd_valid
         dtd = NAF_VERSION_TO_DTD[naf_version]
         validate_naf_file(dtd, tree.getroot())
 
-    # write to file
-    NAF2file(tree, output)
+    return tree
 
 def NAF2string(NAF, byte=False):
     """
@@ -882,4 +895,4 @@ def add_xml_layer(params: dict):
         page_element.set("offset", str(offset-page_length))
 
 if __name__ == '__main__':
-    sys.exit(file2naf())
+    sys.exit(nafigator())
