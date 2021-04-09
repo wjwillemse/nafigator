@@ -6,6 +6,8 @@ from lxml import etree
 from datetime import datetime
 import sys
 import click
+import logging
+import os
 
 from .linguisticprocessor import *
 from .preprocessprocessor import *
@@ -38,8 +40,13 @@ def nafigator(input: str,
               naf_version: str, 
               dtd_validation: bool):
 
+    log_file: str = "".join(output.split(".")[0:-1])+".log"
+    logging.basicConfig(filename=log_file, 
+                        level=logging.INFO, 
+                        filemode="w")
+
     tree = generate_naf(input, engine, language, naf_version, dtd_validation)
-    NAF2file(tree, output)
+    tree2file(tree, output)
 
 def generate_naf(input: str, 
                  engine: str, 
@@ -105,20 +112,23 @@ def generate_naf(input: str,
 
     return tree
 
-def NAF2string(NAF, byte=False):
+def tree2string(tree, byte=False):
     """
-    Function that takes an XML object containing NAF, and returns it as a string.
-    If byte is True, then the output is a bytestring.
     """
-    xml_string = etree.tostring(NAF, pretty_print=True, xml_declaration=True, encoding='utf-8')
+    xml_string = etree.tostring(tree, 
+                                pretty_print=True, 
+                                xml_declaration=True, 
+                                encoding='utf-8')
     if byte:
         return xml_string
     else:
         return xml_string.decode('utf-8')
 
 
-def NAF2file(naf, output_path):
-    naf.write(output_path,
+def tree2file(tree, output):
+    """
+    """
+    tree.write(output,
               encoding='utf-8',
               pretty_print=True,
               xml_declaration=True)
@@ -127,11 +137,10 @@ def NAF2file(naf, output_path):
 def validate_naf_file(dtd, root):
     success = dtd.validate(root)
     if not success:
-        print(sys.stderr.write("DTD error log:"))
+        logging.error("DTD error log:")
         for error in dtd.error_log.filter_from_errors():
-            sys.stderr.write(str(error))
-            print(error)
-        raise Exception(f'dtd validation failed. Please inspect stderr.')
+            logging.error(str(error))
+        return success
     return success
 
 
@@ -165,19 +174,16 @@ def get_next_mw_id(root):
 
 def add_multi_words(root, params):
     """
-    Provided that the NAF file contains a
-    adds multi-word terms to term layer in naf file
     """
-
     naf_version = params['naf_version']
     language = params['language']
     if naf_version == 'v3':
-        print('add_multi_words function only applies to naf version 4')
+        logging.info('add_multi_words function only applies to naf version 4')
         return root
 
     supported_languages = {'nl', 'en'}
     if language not in supported_languages:
-        print(f'add_multi_words function only implemented for {supported_languages}, not for supplied {language}')
+        logging.info(f'add_multi_words function only implemented for {supported_languages}, not for supplied {language}')
         return root
 
     # dictionary from tid -> term_el
@@ -236,7 +242,6 @@ def add_multi_words(root, params):
 
 def prepare_comment_text(text):
     """
-    Function to prepare text to be put inside a comment.
     """
     text = text.replace('--','DOUBLEDASH')
     if text.endswith('-'):
@@ -246,7 +251,6 @@ def prepare_comment_text(text):
 
 def add_wf_element(wf_data, params):
     """
-    Function that adds a wf element to the text layer.
     """
     wf_el = etree.SubElement(params['text_layer'], "wf")
     wf_el.set("sent", wf_data.sent)
@@ -261,7 +265,6 @@ def add_wf_element(wf_data, params):
 
 def add_term_element(term_data, params):
     """
-    Function that adds a term element to the text layer.
     """
     term_el = etree.SubElement(params['terms_layer'], "term")
 
@@ -282,7 +285,6 @@ def add_term_element(term_data, params):
 
 def entities_generator(doc, params):
     """
-    Generator that returns Entity objects for a given document.
     """
     engine = params['engine']
     for ent in engine.document_entities(doc):
@@ -293,7 +295,6 @@ def entities_generator(doc, params):
 
 def add_entity_element(entity_data, params):
     """
-    Function that adds an entity element to the entity layer.
     """
     entity_el = etree.SubElement(params['entities_layer'], "entity")
     entity_el.set("id", entity_data.eid)
@@ -326,7 +327,6 @@ def add_entity_element(entity_data, params):
 
 def chunks_for_doc(doc, params):
     """
-    Generator function that yields NP and PP chunks with their phrase label.
     """
     for chunk in params['engine'].document_noun_chunks(doc):
         if chunk.root.head.pos_ == 'ADP':
@@ -349,7 +349,6 @@ def chunk_tuples_for_doc(doc, params):
 
 def add_chunk_element(chunk_data, params):
     """
-    Function that adds a chunk element to the chunks layer.
     """
     chunk_el = etree.SubElement(params['chunks_layer'], "chunk")
     chunk_el.set("id", chunk_data.cid)
@@ -367,7 +366,6 @@ def add_chunk_element(chunk_data, params):
 
 def add_dependency_element(dep_data, params):
     """
-    Function that adds dependency elements to the deps layer.
     """
     if params['comments']:
         comment = dep_data.rfunc + '(' + dep_data.from_orth + ',' + dep_data.to_orth + ')'
@@ -381,11 +379,7 @@ def add_dependency_element(dep_data, params):
 
 def dependencies_to_add(sentence, token, total_tokens, params):
     """
-    Walk up the tree, creating a DependencyRelation for each label.
     """
-
-    # print(token_head(sentence, token, params))
-    
     engine = params['engine']
     deps = list()
     cor = engine.offset_token_index()
@@ -404,7 +398,6 @@ def dependencies_to_add(sentence, token, total_tokens, params):
 
 def add_pre_processors(layer, params):
     """
-    :return:
     """
     proc = etree.SubElement(params['naf_header'], "Preprocessors")
     proc.set("layer", layer)
