@@ -1,51 +1,51 @@
 <?xml version='1.0' encoding='UTF-8'?>
 <NAF xmlns:dc="http://purl.org/dc/elements/1.1/" xml:lang="en" version="v3.1">
   <nafHeader>
-    <fileDesc creationtime="2021-04-08T08:36:53UTC"/>
+    <fileDesc creationtime="2021-04-09T08:22:41UTC"/>
     <public dc:uri="data/example.pdf"/>
     <Preprocessors layer="xml">
-      <pp beginTimestamp="2021-04-08T08:36:54UTC" endTimestamp="2021-04-08T08:36:54UTC" name="pdfminer-pdf2text" version="pdfminer_version-20200124"/>
+      <pp beginTimestamp="2021-04-09T08:22:42UTC" endTimestamp="2021-04-09T08:22:42UTC" name="pdfminer-pdf2text" version="pdfminer_version-20200104"/>
     </Preprocessors>
     <linguisticProcessors layer="raw">
-      <lp beginTimestamp="2021-04-08T08:36:54UTC" endTimestamp="2021-04-08T08:36:54UTC" name="spaCy-model_en_core_web_sm" version="spaCy_version-2.2.4__model_version-2.2.5"/>
+      <lp beginTimestamp="2021-04-09T08:22:42UTC" endTimestamp="2021-04-09T08:22:42UTC" name="spaCy-model_en_core_web_sm" version="spaCy_version-2.2.4__model_version-2.2.5"/>
     </linguisticProcessors>
     <linguisticProcessors layer="text">
-      <lp beginTimestamp="2021-04-08T08:36:54UTC" endTimestamp="2021-04-08T08:36:54UTC" name="spaCy-model_en_core_web_sm" version="spaCy_version-2.2.4__model_version-2.2.5"/>
+      <lp beginTimestamp="2021-04-09T08:22:42UTC" endTimestamp="2021-04-09T08:22:42UTC" name="spaCy-model_en_core_web_sm" version="spaCy_version-2.2.4__model_version-2.2.5"/>
     </linguisticProcessors>
     <linguisticProcessors layer="terms">
-      <lp beginTimestamp="2021-04-08T08:36:54UTC" endTimestamp="2021-04-08T08:36:54UTC" name="spaCy-model_en_core_web_sm" version="spaCy_version-2.2.4__model_version-2.2.5"/>
+      <lp beginTimestamp="2021-04-09T08:22:42UTC" endTimestamp="2021-04-09T08:22:42UTC" name="spaCy-model_en_core_web_sm" version="spaCy_version-2.2.4__model_version-2.2.5"/>
     </linguisticProcessors>
     <linguisticProcessors layer="entities">
-      <lp beginTimestamp="2021-04-08T08:36:54UTC" endTimestamp="2021-04-08T08:36:54UTC" name="spaCy-model_en_core_web_sm" version="spaCy_version-2.2.4__model_version-2.2.5"/>
+      <lp beginTimestamp="2021-04-09T08:22:42UTC" endTimestamp="2021-04-09T08:22:42UTC" name="spaCy-model_en_core_web_sm" version="spaCy_version-2.2.4__model_version-2.2.5"/>
     </linguisticProcessors>
     <linguisticProcessors layer="deps">
-      <lp beginTimestamp="2021-04-08T08:36:54UTC" endTimestamp="2021-04-08T08:36:54UTC" name="spaCy-model_en_core_web_sm" version="spaCy_version-2.2.4__model_version-2.2.5"/>
+      <lp beginTimestamp="2021-04-09T08:22:42UTC" endTimestamp="2021-04-09T08:22:42UTC" name="spaCy-model_en_core_web_sm" version="spaCy_version-2.2.4__model_version-2.2.5"/>
     </linguisticProcessors>
     <linguisticProcessors layer="chunks">
-      <lp beginTimestamp="2021-04-08T08:36:54UTC" endTimestamp="2021-04-08T08:36:54UTC" name="spaCy-model_en_core_web_sm" version="spaCy_version-2.2.4__model_version-2.2.5"/>
+      <lp beginTimestamp="2021-04-09T08:22:42UTC" endTimestamp="2021-04-09T08:22:42UTC" name="spaCy-model_en_core_web_sm" version="spaCy_version-2.2.4__model_version-2.2.5"/>
     </linguisticProcessors>
   </nafHeader>
   <xml>
     <page length="105" offset="0">
       <textbox>
         <textline>
-          <text font="CIDFont+F1" size="12.000" length="24" offset="0">The cat sat on the mat. </text>
-          <text font="CIDFont+F2" size="12.000" length="5" offset="24">Felix</text>
-          <text font="CIDFont+F1" size="12.000" length="55" offset="29"> was his name. And Microsoft BV is an corporate entity.</text>
+          <text font="CIDFont+F1" size="13.284" length="24" offset="0">The cat sat on the mat. </text>
+          <text font="CIDFont+F2" size="13.284" length="5" offset="24">Felix</text>
+          <text font="CIDFont+F1" size="13.284" length="55" offset="29"> was his name. And Microsoft BV is an corporate entity.</text>
         </textline>
       </textbox>
       <textbox>
         <textline>
-          <text font="CIDFont+F1" size="12.000" length="16" offset="86">Second sentence.</text>
+          <text font="CIDFont+F1" size="13.284" length="16" offset="86">Second sentence.</text>
         </textline>
       </textbox>
     </page>
     <page length="15" offset="105">
       <textbox>
         <textline>
-          <text font="CIDFont+F1" size="12.000" length="7" offset="105">Second </text>
-          <text font="CIDFont+F2" size="12.000" length="4" offset="112">page</text>
-          <text font="CIDFont+F1" size="12.000" length="1" offset="116">.</text>
+          <text font="CIDFont+F1" size="13.284" length="7" offset="105">Second </text>
+          <text font="CIDFont+F2" size="13.284" length="4" offset="112">page</text>
+          <text font="CIDFont+F1" size="13.284" length="1" offset="116">.</text>
         </textline>
       </textbox>
     </page>

@@ -1,6 +1,6 @@
-=====
+=========
 nafigator
-=====
+=========
 
 
 .. image:: https://img.shields.io/pypi/v/nafigator.svg
@@ -15,8 +15,11 @@ nafigator
 
 
 
+**DISCLAIMER - BETA PHASE**
 
-Python package to convert spaCy and Stanza documents to NLP Annotation Format (NAF)
+*This pdf parser to naf is currently in a beta phase.*
+
+Python package to convert pdf files via spaCy or Stanza to NLP Annotation Format (NAF)
 
 
 * Free software: MIT license
@@ -27,6 +30,34 @@ Features
 --------
 
 * TODO
+
+Quick overview
+--------------
+
+To install the package
+
+::
+
+    pip install nafigator
+
+To install the package from Github
+
+::
+
+	pip install -e git+https://github.com/wjwillemse/nafigator.git#egg=nafigator
+
+
+How to run
+----------
+
+To parse an pdf or a txt file run in the root of the project
+
+::
+
+	python -m nafigator.nafigator
+
+
+
 
 Credits
 -------

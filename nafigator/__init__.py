@@ -1,5 +1,7 @@
-"""Top-level package for naf."""
+"""Top-level package for nafigator."""
 
-__author__ = """Willem Jan Willemse"""
-__email__ = 'w.j.willemse@xs4all.nl'
-__version__ = '0.1.0'
+from .cli import *
+from .const import *
+from .linguisticprocessor import *
+from .preprocessprocessor import *
+from .utils import *

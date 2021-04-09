@@ -7,20 +7,20 @@ from datetime import datetime
 import sys
 import click
 
-import linguisticprocessor
-import preprocessprocessor
-import utils
+from .linguisticprocessor import *
+from .preprocessprocessor import *
+from .utils import *
 
-from const import Entity
-from const import hidden_table
-from const import WfElement
-from const import TermElement
-from const import EntityElement
-from const import DependencyRelation
-from const import ChunkElement
-from const import udpos2nafpos_info
-from utils import normalize_token_orth
-from utils import remove_illegal_chars
+from .const import Entity
+from .const import hidden_table
+from .const import WfElement
+from .const import TermElement
+from .const import EntityElement
+from .const import DependencyRelation
+from .const import ChunkElement
+from .const import udpos2nafpos_info
+from .utils import normalize_token_orth
+from .utils import remove_illegal_chars
 
 
 @click.command()
@@ -43,7 +43,7 @@ def file2naf(input: str, output: str, language: str, naf_version: str, dtd_valid
 
     params['title'] = None
 
-    params['engine'] = linguisticprocessor.spacyProcessor(language)
+    params['engine'] = spacyProcessor(language)
 
     #params['preprocess_processor'] = preprocessprocessor.PDFMiner()
     params['preprocess_layers'] = ['xml']
@@ -61,8 +61,8 @@ def file2naf(input: str, output: str, language: str, naf_version: str, dtd_valid
         with open(input) as f:
             params['text'] = f.read()
     elif input[-3:].lower()=='pdf':
-        params['xml'] = preprocessprocessor.convert_pdf(input, format='xml', params=params)
-        params['text'] = preprocessprocessor.convert_pdf(input, format='text', params=params)
+        params['xml'] = convert_pdf(input, format='xml', params=params)
+        params['text'] = convert_pdf(input, format='text', params=params)
     
     text = params['text']
     if params['replace_hidden_characters']:
@@ -86,7 +86,7 @@ def file2naf(input: str, output: str, language: str, naf_version: str, dtd_valid
     # validate naf tree
     tree = params['tree']
     if params['dtd_validation']:
-        dtd = utils.NAF_VERSION_TO_DTD[naf_version]
+        dtd = NAF_VERSION_TO_DTD[naf_version]
         validate_naf_file(dtd, tree.getroot())
 
     # write to file
@@ -396,8 +396,8 @@ def add_pre_processors(layer, params):
     proc = etree.SubElement(params['naf_header'], "Preprocessors")
     proc.set("layer", layer)
     pp = etree.SubElement(proc, "pp")
-    pp.set("beginTimestamp", utils.time_in_correct_format(params['preprocess_start_time']))
-    pp.set('endTimestamp', utils.time_in_correct_format(params['preprocess_end_time']))
+    pp.set("beginTimestamp", time_in_correct_format(params['preprocess_start_time']))
+    pp.set('endTimestamp', time_in_correct_format(params['preprocess_end_time']))
     pp.set('name', params['preprocess_name'])
     if params['preprocess_version'] is not None:
         pp.set('version', params['preprocess_version'])
@@ -409,8 +409,8 @@ def add_linguistic_processors(layer, params):
     ling_proc = etree.SubElement(params['naf_header'], "linguisticProcessors")
     ling_proc.set("layer", layer)
     lp = etree.SubElement(ling_proc, "lp")
-    lp.set("beginTimestamp", utils.time_in_correct_format(params['start_time']))
-    lp.set('endTimestamp', utils.time_in_correct_format(params['end_time']))
+    lp.set("beginTimestamp", time_in_correct_format(params['start_time']))
+    lp.set('endTimestamp', time_in_correct_format(params['end_time']))
     lp.set('name', params['engine'].model_name)
     lp.set('version', params['engine'].model_version)
 
@@ -455,7 +455,7 @@ def add_naf_tree(params):
     params['naf_header'] = etree.SubElement(root, "nafHeader")
 
     filedesc_el = etree.SubElement(params['naf_header'], 'fileDesc')
-    filedesc_el.set('creationtime', utils.time_in_correct_format(params['creationtime']))
+    filedesc_el.set('creationtime', time_in_correct_format(params['creationtime']))
     if params['title'] is not None:
         filedesc_el.set('title', params['title'])
 
