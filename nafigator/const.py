@@ -4,112 +4,94 @@
 
 from collections import namedtuple
 
-Entity = namedtuple(
-	'Entity',
-		['start', 'end', 'entity_type'])
+Entity = namedtuple('Entity', 'start end type')
 
-WfElement = namedtuple(
-	'WfElement',
-	    ['sent', 'wid', 'length', 'wordform', 'offset'])  #word form
+WordformElement = namedtuple('WfElement', 'page sent wid length wordform offset')
 
-TermElement = namedtuple(
-	'TermElement', 
-		['id', 'lemma', 'pos', 'type', 'morphofeat', 'targets', 'text'])
+TermElement = namedtuple('TermElement', 'id lemma pos type morphofeat targets text')
 
-EntityElement = namedtuple(
-	'EntityElement', 
-       ['eid',
-        'entity_type',
-        'targets',
-        'text',
-        'ext_refs' # list of dictionaries, e.g., [{'reference': 'Naples',
-                   #                               'resource': 'Wikipedia'}]
-        ])
+EntityElement = namedtuple('EntityElement', 'id type targets text ext_refs')
 
-DependencyRelation = namedtuple(
-	'DependencyRelation', 
-	    ['from_term', 'to_term', 'rfunc'])
+DependencyRelation = namedtuple('DependencyRelation', 'from_term to_term from_orth to_orth rfunc')
 
-ChunkElement = namedtuple(
-	'ChunkElement', 
-	    ['cid', 'head', 'phrase', 'text', 'targets'])
+ChunkElement = namedtuple('ChunkElement', 'cid head phrase text targets')
 
-hidden_characters = ['\a', '\b' ,'\t' ,'\n' ,'\v' ,'\f' ,'\r']
+hidden_characters = ['\a', '\b', '\t', '\n', '\v', '\f', '\r']
 
-hidden_table = {ord(hidden_character) : ' '
+hidden_table = {ord(hidden_character): ' '
                 for hidden_character in hidden_characters}
 
 udpos2nafpos_info = {
-    'ADJ' : {
-        'class' : 'open',
-        'naf_pos' : 'G'
+    'ADJ': {
+        'class': 'open',
+        'naf_pos': 'G'
     },
-    'ADP' : {
-        'class' : 'open',
-        'naf_pos' : 'P'
+    'ADP': {
+        'class': 'open',
+        'naf_pos': 'P'
     },
-    'ADV' : {
-        'class' : 'open',
-        'naf_pos' : 'A'
+    'ADV': {
+        'class': 'open',
+        'naf_pos': 'A'
     },
-    'AUX' : {
-        'class' : 'close',
-        'naf_pos' : 'V',
+    'AUX': {
+        'class': 'close',
+        'naf_pos': 'V',
     },
-    'CCONJ' : {
-        'class' : 'close',
-        'naf_pos' : 'C'
+    'CCONJ': {
+        'class': 'close',
+        'naf_pos': 'C'
     },
-    'DET' : {
-        'class' : 'close',
-        'naf_pos' : 'D'
+    'DET': {
+        'class': 'close',
+        'naf_pos': 'D'
     },
-    'INTJ' : {
-        'class' : 'open',
-        'naf_pos' : 'O'
+    'INTJ': {
+        'class': 'open',
+        'naf_pos': 'O'
     },
-    'NOUN' : {
-        'class' : 'open',
-        'naf_pos' : 'N'
+    'NOUN': {
+        'class': 'open',
+        'naf_pos': 'N'
     },
-    'NUM' : {
-        'class' : 'close',
-        'naf_pos' : 'O'
+    'NUM': {
+        'class': 'close',
+        'naf_pos': 'O'
     },
-    'PART' : {
-        'class' : 'close',
-        'naf_pos' : 'O'
+    'PART': {
+        'class': 'close',
+        'naf_pos': 'O'
     },
-    'PRON' : {
-        'class' : 'close',
-        'naf_pos' : 'O'
+    'PRON': {
+        'class': 'close',
+        'naf_pos': 'O'
     },
-    'PROPN' : {
-        'class' : 'open',
-        'naf_pos' : 'R'
+    'PROPN': {
+        'class': 'open',
+        'naf_pos': 'R'
     },
-    'PUNCT' : {
-        'class' : 'close',
-        'naf_pos' : 'O'
+    'PUNCT': {
+        'class': 'close',
+        'naf_pos': 'O'
     },
-    'SCONJ' : {
-        'class' : 'close',
-        'naf_pos' : 'O'
+    'SCONJ': {
+        'class': 'close',
+        'naf_pos': 'O'
     },
-    'SYM' : {
-        'class' : 'open',
-        'naf_pos' : 'O'
+    'SYM': {
+        'class': 'open',
+        'naf_pos': 'O'
     },
-    'VERB' : {
-        'class' : 'open',
-        'naf_pos' : 'V'
+    'VERB': {
+        'class': 'open',
+        'naf_pos': 'V'
     },
-    'X' : {
-        'class' : 'open',
-        'naf_pos' : 'O'
+    'X': {
+        'class': 'open',
+        'naf_pos': 'O'
     },
-    'SPACE' : {
-        'class' : 'open',
-        'naf_pos' : 'O'
+    'SPACE': {
+        'class': 'open',
+        'naf_pos': 'O'
     }
 }

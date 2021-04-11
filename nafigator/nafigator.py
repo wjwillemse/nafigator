@@ -9,18 +9,20 @@ import click
 import logging
 import os
 
-from .linguisticprocessor import *
-from .preprocessprocessor import *
-from .utils import *
+from .linguisticprocessor import stanzaProcessor
+from .linguisticprocessor import spacyProcessor
+from .preprocessprocessor import convert_pdf
+from .utils import time_in_correct_format
+from .nafdocument import NafDocument
 
 from .const import Entity
-from .const import hidden_table
-from .const import WfElement
+from .const import WordformElement
 from .const import TermElement
 from .const import EntityElement
 from .const import DependencyRelation
 from .const import ChunkElement
 from .const import udpos2nafpos_info
+from .const import hidden_table
 from .utils import normalize_token_orth
 from .utils import remove_illegal_chars
 
@@ -33,29 +35,35 @@ from .utils import remove_illegal_chars
 @click.option('--naf_version', default='v3.1', prompt="naf version", help="NAF version to convert to")
 @click.option('--dtd_validation', default=False, prompt="dtd validation", help="Validate the NAF dtd")
 
+
 def nafigator(input: str, 
               output: str, 
               engine: str, 
               language: str, 
               naf_version: str, 
               dtd_validation: bool):
-
+    """
+    """
     log_file: str = "".join(output.split(".")[0:-1])+".log"
     logging.basicConfig(filename=log_file, 
                         level=logging.INFO, 
                         filemode="w")
+    tree = generate_naf(input = input, 
+                        engine = engine, 
+                        language = language, 
+                        naf_version = naf_version, 
+                        dtd_validation = dtd_validation)
+    tree.write(output)
 
-    tree = generate_naf(input, engine, language, naf_version, dtd_validation)
-    tree2file(tree, output)
 
 def generate_naf(input: str, 
                  engine: str, 
                  language: str, 
                  naf_version: str, 
-                 dtd_validation: bool):
-
-    params = dict()
-
+                 dtd_validation: bool,
+                 params: dict = {}):
+    """
+    """
     params['naf_version'] = naf_version
     params['dtd_validation'] = dtd_validation
     params['creationtime'] = datetime.now()
@@ -74,7 +82,7 @@ def generate_naf(input: str,
     params['layer_to_attributes_to_ignore'] = {'terms' : {'morphofeat', 'type'}}  # this will not add these attributes to the term element
     params['replace_hidden_characters'] = True
     params['add_mws'] = False
-    params['comments'] = False
+    params['comments'] = True
 
     if input[-3:].lower()=='txt':
         with open(input) as f:
@@ -105,14 +113,16 @@ def generate_naf(input: str,
     assert raw_layer.text.strip() == text_to_use.strip(), f'{len(raw_layer.text)} - {len(text_to_use)}'
 
     # validate naf tree
-    tree = params['tree']
-    if params['dtd_validation']:
-        dtd = NAF_VERSION_TO_DTD[naf_version]
-        validate_naf_file(dtd, tree.getroot())
+    if params['dtd_validation'] is True:
+        params['tree'].validate(NAF_VERSION_TO_DTD[naf_version])
 
-    return tree
+    s = params['tree'].get_terms()
 
-def tree2string(tree, byte=False):
+    return params['tree']
+
+
+def tree2string(tree: etree._ElementTree, 
+                byte: bool=False):
     """
     """
     xml_string = etree.tostring(tree, 
@@ -125,27 +135,9 @@ def tree2string(tree, byte=False):
         return xml_string.decode('utf-8')
 
 
-def tree2file(tree, output):
-    """
-    """
-    tree.write(output,
-              encoding='utf-8',
-              pretty_print=True,
-              xml_declaration=True)
-
-
-def validate_naf_file(dtd, root):
-    success = dtd.validate(root)
-    if not success:
-        logging.error("DTD error log:")
-        for error in dtd.error_log.filter_from_errors():
-            logging.error(str(error))
-        return success
-    return success
-
-
 def create_separable_verb_lemma(verb, particle, language):
-    """joins components of a separable verb"""
+    """
+    """
     if language == 'nl':
         lemma = particle+verb
     if language == 'en':
@@ -153,7 +145,9 @@ def create_separable_verb_lemma(verb, particle, language):
     return lemma
 
 
-def get_mws_layer(root):
+def get_mws_layer(root: etree._Element):
+    """
+    """
     mws_layer = root.find('multiwords')
     if mws_layer is None:
         etree.SubElement(root, 'multiwords')
@@ -161,7 +155,9 @@ def get_mws_layer(root):
     return mws_layer
 
 
-def get_next_mw_id(root):
+def get_next_mw_id(root: etree._Element):
+    """
+    """
     mws_layer = get_mws_layer(root)
     mw_ids = [int(mw_el.get('id')[2:])
               for mw_el in mws_layer.xpath('mw')]
@@ -172,7 +168,8 @@ def get_next_mw_id(root):
     return f'mw{next_mw_id}'
 
 
-def add_multi_words(root, params):
+def add_multi_words(root: etree._Element, 
+                    params: dict):
     """
     """
     naf_version = params['naf_version']
@@ -187,7 +184,7 @@ def add_multi_words(root, params):
         return root
 
     # dictionary from tid -> term_el
-    tid_to_term = {term_el.get('id') : term_el
+    tid_to_term = {term_el.get('id'): term_el
                    for term_el in root.xpath('terms/term')}
 
     num_of_compound_prts = 0
@@ -240,7 +237,7 @@ def add_multi_words(root, params):
     return root
 
 
-def prepare_comment_text(text):
+def prepare_comment_text(text: str):
     """
     """
     text = text.replace('--','DOUBLEDASH')
@@ -249,21 +246,26 @@ def prepare_comment_text(text):
     return text
 
 
-def add_wf_element(wf_data, params):
-    """
+def add_wf_element(data: WordformElement, 
+                   params: dict):
+    """`
     """
     wf_el = etree.SubElement(params['text_layer'], "wf")
-    wf_el.set("sent", wf_data.sent)
-    wf_el.set("id", wf_data.wid)
-    wf_el.set("length", wf_data.length)
-    wf_el.set("offset", wf_data.offset)
+    if data.page != 0:
+        wf_el.set("page", data.page)
+    if data.sent != 0:
+        wf_el.set("sent", data.sent)
+    wf_el.set("id", data.wid)
+    wf_el.set("length", data.length)
+    wf_el.set("offset", data.offset)
     if params['cdata']:
-        wf_el.text = etree.CDATA(wf_data.wordform)
+        wf_el.text = etree.CDATA(data.wordform)
     else:
-        wf_el.text = wf_data.wordform
+        wf_el.text = data.wordform
 
 
-def add_term_element(term_data, params):
+def add_term_element(term_data: TermElement, 
+                     params: dict):
     """
     """
     term_el = etree.SubElement(params['terms_layer'], "term")
@@ -283,22 +285,24 @@ def add_term_element(term_data, params):
         target_el.set("id", target)
 
 
-def entities_generator(doc, params):
+def entities_generator(doc, 
+                       params: dict):
     """
     """
     engine = params['engine']
     for ent in engine.document_entities(doc):
-        yield Entity(start=engine.span_start(ent),
-                     end=engine.span_end(ent),
-                     entity_type=engine.entity_type(ent))
+        yield Entity(start=engine.entity_span_start(ent),
+                     end=engine.entity_span_end(ent),
+                     type=engine.entity_type(ent))
 
 
-def add_entity_element(entity_data, params):
+def add_entity_element(data: EntityElement, 
+                       params: dict):
     """
     """
     entity_el = etree.SubElement(params['entities_layer'], "entity")
-    entity_el.set("id", entity_data.eid)
-    entity_el.set("type", entity_data.entity_type)
+    entity_el.set("id", data.id)
+    entity_el.set("type", data.type)
 
     if params['naf_version'] == 'v3':
         references_el = etree.SubElement(entity_el, "references")
@@ -307,17 +311,17 @@ def add_entity_element(entity_data, params):
         span = etree.SubElement(entity_el, "span")
 
     if params['comments']:
-        text = ' '.join(entity_data.text)
+        text = ' '.join(data.text)
         text = prepare_comment_text(text)
         span.append(etree.Comment(text))
-    for target in entity_data.targets:
+    for target in data.targets:
         target_el = etree.SubElement(span, "target")
         target_el.set("id", target)
 
-    assert type(entity_data.ext_refs) == list, f'ext_refs should be a list of dictionaries (can be empty)'
+    assert type(data.ext_refs) == list, f'ext_refs should be a list of dictionaries (can be empty)'
 
     ext_refs_el = etree.SubElement(entity_el, 'externalReferences')
-    for ext_ref_info in entity_data.ext_refs:
+    for ext_ref_info in data.ext_refs:
         one_ext_ref_el = etree.SubElement(ext_refs_el, 'externalRef')
         one_ext_ref_el.set('reference', ext_ref_info['reference'])
         for optional_attr in ['resource', 'source', 'timestamp']:
@@ -325,7 +329,8 @@ def add_entity_element(entity_data, params):
                 one_ext_ref_el.set(optional_attr, ext_ref_info[optional_attr])
 
 
-def chunks_for_doc(doc, params):
+def chunks_for_doc(doc, 
+                   params: dict):
     """
     """
     for chunk in params['engine'].document_noun_chunks(doc):
@@ -335,9 +340,9 @@ def chunks_for_doc(doc, params):
         yield (chunk, 'NP')
 
 
-def chunk_tuples_for_doc(doc, params):
+def chunk_tuples_for_doc(doc, 
+                         params: dict):
     """
-    Generator function that takes a doc and yields ChunkElement tuples.
     """
     for i, (chunk, phrase) in enumerate(chunks_for_doc(doc, params)):
         yield ChunkElement(cid = 'c' + str(i),
@@ -347,7 +352,8 @@ def chunk_tuples_for_doc(doc, params):
                            targets = ['t' + str(tok.i) for tok in chunk])
 
 
-def add_chunk_element(chunk_data, params):
+def add_chunk_element(chunk_data: ChunkElement, 
+                      params: dict):
     """
     """
     chunk_el = etree.SubElement(params['chunks_layer'], "chunk")
@@ -364,20 +370,24 @@ def add_chunk_element(chunk_data, params):
         target_el.set("id", target)
 
 
-def add_dependency_element(dep_data, params):
+def add_dependency_element(data: DependencyRelation,
+                           params: dict):
     """
     """
     if params['comments']:
-        comment = dep_data.rfunc + '(' + dep_data.from_orth + ',' + dep_data.to_orth + ')'
+        comment = data.rfunc + '(' + data.from_orth + ',' + data.to_orth + ')'
         comment = prepare_comment_text(comment)
         params['deps_layer'].append(etree.Comment(comment))
     dep_el = etree.SubElement(params['deps_layer'], "dep")
-    dep_el.set("from", dep_data.from_term)
-    dep_el.set("to", dep_data.to_term)
-    dep_el.set("rfunc", dep_data.rfunc)
+    dep_el.set("from", data.from_term)
+    dep_el.set("to", data.to_term)
+    dep_el.set("rfunc", data.rfunc)
 
 
-def dependencies_to_add(sentence, token, total_tokens, params):
+def dependencies_to_add(sentence, 
+                        token, 
+                        total_tokens: int, 
+                        params: dict):
     """
     """
     engine = params['engine']
@@ -388,15 +398,20 @@ def dependencies_to_add(sentence, token, total_tokens, params):
         from_term = 't' + str(engine.token_head_index(sentence, token) + total_tokens + cor)
         to_term = 't' + str(engine.token_index(token) + total_tokens + cor)
         rfunc = engine.token_dependency(token)
+        from_orth = engine.token_orth(token)
+        to_orth = engine.token_orth(engine.token_head(sentence, token))
         dep_data = DependencyRelation(from_term = from_term,
                                       to_term = to_term,
-                                      rfunc = rfunc)
+                                      rfunc = rfunc,
+                                      from_orth = from_orth,
+                                      to_orth = to_orth)
         deps.append(dep_data)
         token = engine.token_head(sentence, token)
     return deps
 
 
-def add_pre_processors(layer, params):
+def add_pre_processors(layer: str, 
+                       params: dict):
     """
     """
     proc = etree.SubElement(params['naf_header'], "Preprocessors")
@@ -409,7 +424,8 @@ def add_pre_processors(layer, params):
         pp.set('version', params['preprocess_version'])
 
 
-def add_linguistic_processors(layer, params):
+def add_linguistic_processors(layer: str, 
+                              params: dict):
     """
     """
     ling_proc = etree.SubElement(params['naf_header'], "linguisticProcessors")
@@ -421,12 +437,16 @@ def add_linguistic_processors(layer, params):
     lp.set('version', params['engine'].model_version)
 
 
-def process_linguistic_layers(doc, params):
+def process_linguistic_layers(doc, 
+                              params: dict):
     """
     """
     layers = params['linguistic_layers']
 
     add_naf_tree(params)
+
+    if params['xml']:
+        add_xml_layer(params)
 
     if 'entities' in layers:
         add_entities_layer(params)
@@ -446,11 +466,10 @@ def process_linguistic_layers(doc, params):
     if 'raw' in layers:
         add_raw_layer(params)
 
-    if params['xml']:
-        add_xml_layer(params)
 
-def add_naf_tree(params):
-
+def add_naf_tree(params: dict):
+    """
+    """
     tree = etree.ElementTree()
     nsmap = {"dc":  "http://purl.org/dc/elements/1.1/"}
     root = etree.Element("NAF", nsmap = nsmap)
@@ -486,14 +505,13 @@ def add_naf_tree(params):
     for layer in layers:
         params[layer+"_layer"] = etree.SubElement(root, layer)
 
-    params['tree'] = tree
+    params['tree'] = NafDocument(tree)
 
 
-def add_entities_layer(params):
-
-    tree = params['tree']
-    root = tree.getroot()
-
+def add_entities_layer(params: dict):
+    """
+    """
+    tree = params['tree'].tree
     doc = params['doc']
     engine = params['engine']
     layers = params['linguistic_layers']
@@ -509,17 +527,14 @@ def add_entities_layer(params):
     parsing_entity: bool = False # State change: are we working on a term or not?
 
     for sentence_number, sentence in enumerate(engine.document_sentences(doc), start = 1):
-        dependencies_for_sentence = list()
-
-        # - Use a generator for entity awareness.
-        # - entities are found per sentence
+        
         entity_gen = entities_generator(sentence, params)
         try:
             next_entity = next(entity_gen)
         except StopIteration:
-            next_entity = Entity(start=None, end=None, entity_type=None)
+            next_entity = Entity(start=None, end=None, type=None)
 
-        for token_number, token in enumerate(engine.sentence_tokens(sentence), start = current_token):
+        for token_number, token in enumerate(engine.sentence_tokens(sentence), start=current_token):
             # Do we need a state change?
 
             if token_number == next_entity.start:
@@ -531,20 +546,20 @@ def add_entities_layer(params):
                 current_entity_orth.append(normalize_token_orth(engine.token_orth(token)))
 
             # Move to the next term
+            term_number += 1
 
             if parsing_entity and token_number == next_entity.end:
                 # Create new entity ID.
                 entity_id = 'e' + str(entity_number)
                 # Create Entity data:
-                entity_data = EntityElement(eid=entity_id,
-                                            entity_type=next_entity.entity_type,
+                entity_data = EntityElement(id=entity_id,
+                                            type=next_entity.type,
                                             targets=current_entity,
                                             text=current_entity_orth,
                                             ext_refs=list())  # entity linking currently not part of spaCy
-                # Add data to XML:
-                if 'entities' in layers:
-                    add_entity_element(entity_data, params)
-                # Move to the next entity:
+
+                add_entity_element(entity_data, params)
+
                 entity_number += 1
                 current_entity = list()
                 current_entity_orth = list()
@@ -554,7 +569,7 @@ def add_entities_layer(params):
                     next_entity = next(entity_gen)
                 except StopIteration:
                     # No more entities...
-                    next_entity = Entity(start=None, end=None, entity_type=None)
+                    next_entity = Entity(start=None, end=None, type=None)
 
         # At the end of the sentence, add all the dependencies to the XML structure.
         if engine.token_reset() == False:
@@ -567,56 +582,43 @@ def add_entities_layer(params):
     return None
 
 
-def add_text_layer(params):
+def add_text_layer(params: dict):
+    """
+    """
+    root = params['tree'].root
 
-    tree = params['tree']
-    root = tree.getroot()
+    pages_offset = None
+    xml = params.get('xml_layer', None)
+    if xml is not None:
+        pages_offset = [int(page.get('offset')) for page in xml]
 
     doc = params['doc']
     engine = params['engine']
     layers = params['linguistic_layers']
 
-    current_term = list()       # Use a list for multiword expressions.
-    current_term_orth = list()  # id.
-
-    current_entity = list()       # Use a list for multiword entities.
-    current_token: int = 1    # Keep track of the token number.
-    term_number: int = 1      # Keep track of the term number.
+    current_token: int = 1    
     total_tokens: int = 0
+    current_page: int = 0
 
-    parsing_entity: bool = False # State change: are we working on a term or not?
+    for sentence_number, sentence in enumerate(engine.document_sentences(doc), start=1):
 
-    for sentence_number, sentence in enumerate(engine.document_sentences(doc), start = 1):
-        dependencies_for_sentence = list()
+        for token_number, token in enumerate(engine.sentence_tokens(sentence), start=current_token):
 
-        for token_number, token in enumerate(engine.sentence_tokens(sentence), start = current_token):
-            # Do we need a state change?
+            if (pages_offset is not None) and (current_page < len(pages_offset)):
+                if engine.token_offset(token) >= pages_offset[current_page]:
+                    current_page += 1
 
             wid = 'w' + str(token_number + total_tokens)
-            tid = 't' + str(term_number)
-            current_term.append(wid)
-            current_term_orth.append(normalize_token_orth(engine.token_orth(token)))
-            if parsing_entity:
-                current_entity.append(tid)
-                current_entity_orth.append(normalize_token_orth(engine.token_orth(token)))
+            wf_data = WordformElement(page = str(current_page),
+                                      sent=str(sentence_number),
+                                      wid=wid,
+                                      length=str(len(token.text)),
+                                      wordform=token.text,
+                                      offset=str(engine.token_offset(token)))
 
-            # Create WfElement data:
-            wf_data = WfElement(sent = str(sentence_number),
-                                wid = wid,
-                                length = str(len(token.text)),
-                                wordform = token.text,
-                                offset = str(engine.token_offset(token)))
+            add_wf_element(wf_data, params)
 
-            if 'text' in layers:
-                add_wf_element(wf_data, params)
-
-            # Move to the next term
-            term_number += 1
-            current_term = list()
-            current_term_orth = list()
-
-        # At the end of the sentence, add all the dependencies to the XML structure.
-        if engine.token_reset() == False:
+        if engine.token_reset() is False:
             current_token = token_number + 1
             total_tokens = 0
         else:
@@ -626,11 +628,9 @@ def add_text_layer(params):
     return None
 
 
-def add_terms_layer(params):
-
-    tree = params['tree']
-    root = tree.getroot()
-
+def add_terms_layer(params: dict):
+    """
+    """
     doc = params['doc']
     engine = params['engine']
     layers = params['linguistic_layers']
@@ -642,11 +642,10 @@ def add_terms_layer(params):
     term_number: int = 1      # Keep track of the term number.
     total_tokens: int = 0
 
-    for sentence_number, sentence in enumerate(engine.document_sentences(doc), start = 1):
-        dependencies_for_sentence = list()
+    for sentence_number, sentence in enumerate(engine.document_sentences(doc), start=1):
 
-        for token_number, token in enumerate(engine.sentence_tokens(sentence), start = current_token):
-            
+        for token_number, token in enumerate(engine.sentence_tokens(sentence), start=current_token):
+
             wid = 'w' + str(token_number + total_tokens)
             tid = 't' + str(term_number)
 
@@ -677,8 +676,7 @@ def add_terms_layer(params):
                                     targets=current_term,
                                     text=current_term_orth)
 
-            if 'terms' in layers:
-                add_term_element(term_data, params)
+            add_term_element(term_data, params)
 
             # Move to the next term
             term_number += 1
@@ -686,7 +684,7 @@ def add_terms_layer(params):
             current_term_orth = list()
 
         # At the end of the sentence, add all the dependencies to the XML structure.
-        if engine.token_reset() == False:
+        if engine.token_reset() is False:
             current_token = token_number + 1
             total_tokens = 0
         else:
@@ -695,26 +693,28 @@ def add_terms_layer(params):
 
     return None
 
-def add_deps_layer(params):
 
-    current_token: int = 1    # Keep track of the token number.
-    total_tokens: int = 0
+def add_deps_layer(params: dict):
+    """
+    """
     engine = params['engine']
 
-    for sentence_number, sentence in enumerate(engine.document_sentences(params['doc']), start = 1):
+    current_token: int = 1
+    total_tokens: int = 0
+
+    for sent in engine.document_sentences(params['doc']):
 
         dependencies_for_sentence = list()
 
-        for token_number, token in enumerate(engine.sentence_tokens(sentence), start = current_token):
-
-            for dep_data in dependencies_to_add(sentence, token, total_tokens, params):
-                if not dep_data in dependencies_for_sentence:
+        for token_number, token in enumerate(engine.sentence_tokens(sent), start=current_token):
+            for dep_data in dependencies_to_add(sent, token, total_tokens, params):
+                if dep_data not in dependencies_for_sentence:
                     dependencies_for_sentence.append(dep_data)
 
         for dep_data in dependencies_for_sentence:
             add_dependency_element(dep_data, params)
 
-        if engine.token_reset() == False:
+        if engine.token_reset() is False:
             current_token = token_number + 1
             total_tokens = 0
         else:
@@ -722,23 +722,15 @@ def add_deps_layer(params):
             total_tokens += token_number
 
         if params['add_mws']:
-            add_multi_words(params['tree'].getroot(), params)
+            add_multi_words(params['tree'].root, params)
 
     return None
 
 
 def add_raw_layer(params: dict):
     """
-    create raw text layer that aligns with the token layer
-
-    : root: the root element of the XML file
-    : raw_layer: the 'raw' child of the NAF file
-
-    : rtype: None
     """
-    # Add raw layer after adding all other layers + check alignment
-
-    root = params['tree'].getroot()
+    root = params['tree'].root
     raw_layer = params['raw_layer']
 
     cdata = params['cdata']
@@ -751,7 +743,7 @@ def add_raw_layer(params: dict):
         prev_end = prev_start + int(prev_wf_el.get('length'))
         cur_start = int(cur_wf_el.get('offset'))
         delta = cur_start - prev_end  # how many characters are between current token and previous token?
-       
+
         # no chars between two token (for example with a dot .)
         if delta == 0:
             trailing_chars = ''
@@ -777,13 +769,17 @@ def add_raw_layer(params: dict):
         token = raw_layer.text[start:end]
         assert wf_el.text == token, f'mismatch in alignment of wf element {wf_el.text} ({wf_el.get("id")}) with raw layer (expected length {wf_el.get("length")}'
 
+
 def add_chunks_layer(params: dict):
-    
+    """
+    """
     for chunk_data in chunk_tuples_for_doc(params['doc'], params):
         add_chunk_element(chunk_data, params)
 
-def add_xml_layer(params: dict):
 
+def add_xml_layer(params: dict):
+    """
+    """
     xml = bytes(bytearray(params['xml'], encoding='utf-8'))
     parser = etree.XMLParser(ns_clean=True, recover=True, encoding='utf-8')
     root = etree.fromstring(xml, parser=parser)
@@ -813,7 +809,7 @@ def add_xml_layer(params: dict):
         for page_item in page:
 
             if page_item.tag == 'textbox':
-                
+
                 page_item_element = add_element(page_element, page_item.tag)
                 for textline in page_item:
                     textline_element = add_element(page_item_element, textline.tag)
@@ -830,7 +826,7 @@ def add_xml_layer(params: dict):
                                     page_length += len(previous_text)
                                     offset += len(previous_text)
 
-                            else: ## -> previous_attrib != char_attrib
+                            else:  # -> previous_attrib != char_attrib
 
                                 add_text_element(textline_element, char.tag, previous_text, previous_attrib, offset)
                                 page_length += len(previous_text)
@@ -839,9 +835,9 @@ def add_xml_layer(params: dict):
                                 previous_text = char.text
                                 previous_attrib = char_attrib
                                 if idx == len(textline) - 1:
-                                    add_text_element(textline_element, char.tag, previous.text, previous_attrib, offset)
-                                    page_length += len(previous.text)
-                                    offset += len(previous.text)
+                                    add_text_element(textline_element, char.tag, previous_text, previous_attrib, offset)
+                                    page_length += len(previous_text)
+                                    offset += len(previous_text)
                     page_length += 1
                     offset += 1
 
@@ -861,20 +857,16 @@ def add_xml_layer(params: dict):
                 for idx, char in enumerate(page_item):
                     if char.tag == 'text':
                         char_attrib = copy_dict(char)
-
                         if previous_attrib == char_attrib:
                             previous_text += char.text
                             if idx == len(textline) - 1:
                                 add_text_element(page_item_element, char.tag, previous_text, previous_attrib, offset)
                                 page_length += len(previous_text)
                                 offset += len(previous_text)
-
                         else:  # -> previous_attrib != char_attrib
-
                             add_text_element(page_item_element, char.tag, previous_text, previous_attrib, offset)
                             page_length += len(previous_text)
                             offset += len(previous_text)
-
                             if idx < len(textline) - 1:
                                 previous_text = char.text
                                 previous_attrib = char_attrib
@@ -882,10 +874,9 @@ def add_xml_layer(params: dict):
                                 add_text_element(page_item_element, char.tag, char.text, char_attrib, offset)
                                 page_length += len(char.text)
                                 offset += len(char.text)
-
-
         page_element.set("length", str(page_length))
         page_element.set("offset", str(offset-page_length))
+
 
 if __name__ == '__main__':
     sys.exit(nafigator())

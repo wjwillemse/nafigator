@@ -25,7 +25,8 @@ if SPACY_IMPORTED:
             self.model_version = f'spaCy_version-{spacy.__version__}__model_version-{self.nlp.meta["version"]}'
 
         def nlp(self, text):
-            return self.nlp(text)
+            self.doc = self.nlp(text)
+            return doc
 
         def document_sentences(self, doc):
             return doc.sents
@@ -38,12 +39,6 @@ if SPACY_IMPORTED:
 
         def document_text(self, doc):
             return doc.text
-
-        def span_start(self, entity):
-            return entity.start + 1
-
-        def span_end(self, entity):
-            return entity.end
 
         def token_head(self, sentence, token):
             return token.head
@@ -75,6 +70,12 @@ if SPACY_IMPORTED:
         def token_tag(self, token):
             return token.tag_
 
+        def entity_span_start(self, entity):
+            return entity.start + 1
+
+        def entity_span_end(self, entity):
+            return entity.end
+
         def entity_type(self, entity):
             ent_type_set = {token.ent_type_ for token in entity if token.ent_type_ != ''}
             return ent_type_set.pop()
@@ -97,7 +98,8 @@ if STANZA_IMPORTED:
             self.nlp =  stanza.Pipeline(lang=lang)
 
         def nlp(self, text):
-            return self.nlp(text)
+            self.doc = self.nlp(text)
+            return doc
 
         def document_sentences(self, doc):
             return doc.sentences
@@ -110,12 +112,6 @@ if STANZA_IMPORTED:
 
         def document_text(self, doc):
             return doc.text
-
-        def span_start(self, entity):
-            return entity.tokens[0].id[0]
-
-        def span_end(self, entity):
-            return entity.tokens[-1].id[0]
 
         def offset_token_index(self):
             return 0
@@ -155,6 +151,12 @@ if STANZA_IMPORTED:
 
         def token_tag(self, token):
             return token.words[0].feats
+
+        def entity_span_start(self, entity):
+            return entity.tokens[0].id[0]
+
+        def entity_span_end(self, entity):
+            return entity.tokens[-1].id[0]
 
         def entity_type(self, entity):
             return entity.type
