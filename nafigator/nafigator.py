@@ -108,15 +108,13 @@ def generate_naf(input: str,
 
     # check it lengths match
     doc_text = params['engine'].document_text(params['doc'])
-    raw_layer = params['raw_layer']
+    raw_layer = params['tree'].raw_layer
     assert raw_layer.text.strip() == doc_text.strip(), f'{len(raw_layer.text)} - {len(doc_text)}'
     assert raw_layer.text.strip() == text_to_use.strip(), f'{len(raw_layer.text)} - {len(text_to_use)}'
 
     # validate naf tree
     if params['dtd_validation'] is True:
         params['tree'].validate(NAF_VERSION_TO_DTD[naf_version])
-
-    s = params['tree'].get_terms()
 
     return params['tree']
 
@@ -237,52 +235,8 @@ def add_multi_words(root: etree._Element,
     return root
 
 
-def prepare_comment_text(text: str):
-    """
-    """
-    text = text.replace('--','DOUBLEDASH')
-    if text.endswith('-'):
-        text = text[:-1] + 'SINGLEDASH'
-    return text
 
 
-def add_wf_element(data: WordformElement, 
-                   params: dict):
-    """`
-    """
-    wf_el = etree.SubElement(params['text_layer'], "wf")
-    if data.page != 0:
-        wf_el.set("page", data.page)
-    if data.sent != 0:
-        wf_el.set("sent", data.sent)
-    wf_el.set("id", data.wid)
-    wf_el.set("length", data.length)
-    wf_el.set("offset", data.offset)
-    if params['cdata']:
-        wf_el.text = etree.CDATA(data.wordform)
-    else:
-        wf_el.text = data.wordform
-
-
-def add_term_element(term_data: TermElement, 
-                     params: dict):
-    """
-    """
-    term_el = etree.SubElement(params['terms_layer'], "term")
-
-    attrs = ['id', 'lemma', 'pos', 'type', 'morphofeat']
-    for attr in attrs:
-        if attr not in params['layer_to_attributes_to_ignore'].get('terms', set()):
-            term_el.set(attr, getattr(term_data, attr))
-
-    span = etree.SubElement(term_el, "span")
-    if params['comments']:
-        text = ' '.join(term_data.text)
-        text = prepare_comment_text(text)
-        span.append(etree.Comment(text))
-    for target in term_data.targets:
-        target_el = etree.SubElement(span, "target")
-        target_el.set("id", target)
 
 
 def entities_generator(doc, 
@@ -296,37 +250,6 @@ def entities_generator(doc,
                      type=engine.entity_type(ent))
 
 
-def add_entity_element(data: EntityElement, 
-                       params: dict):
-    """
-    """
-    entity_el = etree.SubElement(params['entities_layer'], "entity")
-    entity_el.set("id", data.id)
-    entity_el.set("type", data.type)
-
-    if params['naf_version'] == 'v3':
-        references_el = etree.SubElement(entity_el, "references")
-        span = etree.SubElement(references_el, "span")
-    elif params['naf_version'] == 'v3.1':
-        span = etree.SubElement(entity_el, "span")
-
-    if params['comments']:
-        text = ' '.join(data.text)
-        text = prepare_comment_text(text)
-        span.append(etree.Comment(text))
-    for target in data.targets:
-        target_el = etree.SubElement(span, "target")
-        target_el.set("id", target)
-
-    assert type(data.ext_refs) == list, f'ext_refs should be a list of dictionaries (can be empty)'
-
-    ext_refs_el = etree.SubElement(entity_el, 'externalReferences')
-    for ext_ref_info in data.ext_refs:
-        one_ext_ref_el = etree.SubElement(ext_refs_el, 'externalRef')
-        one_ext_ref_el.set('reference', ext_ref_info['reference'])
-        for optional_attr in ['resource', 'source', 'timestamp']:
-            if optional_attr in ext_ref_info:
-                one_ext_ref_el.set(optional_attr, ext_ref_info[optional_attr])
 
 
 def chunks_for_doc(doc, 
@@ -352,36 +275,6 @@ def chunk_tuples_for_doc(doc,
                            targets = ['t' + str(tok.i) for tok in chunk])
 
 
-def add_chunk_element(chunk_data: ChunkElement, 
-                      params: dict):
-    """
-    """
-    chunk_el = etree.SubElement(params['chunks_layer'], "chunk")
-    chunk_el.set("id", chunk_data.cid)
-    chunk_el.set("head", chunk_data.head)
-    chunk_el.set("phrase", chunk_data.phrase)
-    span = etree.SubElement(chunk_el, "span")
-    if params['comments']:
-        text = chunk_data.text
-        text = prepare_comment_text(text)
-        span.append(etree.Comment(text))
-    for target in chunk_data.targets:
-        target_el = etree.SubElement(span, "target")
-        target_el.set("id", target)
-
-
-def add_dependency_element(data: DependencyRelation,
-                           params: dict):
-    """
-    """
-    if params['comments']:
-        comment = data.rfunc + '(' + data.from_orth + ',' + data.to_orth + ')'
-        comment = prepare_comment_text(comment)
-        params['deps_layer'].append(etree.Comment(comment))
-    dep_el = etree.SubElement(params['deps_layer'], "dep")
-    dep_el.set("from", data.from_term)
-    dep_el.set("to", data.to_term)
-    dep_el.set("rfunc", data.rfunc)
 
 
 def dependencies_to_add(sentence, 
@@ -410,40 +303,13 @@ def dependencies_to_add(sentence,
     return deps
 
 
-def add_pre_processors(layer: str, 
-                       params: dict):
-    """
-    """
-    proc = etree.SubElement(params['naf_header'], "Preprocessors")
-    proc.set("layer", layer)
-    pp = etree.SubElement(proc, "pp")
-    pp.set("beginTimestamp", time_in_correct_format(params['preprocess_start_time']))
-    pp.set('endTimestamp', time_in_correct_format(params['preprocess_end_time']))
-    pp.set('name', params['preprocess_name'])
-    if params['preprocess_version'] is not None:
-        pp.set('version', params['preprocess_version'])
-
-
-def add_linguistic_processors(layer: str, 
-                              params: dict):
-    """
-    """
-    ling_proc = etree.SubElement(params['naf_header'], "linguisticProcessors")
-    ling_proc.set("layer", layer)
-    lp = etree.SubElement(ling_proc, "lp")
-    lp.set("beginTimestamp", time_in_correct_format(params['start_time']))
-    lp.set('endTimestamp', time_in_correct_format(params['end_time']))
-    lp.set('name', params['engine'].model_name)
-    lp.set('version', params['engine'].model_version)
-
-
 def process_linguistic_layers(doc, 
                               params: dict):
     """
     """
     layers = params['linguistic_layers']
 
-    add_naf_tree(params)
+    params['tree'] = NafDocument(params)
 
     if params['xml']:
         add_xml_layer(params)
@@ -467,45 +333,6 @@ def process_linguistic_layers(doc,
         add_raw_layer(params)
 
 
-def add_naf_tree(params: dict):
-    """
-    """
-    tree = etree.ElementTree()
-    nsmap = {"dc":  "http://purl.org/dc/elements/1.1/"}
-    root = etree.Element("NAF", nsmap = nsmap)
-    tree._setroot(root)
-    root.set('{http://www.w3.org/XML/1998/namespace}lang', params['language'])
-    root.set('version', params['naf_version'])
-
-    params['naf_header'] = etree.SubElement(root, "nafHeader")
-
-    filedesc_el = etree.SubElement(params['naf_header'], 'fileDesc')
-    filedesc_el.set('creationtime', time_in_correct_format(params['creationtime']))
-    if params['title'] is not None:
-        filedesc_el.set('title', params['title'])
-
-    # add public child to nafHeader
-    public_el = etree.SubElement(params['naf_header'], 'public')
-    if params['uri'] is not None:
-        uri_qname = etree.QName('{http://purl.org/dc/elements/1.1/}uri', 'uri')
-        public_el.set(uri_qname, params['uri'])
-
-    layers = params['preprocess_layers']
-    for layer in layers:
-        add_pre_processors(layer, params)
-    if 'xml' in layers:
-        params['xml_layer'] = etree.SubElement(root, 'xml')
-
-    layers = params['linguistic_layers']
-    if params['add_mws']:
-        layers.append('multiwords')
-    for layer in layers:
-        add_linguistic_processors(layer, params)
-
-    for layer in layers:
-        params[layer+"_layer"] = etree.SubElement(root, layer)
-
-    params['tree'] = NafDocument(tree)
 
 
 def add_entities_layer(params: dict):
@@ -558,7 +385,7 @@ def add_entities_layer(params: dict):
                                             text=current_entity_orth,
                                             ext_refs=list())  # entity linking currently not part of spaCy
 
-                add_entity_element(entity_data, params)
+                params['tree'].add_entity_element(entity_data, params)
 
                 entity_number += 1
                 current_entity = list()
@@ -616,7 +443,7 @@ def add_text_layer(params: dict):
                                       wordform=token.text,
                                       offset=str(engine.token_offset(token)))
 
-            add_wf_element(wf_data, params)
+            params['tree'].add_wf_element(wf_data, params)
 
         if engine.token_reset() is False:
             current_token = token_number + 1
@@ -676,7 +503,7 @@ def add_terms_layer(params: dict):
                                     targets=current_term,
                                     text=current_term_orth)
 
-            add_term_element(term_data, params)
+            params['tree'].add_term_element(term_data, params)
 
             # Move to the next term
             term_number += 1
@@ -712,7 +539,7 @@ def add_deps_layer(params: dict):
                     dependencies_for_sentence.append(dep_data)
 
         for dep_data in dependencies_for_sentence:
-            add_dependency_element(dep_data, params)
+            params['tree'].add_dependency_element(dep_data, params)
 
         if engine.token_reset() is False:
             current_token = token_number + 1
@@ -731,7 +558,7 @@ def add_raw_layer(params: dict):
     """
     """
     root = params['tree'].root
-    raw_layer = params['raw_layer']
+    raw_layer = params['tree'].raw_layer
 
     cdata = params['cdata']
 
@@ -774,7 +601,7 @@ def add_chunks_layer(params: dict):
     """
     """
     for chunk_data in chunk_tuples_for_doc(params['doc'], params):
-        add_chunk_element(chunk_data, params)
+        params['tree'].add_chunk_element(chunk_data, params)
 
 
 def add_xml_layer(params: dict):
@@ -783,6 +610,8 @@ def add_xml_layer(params: dict):
     xml = bytes(bytearray(params['xml'], encoding='utf-8'))
     parser = etree.XMLParser(ns_clean=True, recover=True, encoding='utf-8')
     root = etree.fromstring(xml, parser=parser)
+
+    params['xml_layer'] = params['tree'].xml_layer
 
     def add_element(el, tag):
         c = etree.SubElement(el, tag)
