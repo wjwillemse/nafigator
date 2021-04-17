@@ -2,7 +2,6 @@
 
 """Main module."""
 
-from lxml import etree
 from datetime import datetime
 import sys
 import click
@@ -53,7 +52,8 @@ def nafigator(input: str,
                         language = language, 
                         naf_version = naf_version, 
                         dtd_validation = dtd_validation)
-    tree.write(output)
+    tree.write(output, output_type)
+
 
 
 def generate_naf(input: str, 
@@ -119,126 +119,6 @@ def generate_naf(input: str,
     return params['tree']
 
 
-def tree2string(tree: etree._ElementTree, 
-                byte: bool=False):
-    """
-    """
-    xml_string = etree.tostring(tree, 
-                                pretty_print=True, 
-                                xml_declaration=True, 
-                                encoding='utf-8')
-    if byte:
-        return xml_string
-    else:
-        return xml_string.decode('utf-8')
-
-
-def create_separable_verb_lemma(verb, particle, language):
-    """
-    """
-    if language == 'nl':
-        lemma = particle+verb
-    if language == 'en':
-        lemma = f'{verb}_{particle}'
-    return lemma
-
-
-def get_mws_layer(root: etree._Element):
-    """
-    """
-    mws_layer = root.find('multiwords')
-    if mws_layer is None:
-        etree.SubElement(root, 'multiwords')
-        mws_layer = root.find('multiwords')
-    return mws_layer
-
-
-def get_next_mw_id(root: etree._Element):
-    """
-    """
-    mws_layer = get_mws_layer(root)
-    mw_ids = [int(mw_el.get('id')[2:])
-              for mw_el in mws_layer.xpath('mw')]
-    if mw_ids:
-        next_mw_id = max(mw_ids) + 1
-    else:
-        next_mw_id = 1
-    return f'mw{next_mw_id}'
-
-
-def add_multi_words(root: etree._Element, 
-                    params: dict):
-    """
-    """
-    naf_version = params['naf_version']
-    language = params['language']
-    if naf_version == 'v3':
-        logging.info('add_multi_words function only applies to naf version 4')
-        return root
-
-    supported_languages = {'nl', 'en'}
-    if language not in supported_languages:
-        logging.info(f'add_multi_words function only implemented for {supported_languages}, not for supplied {language}')
-        return root
-
-    # dictionary from tid -> term_el
-    tid_to_term = {term_el.get('id'): term_el
-                   for term_el in root.xpath('terms/term')}
-
-    num_of_compound_prts = 0
-
-    # loop deps el
-    for dep in root.findall('deps/dep'):
-        if dep.get('rfunc') == 'compound:prt':
-
-            mws_layer = get_mws_layer(root)
-            next_mw_id = get_next_mw_id(root)
-
-            idverb = dep.get('from')
-            idparticle = dep.get('to')
-            num_of_compound_prts += 1
-
-            verb_term_el = tid_to_term[idverb]
-            verb = verb_term_el.get('lemma')
-            verb_term_el.set('component_of', next_mw_id)
-
-            particle_term_el = tid_to_term[idparticle]
-            particle = particle_term_el.get('lemma')
-            particle_term_el.set('component_of', next_mw_id)
-
-            separable_verb_lemma = create_separable_verb_lemma(verb,
-                                                               particle,
-                                                               language)
-            attributes = [('id', next_mw_id),
-                          ('lemma', separable_verb_lemma),
-                          ('pos', 'VERB'),
-                          ('type', 'phrasal')]
-
-            mw_element = etree.SubElement(mws_layer, 'mw')
-            for attr, value in attributes:
-                mw_element.set(attr, value)
-
-            # add component elements
-            components = [
-                (f'{next_mw_id}.c1', idverb),
-                (f'{next_mw_id}.c2', idparticle)
-            ]
-            for c_id, t_id in components:
-                component = etree.SubElement(mw_element,
-                                             'component',
-                                              attrib={'id': c_id})
-                span = etree.SubElement(component, 'span')
-                etree.SubElement(span,
-                                 'target',
-                                 attrib={'id': t_id})
-
-    return root
-
-
-
-
-
-
 def entities_generator(doc, 
                        params: dict):
     """
@@ -248,8 +128,6 @@ def entities_generator(doc,
         yield Entity(start=engine.entity_span_start(ent),
                      end=engine.entity_span_end(ent),
                      type=engine.entity_type(ent))
-
-
 
 
 def chunks_for_doc(doc, 
@@ -268,13 +146,11 @@ def chunk_tuples_for_doc(doc,
     """
     """
     for i, (chunk, phrase) in enumerate(chunks_for_doc(doc, params)):
-        yield ChunkElement(cid = 'c' + str(i),
-                           head = 't' + str(chunk.root.i),
-                           phrase = phrase,
-                           text = remove_illegal_chars(chunk.orth_.replace('\n',' ')),
-                           targets = ['t' + str(tok.i) for tok in chunk])
-
-
+        yield ChunkElement(cid='c'+str(i),
+                           head='t'+str(chunk.root.i),
+                           phrase=phrase,
+                           text=remove_illegal_chars(chunk.orth_.replace('\n',' ')),
+                           targets=['t'+str(tok.i) for tok in chunk])
 
 
 def dependencies_to_add(sentence, 
@@ -331,8 +207,6 @@ def process_linguistic_layers(doc,
 
     if 'raw' in layers:
         add_raw_layer(params)
-
-
 
 
 def add_entities_layer(params: dict):
@@ -549,7 +423,7 @@ def add_deps_layer(params: dict):
             total_tokens += token_number
 
         if params['add_mws']:
-            add_multi_words(params['tree'].root, params)
+            params['tree'].add_multi_words(params)
 
     return None
 
@@ -557,44 +431,7 @@ def add_deps_layer(params: dict):
 def add_raw_layer(params: dict):
     """
     """
-    root = params['tree'].root
-    raw_layer = params['tree'].raw_layer
-
-    cdata = params['cdata']
-
-    wf_els = root.findall('text/wf')
-    tokens = [wf_els[0].text]
-
-    for prev_wf_el, cur_wf_el in zip(wf_els[:-1], wf_els[1:]):
-        prev_start = int(prev_wf_el.get('offset'))
-        prev_end = prev_start + int(prev_wf_el.get('length'))
-        cur_start = int(cur_wf_el.get('offset'))
-        delta = cur_start - prev_end  # how many characters are between current token and previous token?
-
-        # no chars between two token (for example with a dot .)
-        if delta == 0:
-            trailing_chars = ''
-        # 1 or more characters between tokens -> n spaces added
-        if delta >= 1:
-            trailing_chars = ' ' * delta
-        elif delta < 0:
-            raise AssertionError(f'please check the offsets of {prev_wf_el.text} and {cur_wf_el.text} (delta of {delta})')
-
-        tokens.append(trailing_chars + cur_wf_el.text)
-
-    raw_text = ''.join(tokens)
-
-    if cdata:
-        raw_layer.text = etree.CDATA(raw_text)
-    else:
-        raw_layer.text = raw_text
-
-    # verify alignment between raw and token layer
-    for wf_el in root.xpath('text/wf'):
-        start = int(wf_el.get('offset'))
-        end = start + int(wf_el.get('length'))
-        token = raw_layer.text[start:end]
-        assert wf_el.text == token, f'mismatch in alignment of wf element {wf_el.text} ({wf_el.get("id")}) with raw layer (expected length {wf_el.get("length")}'
+    params['tree'].add_raw_text_element(params)
 
 
 def add_chunks_layer(params: dict):
@@ -607,104 +444,7 @@ def add_chunks_layer(params: dict):
 def add_xml_layer(params: dict):
     """
     """
-    xml = bytes(bytearray(params['xml'], encoding='utf-8'))
-    parser = etree.XMLParser(ns_clean=True, recover=True, encoding='utf-8')
-    root = etree.fromstring(xml, parser=parser)
-
-    params['xml_layer'] = params['tree'].xml_layer
-
-    def add_element(el, tag):
-        c = etree.SubElement(el, tag)
-        for item in el.attrib.keys():
-            if item not in ['bbox', 'colourspace', 'ncolour']:
-                c.attrib[item] = el.attrib[item]
-        return c
-
-    def add_text_element(el, tag, text, attrib, offset):
-        text_element = etree.SubElement(el, tag)
-        for item in attrib.keys():
-            text_element.attrib[item] = attrib[item]
-        text_element.text = text
-        text_element.set("length", str(len(text)))
-        text_element.set("offset", str(offset))
-
-    def copy_dict(el2):
-        return {item: el2.attrib[item] for item in el2.keys() if item not in ['bbox', 'colourspace', 'ncolour']}
-
-    offset = 0
-    for page in root:
-        page_element = add_element(params['xml_layer'], "page")
-        page_length = 0
-        for page_item in page:
-
-            if page_item.tag == 'textbox':
-
-                page_item_element = add_element(page_element, page_item.tag)
-                for textline in page_item:
-                    textline_element = add_element(page_item_element, textline.tag)
-                    if len(textline) > 0:
-                        previous_text = textline[0].text
-                        previous_attrib = copy_dict(textline[0])
-                        for idx, char in enumerate(textline[1:]):
-                            char_attrib = copy_dict(char)
-
-                            if (previous_attrib == char_attrib):
-                                previous_text += char.text
-                                if idx == len(textline) - 1:
-                                    add_text_element(textline_element, char.tag, previous_text, previous_attrib, offset)
-                                    page_length += len(previous_text)
-                                    offset += len(previous_text)
-
-                            else:  # -> previous_attrib != char_attrib
-
-                                add_text_element(textline_element, char.tag, previous_text, previous_attrib, offset)
-                                page_length += len(previous_text)
-                                offset += len(previous_text)
-
-                                previous_text = char.text
-                                previous_attrib = char_attrib
-                                if idx == len(textline) - 1:
-                                    add_text_element(textline_element, char.tag, previous_text, previous_attrib, offset)
-                                    page_length += len(previous_text)
-                                    offset += len(previous_text)
-                    page_length += 1
-                    offset += 1
-
-                page_length += 1
-                offset += 1
-
-            elif page_item.tag == 'layout':
-
-                page_length += 1
-                offset += 1
-
-            elif page_item.tag == 'figure':
-
-                page_item_element = add_element(page_element, page_item.tag)
-                previous_text = textline[0].text
-                previous_attrib = copy_dict(textline[0])
-                for idx, char in enumerate(page_item):
-                    if char.tag == 'text':
-                        char_attrib = copy_dict(char)
-                        if previous_attrib == char_attrib:
-                            previous_text += char.text
-                            if idx == len(textline) - 1:
-                                add_text_element(page_item_element, char.tag, previous_text, previous_attrib, offset)
-                                page_length += len(previous_text)
-                                offset += len(previous_text)
-                        else:  # -> previous_attrib != char_attrib
-                            add_text_element(page_item_element, char.tag, previous_text, previous_attrib, offset)
-                            page_length += len(previous_text)
-                            offset += len(previous_text)
-                            if idx < len(textline) - 1:
-                                previous_text = char.text
-                                previous_attrib = char_attrib
-                            else:
-                                add_text_element(page_item_element, char.tag, char.text, char_attrib, offset)
-                                page_length += len(char.text)
-                                offset += len(char.text)
-        page_element.set("length", str(page_length))
-        page_element.set("offset", str(offset-page_length))
+    params['tree'].add_xml_element(params)
 
 
 if __name__ == '__main__':
