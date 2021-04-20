@@ -30,6 +30,7 @@ class NafDocument:
         self.naf_header = None
         self.raw_layer = None
         self.add_naf_tree(params)
+        self.version = params['naf_version']
 
 
     def write(self, output, output_type):
@@ -47,9 +48,17 @@ class NafDocument:
                 json_file.close()
 
 
-    def validate(self, dtd: etree.DTD):
+    def validate(self):
         """
         """
+
+        NAF_VERSION_TO_DTD = {
+            'v3': load_dtd_as_file_object('data/naf_v3.dtd'),
+            'v3.1': load_dtd_as_file_object('data/naf_v3_1.dtd')
+        }
+
+        dtd = NAF_VERSION_TO_DTD[self.version]
+
         success = dtd.validate(self.root)
         if not success:
             logging.error("DTD error log:")

@@ -52,7 +52,7 @@ def nafigator(input: str,
                         language = language, 
                         naf_version = naf_version, 
                         dtd_validation = dtd_validation)
-    tree.write(output, output_type)
+    tree.write(output, "xml")
 
 
 
@@ -114,9 +114,38 @@ def generate_naf(input: str,
 
     # validate naf tree
     if params['dtd_validation'] is True:
-        params['tree'].validate(NAF_VERSION_TO_DTD[naf_version])
+        params['tree'].validate()
 
     return params['tree']
+
+
+def process_linguistic_layers(doc, 
+                              params: dict):
+    """
+    """
+    layers = params['linguistic_layers']
+    params['tree'] = NafDocument(params)
+
+    if params['xml']:
+        add_xml_layer(params)
+
+    if 'entities' in layers:
+        add_entities_layer(params)
+
+    if 'text' in layers:
+        add_text_layer(params)
+
+    if 'terms' in layers:
+        add_terms_layer(params)
+
+    if 'deps' in layers:
+        add_deps_layer(params)
+
+    if 'chunks' in layers:
+        add_chunks_layer(params)
+
+    if 'raw' in layers:
+        add_raw_layer(params)
 
 
 def entities_generator(doc, 
@@ -177,36 +206,6 @@ def dependencies_to_add(sentence,
         deps.append(dep_data)
         token = engine.token_head(sentence, token)
     return deps
-
-
-def process_linguistic_layers(doc, 
-                              params: dict):
-    """
-    """
-    layers = params['linguistic_layers']
-
-    params['tree'] = NafDocument(params)
-
-    if params['xml']:
-        add_xml_layer(params)
-
-    if 'entities' in layers:
-        add_entities_layer(params)
-
-    if 'text' in layers:
-        add_text_layer(params)
-
-    if 'terms' in layers:
-        add_terms_layer(params)
-
-    if 'deps' in layers:
-        add_deps_layer(params)
-
-    if 'chunks' in layers:
-        add_chunks_layer(params)
-
-    if 'raw' in layers:
-        add_raw_layer(params)
 
 
 def add_entities_layer(params: dict):
