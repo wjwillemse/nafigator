@@ -7,6 +7,7 @@ import re
 from lxml import etree
 
 def load_dtd_as_file_object(dtd_url, verbose=0):
+    
     dtd = None
     r = open(dtd_url)
     if r:
@@ -19,11 +20,6 @@ def load_dtd_as_file_object(dtd_url, verbose=0):
             print(f'succesfully loaded dtd from {dtd_url}')
     return dtd
 
-
-NAF_VERSION_TO_DTD = {
-    'v3': load_dtd_as_file_object('data/naf_v3.dtd'),
-    'v3.1': load_dtd_as_file_object('data/naf_v3_1.dtd')
-}
 
 def time_in_correct_format(datetime_obj):
     """

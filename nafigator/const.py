@@ -6,7 +6,7 @@ from collections import namedtuple
 
 Entity = namedtuple('Entity', 'start end type')
 
-WordformElement = namedtuple('WfElement', 'page sent wid length wordform offset')
+WordformElement = namedtuple('WfElement', 'page sent id length wordform offset')
 
 TermElement = namedtuple('TermElement', 'id lemma pos type morphofeat targets text')
 

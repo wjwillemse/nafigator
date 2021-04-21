@@ -35,12 +35,12 @@ from .utils import remove_illegal_chars
 @click.option('--dtd_validation', default=False, prompt="dtd validation", help="Validate the NAF dtd")
 
 
-def parse(input: str, 
-          output: str, 
-          engine: str, 
-          language: str, 
-          naf_version: str, 
-          dtd_validation: bool):
+def nafigator(input: str, 
+              output: str, 
+              engine: str, 
+              language: str, 
+              naf_version: str, 
+              dtd_validation: bool):
     """
     """
     log_file: str = "".join(output.split(".")[0:-1])+".log"
@@ -65,28 +65,45 @@ def generate_naf(input: str,
     """
     params['naf_version'] = naf_version
     params['dtd_validation'] = dtd_validation
-    params['creationtime'] = datetime.now()
-    params['uri'] = input
     params['language'] = language
-    params['title'] = None
+    if 'fileDesc' not in params.keys():
+        params['fileDesc'] = dict()
+    if 'public' not in params.keys():
+        params['public'] = dict()
+    params['fileDesc']['creationtime'] = datetime.now()
+    params['fileDesc']['title'] = None
+    params['public']['uri'] = input
 
     if engine.lower() == 'stanza':
         params['engine'] = stanzaProcessor(language)
     elif engine.lower() == 'spacy':
         params['engine'] = spacyProcessor(language)
+    else:
+        logging.error("unknown engine")
+        return None
 
-    params['linguistic_layers'] = ['raw', 'text', 'terms', 'entities', 'deps']
-    params['cdata'] = True
-    params['map_udpos2naf_pos'] = False
-    params['layer_to_attributes_to_ignore'] = {'terms' : {'morphofeat', 'type'}}  # this will not add these attributes to the term element
-    params['replace_hidden_characters'] = True
-    params['add_mws'] = False
-    params['comments'] = True
+    # set default linguisitic parameters
+    if 'linguistic_layers' not in params.keys():
+        params['linguistic_layers'] = ['raw', 'text', 'terms', 'entities', 'deps']
+    if params.get("cdata", None) is None:
+        params['cdata'] = True
+    if params.get("map_udpos2naf_pos", None) is None:
+        params['map_udpos2naf_pos'] = False
+    if params.get("layer_to_attributes_to_ignore", None) is None:
+        params['layer_to_attributes_to_ignore'] = {'terms' : {'morphofeat', 'type'}}  # this will not add these attributes to the term element
+    if params.get("replace_hidden_characters", None) is None:
+        params['replace_hidden_characters'] = True
+    if params.get("add_mws", None) is None:
+        params['add_mws'] = False
+    if params.get("comments", None) is None:
+        params['comments'] = True
 
     if input[-3:].lower()=='txt':
         with open(input) as f:
+            params['public']['format'] = 'text/plain'
             params['text'] = f.read()
     elif input[-3:].lower()=='pdf':
+        params['public']['format'] = 'application/pdf'
         params['preprocess_layers'] = ['xml']
         #params['preprocess_processor'] = preprocessprocessor.PDFMiner()
         params['xml'] = convert_pdf(input, format='xml', params=params)
@@ -125,7 +142,7 @@ def process_linguistic_layers(doc,
     layers = params['linguistic_layers']
     params['tree'] = NafDocument(params)
 
-    if params['xml']:
+    if params.get('xml', None) is not None:
         add_xml_layer(params)
 
     if 'entities' in layers:
@@ -257,7 +274,7 @@ def add_entities_layer(params: dict):
                                             text=current_entity_orth,
                                             ext_refs=list())  # entity linking currently not part of spaCy
 
-                params['tree'].add_entity_element(entity_data, params)
+                params['tree'].add_entity_element(entity_data, params['naf_version'], params['language'])
 
                 entity_number += 1
                 current_entity = list()
@@ -315,7 +332,7 @@ def add_text_layer(params: dict):
                                       wordform=token.text,
                                       offset=str(engine.token_offset(token)))
 
-            params['tree'].add_wf_element(wf_data, params)
+            params['tree'].add_wf_element(wf_data, params['cdata'])
 
         if engine.token_reset() is False:
             current_token = token_number + 1
@@ -375,7 +392,7 @@ def add_terms_layer(params: dict):
                                     targets=current_term,
                                     text=current_term_orth)
 
-            params['tree'].add_term_element(term_data, params)
+            params['tree'].add_term_element(term_data, params['layer_to_attributes_to_ignore'], params['comments'])
 
             # Move to the next term
             term_number += 1
@@ -411,7 +428,7 @@ def add_deps_layer(params: dict):
                     dependencies_for_sentence.append(dep_data)
 
         for dep_data in dependencies_for_sentence:
-            params['tree'].add_dependency_element(dep_data, params)
+            params['tree'].add_dependency_element(dep_data, params['comments'])
 
         if engine.token_reset() is False:
             current_token = token_number + 1
@@ -421,7 +438,7 @@ def add_deps_layer(params: dict):
             total_tokens += token_number
 
         if params['add_mws']:
-            params['tree'].add_multi_words(params)
+            params['tree'].add_multi_words(params['naf_version'], params['language'])
 
     return None
 
@@ -429,21 +446,21 @@ def add_deps_layer(params: dict):
 def add_raw_layer(params: dict):
     """
     """
-    params['tree'].add_raw_text_element(params)
+    params['tree'].add_raw_text_element(params['cdata'])
 
 
 def add_chunks_layer(params: dict):
     """
     """
     for chunk_data in chunk_tuples_for_doc(params['doc'], params):
-        params['tree'].add_chunk_element(chunk_data, params)
+        params['tree'].add_chunk_element(chunk_data, params['comments'])
 
 
 def add_xml_layer(params: dict):
     """
     """
-    params['tree'].add_xml_element(params)
+    params['tree'].add_xml_element(params['xml'])
 
 
 if __name__ == '__main__':
-    sys.exit(parse())
+    sys.exit(nafigator())
