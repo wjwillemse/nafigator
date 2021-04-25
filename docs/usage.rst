@@ -2,6 +2,6 @@
 Usage
 =====
 
-To use stanza2naf in a project::
+To use nafigator in a project::
 
-    import stanza2naf
+    import nafigator

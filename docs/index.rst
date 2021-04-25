@@ -6,9 +6,6 @@ Welcome to stanza2naf's documentation!
    :caption: Contents:
 
    readme
-   installation
-   usage
-   modules
    contributing
    authors
    history
