@@ -14,12 +14,11 @@ nafigator
         :alt: Documentation Status
 
 
-
 **DISCLAIMER - BETA PHASE**
 
-*This pdf parser to naf is currently in a beta phase.*
+*This parser to naf is currently in a beta phase.*
 
-Python package to convert pdf files via spaCy or Stanza to NLP Annotation Format (NAF)
+Python package to convert text documents to NLP Annotation Format (NAF)
 
 
 * Free software: MIT license
@@ -29,10 +28,21 @@ Python package to convert pdf files via spaCy or Stanza to NLP Annotation Format
 Features
 --------
 
-* TODO
+* Convert text files to .naf files that satisfy the NLP Annotation Format (NAF)
 
-Quick overview
---------------
+	* Supported input media types: application/pdf (.pdf), text/plain (.txt)
+
+	* Supported output format: .naf (xml)
+
+	* Supported NLP pipelines: spaCy, stanza
+
+	* Supported NAF layers: raw, text, terms, entities, deps
+
+* Read .naf documents and access data as Python lists and dicts
+
+
+Installation
+------------
 
 To install the package
 
@@ -50,14 +60,148 @@ To install the package from Github
 How to run
 ----------
 
+Command line interface
+~~~~~~~~~~~~~~~~~~~~~~
+
 To parse an pdf or a txt file run in the root of the project
 
 ::
 
-	python -m nafigator.nafigator
+	python -m nafigator.parse
 
 
+Function calls
+~~~~~~~~~~~~~~
 
+Example: ::
+
+	from nafigator.parse import generate_naf
+
+	doc = generate_naf(input = "../data/example.pdf",
+	                   engine = "stanza",
+	                   language = "en",
+	                   naf_version = "v3.1",
+	                   dtd_validation = False,
+	                   params = {'fileDesc': {'author': 'W.J.Willemse'}},
+	                   nlp = None)
+
+- input: text document to convert to naf document
+- engine: pipeline processor, i.e. 'spacy' or 'stanza'
+- language: 'en' or 'nl'
+- naf_version: 'v3' or 'v3.1'
+- dtd_validation: True or False (default = False)
+- params: dictionary with parameters (default = {})	
+- nlp: custom made pipeline object from spacy or stanza (default = None)
+
+Get the document and processors metadata via::
+
+	doc.nafHeader
+
+Output of doc.nafHeader of processed data/example.pdf::
+
+	{
+		'fileDesc': {
+			'author': 'W.J.Willemse',
+			'creationtime': '2021-04-25T11:28:58UTC', 
+	 	 	'filename': 'data/example.pdf', 
+	 	 	'filetype': 'application/pdf', 
+	 	 	'pages': '2'}, 
+	 	'public': {
+			'{http://purl.org/dc/elements/1.1/}uri': 'data/example.pdf', 
+			'{http://purl.org/dc/elements/1.1/}format': 'application/pdf'}, 
+	 	'preProcessors': [ {
+	 			'layer': 'xml', 
+	 		 	'pp': [ {
+	 		 			'beginTimestamp': '2021-04-25T11:29:01UTC', 
+	 		 			'endTimestamp': '2021-04-25T11:29:01UTC', 
+	 		 		 	'name': 'pdfminer-pdf2text', 
+	 		 		 	'version': 'pdfminer_version-20201018'} ] } ], 
+	 	'linguisticProcessors': [ {
+	 			'layer': 'raw', 
+	 			'lp': [ {
+	 					'beginTimestamp': '2021-04-25T11:29:01UTC', 
+	 					'endTimestamp': '2021-04-25T11:29:01UTC', 
+	 					'name': 'stanza-model_en', 
+	 					'version': 'stanza_version-1.2'} ] } ], 
+	 		...
+
+Get the raw layer output via::
+
+	doc.raw_layer
+
+Output of doc.raw_layer of processed data/example.pdf::
+
+	The cat sat on the mat. Matt was his name.
+
+Get the text layer output via::
+
+	doc.text_layer
+
+Output of doc.text_layer of processed data/example.pdf::
+
+	[
+		{'text': 'The', 'page': '1', 'sent': '1', 'id': 'w1', 'length': '3', 'offset': '0'}, 
+		{'text': 'cat', 'page': '1', 'sent': '1', 'id': 'w2', 'length': '3', 'offset': '4'}, 
+		{'text': 'sat', 'page': '1', 'sent': '1', 'id': 'w3', 'length': '3', 'offset': '8'}, 
+		{'text': 'on', 'page': '1', 'sent': '1', 'id': 'w4', 'length': '2', 'offset': '12'}, 
+		{'text': 'the', 'page': '1', 'sent': '1', 'id': 'w5', 'length': '3', 'offset': '15'}, 
+		{'text': 'mat', 'page': '1', 'sent': '1', 'id': 'w6', 'length': '3', 'offset': '19'}, 
+		{'text': '.', 'page': '1', 'sent': '1', 'id': 'w7', 'length': '1', 'offset': '22'}, 
+		{'text': 'Matt', 'page': '1', 'sent': '2', 'id': 'w8', 'length': '4', 'offset': '24'},
+		{'text': 'was', 'page': '1', 'sent': '2', 'id': 'w9', 'length': '3', 'offset': '29'}, 
+		{'text': 'his', 'page': '1', 'sent': '2', 'id': 'w10', 'length': '3', 'offset': '33'},
+		{'text': 'name', 'page': '1', 'sent': '2', 'id': 'w11', 'length': '4', 'offset': '37'},
+		{'text': '.', 'page': '1', 'sent': '2', 'id': 'w12', 'length': '1', 'offset': '41'}
+	]
+
+Get the terms layer output via::
+
+	doc.terms_layer
+
+Output of doc.terms_layer of processed data/example.pdf::
+
+	[
+		{'id': 't1', 'lemma': 'the', 'pos': 'DET', 'targets': ['w1']}, 
+		{'id': 't2', 'lemma': 'cat', 'pos': 'NOUN', 'targets': ['w2']}, 
+		{'id': 't3', 'lemma': 'sit', 'pos': 'VERB', 'targets': ['w3']}, 
+		{'id': 't4', 'lemma': 'on', 'pos': 'ADP', 'targets': ['w4']}, 
+		{'id': 't5', 'lemma': 'the', 'pos': 'DET', 'targets': ['w5']}, 
+		{'id': 't6', 'lemma': 'mat', 'pos': 'NOUN', 'targets': ['w6']}, 
+		{'id': 't7', 'lemma': '.', 'pos': 'PUNCT', 'targets': ['w7']}, 
+		{'id': 't8', 'lemma': 'Matt', 'pos': 'PROPN', 'targets': ['w8']}, 
+		{'id': 't9', 'lemma': 'be', 'pos': 'AUX', 'targets': ['w9']}, 
+		{'id': 't10', 'lemma': 'he', 'pos': 'PRON', 'targets': ['w10']}, 
+		{'id': 't11', 'lemma': 'name', 'pos': 'NOUN', 'targets': ['w11']}, 
+		{'id': 't12', 'lemma': '.', 'pos': 'PUNCT', 'targets': ['w12']}]
+
+Get the entities layer output via::
+
+	doc.entities_layer
+
+Output of doc.entities_layer of processed data/example.pdf::
+
+	[
+		{'id': 'e1', 'type': 'PERSON', 'targets': ['t8']}
+	]
+
+Get the entities layer output via::
+
+	doc.deps_layer
+
+Output of doc.deps_layer of processed data/example.pdf::
+
+	[
+		{'from': 't2', 'to': 't1', 'rfunc': 'det'},
+		{'from': 't3', 'to': 't2', 'rfunc': 'nsubj'}, 
+		{'from': 't6', 'to': 't4', 'rfunc': 'case'}, 
+		{'from': 't3', 'to': 't6', 'rfunc': 'obl'}, 
+		{'from': 't6', 'to': 't5', 'rfunc': 'det'}, 
+		{'from': 't3', 'to': 't7', 'rfunc': 'punct'}, 
+		{'from': 't11', 'to': 't8', 'rfunc': 'nsubj'}, 
+		{'from': 't11', 'to': 't9', 'rfunc': 'cop'}, 
+		{'from': 't11', 'to': 't10', 'rfunc': 'nmod:poss'}, 
+		{'from': 't11', 'to': 't12', 'rfunc': 'punct'}
+	]
 
 Credits
 -------
