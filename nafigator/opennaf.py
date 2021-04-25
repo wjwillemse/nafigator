@@ -2,24 +2,29 @@
 
 """Main module."""
 
-from datetime import datetime
 import sys
 import click
-import logging
-import os
-
 from .nafdocument import NafDocument
 
-@click.command()
-@click.option('--input', default="data/example.naf", prompt="input file", help='The input file')
 
+@click.command()
+@click.option('--input',
+              default="data/example.naf",
+              prompt="input file",
+              help='The input file')
 def opennaf(input: str):
     """
     """
     naf = generate_naf(input)
+    print(naf.nafHeader)
+    print(naf.raw_layer)
+    print(naf.text_layer)
+    print(naf.terms_layer)
     print(naf.entities_layer)
+    print(naf.deps_layer)
 
-def generate_naf(input: str, 
+
+def generate_naf(input: str,
                  params: dict = {}):
     """
     """

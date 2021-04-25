@@ -6,13 +6,16 @@ from collections import namedtuple
 
 Entity = namedtuple('Entity', 'start end type')
 
-WordformElement = namedtuple('WfElement', 'page sent id length wordform offset')
+WordformElement = namedtuple('WfElement',
+                             'page sent id length wordform offset')
 
-TermElement = namedtuple('TermElement', 'id lemma pos type morphofeat targets text')
+TermElement = namedtuple('TermElement',
+                         'id lemma pos type morphofeat targets text')
 
 EntityElement = namedtuple('EntityElement', 'id type targets text ext_refs')
 
-DependencyRelation = namedtuple('DependencyRelation', 'from_term to_term from_orth to_orth rfunc')
+DependencyRelation = namedtuple('DependencyRelation',
+                                'from_term to_term from_orth to_orth rfunc')
 
 ChunkElement = namedtuple('ChunkElement', 'cid head phrase text targets')
 

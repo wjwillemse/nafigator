@@ -11,7 +11,6 @@ import os
 from .linguisticprocessor import stanzaProcessor
 from .linguisticprocessor import spacyProcessor
 from .preprocessprocessor import convert_pdf
-from .utils import time_in_correct_format
 from .nafdocument import NafDocument
 
 from .const import Entity
@@ -25,72 +24,113 @@ from .const import hidden_table
 from .utils import normalize_token_orth
 from .utils import remove_illegal_chars
 
+XML_LAYER_TAG = "xml"
+
 
 @click.command()
-@click.option('--input', default="data/example.pdf", prompt="input file", help='The input file')
-@click.option('--output', default='data/example.naf', prompt="output file", help='The output file')
-@click.option('--engine', default='stanza', prompt="NLP-package", help="The package to parse the text")
-@click.option('--language', default='en', prompt="language", help="The language of the input file")
-@click.option('--naf_version', default='v3.1', prompt="naf version", help="NAF version to convert to")
-@click.option('--dtd_validation', default=False, prompt="dtd validation", help="Validate the NAF dtd")
-
-
-def nafigator(input: str, 
-              output: str, 
-              engine: str, 
-              language: str, 
-              naf_version: str, 
+@click.option('--input',
+              default="data/example.pdf",
+              prompt="input file",
+              help='The input file')
+@click.option('--output',
+              default='data/example.naf',
+              prompt="output file",
+              help='The output file')
+@click.option('--engine',
+              default='stanza',
+              prompt="NLP-package",
+              help="The package to parse the text")
+@click.option('--language',
+              default='en',
+              prompt="language",
+              help="The language of the input file")
+@click.option('--naf_version',
+              default='v3.1',
+              prompt="naf version",
+              help="NAF version to convert to")
+@click.option('--dtd_validation',
+              default=False,
+              prompt="dtd validation",
+              help="Validate the NAF dtd")
+def nafigator(input: str,
+              output: str,
+              engine: str,
+              language: str,
+              naf_version: str,
               dtd_validation: bool):
     """
     """
     log_file: str = "".join(output.split(".")[0:-1])+".log"
-    logging.basicConfig(filename=log_file, 
-                        level=logging.INFO, 
+    logging.basicConfig(filename=log_file,
+                        level=logging.INFO,
                         filemode="w")
-    tree = generate_naf(input = input, 
-                        engine = engine, 
-                        language = language, 
-                        naf_version = naf_version, 
-                        dtd_validation = dtd_validation)
+    tree = generate_naf(input=input,
+                        engine=engine,
+                        language=language,
+                        naf_version=naf_version,
+                        dtd_validation=dtd_validation)
     tree.write(output, "xml")
 
 
-def generate_naf(input: str, 
-                 engine: str, 
-                 language: str, 
-                 naf_version: str, 
-                 dtd_validation: bool,
-                 params: dict = {}):
+def generate_naf(input: str = None,
+                 engine: str = None,
+                 language: str = None,
+                 naf_version: str = None,
+                 dtd_validation: bool = False,
+                 params: dict = {},
+                 nlp=None):
     """
     """
+    if (input is None) or not (os.path.isfile(input)):
+        logging.error("no or non-existing input specified")
+        return None
+    if (engine is None):
+        logging.error("no engine specified")
+        return None
+    if language is None:
+        logging.error("no language specified")
+        return None
+    if naf_version is None:
+        logging.error("no naf version specified")
+        return None
+
     params['naf_version'] = naf_version
     params['dtd_validation'] = dtd_validation
     params['language'] = language
+
     if 'fileDesc' not in params.keys():
         params['fileDesc'] = dict()
+    params['fileDesc']['creationtime'] = datetime.now()
+    params['fileDesc']['filename'] = input
+
     if 'public' not in params.keys():
         params['public'] = dict()
-    params['fileDesc']['creationtime'] = datetime.now()
-    params['fileDesc']['title'] = None
     params['public']['uri'] = input
+    if input[-3:].lower() == 'txt':
+        params['fileDesc']['filetype'] = 'text/plain'
+        params['public']['format'] = 'text/plain'
+    elif input[-3:].lower() == 'pdf':
+        params['fileDesc']['filetype'] = 'application/pdf'
+        params['public']['format'] = 'application/pdf'
 
     if engine.lower() == 'stanza':
-        params['engine'] = stanzaProcessor(language)
+        params['engine'] = stanzaProcessor(nlp, language)
     elif engine.lower() == 'spacy':
-        params['engine'] = spacyProcessor(language)
+        params['engine'] = spacyProcessor(nlp, language)
     else:
         logging.error("unknown engine")
         return None
 
-    # set default linguisitic parameters
+    # set default linguistic parameters
     if 'linguistic_layers' not in params.keys():
-        params['linguistic_layers'] = ['raw', 'text', 'terms', 'entities', 'deps']
+        params['linguistic_layers'] = ['raw', 'text', 'terms',
+                                       'entities', 'deps']
     if params.get("cdata", None) is None:
         params['cdata'] = True
     if params.get("map_udpos2naf_pos", None) is None:
         params['map_udpos2naf_pos'] = False
     if params.get("layer_to_attributes_to_ignore", None) is None:
-        params['layer_to_attributes_to_ignore'] = {'terms' : {'morphofeat', 'type'}}  # this will not add these attributes to the term element
+        params['layer_to_attributes_to_ignore'] = {'terms': {'morphofeat', 'type'}}
     if params.get("replace_hidden_characters", None) is None:
         params['replace_hidden_characters'] = True
     if params.get("add_mws", None) is None:
@@ -98,17 +138,17 @@ def generate_naf(input: str,
     if params.get("comments", None) is None:
         params['comments'] = True
 
-    if input[-3:].lower()=='txt':
+    if input[-3:].lower() == 'txt':
         with open(input) as f:
-            params['public']['format'] = 'text/plain'
             params['text'] = f.read()
-    elif input[-3:].lower()=='pdf':
-        params['public']['format'] = 'application/pdf'
+    elif input[-3:].lower() == 'pdf':
         params['preprocess_layers'] = ['xml']
-        #params['preprocess_processor'] = preprocessprocessor.PDFMiner()
         params['xml'] = convert_pdf(input, format='xml', params=params)
         params['text'] = convert_pdf(input, format='text', params=params)
-    
+
+    if params.get('pages', None) is not None:
+        params['fileDesc']['pages'] = params['pages']
+
     text = params['text']
     if params['replace_hidden_characters']:
         text_to_use = text.translate(hidden_table)
@@ -119,7 +159,7 @@ def generate_naf(input: str,
     params['start_time'] = datetime.now()
     params['doc'] = params['engine'].nlp(text_to_use)
     params['end_time'] = datetime.now()
-    
+
     process_linguistic_layers(params['doc'], params)
 
     # check it lengths match
@@ -135,7 +175,7 @@ def generate_naf(input: str,
     return params['tree']
 
 
-def process_linguistic_layers(doc, 
+def process_linguistic_layers(doc,
                               params: dict):
     """
     """
@@ -164,7 +204,7 @@ def process_linguistic_layers(doc,
         add_raw_layer(params)
 
 
-def entities_generator(doc, 
+def entities_generator(doc,
                        params: dict):
     """
     """
@@ -175,7 +215,7 @@ def entities_generator(doc,
                      type=engine.entity_type(ent))
 
 
-def chunks_for_doc(doc, 
+def chunks_for_doc(doc,
                    params: dict):
     """
     """
@@ -186,21 +226,22 @@ def chunks_for_doc(doc,
         yield (chunk, 'NP')
 
 
-def chunk_tuples_for_doc(doc, 
+def chunk_tuples_for_doc(doc,
                          params: dict):
     """
     """
     for i, (chunk, phrase) in enumerate(chunks_for_doc(doc, params)):
+        chunk_text = remove_illegal_chars(chunk.orth_.replace('\n', ' '))
         yield ChunkElement(cid='c'+str(i),
                            head='t'+str(chunk.root.i),
                            phrase=phrase,
-                           text=remove_illegal_chars(chunk.orth_.replace('\n',' ')),
+                           text=chunk_text,
                            targets=['t'+str(tok.i) for tok in chunk])
 
 
-def dependencies_to_add(sentence, 
-                        token, 
-                        total_tokens: int, 
+def dependencies_to_add(sentence,
+                        token,
+                        total_tokens: int,
                         params: dict):
     """
     """
@@ -209,16 +250,16 @@ def dependencies_to_add(sentence,
     cor = engine.offset_token_index()
 
     while engine.token_head_index(sentence, token) != engine.token_index(token):
-        from_term = 't' + str(engine.token_head_index(sentence, token) + total_tokens + cor)
-        to_term = 't' + str(engine.token_index(token) + total_tokens + cor)
+        from_term = 't'+str(engine.token_head_index(sentence, token)+total_tokens+cor)
+        to_term = 't'+str(engine.token_index(token)+total_tokens+cor)
         rfunc = engine.token_dependency(token)
         from_orth = engine.token_orth(token)
         to_orth = engine.token_orth(engine.token_head(sentence, token))
-        dep_data = DependencyRelation(from_term = from_term,
-                                      to_term = to_term,
-                                      rfunc = rfunc,
-                                      from_orth = from_orth,
-                                      to_orth = to_orth)
+        dep_data = DependencyRelation(from_term=from_term,
+                                      to_term=to_term,
+                                      rfunc=rfunc,
+                                      from_orth=from_orth,
+                                      to_orth=to_orth)
         deps.append(dep_data)
         token = engine.token_head(sentence, token)
     return deps
@@ -227,10 +268,8 @@ def dependencies_to_add(sentence,
 def add_entities_layer(params: dict):
     """
     """
-    tree = params['tree'].tree
     doc = params['doc']
     engine = params['engine']
-    layers = params['linguistic_layers']
 
     current_entity = list()       # Use a list for multiword entities.
     current_entity_orth = list()  # id.
@@ -240,10 +279,10 @@ def add_entities_layer(params: dict):
     entity_number: int = 1    # Keep track of the entity number.
     total_tokens: int = 0
 
-    parsing_entity: bool = False # State change: are we working on a term or not?
+    parsing_entity: bool = False
 
-    for sentence_number, sentence in enumerate(engine.document_sentences(doc), start = 1):
-        
+    for sentence_number, sentence in enumerate(engine.document_sentences(doc), start=1):
+
         entity_gen = entities_generator(sentence, params)
         try:
             next_entity = next(entity_gen)
@@ -255,7 +294,7 @@ def add_entities_layer(params: dict):
 
             if token_number == next_entity.start:
                 parsing_entity = True
-            
+
             tid = 't' + str(term_number)
             if parsing_entity:
                 current_entity.append(tid)
@@ -288,7 +327,7 @@ def add_entities_layer(params: dict):
                     next_entity = Entity(start=None, end=None, type=None)
 
         # At the end of the sentence, add all the dependencies to the XML structure.
-        if engine.token_reset() == False:
+        if engine.token_reset() is False:
             current_token = token_number + 1
             total_tokens = 0
         else:
@@ -304,15 +343,14 @@ def add_text_layer(params: dict):
     root = params['tree'].root
 
     pages_offset = None
-    xml = params['tree']._xml_layer
+    xml = root.find(XML_LAYER_TAG)
     if xml is not None:
         pages_offset = [int(page.get('offset')) for page in xml]
 
     doc = params['doc']
     engine = params['engine']
-    layers = params['linguistic_layers']
 
-    current_token: int = 1    
+    current_token: int = 1
     total_tokens: int = 0
     current_page: int = 0
 
@@ -349,7 +387,6 @@ def add_terms_layer(params: dict):
     """
     doc = params['doc']
     engine = params['engine']
-    layers = params['linguistic_layers']
 
     current_term = list()       # Use a list for multiword expressions.
     current_term_orth = list()  # id.
@@ -392,14 +429,17 @@ def add_terms_layer(params: dict):
                                     targets=current_term,
                                     text=current_term_orth)
 
-            params['tree'].add_term_element(term_data, params['layer_to_attributes_to_ignore'], params['comments'])
+            params['tree'].add_term_element(term_data,
+                                            params['layer_to_attributes_to_ignore'],
+                                            params['comments'])
 
             # Move to the next term
             term_number += 1
             current_term = list()
             current_term_orth = list()
 
-        # At the end of the sentence, add all the dependencies to the XML structure.
+        # At the end of the sentence,
+        # add all the dependencies to the XML structure.
         if engine.token_reset() is False:
             current_token = token_number + 1
             total_tokens = 0
@@ -422,8 +462,11 @@ def add_deps_layer(params: dict):
 
         dependencies_for_sentence = list()
 
-        for token_number, token in enumerate(engine.sentence_tokens(sent), start=current_token):
-            for dep_data in dependencies_to_add(sent, token, total_tokens, params):
+        for token_number, token in enumerate(engine.sentence_tokens(sent),
+                                             start=current_token):
+            for dep_data in dependencies_to_add(sent, token,
+                                                total_tokens,
+                                                params):
                 if dep_data not in dependencies_for_sentence:
                     dependencies_for_sentence.append(dep_data)
 
@@ -438,7 +481,8 @@ def add_deps_layer(params: dict):
             total_tokens += token_number
 
         if params['add_mws']:
-            params['tree'].add_multi_words(params['naf_version'], params['language'])
+            params['tree'].add_multi_words(params['naf_version'],
+                                           params['language'])
 
     return None
 

@@ -18,15 +18,24 @@ if SPACY_IMPORTED:
 
     class spacyProcessor:
 
-        def __init__(self, lang):
+        def __init__(self,
+                     nlp=None,
+                     lang: str = None,):
+
+            if nlp is None:
+                if lang == "en":
+                    self.nlp = spacy.load('en_core_web_sm')
+                elif lang == "nl":
+                    self.nlp = spacy.load('nl_core_web_sm')
+            else:
+                self.nlp = nlp
             self.lang = lang
-            self.nlp = spacy.load('en_core_web_sm')
             self.model_name = f'spaCy-model_{self.nlp.meta["lang"]}_{self.nlp.meta["name"]}'
             self.model_version = f'spaCy_version-{spacy.__version__}__model_version-{self.nlp.meta["version"]}'
 
         def nlp(self, text):
             self.doc = self.nlp(text)
-            return doc
+            return self.doc
 
         def document_sentences(self, doc):
             return doc.sents
@@ -45,7 +54,7 @@ if SPACY_IMPORTED:
 
         def token_index(self, token):
             return token.i
-        
+
         def token_head_index(self, sentence, token):
             return token.head.i
 
@@ -54,7 +63,7 @@ if SPACY_IMPORTED:
 
         def token_orth(self, token):
             return token.orth_
-        
+
         def token_offset(self, token):
             return token.idx
 
@@ -66,7 +75,7 @@ if SPACY_IMPORTED:
 
         def token_lemma(self, token):
             return token.lemma_
-        
+
         def token_tag(self, token):
             return token.tag_
 
@@ -77,7 +86,8 @@ if SPACY_IMPORTED:
             return entity.end
 
         def entity_type(self, entity):
-            ent_type_set = {token.ent_type_ for token in entity if token.ent_type_ != ''}
+            ent_type_set = {token.ent_type_
+                            for token in entity if token.ent_type_ != ''}
             return ent_type_set.pop()
 
         def document_noun_chunks(self, doc):
@@ -88,18 +98,24 @@ if SPACY_IMPORTED:
 
 
 if STANZA_IMPORTED:
-    
+
     class stanzaProcessor:
 
-        def __init__(self, lang):
+        def __init__(self,
+                     nlp=None,
+                     lang: str = None,):
+
+            if nlp is None:
+                self.nlp = stanza.Pipeline(lang=lang, verbose=False)
+            else:
+                self.nlp = nlp
             self.lang = lang
             self.model_name = f'stanza-model_{lang}'
             self.model_version = f'stanza_version-{stanza.__version__}'
-            self.nlp =  stanza.Pipeline(lang=lang)
 
         def nlp(self, text):
             self.doc = self.nlp(text)
-            return doc
+            return self.doc
 
         def document_sentences(self, doc):
             return doc.sentences
@@ -117,7 +133,7 @@ if STANZA_IMPORTED:
             return 0
 
         def token_head(self, sentence, token):
-            if token.words[0].head!=0:
+            if token.words[0].head != 0:
                 return sentence.words[token.words[0].head-1].parent
             else:
                 return token.id[0]
@@ -129,7 +145,7 @@ if STANZA_IMPORTED:
             return token.id[0]
 
         def token_head_index(self, sentence, token):
-            if token.words[0].head!=0:
+            if token.words[0].head != 0:
                 return sentence.words[token.words[0].head-1].parent.id[0]
             else:
                 return token.id[0]
