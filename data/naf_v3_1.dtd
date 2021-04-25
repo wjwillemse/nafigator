@@ -109,7 +109,6 @@
           confidence CDATA #IMPLIED
           uri CDATA #IMPLIED>
 
-
 <!-- TEXT ELEMENT -->
 <!ELEMENT text (wf)+>
 
