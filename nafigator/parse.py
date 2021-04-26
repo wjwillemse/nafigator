@@ -8,8 +8,18 @@ import click
 import logging
 import os
 
-from .linguisticprocessor import stanzaProcessor
-from .linguisticprocessor import spacyProcessor
+try:
+    from .linguisticprocessor import stanzaProcessor
+    STANZA_IMPORTED = True
+except:
+    STANZA_IMPORTED = False
+
+try:
+    from .linguisticprocessor import spacyProcessor
+    SPACY_IMPORTED = True
+except:
+    SPACY_IMPORTED = False
+
 from .preprocessprocessor import convert_pdf
 from .nafdocument import NafDocument
 
