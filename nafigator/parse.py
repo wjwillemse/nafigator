@@ -24,7 +24,7 @@ from .const import hidden_table
 from .utils import normalize_token_orth
 from .utils import remove_illegal_chars
 
-XML_LAYER_TAG = "xml"
+FORMATS_LAYER_TAG = "formats"
 
 
 @click.command()
@@ -183,7 +183,7 @@ def process_linguistic_layers(doc,
     params['tree'] = NafDocument(params)
 
     if params.get('xml', None) is not None:
-        add_xml_layer(params)
+        add_formats_layer(params)
 
     if 'entities' in layers:
         add_entities_layer(params)
@@ -343,9 +343,9 @@ def add_text_layer(params: dict):
     root = params['tree'].root
 
     pages_offset = None
-    xml = root.find(XML_LAYER_TAG)
-    if xml is not None:
-        pages_offset = [int(page.get('offset')) for page in xml]
+    formats = root.find(FORMATS_LAYER_TAG)
+    if formats is not None:
+        pages_offset = [int(page.get('offset')) for page in formats]
 
     doc = params['doc']
     engine = params['engine']
@@ -500,10 +500,10 @@ def add_chunks_layer(params: dict):
         params['tree'].add_chunk_element(chunk_data, params['comments'])
 
 
-def add_xml_layer(params: dict):
+def add_formats_layer(params: dict):
     """
     """
-    params['tree'].add_xml_element(params['xml'])
+    params['tree'].add_formats_element(params['xml'])
 
 
 if __name__ == '__main__':

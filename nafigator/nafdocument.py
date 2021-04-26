@@ -32,7 +32,7 @@ CHUNKS_LAYER_TAG = "chunks"
 CHUNK_OCCURENCE_TAG = "chunk"
 
 RAW_LAYER_TAG = "raw"
-XML_LAYER_TAG = "xml"
+FORMATS_LAYER_TAG = "formats"
 NAF_HEADER = "nafHeader"
 
 SPAN_OCCURRENCE_TAG = "span"
@@ -63,7 +63,7 @@ class NafDocument:
 
         uri = params['public']['uri']
         if uri[-3:].lower() == 'naf':
-            with open(uri) as f:
+            with open(uri, "r", encoding='utf-8') as f:
                 self.tree = etree.parse(f)
             self.root = self.tree.getroot()
             self.naf_version = self.root.get("version")
@@ -119,6 +119,45 @@ class NafDocument:
             header[PREPROCESSOR_LAYER_TAG] = prep_proc
             header[LINGUISTIC_LAYER_TAG] = ling_proc
             return header
+
+        if name == "formats_layer":
+            pages = list()
+            for child in self.root.find(FORMATS_LAYER_TAG):
+                if child.tag == "page":
+                    pages_data = dict(child.attrib)
+                    textboxes = list()
+                    for child2 in child:
+                        if child2.tag == "textbox":
+                            textbox_data = dict(child2.attrib)
+                            textlines = list()
+                            for child3 in child2:
+                                if child3.tag == "textline":
+                                    textline_data = dict(child3.attrib)
+                                    texts = list()
+                                    for child4 in child3:
+                                        if child4.tag == "text":
+                                            text_data = dict(child4.attrib)
+                                            text_data['text'] = child4.text
+                                            texts.append(text_data)
+                                    textline_data['texts'] = texts
+                                    textlines.append(textline_data)
+                            textbox_data['textlines'] = textlines
+                            textboxes.append(textbox_data)
+                        # elif child2.tag == "layout":
+                        elif child2.tag == "figure":
+                            textbox_data = dict(child2.attrib)
+                            texts = list()
+                            for child3 in child2:
+                                if child3.tag == "text":
+                                    text_data = dict(child3.attrib)
+                                    text_data['text'] = child3.text
+                                    texts.append(text_data)
+                            textbox_data['texts'] = texts
+                            textboxes.append(textbox_data)
+                    pages_data['textboxes'] = textboxes
+                    pages.append(pages_data)
+            return pages
+
 
         # if raw_layer is requested return text
         if name == "raw_layer":
@@ -460,19 +499,19 @@ class NafDocument:
             token = layer.text[start:end]
             assert wf.text == token, f'mismatch in alignment of wf element {wf.text} ({wf.get("id")}) with raw layer (expected length {wf.get("length")}'
 
-    def add_xml_element(self, xml: str):
+    def add_formats_element(self, formats: str):
 
         """
         """
-        xml = bytes(bytearray(xml, encoding='utf-8'))
+        formats = bytes(bytearray(formats, encoding='utf-8'))
         parser = etree.XMLParser(ns_clean=True, recover=True, encoding='utf-8')
-        xml_root = etree.fromstring(xml, parser=parser)
+        formats_root = etree.fromstring(formats, parser=parser)
 
-        layer = self.root.find(XML_LAYER_TAG)
+        layer = self.root.find(FORMATS_LAYER_TAG)
         if layer is None:
             layer = etree.SubElement(self.root,
                                      QName(PREFIX_NAF_BASE,
-                                           XML_LAYER_TAG))
+                                           FORMATS_LAYER_TAG))
 
         def add_element(el, tag):
             c = etree.SubElement(el, tag)
@@ -493,7 +532,7 @@ class NafDocument:
             return {item: el2.attrib[item] for item in el2.keys() if item not in ['bbox', 'colourspace', 'ncolour']}
 
         offset = 0
-        for page in xml_root:
+        for page in formats_root:
             page_element = add_element(layer, "page")
             page_length = 0
             for page_item in page:
