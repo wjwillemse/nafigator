@@ -14,7 +14,7 @@ requirements = ['click>=7.0', 'pdfminer.six', 'lxml']
 
 setup_requirements = ['click>=7.0', 'pdfminer.six', 'lxml']
 
-test_requirements = ['click>=7.0', 'pdfminer.six', 'lxml']
+test_requirements = ['click>=7.0', 'pdfminer.six', 'lxml', 'stanza', 'spacy']
 
 setup(
     author="Willem Jan Willemse",
