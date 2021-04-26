@@ -12,9 +12,9 @@ with open('HISTORY.rst') as history_file:
 
 requirements = ['click>=7.0', 'pdfminer.six', 'lxml']
 
-setup_requirements = [ ]
+setup_requirements = ['click>=7.0', 'pdfminer.six', 'lxml']
 
-test_requirements = [ ]
+test_requirements = ['click>=7.0', 'pdfminer.six', 'lxml']
 
 setup(
     author="Willem Jan Willemse",

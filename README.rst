@@ -28,6 +28,8 @@ Python package to convert text documents to NLP Annotation Format (NAF)
 Features
 --------
 
+Nafigator allows you to store NLP output from custom made spaCy and stanza pipelines with (intermediate) results and all processing steps in one format.
+
 * Convert text files to .naf files that satisfy the NLP Annotation Format (NAF)
 
 	* Supported input media types: application/pdf (.pdf), text/plain (.txt)
@@ -39,6 +41,23 @@ Features
 	* Supported NAF layers: raw, text, terms, entities, deps
 
 * Read .naf documents and access data as Python lists and dicts
+
+The NAF format
+--------------
+
+Key features:
+
+* Multilayered annotations, allowing extensions while keeping previous annotations;
+
+* Includes names and versions of linguistic processors, enabling reproducibility;
+
+* Compatible with RDF
+
+References:
+
+* `NAF: the NLP Annotation Format <http://newsreader-project.eu/files/2013/01/techreport.pdf>`_
+
+* `NAF documentation on Github <https://github.com/newsreader/NAF>`_
 
 
 Installation
@@ -63,9 +82,7 @@ How to run
 Command line interface
 ~~~~~~~~~~~~~~~~~~~~~~
 
-To parse an pdf or a txt file run in the root of the project
-
-::
+To parse an pdf or a txt file run in the root of the project::
 
 	python -m nafigator.parse
 
@@ -201,6 +218,26 @@ Output of doc.deps_layer of processed data/example.pdf::
 		{'from': 't11', 'to': 't9', 'rfunc': 'cop'}, 
 		{'from': 't11', 'to': 't10', 'rfunc': 'nmod:poss'}, 
 		{'from': 't11', 'to': 't12', 'rfunc': 'punct'}
+	]
+
+Get the formats layer output via::
+
+	doc.formats_layer
+
+Output of doc.formats_layer::
+
+	[
+		{'length': '45', 'offset': '0', 'textboxes': [
+			{'textlines': [
+				{'texts': [
+					{'font': 'CIDFont+F1', 
+					 'size': '12.000', 
+					 'length': '42', 
+					 'offset': '0', 
+					 'text': 'The cat sat on the mat. Matt was his name.'}]
+				}
+			}]
+		]}
 	]
 
 Credits
