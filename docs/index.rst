@@ -1,4 +1,4 @@
-Welcome to stanza2naf's documentation!
+Welcome to Nafigator's documentation!
 ======================================
 
 .. toctree::
