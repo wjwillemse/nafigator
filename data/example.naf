@@ -1,28 +1,28 @@
 <?xml version='1.0' encoding='UTF-8'?>
 <NAF xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:naf-base="https://dnb.nl/naf-Base/elements/1.0/" version="v3.1" xml:lang="en">
   <nafHeader>
-    <fileDesc creationtime="2021-04-25T19:16:04UTC" filename="data/example.pdf" filetype="application/pdf" pages="1"/>
+    <fileDesc creationtime="2021-04-26T09:48:50UTC" filename="data/example.pdf" filetype="application/pdf" pages="1"/>
     <public dc:uri="data/example.pdf" dc:format="application/pdf"/>
     <preProcessors layer="xml">
-      <pp beginTimestamp="2021-04-25T19:16:07UTC" endTimestamp="2021-04-25T19:16:07UTC" name="pdfminer-pdf2text" version="pdfminer_version-20201018"/>
+      <pp beginTimestamp="2021-04-26T09:48:52UTC" endTimestamp="2021-04-26T09:48:52UTC" name="pdfminer-pdf2text" version="pdfminer_version-20200124"/>
     </preProcessors>
     <linguisticProcessors layer="raw">
-      <lp beginTimestamp="2021-04-25T19:16:07UTC" endTimestamp="2021-04-25T19:16:07UTC" name="stanza-model_en" version="stanza_version-1.2"/>
+      <lp beginTimestamp="2021-04-26T09:48:52UTC" endTimestamp="2021-04-26T09:48:52UTC" name="stanza-model_en" version="stanza_version-1.2"/>
     </linguisticProcessors>
     <linguisticProcessors layer="text">
-      <lp beginTimestamp="2021-04-25T19:16:07UTC" endTimestamp="2021-04-25T19:16:07UTC" name="stanza-model_en" version="stanza_version-1.2"/>
+      <lp beginTimestamp="2021-04-26T09:48:52UTC" endTimestamp="2021-04-26T09:48:52UTC" name="stanza-model_en" version="stanza_version-1.2"/>
     </linguisticProcessors>
     <linguisticProcessors layer="terms">
-      <lp beginTimestamp="2021-04-25T19:16:07UTC" endTimestamp="2021-04-25T19:16:07UTC" name="stanza-model_en" version="stanza_version-1.2"/>
+      <lp beginTimestamp="2021-04-26T09:48:52UTC" endTimestamp="2021-04-26T09:48:52UTC" name="stanza-model_en" version="stanza_version-1.2"/>
     </linguisticProcessors>
     <linguisticProcessors layer="entities">
-      <lp beginTimestamp="2021-04-25T19:16:07UTC" endTimestamp="2021-04-25T19:16:07UTC" name="stanza-model_en" version="stanza_version-1.2"/>
+      <lp beginTimestamp="2021-04-26T09:48:52UTC" endTimestamp="2021-04-26T09:48:52UTC" name="stanza-model_en" version="stanza_version-1.2"/>
     </linguisticProcessors>
     <linguisticProcessors layer="deps">
-      <lp beginTimestamp="2021-04-25T19:16:07UTC" endTimestamp="2021-04-25T19:16:07UTC" name="stanza-model_en" version="stanza_version-1.2"/>
+      <lp beginTimestamp="2021-04-26T09:48:52UTC" endTimestamp="2021-04-26T09:48:52UTC" name="stanza-model_en" version="stanza_version-1.2"/>
     </linguisticProcessors>
   </nafHeader>
-  <xml>
+  <formats>
     <page length="45" offset="0">
       <textbox>
         <textline>
@@ -30,7 +30,7 @@
         </textline>
       </textbox>
     </page>
-  </xml>
+  </formats>
   <entities>
     <entity id="e1" type="PERSON">
       <span>
