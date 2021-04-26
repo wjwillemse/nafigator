@@ -1,4 +1,4 @@
-"""Console script for stanza2naf."""
+"""Console script for nafigator."""
 import sys
 import click
 

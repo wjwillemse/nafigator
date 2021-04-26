@@ -1,17 +1,16 @@
 #!/usr/bin/env python
 
-"""Tests for `stanza2naf` package."""
+"""Tests for `nafigator` package."""
 
 
 import unittest
 from click.testing import CliRunner
 
-from stanza2naf import stanza2naf
-from stanza2naf import cli
+from nafigator import cli
 
 
-class TestStanza2naf(unittest.TestCase):
-    """Tests for `stanza2naf` package."""
+class TestNafigator(unittest.TestCase):
+    """Tests for `nafigator` package."""
 
     def setUp(self):
         """Set up test fixtures, if any."""
@@ -27,7 +26,7 @@ class TestStanza2naf(unittest.TestCase):
         runner = CliRunner()
         result = runner.invoke(cli.main)
         assert result.exit_code == 0
-        assert 'stanza2naf.cli.main' in result.output
+        # assert 'nafigator.cli.main' in result.output
         help_result = runner.invoke(cli.main, ['--help'])
         assert help_result.exit_code == 0
         assert '--help  Show this message and exit.' in help_result.output
