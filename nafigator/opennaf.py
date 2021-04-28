@@ -14,13 +14,14 @@ from .nafdocument import NafDocument
 def opennaf(input: str):
     """ """
     naf = generate_naf(input)
-    print(naf.nafHeader)
-    # print(naf.raw_layer)
-    print(naf.formats_layer)
-    # print(naf.text_layer)
-    # print(naf.terms_layer)
-    # print(naf.entities_layer)
-    # print(naf.deps_layer)
+    print(naf.header)
+    # print(naf.raw)
+    print(naf.formats)
+    # print(naf.text)
+    print(naf.terms)
+    print(naf.version)
+    # print(naf.entities)
+    # print(naf.deps)
 
 
 def generate_naf(input: str, params: dict = {}):

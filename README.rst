@@ -47,9 +47,11 @@ The NAF format
 
 Key features:
 
-* Multilayered annotations, allowing extensions while keeping previous annotations;
+* Multilayered extensible annotations;
 
-* Includes names and versions of linguistic processors, enabling reproducibility;
+* Reproducible NLP pipelines;
+
+* NLP processor agnostic;
 
 * Compatible with RDF
 
@@ -112,9 +114,9 @@ Example: ::
 
 Get the document and processors metadata via::
 
-	doc.nafHeader
+	doc.header
 
-Output of doc.nafHeader of processed data/example.pdf::
+Output of doc.header of processed data/example.pdf::
 
 	{
 		'fileDesc': {
@@ -126,35 +128,21 @@ Output of doc.nafHeader of processed data/example.pdf::
 	 	'public': {
 			'{http://purl.org/dc/elements/1.1/}uri': 'data/example.pdf', 
 			'{http://purl.org/dc/elements/1.1/}format': 'application/pdf'}, 
-	 	'preProcessors': [ {
-	 			'layer': 'xml', 
-	 		 	'pp': [ {
-	 		 			'beginTimestamp': '2021-04-25T11:29:01UTC', 
-	 		 			'endTimestamp': '2021-04-25T11:29:01UTC', 
-	 		 		 	'name': 'pdfminer-pdf2text', 
-	 		 		 	'version': 'pdfminer_version-20201018'} ] } ], 
-	 	'linguisticProcessors': [ {
-	 			'layer': 'raw', 
-	 			'lp': [ {
-	 					'beginTimestamp': '2021-04-25T11:29:01UTC', 
-	 					'endTimestamp': '2021-04-25T11:29:01UTC', 
-	 					'name': 'stanza-model_en', 
-	 					'version': 'stanza_version-1.2'} ] } ], 
 	 		...
 
 Get the raw layer output via::
 
-	doc.raw_layer
+	doc.raw
 
-Output of doc.raw_layer of processed data/example.pdf::
+Output of doc.raw of processed data/example.pdf::
 
 	The cat sat on the mat. Matt was his name.
 
 Get the text layer output via::
 
-	doc.text_layer
+	doc.text
 
-Output of doc.text_layer of processed data/example.pdf::
+Output of doc.text of processed data/example.pdf::
 
 	[
 		{'text': 'The', 'page': '1', 'sent': '1', 'id': 'w1', 'length': '3', 'offset': '0'}, 
@@ -173,9 +161,9 @@ Output of doc.text_layer of processed data/example.pdf::
 
 Get the terms layer output via::
 
-	doc.terms_layer
+	doc.terms
 
-Output of doc.terms_layer of processed data/example.pdf::
+Output of doc.terms of processed data/example.pdf::
 
 	[
 		{'id': 't1', 'lemma': 'the', 'pos': 'DET', 'targets': ['w1']}, 
@@ -193,9 +181,9 @@ Output of doc.terms_layer of processed data/example.pdf::
 
 Get the entities layer output via::
 
-	doc.entities_layer
+	doc.entities
 
-Output of doc.entities_layer of processed data/example.pdf::
+Output of doc.entities of processed data/example.pdf::
 
 	[
 		{'id': 'e1', 'type': 'PERSON', 'targets': ['t8']}
@@ -203,9 +191,9 @@ Output of doc.entities_layer of processed data/example.pdf::
 
 Get the entities layer output via::
 
-	doc.deps_layer
+	doc.deps
 
-Output of doc.deps_layer of processed data/example.pdf::
+Output of doc.deps of processed data/example.pdf::
 
 	[
 		{'from': 't2', 'to': 't1', 'rfunc': 'det'},
@@ -222,9 +210,9 @@ Output of doc.deps_layer of processed data/example.pdf::
 
 Get the formats layer output via::
 
-	doc.formats_layer
+	doc.formats
 
-Output of doc.formats_layer::
+Output of doc.formats::
 
 	[
 		{'length': '45', 'offset': '0', 'textboxes': [

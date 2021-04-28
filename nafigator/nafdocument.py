@@ -22,26 +22,26 @@ TERMS_LAYER_TAG = "terms"
 TERM_OCCURRENCE_TAG = "term"
 
 DEPS_LAYER_TAG = "deps"
-DEP_OCCURENCE_TAG = "dep"
+DEP_OCCURRENCE_TAG = "dep"
 
 TEXT_LAYER_TAG = "text"
-TEXT_OCCURENCE_TAG = "wf"
+TEXT_OCCURRENCE_TAG = "wf"
 
 ENTITIES_LAYER_TAG = "entities"
-ENTITY_OCCURENCE_TAG = "entity"
+ENTITY_OCCURRENCE_TAG = "entity"
 
 CHUNKS_LAYER_TAG = "chunks"
-CHUNK_OCCURENCE_TAG = "chunk"
+CHUNK_OCCURRENCE_TAG = "chunk"
 
 RAW_LAYER_TAG = "raw"
 FORMATS_LAYER_TAG = "formats"
 NAF_HEADER = "nafHeader"
 
 SPAN_OCCURRENCE_TAG = "span"
-TARGET_OCCURENCE_TAG = "target"
+TARGET_OCCURRENCE_TAG = "target"
 
 LINGUISTIC_LAYER_TAG = "linguisticProcessors"
-LINGUISTIC_OCCURENCE_TAG = "lp"
+LINGUISTIC_OCCURRENCE_TAG = "lp"
 
 PREFIX_DC = "dc"
 PREFIX_NAF_BASE = "naf-base"
@@ -54,39 +54,41 @@ def QName(prefix: str, name: str):
     # return qname
 
 
-class NafDocument:
+namespaces = {
+    PREFIX_DC: "http://purl.org/dc/elements/1.1/",
+    PREFIX_NAF_BASE: "https://dnb.nl/naf-Base/elements/1.0/",
+}
+
+
+class NafDocument(etree._ElementTree):
     def __init__(self, params: dict):
-        self.namespaces = {
-            PREFIX_DC: "http://purl.org/dc/elements/1.1/",
-            PREFIX_NAF_BASE: "https://dnb.nl/naf-Base/elements/1.0/",
-        }
+
+        super().__init__()
+
         uri = params["public"]["uri"]
         if uri[-3:].lower() == "naf":
             with open(uri, "r", encoding="utf-8") as f:
-                self.tree = etree.parse(f)
-            self.root = self.tree.getroot()
-            self.naf_version = self.root.get("version")
-            self.language = self.root.get("{http://www.w3.org/XML/1998/namespace}lang")
+                self._setroot(etree.parse(f).getroot())
         else:
-            self.tree = etree.ElementTree()
-            self.root = etree.Element("NAF", nsmap=self.namespaces)
-            self.tree._setroot(self.root)
-            self.naf_version = params["naf_version"]
-            self.root.set("version", self.naf_version)
-            self.language = params["language"]
-            self.root.set("{http://www.w3.org/XML/1998/namespace}lang", self.language)
-            etree.SubElement(self.root, QName(PREFIX_NAF_BASE, NAF_HEADER))
-            self.add_filedesc_element(params.get("fileDesc", None))
-            self.add_public_element(params.get("public", None))
-            if params["add_mws"]:
-                linguistic_layers.append("multiwords")
+            self._setroot(etree.Element("NAF", nsmap=namespaces))
+            self.set_version(params["naf_version"])
+            self.set_language(params["language"])
+            self.add_nafHeader()
+            self.add_filedesc_element(params["fileDesc"])
+            self.add_public_element(params["public"])
 
     def __getattr__(self, name):
 
-        if name == "nafHeader":
+        if name == "version":
+            return self.getroot().get("version")
+
+        if name == "language":
+            return self.getroot().get("{http://www.w3.org/XML/1998/namespace}lang")
+
+        if name == "header":
             header = dict()
             ling_proc = list()
-            for child in self.root.find(NAF_HEADER):
+            for child in self.find(NAF_HEADER):
                 if child.tag == "fileDesc":
                     header_data = dict(child.attrib)
                     header["fileDesc"] = header_data
@@ -97,7 +99,7 @@ class NafDocument:
                     header_data = dict(child.attrib)
                     lp = list()
                     for child2 in child:
-                        if child2.tag == LINGUISTIC_OCCURENCE_TAG:
+                        if child2.tag == LINGUISTIC_OCCURRENCE_TAG:
                             lp.append(child2.attrib)
                     header_data["lps"] = lp
                     ling_proc.append(header_data)
@@ -106,7 +108,7 @@ class NafDocument:
 
         if name == "formats":
             pages = list()
-            for child in self.root.find(FORMATS_LAYER_TAG):
+            for child in self.find(FORMATS_LAYER_TAG):
                 if child.tag == "page":
                     pages_data = dict(child.attrib)
                     textboxes = list()
@@ -144,62 +146,63 @@ class NafDocument:
 
         # if raw_layer is requested return text
         if name == "raw":
-            return self.root.find(RAW_LAYER_TAG).text
+            return self.find(RAW_LAYER_TAG).text
 
         # if deps_layer is requested return list of deps
         if name == "deps":
-            deps = list()
-            for child in self.root.find(DEPS_LAYER_TAG):
-                if child.tag == DEP_OCCURENCE_TAG:
-                    dep_data = dict(child.attrib)
-                    deps.append(dep_data)
-            return deps
+            return [
+                dep.attrib
+                for dep in self.findall(DEPS_LAYER_TAG + "/" + DEP_OCCURRENCE_TAG)
+            ]
 
         # if text_layer is requested return list of wfs
         if name == "text":
             wfs = list()
-            for child in self.root.find(TEXT_LAYER_TAG):
-                if child.tag == TEXT_OCCURENCE_TAG:
-                    wf_data = dict({"text": child.text}, **dict(child.attrib))
-                    wfs.append(wf_data)
+            for child in self.findall(TEXT_LAYER_TAG + "/" + TEXT_OCCURRENCE_TAG):
+                wf_data = dict({"text": child.text}, **dict(child.attrib))
+                wfs.append(wf_data)
             return wfs
 
         if name == "terms":
             terms = list()
-            for child in self.root.find(TERMS_LAYER_TAG):
-                if child.tag == TERM_OCCURRENCE_TAG:
-                    term_data = dict(child.attrib)
-                    for child2 in child:
-                        if child2.tag == SPAN_OCCURRENCE_TAG:
-                            targets = list()
-                            for child3 in child2:
-                                if child3.tag == TARGET_OCCURENCE_TAG:
-                                    targets.append(child3.attrib.get("id", None))
-                        term_data["targets"] = targets
-                    terms.append(term_data)
+            for child in self.findall(TERMS_LAYER_TAG + "/" + TERM_OCCURRENCE_TAG):
+                term_data = dict(child.attrib)
+                for child2 in child:
+                    if child2.tag == SPAN_OCCURRENCE_TAG:
+                        targets = list()
+                        for child3 in child2:
+                            if child3.tag == TARGET_OCCURRENCE_TAG:
+                                targets.append(child3.attrib.get("id", None))
+                    term_data["targets"] = targets
+                terms.append(term_data)
             return terms
 
         if name == "entities":
             entities = list()
-            for child in self.root.find(ENTITIES_LAYER_TAG):
-                if child.tag == ENTITY_OCCURENCE_TAG:
-                    entity_data = dict(child.attrib)
-                    for child2 in child:
-                        if child2.tag == SPAN_OCCURRENCE_TAG:
-                            targets = list()
-                            for child3 in child2:
-                                if child3.tag == TARGET_OCCURENCE_TAG:
-                                    targets.append(child3.attrib.get("id", None))
-                        entity_data["targets"] = targets
-                    entities.append(entity_data)
+            for child in self.findall(ENTITIES_LAYER_TAG + "/" + ENTITY_OCCURRENCE_TAG):
+                entity_data = dict(child.attrib)
+                for child2 in child:
+                    if child2.tag == SPAN_OCCURRENCE_TAG:
+                        targets = list()
+                        for child3 in child2:
+                            if child3.tag == TARGET_OCCURRENCE_TAG:
+                                targets.append(child3.attrib.get("id", None))
+                    entity_data["targets"] = targets
+                entities.append(entity_data)
             return entities
 
-        raise ("Error: " + name + " not available.")
+        return super().name
 
-    def write(self, output, output_type):
-        self.tree.write(
-            output, encoding="utf-8", pretty_print=True, xml_declaration=True
-        )
+    def set_language(self, language: str):
+        """ """
+        self.getroot().set("{http://www.w3.org/XML/1998/namespace}lang", language)
+
+    def set_version(self, version):
+        """ """
+        self.getroot().set("version", version)
+
+    def writenaf(self, output, output_type):
+        self.write(output, encoding="utf-8", pretty_print=True, xml_declaration=True)
         # if output_type == 'json':
         #     with open(output) as xml_file:
         #         data_dict = xmltodict.parse(xml_file.read())
@@ -215,8 +218,8 @@ class NafDocument:
             "v3": load_dtd_as_file_object("data/naf_v3.dtd"),
             "v3.1": load_dtd_as_file_object("data/naf_v3_1.dtd"),
         }
-        dtd = NAF_VERSION_TO_DTD[self.naf_version]
-        success = dtd.validate(self.root)
+        dtd = NAF_VERSION_TO_DTD[self.get_version()]
+        success = dtd.validate(self.getroot())
         if not success:
             logging.error("DTD error log:")
             for error in dtd.error_log.filter_from_errors():
@@ -227,12 +230,16 @@ class NafDocument:
     def tree2string(self, byte: bool = False):
         """ """
         xml_string = etree.tostring(
-            self.tree, pretty_print=True, xml_declaration=True, encoding="utf-8"
+            self, pretty_print=True, xml_declaration=True, encoding="utf-8"
         )
         if byte:
             return xml_string
         else:
             return xml_string.decode("utf-8")
+
+    def add_nafHeader(self):
+        """ """
+        etree.SubElement(self.getroot(), QName(PREFIX_NAF_BASE, NAF_HEADER))
 
     def add_filedesc_element(self, filedesc_data: dict):
         """
@@ -258,8 +265,8 @@ class NafDocument:
                   filetype CDATA #IMPLIED
                   pages CDATA #IMPLIED>
         """
-        naf_header = self.root.find(NAF_HEADER)
-        filedesc_layer = self.root.find(FILEDESC_LAYER_TAG)
+        naf_header = self.find(NAF_HEADER)
+        filedesc_layer = self.find(FILEDESC_LAYER_TAG)
         if filedesc_layer is None:
             filedesc_layer = etree.SubElement(
                 naf_header, QName(PREFIX_NAF_BASE, FILEDESC_LAYER_TAG)
@@ -291,8 +298,8 @@ class NafDocument:
 
         Difference to NAF: here all attributes are mapped to the Dublic Core
         """
-        naf_header = self.root.find(NAF_HEADER)
-        public_layer = self.root.find(PUBLIC_LAYER_TAG)
+        naf_header = self.find(NAF_HEADER)
+        public_layer = self.find(PUBLIC_LAYER_TAG)
         if public_layer is None:
             public_layer = etree.SubElement(
                 naf_header, QName(PREFIX_NAF_BASE, PUBLIC_LAYER_TAG)
@@ -349,12 +356,12 @@ class NafDocument:
                   endTimestamp CDATA #IMPLIED
                   hostname CDATA #IMPLIED>
         """
-        naf_header = self.root.find(NAF_HEADER)
+        naf_header = self.find(NAF_HEADER)
         proc = etree.SubElement(
             naf_header, QName(PREFIX_NAF_BASE, LINGUISTIC_LAYER_TAG)
         )
         proc.set("layer", layer)
-        lp = etree.SubElement(proc, QName(PREFIX_NAF_BASE, LINGUISTIC_OCCURENCE_TAG))
+        lp = etree.SubElement(proc, QName(PREFIX_NAF_BASE, LINGUISTIC_OCCURRENCE_TAG))
         if data.name is not None:
             lp.set("name", data.name)
         if data.version is not None:
@@ -393,9 +400,11 @@ class NafDocument:
                   length CDATA #REQUIRED
                   xpath CDATA #IMPLIED>
         """
-        layer = self.root.find(TEXT_LAYER_TAG)
+        layer = self.find(TEXT_LAYER_TAG)
         if layer is None:
-            layer = etree.SubElement(self.root, QName(PREFIX_NAF_BASE, TEXT_LAYER_TAG))
+            layer = etree.SubElement(
+                self.getroot(), QName(PREFIX_NAF_BASE, TEXT_LAYER_TAG)
+            )
         wf_attrib = dict()
         wf_attrib["id"] = data.id
         if data.sent != 0:
@@ -405,7 +414,7 @@ class NafDocument:
         wf_attrib["length"] = data.length
         wf_attrib["offset"] = data.offset
         wf = etree.SubElement(
-            layer, QName(PREFIX_NAF_BASE, TEXT_OCCURENCE_TAG), wf_attrib
+            layer, QName(PREFIX_NAF_BASE, TEXT_OCCURRENCE_TAG), wf_attrib
         )
         if cdata:
             wf.text = etree.CDATA(data.wordform)
@@ -417,10 +426,12 @@ class NafDocument:
         <!-- RAW ELEMENT -->
         <!ELEMENT raw (#PCDATA)>
         """
-        layer = self.root.find(RAW_LAYER_TAG)
+        layer = self.find(RAW_LAYER_TAG)
         if layer is None:
-            layer = etree.SubElement(self.root, QName(PREFIX_NAF_BASE, RAW_LAYER_TAG))
-        wfs = self.root.findall(TEXT_LAYER_TAG + "/wf")
+            layer = etree.SubElement(
+                self.getroot(), QName(PREFIX_NAF_BASE, RAW_LAYER_TAG)
+            )
+        wfs = self.findall(TEXT_LAYER_TAG + "/wf")
         tokens = [wfs[0].text]
         for prev_wf, cur_wf in zip(wfs[:-1], wfs[1:]):
             prev_start = int(prev_wf.get("offset"))
@@ -446,7 +457,7 @@ class NafDocument:
         else:
             layer.text = raw_text
         # verify alignment between raw and token layer
-        for wf in self.root.xpath("text/wf"):
+        for wf in self.getroot().xpath("text/wf"):
             start = int(wf.get("offset"))
             end = start + int(wf.get("length"))
             token = layer.text[start:end]
@@ -474,9 +485,11 @@ class NafDocument:
                   rfunc CDATA #REQUIRED
                   case CDATA #IMPLIED>
         """
-        layer = self.root.find(DEPS_LAYER_TAG)
+        layer = self.find(DEPS_LAYER_TAG)
         if layer is None:
-            layer = etree.SubElement(self.root, QName(PREFIX_NAF_BASE, DEPS_LAYER_TAG))
+            layer = etree.SubElement(
+                self.getroot(), QName(PREFIX_NAF_BASE, DEPS_LAYER_TAG)
+            )
 
         if comments:
             comment = data.rfunc + "(" + data.from_orth + "," + data.to_orth + ")"
@@ -485,7 +498,7 @@ class NafDocument:
 
         dep_attrib = {"from": data.from_term, "to": data.to_term, "rfunc": data.rfunc}
 
-        etree.SubElement(layer, QName(PREFIX_NAF_BASE, DEP_OCCURENCE_TAG), dep_attrib)
+        etree.SubElement(layer, QName(PREFIX_NAF_BASE, DEP_OCCURRENCE_TAG), dep_attrib)
 
     def add_entity_element(self, data: EntityElement, naf_version: str, comments: str):
         """
@@ -510,14 +523,14 @@ class NafDocument:
                   status CDATA #IMPLIED
                   source CDATA #IMPLIED>
         """
-        layer = self.root.find(ENTITIES_LAYER_TAG)
+        layer = self.find(ENTITIES_LAYER_TAG)
         if layer is None:
             layer = etree.SubElement(
-                self.root, QName(PREFIX_NAF_BASE, ENTITIES_LAYER_TAG)
+                self.getroot(), QName(PREFIX_NAF_BASE, ENTITIES_LAYER_TAG)
             )
         entity_attrib = {"id": data.id, "type": data.type}
         entity = etree.SubElement(
-            layer, QName(PREFIX_NAF_BASE, ENTITY_OCCURENCE_TAG), entity_attrib
+            layer, QName(PREFIX_NAF_BASE, ENTITY_OCCURRENCE_TAG), entity_attrib
         )
         if naf_version == "v3":
             references = etree.SubElement(entity, "references")
@@ -529,7 +542,7 @@ class NafDocument:
             text = self.prepare_comment_text(text)
             span.append(etree.Comment(text))
         for target in data.targets:
-            target_el = etree.SubElement(span, TARGET_OCCURENCE_TAG)
+            target_el = etree.SubElement(span, TARGET_OCCURRENCE_TAG)
             target_el.set("id", target)
         assert (
             type(data.ext_refs) == list
@@ -578,9 +591,11 @@ class NafDocument:
                   component_of IDREF #IMPLIED
                   compound_type CDATA #IMPLIED>
         """
-        layer = self.root.find(TERMS_LAYER_TAG)
+        layer = self.find(TERMS_LAYER_TAG)
         if layer is None:
-            layer = etree.SubElement(self.root, QName(PREFIX_NAF_BASE, TERMS_LAYER_TAG))
+            layer = etree.SubElement(
+                self.getroot(), QName(PREFIX_NAF_BASE, TERMS_LAYER_TAG)
+            )
 
         term = etree.SubElement(layer, QName(PREFIX_NAF_BASE, TERM_OCCURRENCE_TAG))
 
@@ -596,7 +611,7 @@ class NafDocument:
             text = self.prepare_comment_text(text)
             span.append(etree.Comment(text))
         for target in data.targets:
-            target_el = etree.SubElement(span, TARGET_OCCURENCE_TAG)
+            target_el = etree.SubElement(span, TARGET_OCCURRENCE_TAG)
             target_el.set("id", target)
 
     def add_chunk_element(self, data: ChunkElement, comments: bool):
@@ -618,13 +633,12 @@ class NafDocument:
                   phrase CDATA #REQUIRED
                   case CDATA #IMPLIED>
         """
-        layer = self.root.find(CHUNKS_LAYER_TAG)
+        layer = self.find(CHUNKS_LAYER_TAG)
         if layer is None:
             layer = etree.SubElement(
-                self.root, QName(PREFIX_NAF_BASE, CHUNKS_LAYER_TAG)
+                self.getroot(), QName(PREFIX_NAF_BASE, CHUNKS_LAYER_TAG)
             )
-
-        chunk = etree.SubElement(layer, CHUNK_OCCURENCE_TAG)
+        chunk = etree.SubElement(layer, CHUNK_OCCURRENCE_TAG)
         chunk.set("id", data.cid)
         chunk.set("head", data.head)
         chunk.set("phrase", data.phrase)
@@ -641,10 +655,10 @@ class NafDocument:
         parser = etree.XMLParser(ns_clean=True, recover=True, encoding="utf-8")
         formats_root = etree.fromstring(formats, parser=parser)
 
-        layer = self.root.find(FORMATS_LAYER_TAG)
+        layer = self.find(FORMATS_LAYER_TAG)
         if layer is None:
             layer = etree.SubElement(
-                self.root, QName(PREFIX_NAF_BASE, FORMATS_LAYER_TAG)
+                self.getroot(), QName(PREFIX_NAF_BASE, FORMATS_LAYER_TAG)
             )
 
         def add_element(el, tag):
@@ -784,16 +798,11 @@ class NafDocument:
             text = text[:-1] + "SINGLEDASH"
         return text
 
-    def get_mws_layer(self):
-        """ """
-        mws_layer = self.root.find("multiwords")
-        if mws_layer is None:
-            mws_layer = etree.SubElement(self.root, "multiwords")
-        return mws_layer
-
     def get_next_mw_id(self):
         """ """
-        mws_layer = self.get_mws_layer(self.root)
+        mws_layer = self.find("multiwords")
+        if mws_layer is None:
+            mws_layer = etree.SubElement(self.getroot(), "multiwords")
         mw_ids = [int(mw_el.get("id")[2:]) for mw_el in mws_layer.xpath("mw")]
         if mw_ids:
             next_mw_id = max(mw_ids) + 1
@@ -814,13 +823,13 @@ class NafDocument:
 
         # dictionary from tid -> term_el
         tid_to_term = {
-            term_el.get("id"): term_el for term_el in self.root.xpath("terms/term")
+            term_el.get("id"): term_el for term_el in self.getroot().xpath("terms/term")
         }
 
         num_of_compound_prts = 0
 
         # loop deps el
-        for dep in self.root.findall("deps/dep"):
+        for dep in self.findall("deps/dep"):
 
             if dep.get("rfunc") == "compound:prt":
 

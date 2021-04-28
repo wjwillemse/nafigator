@@ -74,7 +74,7 @@ def nafigator(
         naf_version=naf_version,
         dtd_validation=dtd_validation,
     )
-    tree.write(output, "xml")
+    tree.writenaf(output, "xml")
 
 
 def generate_naf(
@@ -123,7 +123,7 @@ def generate_naf(
 
     # set default linguistic parameters
     if "linguistic_layers" not in params.keys():
-        params["linguistic_layers"] = ["raw", "text", "terms", "entities", "deps"]
+        params["linguistic_layers"] = ["text", "terms", "entities", "deps", "raw"]
     if params.get("cdata", None) is None:
         params["cdata"] = True
     if params.get("map_udpos2naf_pos", None) is None:
@@ -136,6 +136,8 @@ def generate_naf(
         params["add_mws"] = False
     if params.get("comments", None) is None:
         params["comments"] = True
+    if params["add_mws"]:
+        linguistic_layers.append("multiwords")
     
     params["tree"] = NafDocument(params)
 
@@ -213,22 +215,28 @@ def process_linguistic_steps(params: dict):
     if params.get("pdftoxml", None) is not None:
         add_formats_layer(params)
 
-    if "entities" in layers:
+    for layer in layers:
+        add_layer(layer, params)
+
+
+def add_layer(layer: str, params: dict):
+
+    if layer == "entities":
         add_entities_layer(params)
 
-    if "text" in layers:
+    if layer == "text":
         add_text_layer(params)
 
-    if "terms" in layers:
+    if layer == "terms":
         add_terms_layer(params)
 
-    if "deps" in layers:
+    if layer == "deps":
         add_deps_layer(params)
 
-    if "chunks" in layers:
+    if layer == "chunks":
         add_chunks_layer(params)
 
-    if "raw" in layers:
+    if layer == "raw":
         add_raw_layer(params)
 
 
@@ -376,7 +384,7 @@ def add_text_layer(params: dict):
     """ """
     params["tree"].add_processor_element("text", params["lp"])
 
-    root = params["tree"].root
+    root = params["tree"].getroot()
 
     pages_offset = None
     formats = root.find(FORMATS_LAYER_TAG)
