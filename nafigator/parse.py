@@ -74,7 +74,7 @@ def nafigator(
         naf_version=naf_version,
         dtd_validation=dtd_validation,
     )
-    tree.writenaf(output, "xml")
+    tree.write(output)
 
 
 def generate_naf(
@@ -139,7 +139,8 @@ def generate_naf(
     if params["add_mws"]:
         linguistic_layers.append("multiwords")
     
-    params["tree"] = NafDocument(params)
+    params["tree"] = NafDocument()
+    params["tree"].generate(params)
 
     process_preprocess_steps(params)
 
@@ -149,10 +150,10 @@ def generate_naf(
     doc_text = params["engine"].document_text(params["doc"])
     raw = params["tree"].raw
     text_to_use = params["text"]
-    assert raw.strip() == doc_text.strip(), f"{len(raw)} - {len(doc_text)}"
-    assert (
-        raw.strip() == text_to_use.strip()
-    ), f"{len(raw)} - {len(text_to_use)}"
+    if raw.strip() != doc_text.strip():
+        logging.error("raw length ("+str(len(raw))+") != doc length ("+str(len(doc_text))+")")
+    if raw.strip() != text_to_use.strip():
+        logging.error("raw length ("+str(len(raw))+") != text to use ("+str(len(text_to_use))+")")
 
     # validate naf tree
     if params["dtd_validation"]:
@@ -180,7 +181,8 @@ def process_preprocess_steps(params: dict):
         text_to_use = text.translate(hidden_table)
     else:
         text_to_use = text
-    assert len(text) == len(text_to_use)
+    if len(text) != len(text_to_use):
+        logging.info("len text != len text.translate")
     params["text"] = text_to_use
 
 

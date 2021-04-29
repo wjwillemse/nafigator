@@ -13,7 +13,7 @@ from .nafdocument import NafDocument
 )
 def opennaf(input: str):
     """ """
-    naf = generate_naf(input)
+    naf = NafDocument().open(input)
     print(naf.header)
     # print(naf.raw)
     print(naf.formats)
@@ -22,15 +22,6 @@ def opennaf(input: str):
     print(naf.version)
     # print(naf.entities)
     # print(naf.deps)
-
-
-def generate_naf(input: str, params: dict = {}):
-    """ """
-    if "public" not in params.keys():
-        params["public"] = dict()
-    if "uri" not in params["public"].keys():
-        params["public"]["uri"] = input
-    return NafDocument(params)
 
 
 if __name__ == "__main__":

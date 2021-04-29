@@ -56,26 +56,27 @@ def QName(prefix: str, name: str):
 
 namespaces = {
     PREFIX_DC: "http://purl.org/dc/elements/1.1/",
-    PREFIX_NAF_BASE: "https://dnb.nl/naf-Base/elements/1.0/",
+    # PREFIX_NAF_BASE: "https://dnb.nl/naf-Base/elements/1.0/",
 }
 
 
 class NafDocument(etree._ElementTree):
-    def __init__(self, params: dict):
 
-        super().__init__()
+    def generate(self, params: dict):
+        self._setroot(etree.Element("NAF", nsmap=namespaces))
+        self.set_version(params["naf_version"])
+        self.set_language(params["language"])
+        self.add_nafHeader()
+        self.add_filedesc_element(params["fileDesc"])
+        self.add_public_element(params["public"])
 
-        uri = params["public"]["uri"]
-        if uri[-3:].lower() == "naf":
-            with open(uri, "r", encoding="utf-8") as f:
-                self._setroot(etree.parse(f).getroot())
-        else:
-            self._setroot(etree.Element("NAF", nsmap=namespaces))
-            self.set_version(params["naf_version"])
-            self.set_language(params["language"])
-            self.add_nafHeader()
-            self.add_filedesc_element(params["fileDesc"])
-            self.add_public_element(params["public"])
+    def open(self, input):
+        with open(input, "r", encoding="utf-8") as f:
+            self._setroot(etree.parse(f).getroot())
+        return self
+
+    def write(self, output):
+        super().write(output, encoding="utf-8", pretty_print=True, xml_declaration=True)
 
     def __getattr__(self, name):
 
@@ -200,17 +201,6 @@ class NafDocument(etree._ElementTree):
     def set_version(self, version):
         """ """
         self.getroot().set("version", version)
-
-    def writenaf(self, output, output_type):
-        self.write(output, encoding="utf-8", pretty_print=True, xml_declaration=True)
-        # if output_type == 'json':
-        #     with open(output) as xml_file:
-        #         data_dict = xmltodict.parse(xml_file.read())
-        #         xml_file.close()
-        #     json_data = json.dumps(data_dict)
-        #     with open(output, "w") as json_file:
-        #         json_file.write(json_data)
-        #         json_file.close()
 
     def validate(self):
         """ """
@@ -447,8 +437,10 @@ class NafDocument(etree._ElementTree):
                 # 1 or more characters between tokens -> n spaces added
                 trailing_chars = " " * delta
             elif delta < 0:
-                raise AssertionError(
-                    f"please check the offsets of {prev_wf.text} and {cur_wf.text} (delta of {delta})"
+                logging.warning("please check the offsets of "+
+                                str(prev_wf.text)+" and "+
+                                str(cur_wf.text)+" (delta of "+
+                                str(delta)+")"
                 )
             tokens.append(trailing_chars + cur_wf.text)
         raw_text = "".join(tokens)
@@ -461,9 +453,12 @@ class NafDocument(etree._ElementTree):
             start = int(wf.get("offset"))
             end = start + int(wf.get("length"))
             token = layer.text[start:end]
-            assert (
-                wf.text == token
-            ), f'mismatch in alignment of wf element {wf.text} ({wf.get("id")}) with raw layer (expected length {wf.get("length")}'
+            if wf.text != token:
+                logging.error("mismatch in alignment of wf element ["+
+                              str(wf.text)+"] ("+str(wf.get("id"))+
+                              ") with raw layer text ["+str(token)+
+                              "] (expected length "+
+                              str(wf.get("length")))
 
     def add_dependency_element(self, data: DependencyRelation, comments: bool):
         """
@@ -544,9 +539,8 @@ class NafDocument(etree._ElementTree):
         for target in data.targets:
             target_el = etree.SubElement(span, TARGET_OCCURRENCE_TAG)
             target_el.set("id", target)
-        assert (
-            type(data.ext_refs) == list
-        ), f"ext_refs should be a list of dictionaries (can be empty)"
+        if type(data.ext_refs) != list:
+            logging.info("ext_refs should be a list of dictionaries (can be empty)")
         ext_refs_el = etree.SubElement(entity, "externalReferences")
         for ext_ref_info in data.ext_refs:
             one_ext_ref_el = etree.SubElement(ext_refs_el, "externalRef")
