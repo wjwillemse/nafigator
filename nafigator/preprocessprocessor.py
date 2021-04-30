@@ -51,9 +51,9 @@ def convert_pdf(path, format="text", codec="utf-8", password="", params=None):
     retstr.close()
 
     end_time = datetime.now()
-    params["pages"] = pages
+    params["fileDesc"]["pages"] = pages
 
-    params["pp"] = ProcessorElement(
+    pp = ProcessorElement(
         name="pdfminer-pdf2" + format,
         version=f"pdfminer_version-{pdfminer.__version__}",
         timestamp=None,
@@ -62,7 +62,7 @@ def convert_pdf(path, format="text", codec="utf-8", password="", params=None):
         hostname=None,
     )
 
-    params["tree"].add_processor_element("pdfto" + format, params["pp"])
+    params["tree"].add_processor_element("pdfto" + format, pp)
 
     params["pdfto" + format] = text
 

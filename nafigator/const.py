@@ -20,7 +20,7 @@ DependencyRelation = namedtuple(
     "DependencyRelation", "from_term to_term from_orth to_orth rfunc"
 )
 
-ChunkElement = namedtuple("ChunkElement", "cid head phrase text targets")
+ChunkElement = namedtuple("ChunkElement", "id head phrase text targets")
 
 hidden_characters = ["\a", "\b", "\t", "\n", "\v", "\f", "\r"]
 

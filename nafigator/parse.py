@@ -100,6 +100,38 @@ def generate_naf(
         logging.error("no naf version specified")
         return None
 
+    params = create_params(
+        input=input,
+        engine=engine,
+        language=language,
+        naf_version=naf_version,
+        dtd_validation=dtd_validation,
+        params=params,
+        nlp=nlp,
+    )
+
+    params["tree"] = NafDocument()
+    params["tree"].generate(params)
+
+    process_preprocess_steps(params)
+
+    process_linguistic_steps(params)
+
+    evaluate_naf(params)
+
+    return params["tree"]
+
+
+def create_params(
+    input: str = None,
+    engine: str = None,
+    language: str = None,
+    naf_version: str = None,
+    dtd_validation: bool = False,
+    params: dict = {},
+    nlp=None,
+):
+    """ """
     params["naf_version"] = naf_version
     params["dtd_validation"] = bool(dtd_validation)
     params["language"] = language
@@ -138,34 +170,59 @@ def generate_naf(
         params["comments"] = True
     if params["add_mws"]:
         linguistic_layers.append("multiwords")
-    
-    params["tree"] = NafDocument()
-    params["tree"].generate(params)
 
-    process_preprocess_steps(params)
+    return params
 
-    process_linguistic_steps(params)
 
-    # check it lengths match
+def evaluate_naf(params: dict):
+    """ """
+    # verify alignment between raw layer and document text
     doc_text = params["engine"].document_text(params["doc"])
     raw = params["tree"].raw
-    text_to_use = params["text"]
     if raw.strip() != doc_text.strip():
-        logging.error("raw length ("+str(len(raw))+") != doc length ("+str(len(doc_text))+")")
-    if raw.strip() != text_to_use.strip():
-        logging.error("raw length ("+str(len(raw))+") != text to use ("+str(len(text_to_use))+")")
+        logging.error(
+            "raw length ("
+            + str(len(raw))
+            + ") != doc length ("
+            + str(len(doc_text))
+            + ")"
+        )
+    # verify alignment between raw layer and text
+    text_to_use = params["text"]
+    if raw != text_to_use:
+        logging.error(
+            "raw length ("
+            + str(len(raw))
+            + ") != text to use ("
+            + str(len(text_to_use))
+            + ")"
+        )
+    # verify alignment between raw layer and text layer
+    for wf in params['tree'].text:
+        start = int(wf.get("offset"))
+        end = start + int(wf.get("length"))
+        token = raw[start:end]
+        if wf.get("text", None) != token:
+            logging.error(
+                "mismatch in alignment of wf element ["
+                + str(wf.text)
+                + "] ("
+                + str(wf.get("id"))
+                + ") with raw layer text ["
+                + str(token)
+                + "] (expected length "
+                + str(wf.get("length"))
+                + ")"
+            )
 
     # validate naf tree
     if params["dtd_validation"]:
         params["tree"].validate()
 
-    return params["tree"]
-
 
 def process_preprocess_steps(params: dict):
     """ """
     input = params["fileDesc"]["filename"]
-
     if input[-3:].lower() == "txt":
         with open(input) as f:
             params["text"] = f.read()
@@ -173,16 +230,13 @@ def process_preprocess_steps(params: dict):
         convert_pdf(input, format="xml", params=params)
         convert_pdf(input, format="text", params=params)
 
-    if params.get("pages", None) is not None:
-        params["fileDesc"]["pages"] = params["pages"]
-
-    text = params["pdftotext"]
+    text = params["pdftotext"].rstrip()
     if params["replace_hidden_characters"]:
         text_to_use = text.translate(hidden_table)
     else:
         text_to_use = text
     if len(text) != len(text_to_use):
-        logging.info("len text != len text.translate")
+        logging.error("len text != len text.translate")
     params["text"] = text_to_use
 
 
@@ -212,33 +266,32 @@ def process_linguistic_steps(params: dict):
         hostname=None,
     )
 
-    layers = params["linguistic_layers"]
-
-    if params.get("pdftoxml", None) is not None:
+    if "pdftoxml" in params.keys():
         add_formats_layer(params)
 
-    for layer in layers:
-        add_layer(layer, params)
+    process_linguistic_layers(params)
 
 
-def add_layer(layer: str, params: dict):
+def process_linguistic_layers(params: dict):
 
-    if layer == "entities":
+    layers = params["linguistic_layers"]
+
+    if "entities" in layers:
         add_entities_layer(params)
 
-    if layer == "text":
+    if "text" in layers:
         add_text_layer(params)
 
-    if layer == "terms":
+    if "terms" in layers:
         add_terms_layer(params)
 
-    if layer == "deps":
+    if "deps" in layers:
         add_deps_layer(params)
 
-    if layer == "chunks":
+    if "chunks" in layers:
         add_chunks_layer(params)
 
-    if layer == "raw":
+    if "raw" in layers:
         add_raw_layer(params)
 
 
@@ -267,7 +320,7 @@ def chunk_tuples_for_doc(doc, params: dict):
     for i, (chunk, phrase) in enumerate(chunks_for_doc(doc, params)):
         chunk_text = remove_illegal_chars(chunk.orth_.replace("\n", " "))
         yield ChunkElement(
-            cid="c" + str(i),
+            id="c" + str(i),
             head="t" + str(chunk.root.i),
             phrase=phrase,
             text=chunk_text,
@@ -410,11 +463,11 @@ def add_text_layer(params: dict):
                 if engine.token_offset(token) >= pages_offset[current_page]:
                     current_page += 1
 
-            wid = "w" + str(token_number + total_tokens)
+            wf_id = "w" + str(token_number + total_tokens)
             wf_data = WordformElement(
                 page=str(current_page),
                 sent=str(sentence_number),
-                id=wid,
+                id=wf_id,
                 length=str(len(token.text)),
                 wordform=token.text,
                 offset=str(engine.token_offset(token)),

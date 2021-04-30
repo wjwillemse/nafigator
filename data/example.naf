@@ -1,55 +1,69 @@
 <?xml version='1.0' encoding='UTF-8'?>
-<NAF xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:naf-base="https://dnb.nl/naf-Base/elements/1.0/" version="v3.1" xml:lang="en">
+<NAF xmlns:dc="http://purl.org/dc/elements/1.1/" version="v3.1" xml:lang="en">
   <nafHeader>
-    <fileDesc creationtime="2021-04-28T19:38:33UTC" filename="data/example.pdf" filetype="application/pdf"/>
+    <fileDesc creationtime="2021-04-30T16:09:35UTC" filename="data/example.pdf" filetype="application/pdf"/>
     <public dc:uri="data/example.pdf" dc:format="application/pdf"/>
     <linguisticProcessors layer="pdftoxml">
-      <lp name="pdfminer-pdf2xml" version="pdfminer_version-20200124" beginTimestamp="2021-04-28T19:38:33UTC" endTimestamp="2021-04-28T19:38:33UTC"/>
+      <lp name="pdfminer-pdf2xml" version="pdfminer_version-20201018" beginTimestamp="2021-04-30T16:09:35UTC" endTimestamp="2021-04-30T16:09:35UTC"/>
     </linguisticProcessors>
     <linguisticProcessors layer="pdftotext">
-      <lp name="pdfminer-pdf2text" version="pdfminer_version-20200124" beginTimestamp="2021-04-28T19:38:33UTC" endTimestamp="2021-04-28T19:38:33UTC"/>
+      <lp name="pdfminer-pdf2text" version="pdfminer_version-20201018" beginTimestamp="2021-04-30T16:09:35UTC" endTimestamp="2021-04-30T16:09:35UTC"/>
     </linguisticProcessors>
     <linguisticProcessors layer="formats">
-      <lp name="stanza-model_en" version="stanza_version-1.2" beginTimestamp="2021-04-28T19:38:35UTC" endTimestamp="2021-04-28T19:38:35UTC"/>
-    </linguisticProcessors>
-    <linguisticProcessors layer="text">
-      <lp name="stanza-model_en" version="stanza_version-1.2" beginTimestamp="2021-04-28T19:38:35UTC" endTimestamp="2021-04-28T19:38:35UTC"/>
-    </linguisticProcessors>
-    <linguisticProcessors layer="terms">
-      <lp name="stanza-model_en" version="stanza_version-1.2" beginTimestamp="2021-04-28T19:38:35UTC" endTimestamp="2021-04-28T19:38:35UTC"/>
+      <lp name="stanza-model_en" version="stanza_version-1.2" beginTimestamp="2021-04-30T16:09:37UTC" endTimestamp="2021-04-30T16:09:37UTC"/>
     </linguisticProcessors>
     <linguisticProcessors layer="entities">
-      <lp name="stanza-model_en" version="stanza_version-1.2" beginTimestamp="2021-04-28T19:38:35UTC" endTimestamp="2021-04-28T19:38:35UTC"/>
+      <lp name="stanza-model_en" version="stanza_version-1.2" beginTimestamp="2021-04-30T16:09:37UTC" endTimestamp="2021-04-30T16:09:37UTC"/>
+    </linguisticProcessors>
+    <linguisticProcessors layer="text">
+      <lp name="stanza-model_en" version="stanza_version-1.2" beginTimestamp="2021-04-30T16:09:37UTC" endTimestamp="2021-04-30T16:09:37UTC"/>
+    </linguisticProcessors>
+    <linguisticProcessors layer="terms">
+      <lp name="stanza-model_en" version="stanza_version-1.2" beginTimestamp="2021-04-30T16:09:37UTC" endTimestamp="2021-04-30T16:09:37UTC"/>
     </linguisticProcessors>
     <linguisticProcessors layer="deps">
-      <lp name="stanza-model_en" version="stanza_version-1.2" beginTimestamp="2021-04-28T19:38:35UTC" endTimestamp="2021-04-28T19:38:35UTC"/>
+      <lp name="stanza-model_en" version="stanza_version-1.2" beginTimestamp="2021-04-30T16:09:37UTC" endTimestamp="2021-04-30T16:09:37UTC"/>
     </linguisticProcessors>
     <linguisticProcessors layer="raw">
-      <lp name="stanza-model_en" version="stanza_version-1.2" beginTimestamp="2021-04-28T19:38:35UTC" endTimestamp="2021-04-28T19:38:35UTC"/>
+      <lp name="stanza-model_en" version="stanza_version-1.2" beginTimestamp="2021-04-30T16:09:37UTC" endTimestamp="2021-04-30T16:09:37UTC"/>
     </linguisticProcessors>
   </nafHeader>
   <formats>
-    <page length="45" offset="0">
+    <page length="48" offset="0">
       <textbox>
         <textline>
-          <text font="CIDFont+F1" size="12.000" length="42" offset="0">The cat sat on the mat. Matt was his name.</text>
+          <text font="CIDFont+F1" size="12.000" length="1" offset="0"> </text>
+        </textline>
+      </textbox>
+      <textbox>
+        <textline>
+          <text font="CIDFont+F1" size="12.000" length="42" offset="3">The cat sat on the mat. Matt was his name.</text>
         </textline>
       </textbox>
     </page>
   </formats>
+  <entities>
+    <entity id="e1" type="PERSON">
+      <span>
+        <!--Matt-->
+        <target id="t8"/>
+      </span>
+      <externalReferences/>
+    </entity>
+  </entities>
   <text>
-    <wf id="w1" sent="1" page="1" length="3" offset="0"><![CDATA[The]]></wf>
-    <wf id="w2" sent="1" page="1" length="3" offset="4"><![CDATA[cat]]></wf>
-    <wf id="w3" sent="1" page="1" length="3" offset="8"><![CDATA[sat]]></wf>
-    <wf id="w4" sent="1" page="1" length="2" offset="12"><![CDATA[on]]></wf>
-    <wf id="w5" sent="1" page="1" length="3" offset="15"><![CDATA[the]]></wf>
-    <wf id="w6" sent="1" page="1" length="3" offset="19"><![CDATA[mat]]></wf>
-    <wf id="w7" sent="1" page="1" length="1" offset="22"><![CDATA[.]]></wf>
-    <wf id="w8" sent="2" page="1" length="4" offset="24"><![CDATA[Matt]]></wf>
-    <wf id="w9" sent="2" page="1" length="3" offset="29"><![CDATA[was]]></wf>
-    <wf id="w10" sent="2" page="1" length="3" offset="33"><![CDATA[his]]></wf>
-    <wf id="w11" sent="2" page="1" length="4" offset="37"><![CDATA[name]]></wf>
-    <wf id="w12" sent="2" page="1" length="1" offset="41"><![CDATA[.]]></wf>
+    <wf page="1" sent="1" id="w1" length="3" wordform="The" offset="3"><![CDATA[The]]></wf>
+    <wf page="1" sent="1" id="w2" length="3" wordform="cat" offset="7"><![CDATA[cat]]></wf>
+    <wf page="1" sent="1" id="w3" length="3" wordform="sat" offset="11"><![CDATA[sat]]></wf>
+    <wf page="1" sent="1" id="w4" length="2" wordform="on" offset="15"><![CDATA[on]]></wf>
+    <wf page="1" sent="1" id="w5" length="3" wordform="the" offset="18"><![CDATA[the]]></wf>
+    <wf page="1" sent="1" id="w6" length="3" wordform="mat" offset="22"><![CDATA[mat]]></wf>
+    <wf page="1" sent="1" id="w7" length="1" wordform="." offset="25"><![CDATA[.]]></wf>
+    <wf page="1" sent="2" id="w8" length="4" wordform="Matt" offset="27"><![CDATA[Matt]]></wf>
+    <wf page="1" sent="2" id="w9" length="3" wordform="was" offset="32"><![CDATA[was]]></wf>
+    <wf page="1" sent="2" id="w10" length="3" wordform="his" offset="36"><![CDATA[his]]></wf>
+    <wf page="1" sent="2" id="w11" length="4" wordform="name" offset="40"><![CDATA[name]]></wf>
+    <wf page="1" sent="2" id="w12" length="1" wordform="." offset="44"><![CDATA[.]]></wf>
   </text>
   <terms>
     <term id="t1" lemma="the" pos="DET" type="open" morphofeat="Definite=Def|PronType=Art">
@@ -125,36 +139,27 @@
       </span>
     </term>
   </terms>
-  <entities>
-    <entity id="e1" type="PERSON">
-      <span>
-        <!--Matt-->
-        <target id="t8"/>
-      </span>
-      <externalReferences/>
-    </entity>
-  </entities>
   <deps>
     <!--det(The,cat)-->
-    <dep from="t2" to="t1" rfunc="det"/>
+    <dep from_term="t2" to_term="t1" from_orth="The" to_orth="cat" rfunc="det"/>
     <!--nsubj(cat,sat)-->
-    <dep from="t3" to="t2" rfunc="nsubj"/>
+    <dep from_term="t3" to_term="t2" from_orth="cat" to_orth="sat" rfunc="nsubj"/>
     <!--case(on,mat)-->
-    <dep from="t6" to="t4" rfunc="case"/>
+    <dep from_term="t6" to_term="t4" from_orth="on" to_orth="mat" rfunc="case"/>
     <!--obl(mat,sat)-->
-    <dep from="t3" to="t6" rfunc="obl"/>
+    <dep from_term="t3" to_term="t6" from_orth="mat" to_orth="sat" rfunc="obl"/>
     <!--det(the,mat)-->
-    <dep from="t6" to="t5" rfunc="det"/>
+    <dep from_term="t6" to_term="t5" from_orth="the" to_orth="mat" rfunc="det"/>
     <!--punct(.,sat)-->
-    <dep from="t3" to="t7" rfunc="punct"/>
+    <dep from_term="t3" to_term="t7" from_orth="." to_orth="sat" rfunc="punct"/>
     <!--nsubj(Matt,name)-->
-    <dep from="t11" to="t8" rfunc="nsubj"/>
+    <dep from_term="t11" to_term="t8" from_orth="Matt" to_orth="name" rfunc="nsubj"/>
     <!--cop(was,name)-->
-    <dep from="t11" to="t9" rfunc="cop"/>
+    <dep from_term="t11" to_term="t9" from_orth="was" to_orth="name" rfunc="cop"/>
     <!--nmod:poss(his,name)-->
-    <dep from="t11" to="t10" rfunc="nmod:poss"/>
+    <dep from_term="t11" to_term="t10" from_orth="his" to_orth="name" rfunc="nmod:poss"/>
     <!--punct(.,name)-->
-    <dep from="t11" to="t12" rfunc="punct"/>
+    <dep from_term="t11" to_term="t12" from_orth="." to_orth="name" rfunc="punct"/>
   </deps>
-  <raw><![CDATA[The cat sat on the mat. Matt was his name.]]></raw>
+  <raw><![CDATA[   The cat sat on the mat. Matt was his name.]]></raw>
 </NAF>
