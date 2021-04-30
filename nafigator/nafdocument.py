@@ -443,7 +443,8 @@ class NafDocument(etree._ElementTree):
                                 str(delta)+")"
                 )
             tokens.append(trailing_chars + cur_wf.text)
-        raw_text = "".join(tokens)
+        offset_at_start = int(wfs[0].attrib.get('offset', 0))
+        raw_text = " "*offset_at_start+"".join(tokens)
         if cdata:
             layer.text = etree.CDATA(raw_text)
         else:
@@ -458,7 +459,7 @@ class NafDocument(etree._ElementTree):
                               str(wf.text)+"] ("+str(wf.get("id"))+
                               ") with raw layer text ["+str(token)+
                               "] (expected length "+
-                              str(wf.get("length")))
+                              str(wf.get("length"))+")")
 
     def add_dependency_element(self, data: DependencyRelation, comments: bool):
         """
