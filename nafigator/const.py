@@ -10,7 +10,7 @@ ProcessorElement = namedtuple(
 
 WordformElement = namedtuple("WfElement", "page sent id length wordform offset")
 
-TermElement = namedtuple("TermElement", "id lemma pos type morphofeat targets text")
+TermElement = namedtuple("TermElement", "id lemma pos type morphofeat targets text ext_refs")
 
 Entity = namedtuple("Entity", "start end type")
 
@@ -21,6 +21,12 @@ DependencyRelation = namedtuple(
 )
 
 ChunkElement = namedtuple("ChunkElement", "id head phrase text targets")
+
+RawElement = namedtuple("RawElement", "text")
+
+MultiwordElement = namedtuple("MultiwordElement", "id lemma pos morphofeat case status type components")
+
+ComponentElement = namedtuple("ComponentElement", "id type lemma pos morphofeat netype case head targets")
 
 hidden_characters = ["\a", "\b", "\t", "\n", "\v", "\f", "\r"]
 

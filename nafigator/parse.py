@@ -12,6 +12,7 @@ from .linguisticprocessor import stanzaProcessor
 from .linguisticprocessor import spacyProcessor
 from .preprocessprocessor import convert_pdf
 from .nafdocument import NafDocument
+from lxml import etree
 
 from .const import ProcessorElement
 from .const import Entity
@@ -20,6 +21,9 @@ from .const import TermElement
 from .const import EntityElement
 from .const import DependencyRelation
 from .const import ChunkElement
+from .const import RawElement
+from .const import MultiwordElement
+from .const import ComponentElement
 from .const import udpos2nafpos_info
 from .const import hidden_table
 from .utils import normalize_token_orth
@@ -155,7 +159,7 @@ def create_params(
 
     # set default linguistic parameters
     if "linguistic_layers" not in params.keys():
-        params["linguistic_layers"] = ["text", "terms", "entities", "deps", "raw"]
+        params["linguistic_layers"] = ["text", "terms", "entities", "deps", "raw", "multiwords"]
     if params.get("cdata", None) is None:
         params["cdata"] = True
     if params.get("map_udpos2naf_pos", None) is None:
@@ -164,12 +168,8 @@ def create_params(
         params["layer_to_attributes_to_ignore"] = {"terms": {}}
     if params.get("replace_hidden_characters", None) is None:
         params["replace_hidden_characters"] = True
-    if params.get("add_mws", None) is None:
-        params["add_mws"] = False
     if params.get("comments", None) is None:
         params["comments"] = True
-    if params["add_mws"]:
-        linguistic_layers.append("multiwords")
 
     return params
 
@@ -288,6 +288,9 @@ def process_linguistic_layers(params: dict):
     if "deps" in layers:
         add_deps_layer(params)
 
+    if "multiwords" in layers:
+        add_multiwords_layer(params)
+
     if "chunks" in layers:
         add_chunks_layer(params)
 
@@ -340,8 +343,8 @@ def dependencies_to_add(sentence, token, total_tokens: int, params: dict):
         )
         to_term = "t" + str(engine.token_index(token) + total_tokens + cor)
         rfunc = engine.token_dependency(token)
-        from_orth = engine.token_orth(token)
-        to_orth = engine.token_orth(engine.token_head(sentence, token))
+        from_orth = engine.token_orth(engine.token_head(sentence, token))
+        to_orth = engine.token_orth(token)
         dep_data = DependencyRelation(
             from_term=from_term,
             to_term=to_term,
@@ -407,7 +410,7 @@ def add_entities_layer(params: dict):
                     targets=current_entity,
                     text=current_entity_orth,
                     ext_refs=list(),
-                )  # entity linking currently not part of spaCy
+                )
 
                 params["tree"].add_entity_element(
                     entity_data, params["naf_version"], params["language"]
@@ -535,6 +538,7 @@ def add_terms_layer(params: dict):
                 morphofeat=engine.token_tag(token),
                 targets=current_term,
                 text=current_term_orth,
+                ext_refs=[]
             )
 
             params["tree"].add_term_element(
@@ -588,17 +592,151 @@ def add_deps_layer(params: dict):
             current_token = 1
             total_tokens += token_number
 
-        if params["add_mws"]:
-            params["tree"].add_multi_words(params["naf_version"], params["language"])
-
     return None
+
+def get_next_mw_id(params):
+    """ """
+    layer = params['tree'].find("multiwords")
+    if layer is None:
+        layer = etree.SubElement(
+            params['tree'].getroot(), "multiwords"
+        )
+    mw_ids = [int(mw_el.get("id")[2:]) for mw_el in layer.xpath("mw")]
+    if mw_ids:
+        next_mw_id = max(mw_ids) + 1
+    else:
+        next_mw_id = 1
+    return f"mw{next_mw_id}"
+
+def create_separable_verb_lemma(verb, particle, language):
+    """ """
+    if language == "nl":
+        lemma = particle + verb
+    if language == "en":
+        lemma = f"{verb}_{particle}"
+    return lemma
+
+
+def add_multiwords_layer(params: dict):
+    """ """
+    params["tree"].add_processor_element("multiwords", params["lp"])
+
+    engine = params["engine"]
+
+    if params['naf_version'] == "v3":
+        logging.info("add_multi_words function only applies to naf version 4")
+
+    supported_languages = {"nl", "en"}
+    if params['language'] not in supported_languages:
+        logging.info(
+            f"add_multi_words function only implemented for {supported_languages}, not for supplied {language}"
+        )
+
+    tid_to_term = {
+        term.get("id"): term for term in params['tree'].findall("terms/term")
+    }
+
+    for dep in params['tree'].deps:
+
+        if dep.get("rfunc") == "compound:prt":
+
+            next_mw_id = get_next_mw_id(params)
+
+            idverb = dep.get("from_term")
+            idparticle = dep.get("to_term")
+
+            verb_term_el = tid_to_term[idverb]
+            verb = verb_term_el.attrib.get("lemma")
+            verb_term_el.set("component_of", next_mw_id)
+
+            particle_term_el = tid_to_term[idparticle]
+            particle = particle_term_el.attrib.get("lemma")
+            particle_term_el.set("component_of", next_mw_id)
+
+            separable_verb_lemma = create_separable_verb_lemma(
+                verb, particle, params['language']
+            )
+            multiword_data = MultiwordElement(
+                id=next_mw_id,
+                lemma=separable_verb_lemma,
+                pos="VERB",
+                morphofeat=None,
+                case=None,
+                status=None,
+                type="phrasal",
+                components=[]
+                )
+
+            components = [
+                (f"{next_mw_id}.c1", idverb),
+                (f"{next_mw_id}.c2", idparticle),
+            ]
+
+            for c_id, t_id in components:
+                component_data = ComponentElement(
+                    id=c_id,
+                    type=None,
+                    lemma=None,
+                    pos=None,
+                    morphofeat=None,
+                    netype=None,
+                    case=None,
+                    head=None,
+                    targets=[t_id]
+                    )
+                multiword_data.components.append(component_data)
+
+            params["tree"].add_multiword_element(multiword_data)
+
+                # component = etree.SubElement(
+                #     mw_element, "component", attrib={"id": c_id}
+                # )
+                # span = etree.SubElement(component, "span")
+                # etree.SubElement(span, "target", attrib={"id": t_id})
+
+    # params["tree"].add_multi_words(params["naf_version"], params["language"])
 
 
 def add_raw_layer(params: dict):
     """ """
     params["tree"].add_processor_element("raw", params["lp"])
 
-    params["tree"].add_raw_text_element(params["cdata"])
+    wordforms = params['tree'].text
+
+    delta = int(wordforms[0]['offset'])
+    tokens = [" " * delta + wordforms[0]['text']]
+
+    for prev_wf, cur_wf in zip(wordforms[:-1], wordforms[1:]):
+        prev_start = int(prev_wf["offset"])
+        prev_end = prev_start + int(prev_wf["length"])
+        cur_start = int(cur_wf["offset"])
+        delta = cur_start - prev_end
+        # no chars between two token (for example with a dot .)
+        if delta == 0:
+            leading_chars = ""
+        elif delta >= 1:
+            # 1 or more characters between tokens -> n spaces added
+            leading_chars = " " * delta
+        elif delta < 0:
+            logging.warning(
+                "please check the offsets of "
+                + str(prev_wf['text'])
+                + " and "
+                + str(cur_wf['text'])
+                + " (delta of "
+                + str(delta)
+                + ")"
+            )
+        tokens.append(leading_chars + cur_wf['text'])
+
+    if params['cdata']:
+        raw_text = etree.CDATA("".join(tokens))
+    else:
+        raw_text = "".join(tokens)
+
+    raw_data = RawElement(text=raw_text)
+
+    params["tree"].add_raw_text_element(raw_data)
 
 
 def add_chunks_layer(params: dict):

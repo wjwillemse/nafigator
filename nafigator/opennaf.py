@@ -22,7 +22,7 @@ def opennaf(input: str):
     print(naf.version)
     # print(naf.entities)
     # print(naf.deps)
-
+    print(naf.multiwords)
 
 if __name__ == "__main__":
     sys.exit(opennaf())
