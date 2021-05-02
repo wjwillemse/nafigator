@@ -1,6 +1,6 @@
 """Top-level package for nafigator."""
 
-__version__ = '0.1.12'
+__version__ = '0.1.13'
 
 from .parse import *
 from .opennaf import *
