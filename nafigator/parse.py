@@ -13,6 +13,7 @@ from .linguisticprocessor import spacyProcessor
 from .preprocessprocessor import convert_pdf
 from .nafdocument import NafDocument
 from lxml import etree
+import lxml.html
 
 from .const import ProcessorElement
 from .const import Entity
@@ -226,6 +227,10 @@ def process_preprocess_steps(params: dict):
     if input[-3:].lower() == "txt":
         with open(input) as f:
             params["text"] = f.read()
+    elif input[-4:].lower() == "html":
+        with open(input) as f:
+            doc = lxml.html.document_fromstring(f.read())
+            params['text'] = doc.text_content()
     elif input[-3:].lower() == "pdf":
         convert_pdf(input, format="xml", params=params)
         convert_pdf(input, format="text", params=params)

@@ -31,7 +31,7 @@ Nafigator allows you to store NLP output from custom made spaCy and stanza pipel
 
 * Convert text files to .naf files that satisfy the NLP Annotation Format (NAF)
 
-  - Supported input media types: application/pdf (.pdf), text/plain (.txt)
+  - Supported input media types: application/pdf (.pdf), text/plain (.txt), text/html (.html)
 
   - Supported output format: .naf (xml)
 
