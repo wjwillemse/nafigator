@@ -179,7 +179,7 @@ def evaluate_naf(params: dict):
     # verify alignment between raw layer and document text
     doc_text = params["engine"].document_text(params["doc"])
     raw = params["tree"].raw
-    if raw.strip() != doc_text.strip():
+    if len(raw) != len(doc_text):
         logging.error(
             "raw length ("
             + str(len(raw))
@@ -189,7 +189,7 @@ def evaluate_naf(params: dict):
         )
     # verify alignment between raw layer and text
     text_to_use = params["text"]
-    if raw != text_to_use:
+    if len(raw) != len(text_to_use):
         logging.error(
             "raw length ("
             + str(len(raw))

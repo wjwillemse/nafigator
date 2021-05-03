@@ -20,7 +20,6 @@ nafigator
 
 Python package to convert text documents to NLP Annotation Format (NAF)
 
-
 * Free software: MIT license
 * Documentation: https://nafigator.readthedocs.io.
 
@@ -32,15 +31,17 @@ Nafigator allows you to store NLP output from custom made spaCy and stanza pipel
 
 * Convert text files to .naf files that satisfy the NLP Annotation Format (NAF)
 
-	* Supported input media types: application/pdf (.pdf), text/plain (.txt)
+  - Supported input media types: application/pdf (.pdf), text/plain (.txt)
 
-	* Supported output format: .naf (xml)
+  - Supported output format: .naf (xml)
 
-	* Supported NLP pipelines: spaCy, stanza
+  - Supported NLP pipelines: spaCy, stanza
 
-	* Supported NAF layers: raw, text, terms, entities, deps
+  - Supported NAF layers: raw, text, terms, entities, deps, multiwords
 
 * Read .naf documents and access data as Python lists and dicts
+
+In addition to NAF a 'formats' layer is added with text format data (font and size) to allow text classifications like header detection.
 
 The NAF format
 --------------

@@ -39,7 +39,7 @@ def convert_pdf(path, format="text", codec="utf-8", password="", params=None):
         maxpages=maxpages,
         password=password,
         caching=caching,
-        check_extractable=True,
+        check_extractable=False,
     ):
         interpreter.process_page(page)
         pages += 1
