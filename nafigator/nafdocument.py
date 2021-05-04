@@ -214,11 +214,34 @@ class NafDocument(etree._ElementTree):
                     if child2.tag == SPAN_OCCURRENCE_TAG:
                         targets = list()
                         for child3 in child2:
-                            if child3.tag == TARGET_OCCURRENCE_TAG:
+                            if child3.tag == etree.Comment:
+                                entity_data["text"] = child3.text
+                            elif child3.tag == TARGET_OCCURRENCE_TAG:
                                 targets.append(child3.attrib)
                     entity_data["targets"] = targets
                 entities.append(entity_data)
             return entities
+
+        if name == "sentences":
+            sentences = list()
+            sentence_list = list()
+            sent_num = 1
+            pages = set()
+            for item in self.text:
+                if item['sent']==str(sent_num):
+                    sentence_list.append(item['text'])
+                    pages.add(item['page'])
+                else:
+                    sentences.append({"text": " ".join(sentence_list),
+                                      "page": list(pages)})
+                    sentence_list = list([item['text']])
+                    pages = set()
+                    pages.add(item['page'])
+                    sent_num += 1
+            if sent_num > 1:
+                sentences.append({"text": " ".join(sentence_list),
+                                  "page": list(pages)})
+            return sentences
 
         return super().name
 
