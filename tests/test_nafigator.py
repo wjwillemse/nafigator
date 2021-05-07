@@ -5,16 +5,15 @@
 
 import unittest
 from click.testing import CliRunner
-
-
 from nafigator import NafDocument
+from os.path import join
 
 class TestNafigator(unittest.TestCase):
     """Tests for `nafigator` package."""
 
     def test_header_filedesc(self):
         """ """
-        naf = NafDocument().open("data/example.naf")
+        naf = NafDocument().open(join("tests", "tests", "example.naf"))
         actual = naf.header['fileDesc']
         expected = {'creationtime': '2021-05-05T13:25:16UTC', 
                     'filename': 'data/example.pdf', 
@@ -22,16 +21,14 @@ class TestNafigator(unittest.TestCase):
         assert actual == expected
 
     def test_header_public(self):
-        filename = "data/example.naf"
-        naf = NafDocument().open(filename)
+        naf = NafDocument().open(join("tests", "tests", "example.naf"))
         actual = naf.header['public']
         expected = {'{http://purl.org/dc/elements/1.1/}uri': 'data/example.pdf', 
                     '{http://purl.org/dc/elements/1.1/}format': 'application/pdf'}
         assert actual == expected
 
     def test_header_linguistic_processors(self):
-        filename = "data/example.naf"
-        naf = NafDocument().open(filename)
+        naf = NafDocument().open(join("tests", "tests", "example.naf"))
         actual = naf.header['linguisticProcessors']
         expected = [{'layer': 'pdftoxml', 'lps': 
                         [{'name': 'pdfminer-pdf2xml', 
@@ -82,8 +79,7 @@ class TestNafigator(unittest.TestCase):
         assert actual == expected
 
     def test_formats(self):
-        filename = "data/example.naf"
-        naf = NafDocument().open(filename)
+        naf = NafDocument().open(join("tests", "tests", "example.naf"))
         actual = naf.formats
         expected = [{'length': '268', 'offset': '0', 'textboxes': 
                         [{'textlines': 
@@ -118,15 +114,13 @@ class TestNafigator(unittest.TestCase):
         assert actual == expected
 
     def test_entities(self):
-        filename = "data/example.naf"
-        naf = NafDocument().open(filename)
+        naf = NafDocument().open(join("tests", "tests", "example.naf"))
         actual = naf.entities
         expected = [{'id': 'e1', 'type': 'PRODUCT'}, {'id': 'e2', 'type': 'CARDINAL'}]
         assert actual == expected
 
     def test_entities(self):
-        filename = "data/example.naf"
-        naf = NafDocument().open(filename)
+        naf = NafDocument().open(join("tests", "tests", "example.naf"))
         actual = naf.text
         expected = [{'text': 'The', 'page': '1', 'sent': '1', 'id': 'w1', 'length': '3', 'offset': '0'}, 
                     {'text': 'Nafigator', 'page': '1', 'sent': '1', 'id': 'w2', 'length': '9', 'offset': '4'}, 
@@ -183,8 +177,7 @@ class TestNafigator(unittest.TestCase):
         assert actual == expected
 
     def test_entities(self):
-        filename = "data/example.naf"
-        naf = NafDocument().open(filename)
+        naf = NafDocument().open(join("tests", "tests", "example.naf"))
         actual = naf.terms
         expected = [{'id': 't1', 'lemma': 'the', 'pos': 'DET', 'type': 'open', 'morphofeat': 'Definite=Def|PronType=Art'}, 
         {'id': 't2', 'lemma': 'Nafigator', 'pos': 'PROPN', 'type': 'open', 'morphofeat': 'Number=Sing'}, 
@@ -236,8 +229,7 @@ class TestNafigator(unittest.TestCase):
         assert actual == expected
 
     def test_dependencies(self):
-        filename = "data/example.naf"
-        naf = NafDocument().open(filename)
+        naf = NafDocument().open(join("tests", "tests", "example.naf"))
         actual = naf.deps
         expected = [{'from_term': 't3', 'to_term': 't1', 'from_orth': 'package', 'to_orth': 'The', 'rfunc': 'det'}, 
                     {'from_term': 't4', 'to_term': 't3', 'from_orth': 'allows', 'to_orth': 'package', 'rfunc': 'nsubj'}, 
@@ -291,8 +283,7 @@ class TestNafigator(unittest.TestCase):
         assert actual == expected
 
     def test_multiwords(self):
-        filename = "data/example.naf"
-        naf = NafDocument().open(filename)
+        naf = NafDocument().open(join("tests", "tests", "example.naf"))
         actual = naf.multiwords
         expected = [{'id': 'mw1', 'lemma': 'set_out', 'pos': 'VERB', 'type': 'phrasal', 'components': 
                         [{'id': 'mw1.c1', 'targets': [{'id': 't37'}]}, 
@@ -300,8 +291,7 @@ class TestNafigator(unittest.TestCase):
         assert actual == expected
 
     def test_raw(self):
-        filename = "data/example.naf"
-        naf = NafDocument().open(filename)
+        naf = NafDocument().open(join("tests", "tests", "example.naf"))
         actual = naf.raw
         expected = "The Nafigator package allows you to store NLP output from custom made spaCy and stanza  pipelines with (intermediate) results and all processing steps in one format.  Multiwords like in “we have set that out below” are recognized (depending on your NLP  processor)."
         assert actual == expected
