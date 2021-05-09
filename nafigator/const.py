@@ -8,13 +8,13 @@ ProcessorElement = namedtuple(
     "lp", "name version timestamp beginTimestamp endTimestamp hostname"
 )
 
-WordformElement = namedtuple("WfElement", "page sent id length wordform offset")
+WordformElement = namedtuple("WfElement", "page sent id length text offset")
 
-TermElement = namedtuple("TermElement", "id lemma pos type morphofeat targets text ext_refs")
+TermElement = namedtuple("TermElement", "id lemma pos type morphofeat text targets ext_refs")
 
 Entity = namedtuple("Entity", "start end type")
 
-EntityElement = namedtuple("EntityElement", "id type targets text ext_refs")
+EntityElement = namedtuple("EntityElement", "id type text targets ext_refs")
 
 DependencyRelation = namedtuple(
     "DependencyRelation", "from_term to_term from_orth to_orth rfunc"

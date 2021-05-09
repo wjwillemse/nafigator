@@ -160,7 +160,14 @@ def create_params(
 
     # set default linguistic parameters
     if "linguistic_layers" not in params.keys():
-        params["linguistic_layers"] = ["text", "terms", "entities", "deps", "raw", "multiwords"]
+        params["linguistic_layers"] = [
+            "text",
+            "terms",
+            "entities",
+            "deps",
+            "raw",
+            "multiwords",
+        ]
     if params.get("cdata", None) is None:
         params["cdata"] = True
     if params.get("map_udpos2naf_pos", None) is None:
@@ -199,7 +206,7 @@ def evaluate_naf(params: dict):
             + ")"
         )
     # verify alignment between raw layer and text layer
-    for wf in params['tree'].text:
+    for wf in params["tree"].text:
         start = int(wf.get("offset"))
         end = start + int(wf.get("length"))
         token = raw[start:end]
@@ -230,7 +237,7 @@ def process_preprocess_steps(params: dict):
     elif input[-4:].lower() == "html":
         with open(input) as f:
             doc = lxml.html.document_fromstring(f.read())
-            params['text'] = doc.text_content()
+            params["text"] = doc.text_content()
     elif input[-3:].lower() == "pdf":
         convert_pdf(input, format="xml", params=params)
         convert_pdf(input, format="text", params=params)
@@ -412,8 +419,8 @@ def add_entities_layer(params: dict):
                 entity_data = EntityElement(
                     id=entity_id,
                     type=next_entity.type,
-                    targets=current_entity,
                     text=current_entity_orth,
+                    targets=current_entity,
                     ext_refs=list(),
                 )
 
@@ -477,7 +484,7 @@ def add_text_layer(params: dict):
                 sent=str(sentence_number),
                 id=wf_id,
                 length=str(len(token.text)),
-                wordform=token.text,
+                text=token.text,
                 offset=str(engine.token_offset(token)),
             )
 
@@ -541,9 +548,9 @@ def add_terms_layer(params: dict):
                 pos=pos,
                 type=pos_type,
                 morphofeat=engine.token_tag(token),
-                targets=current_term,
                 text=current_term_orth,
-                ext_refs=[]
+                targets=current_term,
+                ext_refs=list(),
             )
 
             params["tree"].add_term_element(
@@ -599,19 +606,19 @@ def add_deps_layer(params: dict):
 
     return None
 
+
 def get_next_mw_id(params):
     """ """
-    layer = params['tree'].find("multiwords")
+    layer = params["tree"].find("multiwords")
     if layer is None:
-        layer = etree.SubElement(
-            params['tree'].getroot(), "multiwords"
-        )
+        layer = etree.SubElement(params["tree"].getroot(), "multiwords")
     mw_ids = [int(mw_el.get("id")[2:]) for mw_el in layer.xpath("mw")]
     if mw_ids:
         next_mw_id = max(mw_ids) + 1
     else:
         next_mw_id = 1
     return f"mw{next_mw_id}"
+
 
 def create_separable_verb_lemma(verb, particle, language):
     """ """
@@ -628,20 +635,20 @@ def add_multiwords_layer(params: dict):
 
     engine = params["engine"]
 
-    if params['naf_version'] == "v3":
+    if params["naf_version"] == "v3":
         logging.info("add_multi_words function only applies to naf version 4")
 
     supported_languages = {"nl", "en"}
-    if params['language'] not in supported_languages:
+    if params["language"] not in supported_languages:
         logging.info(
             f"add_multi_words function only implemented for {supported_languages}, not for supplied {language}"
         )
 
     tid_to_term = {
-        term.get("id"): term for term in params['tree'].findall("terms/term")
+        term.get("id"): term for term in params["tree"].findall("terms/term")
     }
 
-    for dep in params['tree'].deps:
+    for dep in params["tree"].deps:
 
         if dep.get("rfunc") == "compound:prt":
 
@@ -659,7 +666,7 @@ def add_multiwords_layer(params: dict):
             particle_term_el.set("component_of", next_mw_id)
 
             separable_verb_lemma = create_separable_verb_lemma(
-                verb, particle, params['language']
+                verb, particle, params["language"]
             )
             multiword_data = MultiwordElement(
                 id=next_mw_id,
@@ -669,8 +676,8 @@ def add_multiwords_layer(params: dict):
                 case=None,
                 status=None,
                 type="phrasal",
-                components=[]
-                )
+                components=[],
+            )
 
             components = [
                 (f"{next_mw_id}.c1", idverb),
@@ -687,17 +694,17 @@ def add_multiwords_layer(params: dict):
                     netype=None,
                     case=None,
                     head=None,
-                    targets=[t_id]
-                    )
+                    targets=[t_id],
+                )
                 multiword_data.components.append(component_data)
 
             params["tree"].add_multiword_element(multiword_data)
 
-                # component = etree.SubElement(
-                #     mw_element, "component", attrib={"id": c_id}
-                # )
-                # span = etree.SubElement(component, "span")
-                # etree.SubElement(span, "target", attrib={"id": t_id})
+            # component = etree.SubElement(
+            #     mw_element, "component", attrib={"id": c_id}
+            # )
+            # span = etree.SubElement(component, "span")
+            # etree.SubElement(span, "target", attrib={"id": t_id})
 
     # params["tree"].add_multi_words(params["naf_version"], params["language"])
 
@@ -706,10 +713,10 @@ def add_raw_layer(params: dict):
     """ """
     params["tree"].add_processor_element("raw", params["lp"])
 
-    wordforms = params['tree'].text
+    wordforms = params["tree"].text
 
-    delta = int(wordforms[0]['offset'])
-    tokens = [" " * delta + wordforms[0]['text']]
+    delta = int(wordforms[0]["offset"])
+    tokens = [" " * delta + wordforms[0]["text"]]
 
     for prev_wf, cur_wf in zip(wordforms[:-1], wordforms[1:]):
         prev_start = int(prev_wf["offset"])
@@ -725,16 +732,16 @@ def add_raw_layer(params: dict):
         elif delta < 0:
             logging.warning(
                 "please check the offsets of "
-                + str(prev_wf['text'])
+                + str(prev_wf["text"])
                 + " and "
-                + str(cur_wf['text'])
+                + str(cur_wf["text"])
                 + " (delta of "
                 + str(delta)
                 + ")"
             )
-        tokens.append(leading_chars + cur_wf['text'])
+        tokens.append(leading_chars + cur_wf["text"])
 
-    if params['cdata']:
+    if params["cdata"]:
         raw_text = etree.CDATA("".join(tokens))
     else:
         raw_text = "".join(tokens)

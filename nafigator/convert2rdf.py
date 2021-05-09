@@ -54,7 +54,7 @@ def addNamespace(prefix, uri, params):
         if prefix != found:
             return -1
         del namespaces[uri]
-    # params['prefixes'].write("@prefix "+prefix+": <"+uri+">.\n")
+    namespaces[uri] = prefix
     return 0
 
 
@@ -71,6 +71,14 @@ def printNamespaces(params):
 
 def processNaf(naf, params):
     provenance = genProvenanceName(params)
+
+def processEntities(naf, params):
+
+    entity_id = context.attrib.get('id', None)
+    output = params['out']
+    output.write("_:entity_"+entity_id+"\n")
+    output.write("    xl:type naf-base:entity ;\n")
+    output.write("    naf-base:type bla .\n")
 
 
 def genProvenanceName(params: dict) -> str:

@@ -15,8 +15,6 @@ from .const import RawElement
 from .utils import time_in_correct_format
 from .utils import load_dtd_as_file_object
 import datetime
-
-# import json
 import logging
 
 FILEDESC_ELEMENT_TAG = "fileDesc"
@@ -63,9 +61,8 @@ def QName(prefix: str, name: str):
     # qname = etree.QName('{'+namespaces[prefix]+'}'+name, name)
     # return qname
 
-
 namespaces = {
-    PREFIX_DC: "http://purl.org/dc/elements/1.1/",
+    PREFIX_DC: "http://purl.org/dc/elements/1.1/"
     # PREFIX_NAF_BASE: "https://dnb.nl/naf-Base/elements/1.0/",
 }
 
@@ -243,6 +240,16 @@ class NafDocument(etree._ElementTree):
                                   "page": list(pages)})
             return sentences
 
+        layer = self.find(name)
+        if layer is not None:
+            l = list()
+            for item in layer:
+                if item.text is not None:
+                    l.append(dict({"text": item.text}, **dict(item.attrib)))
+                else:
+                    l.append(item.attrib)
+            return l
+
         return super().name
 
     def set_language(self, language: str):
@@ -267,6 +274,12 @@ class NafDocument(etree._ElementTree):
                 logging.error(str(error))
             return success
         return success
+
+    def remove_layer_elements(self, layer: str=None):
+
+        layer = self.find(layer)
+        for items in layer:
+            layer.remove(items)
 
     def tree2string(self, byte: bool = False):
         """ """
@@ -299,9 +312,46 @@ class NafDocument(etree._ElementTree):
                 del data[key]
         return data
 
+    def prepare_comment_text(self, text: str):
+        """ """
+        text = text.replace("--", "DOUBLEDASH")
+        if text.endswith("-"):
+            text = text[:-1] + "SINGLEDASH"
+        return text
+
+    def layer(self,
+              layer_tag: str):
+        layer = self.find(layer_tag)
+        if layer is None:
+            layer = etree.SubElement(
+                self.getroot(), QName(PREFIX_NAF_BASE, layer_tag)
+            )
+        return layer
+
+    def subelement(self, 
+                   element: etree._Element=None,
+                   tag: str=None,
+                   data={},
+                   attributes_to_ignore: list=[]):
+
+        if not isinstance(data, dict):
+            data = data._asdict()
+
+        data = dict(data)
+        for attr in attributes_to_ignore:
+            del data[attr]
+
+        subelement = etree.SubElement(
+                element,
+                QName(PREFIX_NAF_BASE, tag),
+                self.get_attributes(data),
+            )
+
+        return subelement
+        
     def add_nafHeader(self):
         """ """
-        etree.SubElement(self.getroot(), QName(PREFIX_NAF_BASE, NAF_HEADER))
+        self.layer(NAF_HEADER)
 
     def add_filedesc_element(self, data: dict):
         """
@@ -328,13 +378,9 @@ class NafDocument(etree._ElementTree):
                   pages CDATA #IMPLIED>
         """
         naf_header = self.find(NAF_HEADER)
-        filedesc_element = self.find(FILEDESC_ELEMENT_TAG)
-        if filedesc_element is None:
-            filedesc_element = etree.SubElement(
-                naf_header,
-                QName(PREFIX_NAF_BASE, FILEDESC_ELEMENT_TAG),
-                self.get_attributes(data),
-            )
+        filedesc_element = self.subelement(element=naf_header,
+                                           tag=FILEDESC_ELEMENT_TAG,
+                                           data=data)
 
     def add_public_element(self, data: dict):
         """
@@ -355,14 +401,9 @@ class NafDocument(etree._ElementTree):
 
         Difference to NAF: here all attributes are mapped to the Dublic Core
         """
-        naf_header = self.find(NAF_HEADER)
-        public_element = self.find(PUBLIC_ELEMENT_TAG)
-        if public_element is None:
-            public_element = etree.SubElement(
-                naf_header,
-                QName(PREFIX_NAF_BASE, PUBLIC_ELEMENT_TAG),
-                self.get_attributes(data, "http://purl.org/dc/elements/1.1/"),
-            )
+        self.subelement(element=self.find(NAF_HEADER), 
+                        tag=PUBLIC_ELEMENT_TAG,
+                        data=self.get_attributes(data, "http://purl.org/dc/elements/1.1/"))
 
     def add_processor_element(self, layer: str, data: ProcessorElement):
         """
@@ -412,16 +453,12 @@ class NafDocument(etree._ElementTree):
                   endTimestamp CDATA #IMPLIED
                   hostname CDATA #IMPLIED>
         """
-        naf_header = self.find(NAF_HEADER)
-        proc = etree.SubElement(
-            naf_header, QName(PREFIX_NAF_BASE, LINGUISTIC_LAYER_TAG)
-        )
-        proc.set("layer", layer)
-        lp = etree.SubElement(
-            proc,
-            QName(PREFIX_NAF_BASE, LINGUISTIC_OCCURRENCE_TAG),
-            self.get_attributes(data),
-        )
+        proc = self.subelement(element=self.find(NAF_HEADER), 
+                               tag=LINGUISTIC_LAYER_TAG,
+                               data={"layer": layer})
+        lp = self.subelement(element=proc,
+                            tag=LINGUISTIC_OCCURRENCE_TAG,
+                            data=data)
 
     def add_wf_element(self, data: WordformElement, cdata: bool):
         """
@@ -448,32 +485,19 @@ class NafDocument(etree._ElementTree):
                   length CDATA #REQUIRED
                   xpath CDATA #IMPLIED>
         """
-        layer = self.find(TEXT_LAYER_TAG)
-        if layer is None:
-            layer = etree.SubElement(
-                self.getroot(), QName(PREFIX_NAF_BASE, TEXT_LAYER_TAG)
-            )
-        wf = etree.SubElement(
-            layer,
-            QName(PREFIX_NAF_BASE, TEXT_OCCURRENCE_TAG),
-            self.get_attributes(data, exclude=["wordform"]),
-        )
-        if cdata:
-            wf.text = etree.CDATA(data.wordform)
-        else:
-            wf.text = data.wordform
+        wf = self.subelement(element=self.layer(TEXT_LAYER_TAG),
+                             tag=TEXT_OCCURRENCE_TAG,
+                             data=data,
+                             attributes_to_ignore=["text"])
+
+        wf.text = etree.CDATA(data.text) if cdata else data.text
 
     def add_raw_text_element(self, data: RawElement):
         """
         <!-- RAW ELEMENT -->
         <!ELEMENT raw (#PCDATA)>
         """
-        layer = self.find(RAW_LAYER_TAG)
-        if layer is None:
-            layer = etree.SubElement(
-                self.getroot(), QName(PREFIX_NAF_BASE, RAW_LAYER_TAG)
-            )
-        layer.text = data.text
+        self.layer(RAW_LAYER_TAG).text = data.text
 
     def add_dependency_element(self, data: DependencyRelation, comments: bool):
         """
@@ -495,18 +519,16 @@ class NafDocument(etree._ElementTree):
                   rfunc CDATA #REQUIRED
                   case CDATA #IMPLIED>
         """
-        layer = self.find(DEPS_LAYER_TAG)
-        if layer is None:
-            layer = etree.SubElement(
-                self.getroot(), QName(PREFIX_NAF_BASE, DEPS_LAYER_TAG)
-            )
+        layer = self.layer(DEPS_LAYER_TAG)
+
         if comments:
             comment = data.rfunc + "(" + data.from_orth + "," + data.to_orth + ")"
             comment = self.prepare_comment_text(comment)
             layer.append(etree.Comment(comment))
-        dep_el = etree.SubElement(
-            layer, QName(PREFIX_NAF_BASE, DEP_OCCURRENCE_TAG), self.get_attributes(data)
-        )
+
+        dep = self.subelement(element=layer,
+                              tag=DEP_OCCURRENCE_TAG,
+                              data=data)
 
     def add_entity_element(self, data: EntityElement, naf_version: str, comments: str):
         """
@@ -531,21 +553,17 @@ class NafDocument(etree._ElementTree):
                   status CDATA #IMPLIED
                   source CDATA #IMPLIED>
         """
-        layer = self.find(ENTITIES_LAYER_TAG)
-        if layer is None:
-            layer = etree.SubElement(
-                self.getroot(), QName(PREFIX_NAF_BASE, ENTITIES_LAYER_TAG)
-            )
-        entity = etree.SubElement(
-            layer,
-            QName(PREFIX_NAF_BASE, ENTITY_OCCURRENCE_TAG),
-            self.get_attributes(data),
-        )
-        self.add_span_element(
-            element=entity, data=data, comments=comments, naf_version=naf_version
-        )
+        element = self.subelement(element=self.layer(ENTITIES_LAYER_TAG),
+                               tag=ENTITY_OCCURRENCE_TAG,
+                               data=data)
 
-        self.add_external_reference_element(element=entity, ext_refs=data.ext_refs)
+        if data.targets != []:
+            self.add_span_element(
+                element=element, data=data, comments=comments, naf_version=naf_version
+            )
+
+        if data.ext_refs != []:
+            self.add_external_reference_element(element=element, ext_refs=data.ext_refs)
 
     def add_term_element(
         self, data: TermElement, layer_to_attributes_to_ignore: dict, comments: bool
@@ -583,21 +601,47 @@ class NafDocument(etree._ElementTree):
                   component_of IDREF #IMPLIED
                   compound_type CDATA #IMPLIED>
         """
-        layer = self.find(TERMS_LAYER_TAG)
-        if layer is None:
-            layer = etree.SubElement(
-                self.getroot(), QName(PREFIX_NAF_BASE, TERMS_LAYER_TAG)
-            )
-        term = etree.SubElement(
-            layer,
-            QName(PREFIX_NAF_BASE, TERM_OCCURRENCE_TAG),
-            self.get_attributes(
-                data, exclude=layer_to_attributes_to_ignore.get("terms", list())
-            ),
-        )
-        self.add_span_element(element=term, data=data, comments=comments)
+        element = self.subelement(element=self.layer(TERMS_LAYER_TAG),
+                     tag=TERM_OCCURRENCE_TAG,
+                     data=data,
+                     attributes_to_ignore=layer_to_attributes_to_ignore.get("terms", list()))
 
-        self.add_external_reference_element(element=term, ext_refs=data.ext_refs)
+        if data.targets != []:
+            self.add_span_element(
+                element=element, data=data, comments=comments
+            )
+
+        if data.ext_refs != []:
+            self.add_external_reference_element(element=element, ext_refs=data.ext_refs)
+
+    def add_chunk_element(self, data: ChunkElement, comments: bool):
+        """
+        <!-- CHUNKS ELEMENT -->
+        <!ELEMENT chunks (chunk)+>
+        <!-- CHUNK ELEMENT -->
+        <!--
+            The <chunk> elements have the following attributes:
+            -   id: unique identifier (REQUIRED)
+            -   head: the chunk head’s term id  (REQUIRED)
+            -   phrase: type of the phrase (REQUIRED)
+            -   case: declension case (optional)
+          -->
+        <!ELEMENT chunk (span)+>
+        <!ATTLIST chunk
+                  id ID #REQUIRED
+                  head IDREF #REQUIRED
+                  phrase CDATA #REQUIRED
+                  case CDATA #IMPLIED>
+        """
+        element = self.subelement(element=self.layer(CHUNKS_LAYER_TAG),
+                                  tag=CHUNK_OCCURRENCE_TAG,
+                                  data=data,
+                                  comments=comments)
+
+        if data.targets != []:
+            self.add_span_element(
+                element=element, data=data, comments=comments
+            )
 
     def add_span_element(self, element, data, comments=False, naf_version: str = None):
         """
@@ -608,10 +652,13 @@ class NafDocument(etree._ElementTree):
                   status CDATA #IMPLIED>
         """
         if (naf_version is not None) and naf_version == "v3":
-            references = etree.SubElement(element, "references")
-            span = etree.SubElement(references, SPAN_OCCURRENCE_TAG)
+            references = self.subelement(element=element,
+                                      tag="references")
+            span = self.subelement(element=references,
+                                tag=SPAN_OCCURRENCE_TAG)
         else:
-            span = etree.SubElement(element, SPAN_OCCURRENCE_TAG)
+            span = self.subelement(element=element,
+                                tag=SPAN_OCCURRENCE_TAG)
 
         if comments:
             text = " ".join(data.text)
@@ -619,7 +666,9 @@ class NafDocument(etree._ElementTree):
             span.append(etree.Comment(text))
 
         for target in data.targets:
-            target_el = etree.SubElement(span, TARGET_OCCURRENCE_TAG, {"id": target})
+            self.subelement(element=span,
+                         tag=TARGET_OCCURRENCE_TAG,
+                         data={"id": target})
 
     def add_external_reference_element(self, element, ext_refs: list):
         """
@@ -664,42 +713,151 @@ class NafDocument(etree._ElementTree):
         if not isinstance(ext_refs, list):
             logging.info("ext_refs should be a list of dictionaries (can be empty)")
 
-        ext_refs_el = etree.SubElement(element, "externalReferences")
+        ext_refs_el = self.subelement(element=element,
+                                   tag="externalReferences")
         for ext_ref in ext_refs:
-            ext_ref_el = etree.SubElement(
-                ext_refs_el, "externalRef", {"reference": ext_ref["reference"]}
-            )
+            ext_ref_el = self.subelement(element=ext_refs_el, 
+                                      tag="externalRef",
+                                      data={"reference": ext_ref["reference"]})
             for optional_attr in ["resource", "source", "timestamp"]:
                 if optional_attr in ext_ref:
                     ext_ref_el.set(optional_attr, ext_ref[optional_attr])
 
-    def add_chunk_element(self, data: ChunkElement, comments: bool):
+    def add_multiword_element(self, data: MultiwordElement):
         """
-        <!-- CHUNKS ELEMENT -->
-        <!ELEMENT chunks (chunk)+>
-        <!-- CHUNK ELEMENT -->
-        <!--
-            The <chunk> elements have the following attributes:
-            -   id: unique identifier (REQUIRED)
-            -   head: the chunk head’s term id  (REQUIRED)
-            -   phrase: type of the phrase (REQUIRED)
-            -   case: declension case (optional)
-          -->
-        <!ELEMENT chunk (span)+>
-        <!ATTLIST chunk
-                  id ID #REQUIRED
-                  head IDREF #REQUIRED
-                  phrase CDATA #REQUIRED
-                  case CDATA #IMPLIED>
-        """
-        layer = self.find(CHUNKS_LAYER_TAG)
-        if layer is None:
-            layer = etree.SubElement(
-                self.getroot(), QName(PREFIX_NAF_BASE, CHUNKS_LAYER_TAG)
-            )
-        chunk = etree.SubElement(layer, CHUNK_OCCURRENCE_TAG, self.get_attributes(data))
+        <!-- MULTIWORDS ELEMENT -->
+        <!ELEMENT multiwords (mw)+>
 
-        self.add_span_element(element=chunk, data=data, comments=comments)
+        <!-- MW ELEMENT -->
+        <!--
+            attributes of mw elements
+            id: unique identifier (REQUIRED AND UNIQUE)
+            lemma: lemma of the term (IMPLIED).
+            pos: part of speech. (IMPLIED)
+            morphofeat: morphosyntactic feature encoded as a single attribute. (IMPLIED)
+            case: declension case (IMPLIED)
+            status: manual | system | deprecated
+            type: phrasal, idiom
+          -->
+
+        <!ELEMENT mw (component|externalReferences)+>
+        <!ATTLIST mw
+                  id ID #REQUIRED
+                  lemma CDATA #IMPLIED
+                  pos CDATA #IMPLIED
+                  morphofeat CDATA #IMPLIED
+                  case CDATA #IMPLIED
+                  status CDATA #IMPLIED
+                  type CDATA #REQUIRED>
+        """
+        mw = self.subelement(element=self.layer(MULTIWORDS_LAYER_TAG),
+                             tag=MULTIWORD_OCCURRENCE_TAG,
+                             data=data)
+        for component in data.components:
+            com = self.subelement(element=mw,
+                                  tag=COMPONENT_OCCURRENCE_TAG,
+                                  data=data)
+            self.add_span_element(element=com, data=component)
+
+    # def get_mws_layer(self):
+    #     """ """
+    #     layer = self.find("multiwords")
+    #     if layer is None:
+    #         layer = etree.SubElement(
+    #             self.getroot(), QName(PREFIX_NAF_BASE, "multiwords")
+    #         )
+    #     return layer
+
+    # def get_next_mw_id(self):
+    #     """ """
+    #     layer = self.find("multiwords")
+    #     if layer is None:
+    #         layer = etree.SubElement(
+    #             self.getroot(), QName(PREFIX_NAF_BASE, "multiwords")
+    #         )
+    #     mw_ids = [int(mw_el.get("id")[2:]) for mw_el in layer.xpath("mw")]
+    #     if mw_ids:
+    #         next_mw_id = max(mw_ids) + 1
+    #     else:
+    #         next_mw_id = 1
+    #     return f"mw{next_mw_id}"
+
+    # def add_multi_words(self, naf_version: str, language: str):
+    #     """
+    #     <!-- MULTIWORDS ELEMENT -->
+    #     <!ELEMENT multiwords (mw)+>
+    #     <!-- MW ELEMENT -->
+    #     <!--
+    #         attributes of mw elements
+    #         id: unique identifier (REQUIRED AND UNIQUE)
+    #         lemma: lemma of the term (IMPLIED).
+    #         pos: part of speech. (IMPLIED)
+    #         morphofeat: morphosyntactic feature encoded as a single attribute. (IMPLIED)
+    #         case: declension case (IMPLIED)
+    #         status: manual | system | deprecated
+    #         type: phrasal, idiom
+    #       -->
+    #     <!ELEMENT mw (component|externalReferences)+>
+    #     <!ATTLIST mw
+    #               id ID #REQUIRED
+    #               lemma CDATA #IMPLIED
+    #               pos CDATA #IMPLIED
+    #               morphofeat CDATA #IMPLIED
+    #               case CDATA #IMPLIED
+    #               status CDATA #IMPLIED
+    #               type CDATA #REQUIRED>
+    #     """
+
+    #     # dictionary from tid -> term_el
+    #     tid_to_term = {
+    #         term.get("id"): term for term in self.getroot().xpath("terms/term")
+    #     }
+
+    #     num_of_compound_prts = 0
+
+    #     # loop deps el
+    #     for dep in self.findall(DEPS_LAYER_TAG + "/" + DEP_OCCURRENCE_TAG):
+
+    #         if dep.get("rfunc") == "compound:prt":
+
+    #             mws_layer = self.get_mws_layer()
+    #             next_mw_id = self.get_next_mw_id()
+
+    #             idverb = dep.get("from_term")
+    #             idparticle = dep.get("to_term")
+    #             num_of_compound_prts += 1
+
+    #             verb_term_el = tid_to_term[idverb]
+    #             verb = verb_term_el.get("lemma")
+    #             verb_term_el.set("component_of", next_mw_id)
+
+    #             particle_term_el = tid_to_term[idparticle]
+    #             particle = particle_term_el.get("lemma")
+    #             particle_term_el.set("component_of", next_mw_id)
+
+    #             separable_verb_lemma = self.create_separable_verb_lemma(
+    #                 verb, particle, language
+    #             )
+    #             attributes = [
+    #                 ("id", next_mw_id),
+    #                 ("lemma", separable_verb_lemma),
+    #                 ("pos", "VERB"),
+    #                 ("type", "phrasal"),
+    #             ]
+
+    #             mw_element = etree.SubElement(mws_layer, "mw", attributes)
+
+    #             # add component elements
+    #             components = [
+    #                 (f"{next_mw_id}.c1", idverb),
+    #                 (f"{next_mw_id}.c2", idparticle),
+    #             ]
+    #             for c_id, t_id in components:
+    #                 component = etree.SubElement(
+    #                     mw_element, "component", attrib={"id": c_id}
+    #                 )
+    #                 span = etree.SubElement(component, "span")
+    #                 etree.SubElement(span, "target", attrib={"id": t_id})
 
     def add_formats_element(self, formats: str):
 
@@ -801,14 +959,25 @@ class NafDocument(etree._ElementTree):
                     offset += 1
                 elif page_item.tag == "figure":
                     page_item_element = add_element(page_element, page_item.tag)
-                    previous_text = textline[0].text
-                    previous_attrib = copy_dict(textline[0])
-                    for idx, char in enumerate(page_item):
-                        if char.tag == "text":
-                            char_attrib = copy_dict(char)
-                            if previous_attrib == char_attrib:
-                                previous_text += char.text
-                                if idx == len(textline) - 1:
+                    if len(page_item) > 0:
+                        previous_text = page_item[0].text
+                        previous_attrib = copy_dict(page_item[0])
+                        for idx, char in enumerate(page_item[1:]):
+                            if char.tag == "text":
+                                char_attrib = copy_dict(char)
+                                if previous_attrib == char_attrib:
+                                    previous_text += char.text
+                                    if idx == len(textline) - 1:
+                                        add_text_element(
+                                            page_item_element,
+                                            char.tag,
+                                            previous_text,
+                                            previous_attrib,
+                                            offset,
+                                        )
+                                        page_length += len(previous_text)
+                                        offset += len(previous_text)
+                                else:  # -> previous_attrib != char_attrib
                                     add_text_element(
                                         page_item_element,
                                         char.tag,
@@ -818,176 +987,18 @@ class NafDocument(etree._ElementTree):
                                     )
                                     page_length += len(previous_text)
                                     offset += len(previous_text)
-                            else:  # -> previous_attrib != char_attrib
-                                add_text_element(
-                                    page_item_element,
-                                    char.tag,
-                                    previous_text,
-                                    previous_attrib,
-                                    offset,
-                                )
-                                page_length += len(previous_text)
-                                offset += len(previous_text)
-                                if idx < len(textline) - 1:
-                                    previous_text = char.text
-                                    previous_attrib = char_attrib
-                                else:
-                                    add_text_element(
-                                        page_item_element,
-                                        char.tag,
-                                        char.text,
-                                        char_attrib,
-                                        offset,
-                                    )
-                                    page_length += len(char.text)
-                                    offset += len(char.text)
+                                    if idx < len(textline) - 1:
+                                        previous_text = char.text
+                                        previous_attrib = char_attrib
+                                    else:
+                                        add_text_element(
+                                            page_item_element,
+                                            char.tag,
+                                            char.text,
+                                            char_attrib,
+                                            offset,
+                                        )
+                                        page_length += len(char.text)
+                                        offset += len(char.text)
             page_element.set("length", str(page_length))
             page_element.set("offset", str(offset - page_length))
-
-    def prepare_comment_text(self, text: str):
-        """ """
-        text = text.replace("--", "DOUBLEDASH")
-        if text.endswith("-"):
-            text = text[:-1] + "SINGLEDASH"
-        return text
-
-    def add_multiword_element(self, data: MultiwordElement):
-        """
-        <!-- MULTIWORDS ELEMENT -->
-        <!ELEMENT multiwords (mw)+>
-
-        <!-- MW ELEMENT -->
-        <!--
-            attributes of mw elements
-            id: unique identifier (REQUIRED AND UNIQUE)
-            lemma: lemma of the term (IMPLIED).
-            pos: part of speech. (IMPLIED)
-            morphofeat: morphosyntactic feature encoded as a single attribute. (IMPLIED)
-            case: declension case (IMPLIED)
-            status: manual | system | deprecated
-            type: phrasal, idiom
-          -->
-
-        <!ELEMENT mw (component|externalReferences)+>
-        <!ATTLIST mw
-                  id ID #REQUIRED
-                  lemma CDATA #IMPLIED
-                  pos CDATA #IMPLIED
-                  morphofeat CDATA #IMPLIED
-                  case CDATA #IMPLIED
-                  status CDATA #IMPLIED
-                  type CDATA #REQUIRED>
-        """
-        layer = self.find(MULTIWORDS_LAYER_TAG)
-        if layer is None:
-            layer = etree.SubElement(
-                self.getroot(), QName(PREFIX_NAF_BASE, MULTIWORDS_LAYER_TAG)
-            )
-        mw = etree.SubElement(
-            layer, MULTIWORD_OCCURRENCE_TAG, self.get_attributes(data)
-        )
-        for component in data.components:
-            com = etree.SubElement(
-                mw, COMPONENT_OCCURRENCE_TAG, self.get_attributes(component)
-            )
-            self.add_span_element(element=com, data=component)
-
-    def get_mws_layer(self):
-        """ """
-        layer = self.find("multiwords")
-        if layer is None:
-            layer = etree.SubElement(
-                self.getroot(), QName(PREFIX_NAF_BASE, "multiwords")
-            )
-        return layer
-
-    def get_next_mw_id(self):
-        """ """
-        layer = self.find("multiwords")
-        if layer is None:
-            layer = etree.SubElement(
-                self.getroot(), QName(PREFIX_NAF_BASE, "multiwords")
-            )
-        mw_ids = [int(mw_el.get("id")[2:]) for mw_el in layer.xpath("mw")]
-        if mw_ids:
-            next_mw_id = max(mw_ids) + 1
-        else:
-            next_mw_id = 1
-        return f"mw{next_mw_id}"
-
-    def add_multi_words(self, naf_version: str, language: str):
-        """
-        <!-- MULTIWORDS ELEMENT -->
-        <!ELEMENT multiwords (mw)+>
-        <!-- MW ELEMENT -->
-        <!--
-            attributes of mw elements
-            id: unique identifier (REQUIRED AND UNIQUE)
-            lemma: lemma of the term (IMPLIED).
-            pos: part of speech. (IMPLIED)
-            morphofeat: morphosyntactic feature encoded as a single attribute. (IMPLIED)
-            case: declension case (IMPLIED)
-            status: manual | system | deprecated
-            type: phrasal, idiom
-          -->
-        <!ELEMENT mw (component|externalReferences)+>
-        <!ATTLIST mw
-                  id ID #REQUIRED
-                  lemma CDATA #IMPLIED
-                  pos CDATA #IMPLIED
-                  morphofeat CDATA #IMPLIED
-                  case CDATA #IMPLIED
-                  status CDATA #IMPLIED
-                  type CDATA #REQUIRED>
-        """
-
-        # dictionary from tid -> term_el
-        tid_to_term = {
-            term.get("id"): term for term in self.getroot().xpath("terms/term")
-        }
-
-        num_of_compound_prts = 0
-
-        # loop deps el
-        for dep in self.findall(DEPS_LAYER_TAG + "/" + DEP_OCCURRENCE_TAG):
-
-            if dep.get("rfunc") == "compound:prt":
-
-                mws_layer = self.get_mws_layer()
-                next_mw_id = self.get_next_mw_id()
-
-                idverb = dep.get("from_term")
-                idparticle = dep.get("to_term")
-                num_of_compound_prts += 1
-
-                verb_term_el = tid_to_term[idverb]
-                verb = verb_term_el.get("lemma")
-                verb_term_el.set("component_of", next_mw_id)
-
-                particle_term_el = tid_to_term[idparticle]
-                particle = particle_term_el.get("lemma")
-                particle_term_el.set("component_of", next_mw_id)
-
-                separable_verb_lemma = self.create_separable_verb_lemma(
-                    verb, particle, language
-                )
-                attributes = [
-                    ("id", next_mw_id),
-                    ("lemma", separable_verb_lemma),
-                    ("pos", "VERB"),
-                    ("type", "phrasal"),
-                ]
-
-                mw_element = etree.SubElement(mws_layer, "mw", attributes)
-
-                # add component elements
-                components = [
-                    (f"{next_mw_id}.c1", idverb),
-                    (f"{next_mw_id}.c2", idparticle),
-                ]
-                for c_id, t_id in components:
-                    component = etree.SubElement(
-                        mw_element, "component", attrib={"id": c_id}
-                    )
-                    span = etree.SubElement(component, "span")
-                    etree.SubElement(span, "target", attrib={"id": t_id})
