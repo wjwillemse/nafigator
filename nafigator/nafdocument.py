@@ -756,7 +756,7 @@ class NafDocument(etree._ElementTree):
         for component in data.components:
             com = self.subelement(element=mw,
                                   tag=COMPONENT_OCCURRENCE_TAG,
-                                  data=data)
+                                  data=component)
             self.add_span_element(element=com, data=component)
 
     # def get_mws_layer(self):
