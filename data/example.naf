@@ -1,69 +1,122 @@
 <?xml version='1.0' encoding='UTF-8'?>
 <NAF xmlns:dc="http://purl.org/dc/elements/1.1/" version="v3.1" xml:lang="en">
   <nafHeader>
-    <fileDesc creationtime="2021-04-30T16:09:35UTC" filename="data/example.pdf" filetype="application/pdf"/>
+    <fileDesc creationtime="2021-05-09T12:05:02UTC" filename="data/example.pdf" filetype="application/pdf"/>
     <public dc:uri="data/example.pdf" dc:format="application/pdf"/>
     <linguisticProcessors layer="pdftoxml">
-      <lp name="pdfminer-pdf2xml" version="pdfminer_version-20201018" beginTimestamp="2021-04-30T16:09:35UTC" endTimestamp="2021-04-30T16:09:35UTC"/>
+      <lp name="pdfminer-pdf2xml" version="pdfminer_version-20200124" beginTimestamp="2021-05-09T12:05:02UTC" endTimestamp="2021-05-09T12:05:02UTC"/>
     </linguisticProcessors>
     <linguisticProcessors layer="pdftotext">
-      <lp name="pdfminer-pdf2text" version="pdfminer_version-20201018" beginTimestamp="2021-04-30T16:09:35UTC" endTimestamp="2021-04-30T16:09:35UTC"/>
+      <lp name="pdfminer-pdf2text" version="pdfminer_version-20200124" beginTimestamp="2021-05-09T12:05:02UTC" endTimestamp="2021-05-09T12:05:02UTC"/>
     </linguisticProcessors>
     <linguisticProcessors layer="formats">
-      <lp name="stanza-model_en" version="stanza_version-1.2" beginTimestamp="2021-04-30T16:09:37UTC" endTimestamp="2021-04-30T16:09:37UTC"/>
+      <lp name="stanza-model_en" version="stanza_version-1.2" beginTimestamp="2021-05-09T12:05:04UTC" endTimestamp="2021-05-09T12:05:05UTC"/>
     </linguisticProcessors>
     <linguisticProcessors layer="entities">
-      <lp name="stanza-model_en" version="stanza_version-1.2" beginTimestamp="2021-04-30T16:09:37UTC" endTimestamp="2021-04-30T16:09:37UTC"/>
+      <lp name="stanza-model_en" version="stanza_version-1.2" beginTimestamp="2021-05-09T12:05:04UTC" endTimestamp="2021-05-09T12:05:05UTC"/>
     </linguisticProcessors>
     <linguisticProcessors layer="text">
-      <lp name="stanza-model_en" version="stanza_version-1.2" beginTimestamp="2021-04-30T16:09:37UTC" endTimestamp="2021-04-30T16:09:37UTC"/>
+      <lp name="stanza-model_en" version="stanza_version-1.2" beginTimestamp="2021-05-09T12:05:04UTC" endTimestamp="2021-05-09T12:05:05UTC"/>
     </linguisticProcessors>
     <linguisticProcessors layer="terms">
-      <lp name="stanza-model_en" version="stanza_version-1.2" beginTimestamp="2021-04-30T16:09:37UTC" endTimestamp="2021-04-30T16:09:37UTC"/>
+      <lp name="stanza-model_en" version="stanza_version-1.2" beginTimestamp="2021-05-09T12:05:04UTC" endTimestamp="2021-05-09T12:05:05UTC"/>
     </linguisticProcessors>
     <linguisticProcessors layer="deps">
-      <lp name="stanza-model_en" version="stanza_version-1.2" beginTimestamp="2021-04-30T16:09:37UTC" endTimestamp="2021-04-30T16:09:37UTC"/>
+      <lp name="stanza-model_en" version="stanza_version-1.2" beginTimestamp="2021-05-09T12:05:04UTC" endTimestamp="2021-05-09T12:05:05UTC"/>
+    </linguisticProcessors>
+    <linguisticProcessors layer="multiwords">
+      <lp name="stanza-model_en" version="stanza_version-1.2" beginTimestamp="2021-05-09T12:05:04UTC" endTimestamp="2021-05-09T12:05:05UTC"/>
     </linguisticProcessors>
     <linguisticProcessors layer="raw">
-      <lp name="stanza-model_en" version="stanza_version-1.2" beginTimestamp="2021-04-30T16:09:37UTC" endTimestamp="2021-04-30T16:09:37UTC"/>
+      <lp name="stanza-model_en" version="stanza_version-1.2" beginTimestamp="2021-05-09T12:05:04UTC" endTimestamp="2021-05-09T12:05:05UTC"/>
     </linguisticProcessors>
   </nafHeader>
   <formats>
-    <page length="48" offset="0">
+    <page length="268" offset="0">
       <textbox>
         <textline>
-          <text font="CIDFont+F1" size="12.000" length="1" offset="0"> </text>
+          <text font="CIDFont+F1" size="12.000" length="87" offset="0">The Nafigator package allows you to store NLP output from custom made spaCy and stanza </text>
+        </textline>
+        <textline>
+          <text font="CIDFont+F1" size="12.000" length="77" offset="88">pipelines with (intermediate) results and all processing steps in one format.</text>
         </textline>
       </textbox>
       <textbox>
         <textline>
-          <text font="CIDFont+F1" size="12.000" length="42" offset="3">The cat sat on the mat. Matt was his name.</text>
+          <text font="CIDFont+F1" size="12.000" length="86" offset="167">Multiwords like in “we have set that out below” are recognized (depending on your NLP </text>
+        </textline>
+        <textline>
+          <text font="CIDFont+F1" size="12.000" length="11" offset="254">processor).</text>
         </textline>
       </textbox>
     </page>
   </formats>
   <entities>
-    <entity id="e1" type="PERSON">
+    <entity id="e1" type="PRODUCT">
       <span>
-        <!--Matt-->
-        <target id="t8"/>
+        <!--Nafigator-->
+        <target id="t2"/>
       </span>
-      <externalReferences/>
+    </entity>
+    <entity id="e2" type="CARDINAL">
+      <span>
+        <!--one-->
+        <target id="t28"/>
+      </span>
     </entity>
   </entities>
   <text>
-    <wf page="1" sent="1" id="w1" length="3" wordform="The" offset="3"><![CDATA[The]]></wf>
-    <wf page="1" sent="1" id="w2" length="3" wordform="cat" offset="7"><![CDATA[cat]]></wf>
-    <wf page="1" sent="1" id="w3" length="3" wordform="sat" offset="11"><![CDATA[sat]]></wf>
-    <wf page="1" sent="1" id="w4" length="2" wordform="on" offset="15"><![CDATA[on]]></wf>
-    <wf page="1" sent="1" id="w5" length="3" wordform="the" offset="18"><![CDATA[the]]></wf>
-    <wf page="1" sent="1" id="w6" length="3" wordform="mat" offset="22"><![CDATA[mat]]></wf>
-    <wf page="1" sent="1" id="w7" length="1" wordform="." offset="25"><![CDATA[.]]></wf>
-    <wf page="1" sent="2" id="w8" length="4" wordform="Matt" offset="27"><![CDATA[Matt]]></wf>
-    <wf page="1" sent="2" id="w9" length="3" wordform="was" offset="32"><![CDATA[was]]></wf>
-    <wf page="1" sent="2" id="w10" length="3" wordform="his" offset="36"><![CDATA[his]]></wf>
-    <wf page="1" sent="2" id="w11" length="4" wordform="name" offset="40"><![CDATA[name]]></wf>
-    <wf page="1" sent="2" id="w12" length="1" wordform="." offset="44"><![CDATA[.]]></wf>
+    <wf page="1" sent="1" id="w1" length="3" offset="0"><![CDATA[The]]></wf>
+    <wf page="1" sent="1" id="w2" length="9" offset="4"><![CDATA[Nafigator]]></wf>
+    <wf page="1" sent="1" id="w3" length="7" offset="14"><![CDATA[package]]></wf>
+    <wf page="1" sent="1" id="w4" length="6" offset="22"><![CDATA[allows]]></wf>
+    <wf page="1" sent="1" id="w5" length="3" offset="29"><![CDATA[you]]></wf>
+    <wf page="1" sent="1" id="w6" length="2" offset="33"><![CDATA[to]]></wf>
+    <wf page="1" sent="1" id="w7" length="5" offset="36"><![CDATA[store]]></wf>
+    <wf page="1" sent="1" id="w8" length="3" offset="42"><![CDATA[NLP]]></wf>
+    <wf page="1" sent="1" id="w9" length="6" offset="46"><![CDATA[output]]></wf>
+    <wf page="1" sent="1" id="w10" length="4" offset="53"><![CDATA[from]]></wf>
+    <wf page="1" sent="1" id="w11" length="6" offset="58"><![CDATA[custom]]></wf>
+    <wf page="1" sent="1" id="w12" length="4" offset="65"><![CDATA[made]]></wf>
+    <wf page="1" sent="1" id="w13" length="3" offset="70"><![CDATA[spa]]></wf>
+    <wf page="1" sent="2" id="w14" length="2" offset="73"><![CDATA[Cy]]></wf>
+    <wf page="1" sent="2" id="w15" length="3" offset="76"><![CDATA[and]]></wf>
+    <wf page="1" sent="2" id="w16" length="6" offset="80"><![CDATA[stanza]]></wf>
+    <wf page="1" sent="2" id="w17" length="9" offset="88"><![CDATA[pipelines]]></wf>
+    <wf page="1" sent="2" id="w18" length="4" offset="98"><![CDATA[with]]></wf>
+    <wf page="1" sent="2" id="w19" length="1" offset="103"><![CDATA[(]]></wf>
+    <wf page="1" sent="2" id="w20" length="12" offset="104"><![CDATA[intermediate]]></wf>
+    <wf page="1" sent="2" id="w21" length="1" offset="116"><![CDATA[)]]></wf>
+    <wf page="1" sent="2" id="w22" length="7" offset="118"><![CDATA[results]]></wf>
+    <wf page="1" sent="2" id="w23" length="3" offset="126"><![CDATA[and]]></wf>
+    <wf page="1" sent="2" id="w24" length="3" offset="130"><![CDATA[all]]></wf>
+    <wf page="1" sent="2" id="w25" length="10" offset="134"><![CDATA[processing]]></wf>
+    <wf page="1" sent="2" id="w26" length="5" offset="145"><![CDATA[steps]]></wf>
+    <wf page="1" sent="2" id="w27" length="2" offset="151"><![CDATA[in]]></wf>
+    <wf page="1" sent="2" id="w28" length="3" offset="154"><![CDATA[one]]></wf>
+    <wf page="1" sent="2" id="w29" length="6" offset="158"><![CDATA[format]]></wf>
+    <wf page="1" sent="2" id="w30" length="1" offset="164"><![CDATA[.]]></wf>
+    <wf page="1" sent="3" id="w31" length="10" offset="167"><![CDATA[Multiwords]]></wf>
+    <wf page="1" sent="3" id="w32" length="4" offset="178"><![CDATA[like]]></wf>
+    <wf page="1" sent="3" id="w33" length="2" offset="183"><![CDATA[in]]></wf>
+    <wf page="1" sent="3" id="w34" length="1" offset="186"><![CDATA[“]]></wf>
+    <wf page="1" sent="3" id="w35" length="2" offset="187"><![CDATA[we]]></wf>
+    <wf page="1" sent="3" id="w36" length="4" offset="190"><![CDATA[have]]></wf>
+    <wf page="1" sent="3" id="w37" length="3" offset="195"><![CDATA[set]]></wf>
+    <wf page="1" sent="3" id="w38" length="4" offset="199"><![CDATA[that]]></wf>
+    <wf page="1" sent="3" id="w39" length="3" offset="204"><![CDATA[out]]></wf>
+    <wf page="1" sent="3" id="w40" length="5" offset="208"><![CDATA[below]]></wf>
+    <wf page="1" sent="3" id="w41" length="1" offset="213"><![CDATA[”]]></wf>
+    <wf page="1" sent="3" id="w42" length="3" offset="215"><![CDATA[are]]></wf>
+    <wf page="1" sent="3" id="w43" length="10" offset="219"><![CDATA[recognized]]></wf>
+    <wf page="1" sent="3" id="w44" length="1" offset="230"><![CDATA[(]]></wf>
+    <wf page="1" sent="3" id="w45" length="9" offset="231"><![CDATA[depending]]></wf>
+    <wf page="1" sent="3" id="w46" length="2" offset="241"><![CDATA[on]]></wf>
+    <wf page="1" sent="3" id="w47" length="4" offset="244"><![CDATA[your]]></wf>
+    <wf page="1" sent="3" id="w48" length="3" offset="249"><![CDATA[NLP]]></wf>
+    <wf page="1" sent="3" id="w49" length="9" offset="254"><![CDATA[processor]]></wf>
+    <wf page="1" sent="3" id="w50" length="1" offset="263"><![CDATA[)]]></wf>
+    <wf page="1" sent="3" id="w51" length="1" offset="264"><![CDATA[.]]></wf>
   </text>
   <terms>
     <term id="t1" lemma="the" pos="DET" type="open" morphofeat="Definite=Def|PronType=Art">
@@ -72,94 +125,418 @@
         <target id="w1"/>
       </span>
     </term>
-    <term id="t2" lemma="cat" pos="NOUN" type="open" morphofeat="Number=Sing">
+    <term id="t2" lemma="Nafigator" pos="PROPN" type="open" morphofeat="Number=Sing">
       <span>
-        <!--cat-->
+        <!--Nafigator-->
         <target id="w2"/>
       </span>
     </term>
-    <term id="t3" lemma="sit" pos="VERB" type="open" morphofeat="Mood=Ind|Tense=Past|VerbForm=Fin">
+    <term id="t3" lemma="package" pos="NOUN" type="open" morphofeat="Number=Sing">
       <span>
-        <!--sat-->
+        <!--package-->
         <target id="w3"/>
       </span>
     </term>
-    <term id="t4" lemma="on" pos="ADP" type="open">
+    <term id="t4" lemma="allow" pos="VERB" type="open" morphofeat="Mood=Ind|Number=Sing|Person=3|Tense=Pres|VerbForm=Fin">
       <span>
-        <!--on-->
+        <!--allows-->
         <target id="w4"/>
       </span>
     </term>
-    <term id="t5" lemma="the" pos="DET" type="open" morphofeat="Definite=Def|PronType=Art">
+    <term id="t5" lemma="you" pos="PRON" type="open" morphofeat="Case=Acc|Person=2|PronType=Prs">
       <span>
-        <!--the-->
+        <!--you-->
         <target id="w5"/>
       </span>
     </term>
-    <term id="t6" lemma="mat" pos="NOUN" type="open" morphofeat="Number=Sing">
+    <term id="t6" lemma="to" pos="PART" type="open">
       <span>
-        <!--mat-->
+        <!--to-->
         <target id="w6"/>
       </span>
     </term>
-    <term id="t7" lemma="." pos="PUNCT" type="open">
+    <term id="t7" lemma="store" pos="VERB" type="open" morphofeat="VerbForm=Inf">
       <span>
-        <!--.-->
+        <!--store-->
         <target id="w7"/>
       </span>
     </term>
-    <term id="t8" lemma="Matt" pos="PROPN" type="open" morphofeat="Number=Sing">
+    <term id="t8" lemma="nlp" pos="NOUN" type="open" morphofeat="Number=Sing">
       <span>
-        <!--Matt-->
+        <!--NLP-->
         <target id="w8"/>
       </span>
     </term>
-    <term id="t9" lemma="be" pos="AUX" type="open" morphofeat="Mood=Ind|Number=Sing|Person=3|Tense=Past|VerbForm=Fin">
+    <term id="t9" lemma="output" pos="NOUN" type="open" morphofeat="Number=Sing">
       <span>
-        <!--was-->
+        <!--output-->
         <target id="w9"/>
       </span>
     </term>
-    <term id="t10" lemma="he" pos="PRON" type="open" morphofeat="Gender=Masc|Number=Sing|Person=3|Poss=Yes|PronType=Prs">
+    <term id="t10" lemma="from" pos="ADP" type="open">
       <span>
-        <!--his-->
+        <!--from-->
         <target id="w10"/>
       </span>
     </term>
-    <term id="t11" lemma="name" pos="NOUN" type="open" morphofeat="Number=Sing">
+    <term id="t11" lemma="custom" pos="ADJ" type="open" morphofeat="Degree=Pos">
       <span>
-        <!--name-->
+        <!--custom-->
         <target id="w11"/>
       </span>
     </term>
-    <term id="t12" lemma="." pos="PUNCT" type="open">
+    <term id="t12" lemma="make" pos="VERB" type="open" morphofeat="Tense=Past|VerbForm=Part">
+      <span>
+        <!--made-->
+        <target id="w12"/>
+      </span>
+    </term>
+    <term id="t13" lemma="spa" pos="NOUN" type="open" morphofeat="Number=Sing">
+      <span>
+        <!--spa-->
+        <target id="w13"/>
+      </span>
+    </term>
+    <term id="t14" lemma="cy" pos="NOUN" type="open" morphofeat="Number=Sing">
+      <span>
+        <!--Cy-->
+        <target id="w14"/>
+      </span>
+    </term>
+    <term id="t15" lemma="and" pos="CCONJ" type="open">
+      <span>
+        <!--and-->
+        <target id="w15"/>
+      </span>
+    </term>
+    <term id="t16" lemma="stanza" pos="NOUN" type="open" morphofeat="Number=Sing">
+      <span>
+        <!--stanza-->
+        <target id="w16"/>
+      </span>
+    </term>
+    <term id="t17" lemma="pipeline" pos="NOUN" type="open" morphofeat="Number=Plur">
+      <span>
+        <!--pipelines-->
+        <target id="w17"/>
+      </span>
+    </term>
+    <term id="t18" lemma="with" pos="ADP" type="open">
+      <span>
+        <!--with-->
+        <target id="w18"/>
+      </span>
+    </term>
+    <term id="t19" lemma="(" pos="PUNCT" type="open">
+      <span>
+        <!--(-->
+        <target id="w19"/>
+      </span>
+    </term>
+    <term id="t20" lemma="intermediate" pos="ADJ" type="open" morphofeat="Degree=Pos">
+      <span>
+        <!--intermediate-->
+        <target id="w20"/>
+      </span>
+    </term>
+    <term id="t21" lemma=")" pos="PUNCT" type="open">
+      <span>
+        <!--)-->
+        <target id="w21"/>
+      </span>
+    </term>
+    <term id="t22" lemma="result" pos="NOUN" type="open" morphofeat="Number=Plur">
+      <span>
+        <!--results-->
+        <target id="w22"/>
+      </span>
+    </term>
+    <term id="t23" lemma="and" pos="CCONJ" type="open">
+      <span>
+        <!--and-->
+        <target id="w23"/>
+      </span>
+    </term>
+    <term id="t24" lemma="all" pos="DET" type="open">
+      <span>
+        <!--all-->
+        <target id="w24"/>
+      </span>
+    </term>
+    <term id="t25" lemma="processing" pos="NOUN" type="open" morphofeat="Number=Sing">
+      <span>
+        <!--processing-->
+        <target id="w25"/>
+      </span>
+    </term>
+    <term id="t26" lemma="step" pos="NOUN" type="open" morphofeat="Number=Plur">
+      <span>
+        <!--steps-->
+        <target id="w26"/>
+      </span>
+    </term>
+    <term id="t27" lemma="in" pos="ADP" type="open">
+      <span>
+        <!--in-->
+        <target id="w27"/>
+      </span>
+    </term>
+    <term id="t28" lemma="one" pos="NUM" type="open" morphofeat="NumType=Card">
+      <span>
+        <!--one-->
+        <target id="w28"/>
+      </span>
+    </term>
+    <term id="t29" lemma="format" pos="NOUN" type="open" morphofeat="Number=Sing">
+      <span>
+        <!--format-->
+        <target id="w29"/>
+      </span>
+    </term>
+    <term id="t30" lemma="." pos="PUNCT" type="open">
       <span>
         <!--.-->
-        <target id="w12"/>
+        <target id="w30"/>
+      </span>
+    </term>
+    <term id="t31" lemma="multiword" pos="NOUN" type="open" morphofeat="Number=Plur">
+      <span>
+        <!--Multiwords-->
+        <target id="w31"/>
+      </span>
+    </term>
+    <term id="t32" lemma="like" pos="ADP" type="open">
+      <span>
+        <!--like-->
+        <target id="w32"/>
+      </span>
+    </term>
+    <term id="t33" lemma="in" pos="ADP" type="open">
+      <span>
+        <!--in-->
+        <target id="w33"/>
+      </span>
+    </term>
+    <term id="t34" lemma="&quot;" pos="PUNCT" type="open">
+      <span>
+        <!--“-->
+        <target id="w34"/>
+      </span>
+    </term>
+    <term id="t35" lemma="we" pos="PRON" type="open" morphofeat="Case=Nom|Number=Plur|Person=1|PronType=Prs">
+      <span>
+        <!--we-->
+        <target id="w35"/>
+      </span>
+    </term>
+    <term id="t36" lemma="have" pos="AUX" type="open" morphofeat="Mood=Ind|Tense=Pres|VerbForm=Fin">
+      <span>
+        <!--have-->
+        <target id="w36"/>
+      </span>
+    </term>
+    <term id="t37" lemma="set" pos="VERB" type="open" morphofeat="Tense=Past|VerbForm=Part" component_of="mw1">
+      <span>
+        <!--set-->
+        <target id="w37"/>
+      </span>
+    </term>
+    <term id="t38" lemma="that" pos="SCONJ" type="open">
+      <span>
+        <!--that-->
+        <target id="w38"/>
+      </span>
+    </term>
+    <term id="t39" lemma="out" pos="ADP" type="open" component_of="mw1">
+      <span>
+        <!--out-->
+        <target id="w39"/>
+      </span>
+    </term>
+    <term id="t40" lemma="below" pos="ADV" type="open">
+      <span>
+        <!--below-->
+        <target id="w40"/>
+      </span>
+    </term>
+    <term id="t41" lemma="&quot;" pos="PUNCT" type="open">
+      <span>
+        <!--”-->
+        <target id="w41"/>
+      </span>
+    </term>
+    <term id="t42" lemma="be" pos="AUX" type="open" morphofeat="Mood=Ind|Tense=Pres|VerbForm=Fin">
+      <span>
+        <!--are-->
+        <target id="w42"/>
+      </span>
+    </term>
+    <term id="t43" lemma="recognize" pos="VERB" type="open" morphofeat="Tense=Past|VerbForm=Part|Voice=Pass">
+      <span>
+        <!--recognized-->
+        <target id="w43"/>
+      </span>
+    </term>
+    <term id="t44" lemma="(" pos="PUNCT" type="open">
+      <span>
+        <!--(-->
+        <target id="w44"/>
+      </span>
+    </term>
+    <term id="t45" lemma="depend" pos="VERB" type="open" morphofeat="VerbForm=Ger">
+      <span>
+        <!--depending-->
+        <target id="w45"/>
+      </span>
+    </term>
+    <term id="t46" lemma="on" pos="ADP" type="open">
+      <span>
+        <!--on-->
+        <target id="w46"/>
+      </span>
+    </term>
+    <term id="t47" lemma="you" pos="PRON" type="open" morphofeat="Person=2|Poss=Yes|PronType=Prs">
+      <span>
+        <!--your-->
+        <target id="w47"/>
+      </span>
+    </term>
+    <term id="t48" lemma="nlp" pos="NOUN" type="open" morphofeat="Number=Sing">
+      <span>
+        <!--NLP-->
+        <target id="w48"/>
+      </span>
+    </term>
+    <term id="t49" lemma="processor" pos="NOUN" type="open" morphofeat="Number=Sing">
+      <span>
+        <!--processor-->
+        <target id="w49"/>
+      </span>
+    </term>
+    <term id="t50" lemma=")" pos="PUNCT" type="open">
+      <span>
+        <!--)-->
+        <target id="w50"/>
+      </span>
+    </term>
+    <term id="t51" lemma="." pos="PUNCT" type="open">
+      <span>
+        <!--.-->
+        <target id="w51"/>
       </span>
     </term>
   </terms>
   <deps>
-    <!--det(The,cat)-->
-    <dep from_term="t2" to_term="t1" from_orth="The" to_orth="cat" rfunc="det"/>
-    <!--nsubj(cat,sat)-->
-    <dep from_term="t3" to_term="t2" from_orth="cat" to_orth="sat" rfunc="nsubj"/>
-    <!--case(on,mat)-->
-    <dep from_term="t6" to_term="t4" from_orth="on" to_orth="mat" rfunc="case"/>
-    <!--obl(mat,sat)-->
-    <dep from_term="t3" to_term="t6" from_orth="mat" to_orth="sat" rfunc="obl"/>
-    <!--det(the,mat)-->
-    <dep from_term="t6" to_term="t5" from_orth="the" to_orth="mat" rfunc="det"/>
-    <!--punct(.,sat)-->
-    <dep from_term="t3" to_term="t7" from_orth="." to_orth="sat" rfunc="punct"/>
-    <!--nsubj(Matt,name)-->
-    <dep from_term="t11" to_term="t8" from_orth="Matt" to_orth="name" rfunc="nsubj"/>
-    <!--cop(was,name)-->
-    <dep from_term="t11" to_term="t9" from_orth="was" to_orth="name" rfunc="cop"/>
-    <!--nmod:poss(his,name)-->
-    <dep from_term="t11" to_term="t10" from_orth="his" to_orth="name" rfunc="nmod:poss"/>
-    <!--punct(.,name)-->
-    <dep from_term="t11" to_term="t12" from_orth="." to_orth="name" rfunc="punct"/>
+    <!--det(package,The)-->
+    <dep from_term="t3" to_term="t1" from_orth="package" to_orth="The" rfunc="det"/>
+    <!--nsubj(allows,package)-->
+    <dep from_term="t4" to_term="t3" from_orth="allows" to_orth="package" rfunc="nsubj"/>
+    <!--compound(package,Nafigator)-->
+    <dep from_term="t3" to_term="t2" from_orth="package" to_orth="Nafigator" rfunc="compound"/>
+    <!--obj(allows,you)-->
+    <dep from_term="t4" to_term="t5" from_orth="allows" to_orth="you" rfunc="obj"/>
+    <!--mark(store,to)-->
+    <dep from_term="t7" to_term="t6" from_orth="store" to_orth="to" rfunc="mark"/>
+    <!--xcomp(allows,store)-->
+    <dep from_term="t4" to_term="t7" from_orth="allows" to_orth="store" rfunc="xcomp"/>
+    <!--compound(output,NLP)-->
+    <dep from_term="t9" to_term="t8" from_orth="output" to_orth="NLP" rfunc="compound"/>
+    <!--obj(store,output)-->
+    <dep from_term="t7" to_term="t9" from_orth="store" to_orth="output" rfunc="obj"/>
+    <!--case(spa,from)-->
+    <dep from_term="t13" to_term="t10" from_orth="spa" to_orth="from" rfunc="case"/>
+    <!--obl(store,spa)-->
+    <dep from_term="t7" to_term="t13" from_orth="store" to_orth="spa" rfunc="obl"/>
+    <!--compound(made,custom)-->
+    <dep from_term="t12" to_term="t11" from_orth="made" to_orth="custom" rfunc="compound"/>
+    <!--amod(spa,made)-->
+    <dep from_term="t13" to_term="t12" from_orth="spa" to_orth="made" rfunc="amod"/>
+    <!--compound(pipelines,Cy)-->
+    <dep from_term="t17" to_term="t14" from_orth="pipelines" to_orth="Cy" rfunc="compound"/>
+    <!--cc(stanza,and)-->
+    <dep from_term="t16" to_term="t15" from_orth="stanza" to_orth="and" rfunc="cc"/>
+    <!--conj(Cy,stanza)-->
+    <dep from_term="t14" to_term="t16" from_orth="Cy" to_orth="stanza" rfunc="conj"/>
+    <!--case(results,with)-->
+    <dep from_term="t22" to_term="t18" from_orth="results" to_orth="with" rfunc="case"/>
+    <!--nmod(pipelines,results)-->
+    <dep from_term="t17" to_term="t22" from_orth="pipelines" to_orth="results" rfunc="nmod"/>
+    <!--punct(results,()-->
+    <dep from_term="t22" to_term="t19" from_orth="results" to_orth="(" rfunc="punct"/>
+    <!--amod(results,intermediate)-->
+    <dep from_term="t22" to_term="t20" from_orth="results" to_orth="intermediate" rfunc="amod"/>
+    <!--punct(results,))-->
+    <dep from_term="t22" to_term="t21" from_orth="results" to_orth=")" rfunc="punct"/>
+    <!--cc(steps,and)-->
+    <dep from_term="t26" to_term="t23" from_orth="steps" to_orth="and" rfunc="cc"/>
+    <!--conj(results,steps)-->
+    <dep from_term="t22" to_term="t26" from_orth="results" to_orth="steps" rfunc="conj"/>
+    <!--det(steps,all)-->
+    <dep from_term="t26" to_term="t24" from_orth="steps" to_orth="all" rfunc="det"/>
+    <!--compound(steps,processing)-->
+    <dep from_term="t26" to_term="t25" from_orth="steps" to_orth="processing" rfunc="compound"/>
+    <!--case(format,in)-->
+    <dep from_term="t29" to_term="t27" from_orth="format" to_orth="in" rfunc="case"/>
+    <!--nmod(steps,format)-->
+    <dep from_term="t26" to_term="t29" from_orth="steps" to_orth="format" rfunc="nmod"/>
+    <!--nummod(format,one)-->
+    <dep from_term="t29" to_term="t28" from_orth="format" to_orth="one" rfunc="nummod"/>
+    <!--punct(pipelines,.)-->
+    <dep from_term="t17" to_term="t30" from_orth="pipelines" to_orth="." rfunc="punct"/>
+    <!--mark(set,like)-->
+    <dep from_term="t37" to_term="t32" from_orth="set" to_orth="like" rfunc="mark"/>
+    <!--acl(Multiwords,set)-->
+    <dep from_term="t31" to_term="t37" from_orth="Multiwords" to_orth="set" rfunc="acl"/>
+    <!--mark(set,in)-->
+    <dep from_term="t37" to_term="t33" from_orth="set" to_orth="in" rfunc="mark"/>
+    <!--punct(set,“)-->
+    <dep from_term="t37" to_term="t34" from_orth="set" to_orth="“" rfunc="punct"/>
+    <!--nsubj(set,we)-->
+    <dep from_term="t37" to_term="t35" from_orth="set" to_orth="we" rfunc="nsubj"/>
+    <!--aux(set,have)-->
+    <dep from_term="t37" to_term="t36" from_orth="set" to_orth="have" rfunc="aux"/>
+    <!--mark(recognized,that)-->
+    <dep from_term="t43" to_term="t38" from_orth="recognized" to_orth="that" rfunc="mark"/>
+    <!--ccomp(set,recognized)-->
+    <dep from_term="t37" to_term="t43" from_orth="set" to_orth="recognized" rfunc="ccomp"/>
+    <!--compound:prt(set,out)-->
+    <dep from_term="t37" to_term="t39" from_orth="set" to_orth="out" rfunc="compound:prt"/>
+    <!--advmod(set,below)-->
+    <dep from_term="t37" to_term="t40" from_orth="set" to_orth="below" rfunc="advmod"/>
+    <!--punct(set,”)-->
+    <dep from_term="t37" to_term="t41" from_orth="set" to_orth="”" rfunc="punct"/>
+    <!--aux:pass(recognized,are)-->
+    <dep from_term="t43" to_term="t42" from_orth="recognized" to_orth="are" rfunc="aux:pass"/>
+    <!--punct(processor,()-->
+    <dep from_term="t49" to_term="t44" from_orth="processor" to_orth="(" rfunc="punct"/>
+    <!--obl(recognized,processor)-->
+    <dep from_term="t43" to_term="t49" from_orth="recognized" to_orth="processor" rfunc="obl"/>
+    <!--case(processor,depending)-->
+    <dep from_term="t49" to_term="t45" from_orth="processor" to_orth="depending" rfunc="case"/>
+    <!--case(processor,on)-->
+    <dep from_term="t49" to_term="t46" from_orth="processor" to_orth="on" rfunc="case"/>
+    <!--nmod:poss(processor,your)-->
+    <dep from_term="t49" to_term="t47" from_orth="processor" to_orth="your" rfunc="nmod:poss"/>
+    <!--compound(processor,NLP)-->
+    <dep from_term="t49" to_term="t48" from_orth="processor" to_orth="NLP" rfunc="compound"/>
+    <!--punct(processor,))-->
+    <dep from_term="t49" to_term="t50" from_orth="processor" to_orth=")" rfunc="punct"/>
+    <!--punct(recognized,.)-->
+    <dep from_term="t43" to_term="t51" from_orth="recognized" to_orth="." rfunc="punct"/>
   </deps>
-  <raw><![CDATA[   The cat sat on the mat. Matt was his name.]]></raw>
+  <multiwords>
+    <mw id="mw1" lemma="set_out" pos="VERB" type="phrasal">
+      <component id="mw1.c1">
+        <span>
+          <target id="t37"/>
+        </span>
+      </component>
+      <component id="mw1.c2">
+        <span>
+          <target id="t39"/>
+        </span>
+      </component>
+    </mw>
+  </multiwords>
+  <raw><![CDATA[The Nafigator package allows you to store NLP output from custom made spaCy and stanza  pipelines with (intermediate) results and all processing steps in one format.  Multiwords like in “we have set that out below” are recognized (depending on your NLP  processor).]]></raw>
 </NAF>

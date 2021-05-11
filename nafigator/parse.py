@@ -241,8 +241,9 @@ def process_preprocess_steps(params: dict):
     elif input[-3:].lower() == "pdf":
         convert_pdf(input, format="xml", params=params)
         convert_pdf(input, format="text", params=params)
+        params['text'] = params['pdftotext']
 
-    text = params["pdftotext"].rstrip()
+    text = params["text"].rstrip()
     if params["replace_hidden_characters"]:
         text_to_use = text.translate(hidden_table)
     else:
