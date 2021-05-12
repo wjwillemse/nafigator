@@ -152,18 +152,6 @@ Output of doc.text of processed data/example.pdf::
 		{'text': 'Nafigator', 'page': '1', 'sent': '1', 'id': 'w2', 'length': '9', 'offset': '4'}, 
 		{'text': 'package', 'page': '1', 'sent': '1', 'id': 'w3', 'length': '7', 'offset': '14'}, 
 		{'text': 'allows', 'page': '1', 'sent': '1', 'id': 'w4', 'length': '6', 'offset': '22'}, 
-		{'text': 'you', 'page': '1', 'sent': '1', 'id': 'w5', 'length': '3', 'offset': '29'}, 
-		{'text': 'to', 'page': '1', 'sent': '1', 'id': 'w6', 'length': '2', 'offset': '33'}, 
-		{'text': 'store', 'page': '1', 'sent': '1', 'id': 'w7', 'length': '5', 'offset': '36'}, {'text': 'NLP', 'page': '1', 'sent': '1', 'id': 'w8', 'length': '3', 'offset': '42'}, 
-		{'text': 'output', 'page': '1', 'sent': '1', 'id': 'w9', 'length': '6', 'offset': '46'}, 
-		{'text': 'from', 'page': '1', 'sent': '1', 'id': 'w10', 'length': '4', 'offset': '53'}, 
-		{'text': 'custom', 'page': '1', 'sent': '1', 'id': 'w11', 'length': '6', 'offset': '58'}, 
-		{'text': 'made', 'page': '1', 'sent': '1', 'id': 'w12', 'length': '4', 'offset': '65'}, 
-		{'text': 'spa', 'page': '1', 'sent': '1', 'id': 'w13', 'length': '3', 'offset': '70'}, 
-		{'text': 'Cy', 'page': '1', 'sent': '2', 'id': 'w14', 'length': '2', 'offset': '73'}, 
-		{'text': 'and', 'page': '1', 'sent': '2', 'id': 'w15', 'length': '3', 'offset': '76'}, 
-		{'text': 'stanza', 'page': '1', 'sent': '2', 'id': 'w16', 'length': '6', 'offset': '80'}, 
-		{'text': 'pipelines', 'page': '1', 'sent': '2', 'id': 'w17', 'length'
 		...
 
 Get the terms layer output via::
@@ -176,14 +164,8 @@ Output of doc.terms of processed data/example.pdf::
 		{'id': 't1', 'lemma': 'the', 'pos': 'DET', 'type': 'open', 'morphofeat': 'Definite=Def|PronType=Art', 'targets': [{'id': 'w1'}]}, 
 		{'id': 't2', 'lemma': 'Nafigator', 'pos': 'PROPN', 'type': 'open', 'morphofeat': 'Number=Sing', 'targets': [{'id': 'w2'}]}, 
 		{'id': 't3', 'lemma': 'package', 'pos': 'NOUN', 'type': 'open', 'morphofeat': 'Number=Sing', 'targets': [{'id': 'w3'}]}, 
-		{'id': 't4', 'lemma': 'allow', 'pos': 'VERB', 'type': 'open', 'morphofeat': 'Mood=Ind|Number=Sing|Person=3|Tense=Pres|VerbForm=Fin', 'targets': [{'id': 'w4'}]}, 
-		{'id': 't5', 'lemma': 'you', 'pos': 'PRON', 'type': 'open', 'morphofeat': 'Case=Acc|Person=2|PronType=Prs', 'targets': [{'id': 'w5'}]}, 
-		{'id': 't6', 'lemma': 'to', 'pos': 'PART', 'type': 'open', 'targets': [{'id': 'w6'}]}, 
-		{'id': 't7', 'lemma': 'store', 'pos': 'VERB', 'type': 'open', 'morphofeat': 'VerbForm=Inf', 'targets': [{'id': 'w7'}]}, 
-		{'id': 't8', 'lemma': 'nlp', 'pos': 'NOUN', 'type': 'open', 'morphofeat': 'Number=Sing', 'targets': [{'id': 'w8'}]}, 
-		{'id': 't9', 'lemma': 'output', 'pos': 'NOUN', 'type': 'open', 'morphofeat': 'Number=Sing', 'targets': [{'id': 'w9'}]},
-		...
- 
+		{'id': 't4', 'lemma': 'allow', 'pos': 'VERB', 'type': 'open', 'morphofeat': 'Mood=Ind|Number=Sing|Person=3|Tense=Pres|VerbForm=Fin', 	...
+
 Get the entities layer output via::
 
 	doc.entities
@@ -206,10 +188,6 @@ Output of doc.deps of processed data/example.pdf::
 		{'from_term': 't4', 'to_term': 't3', 'from_orth': 'allows', 'to_orth': 'package', 'rfunc': 'nsubj'}, 
 		{'from_term': 't3', 'to_term': 't2', 'from_orth': 'package', 'to_orth': 'Nafigator', 'rfunc': 'compound'}, 
 		{'from_term': 't4', 'to_term': 't5', 'from_orth': 'allows', 'to_orth': 'you', 'rfunc': 'obj'},
-		{'from_term': 't7', 'to_term': 't6', 'from_orth': 'store', 'to_orth': 'to', 'rfunc': 'mark'},
-		{'from_term': 't4', 'to_term': 't7', 'from_orth': 'allows', 'to_orth': 'store', 'rfunc': 'xcomp'}, 
-		{'from_term': 't9', 'to_term': 't8', 'from_orth': 'output', 'to_orth': 'NLP', 'rfunc': 'compound'}, 
-		{'from_term': 't7', 'to_term': 't9', 'from_orth': 'store', 'to_orth': 'output', 'rfunc': 'obj'}, 
 		...
 
 Get the multiwords layer output via::
@@ -243,15 +221,47 @@ Output of doc.formats::
 					}]
 				}]
 			}, 
-			{'textlines': [
-				{'texts': [
-					{'font': 'CIDFont+F1', 'size': '12.000', 'length': '86', 'offset': '167', 'text': 'Multiwords like in 'we have set that out below' are recognized (depending on your NLP '
-					}]
-				}, 
-				{'texts': [
-					{'font': 'CIDFont+F1', 'size': '12.000', 'length': '11', 'offset': '254', 'text': 'processor).'
-					}]
-				}]}], 
 	...
+
+
+Adding new annotation layers
+----------------------------
+
+To add a new annotation layer with elements, start with registering the processor of the new annotations::
+
+    lp = ProcessorElement(
+	        name="processorname",
+        	version="1.0",
+        	timestamp=None,
+        	beginTimestamp=None,
+        	endTimestamp=None,
+        	hostname=None)
+
+    naf.add_processor_element("recommendations", lp)
+
+Then get the layer and add subelements::
+
+	layer = naf.layer("recommendations")
+
+	data_recommendation = {
+        'id': "recommendation1",
+        'subjectivity': 0.5,
+        'polarity': 0.25,
+        'targets': [{'id': 't37'}, {'id': 't39'}]
+        }
+
+    element = self.subelement(element=layer,
+                              tag="recommendation",
+                              data=data_recommendation)
+
+
+    naf.add_span_element(element=element, 
+    					 data=data_recommendation)
+
+Retrieve the recommendations with::
+
+    naf.recommendations
+
+
 
 

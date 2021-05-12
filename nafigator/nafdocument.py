@@ -245,9 +245,22 @@ class NafDocument(etree._ElementTree):
             l = list()
             for item in layer:
                 if item.text is not None:
-                    l.append(dict({"text": item.text}, **dict(item.attrib)))
+                    item_data = dict({"text": item.text}, **dict(item.attrib))
                 else:
-                    l.append(item.attrib)
+                    item_data = dict(item.attrib)
+
+                for span in item:
+                    if span.tag == SPAN_OCCURRENCE_TAG:
+                        targets = list()
+                        for child3 in span:
+                            if child3.tag == etree.Comment:
+                                entity_data["text"] = child3.text
+                            elif child3.tag == TARGET_OCCURRENCE_TAG:
+                                targets.append(child3.attrib)
+                    item_data["targets"] = targets
+
+                l.append(item_data)
+
             return l
 
         return super().name
@@ -291,6 +304,13 @@ class NafDocument(etree._ElementTree):
         else:
             return xml_string.decode("utf-8")
 
+    def prepare_comment_text(self, text: str):
+        """ """
+        text = text.replace("--", "DOUBLEDASH")
+        if text.endswith("-"):
+            text = text[:-1] + "SINGLEDASH"
+        return text
+
     def get_attributes(self, data, namespace=None, exclude=list()):
         """ """
         if not isinstance(data, dict):
@@ -300,6 +320,10 @@ class NafDocument(etree._ElementTree):
                 del data[key]
             if isinstance(value, datetime.datetime):
                 data[key] = time_in_correct_format(value)
+            if isinstance(value, float):
+                data[key] = str(value)
+            if isinstance(value, int):
+                data[key] = str(value)
             if isinstance(value, list):
                 del data[key]
         if namespace:
@@ -311,13 +335,6 @@ class NafDocument(etree._ElementTree):
             if key in exclude:
                 del data[key]
         return data
-
-    def prepare_comment_text(self, text: str):
-        """ """
-        text = text.replace("--", "DOUBLEDASH")
-        if text.endswith("-"):
-            text = text[:-1] + "SINGLEDASH"
-        return text
 
     def layer(self,
               layer_tag: str):
@@ -522,13 +539,12 @@ class NafDocument(etree._ElementTree):
         layer = self.layer(DEPS_LAYER_TAG)
 
         if comments:
-            comment = data.rfunc + "(" + data.from_orth + "," + data.to_orth + ")"
-            comment = self.prepare_comment_text(comment)
-            layer.append(etree.Comment(comment))
+            layer.append(etree.Comment(data.comment))
 
         dep = self.subelement(element=layer,
                               tag=DEP_OCCURRENCE_TAG,
-                              data=data)
+                              data=data,
+                              attributes_to_ignore = ['comment'])
 
     def add_entity_element(self, data: EntityElement, naf_version: str, comments: str):
         """
@@ -554,10 +570,10 @@ class NafDocument(etree._ElementTree):
                   source CDATA #IMPLIED>
         """
         element = self.subelement(element=self.layer(ENTITIES_LAYER_TAG),
-                               tag=ENTITY_OCCURRENCE_TAG,
-                               data=data)
+                                  tag=ENTITY_OCCURRENCE_TAG,
+                                  data=data)
 
-        if data.targets != []:
+        if data.span != []:
             self.add_span_element(
                 element=element, data=data, comments=comments, naf_version=naf_version
             )
@@ -606,7 +622,7 @@ class NafDocument(etree._ElementTree):
                      data=data,
                      attributes_to_ignore=layer_to_attributes_to_ignore.get("terms", list()))
 
-        if data.targets != []:
+        if data.span != []:
             self.add_span_element(
                 element=element, data=data, comments=comments
             )
@@ -635,10 +651,9 @@ class NafDocument(etree._ElementTree):
         """
         element = self.subelement(element=self.layer(CHUNKS_LAYER_TAG),
                                   tag=CHUNK_OCCURRENCE_TAG,
-                                  data=data,
-                                  comments=comments)
+                                  data=data)
 
-        if data.targets != []:
+        if data.span != []:
             self.add_span_element(
                 element=element, data=data, comments=comments
             )
@@ -653,22 +668,22 @@ class NafDocument(etree._ElementTree):
         """
         if (naf_version is not None) and naf_version == "v3":
             references = self.subelement(element=element,
-                                      tag="references")
+                                         tag="references")
             span = self.subelement(element=references,
-                                tag=SPAN_OCCURRENCE_TAG)
+                                   tag=SPAN_OCCURRENCE_TAG)
         else:
             span = self.subelement(element=element,
-                                tag=SPAN_OCCURRENCE_TAG)
+                                   tag=SPAN_OCCURRENCE_TAG)
 
         if comments:
-            text = " ".join(data.text)
-            text = self.prepare_comment_text(text)
-            span.append(etree.Comment(text))
+            comment = " ".join(data.comment)
+            comment = self.prepare_comment_text(comment)
+            span.append(etree.Comment(comment))
 
-        for target in data.targets:
+        for target in data.span:
             self.subelement(element=span,
-                         tag=TARGET_OCCURRENCE_TAG,
-                         data={"id": target})
+                            tag=TARGET_OCCURRENCE_TAG,
+                            data={"id": target})
 
     def add_external_reference_element(self, element, ext_refs: list):
         """

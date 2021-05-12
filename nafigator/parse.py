@@ -334,15 +334,22 @@ def chunks_for_doc(doc, params: dict):
 def chunk_tuples_for_doc(doc, params: dict):
     """ """
     for i, (chunk, phrase) in enumerate(chunks_for_doc(doc, params)):
-        chunk_text = remove_illegal_chars(chunk.orth_.replace("\n", " "))
+        comment = remove_illegal_chars(chunk.orth_.replace("\n", " "))
         yield ChunkElement(
             id="c" + str(i),
             head="t" + str(chunk.root.i),
             phrase=phrase,
-            text=chunk_text,
-            targets=["t" + str(tok.i) for tok in chunk],
+            case=None,
+            span=["t" + str(tok.i) for tok in chunk],
+            comment=comment
         )
 
+def prepare_comment_text(text: str):
+        """ """
+        text = text.replace("--", "DOUBLEDASH")
+        if text.endswith("-"):
+            text = text[:-1] + "SINGLEDASH"
+        return text
 
 def dependencies_to_add(sentence, token, total_tokens: int, params: dict):
     """ """
@@ -358,12 +365,16 @@ def dependencies_to_add(sentence, token, total_tokens: int, params: dict):
         rfunc = engine.token_dependency(token)
         from_orth = engine.token_orth(engine.token_head(sentence, token))
         to_orth = engine.token_orth(token)
+
+        comment = rfunc + "(" + from_orth + "," + to_orth + ")"
+        comment = prepare_comment_text(comment)
+
         dep_data = DependencyRelation(
             from_term=from_term,
             to_term=to_term,
             rfunc=rfunc,
-            from_orth=from_orth,
-            to_orth=to_orth,
+            case=None,
+            comment=comment
         )
         deps.append(dep_data)
         token = engine.token_head(sentence, token)
@@ -420,10 +431,13 @@ def add_entities_layer(params: dict):
                 entity_data = EntityElement(
                     id=entity_id,
                     type=next_entity.type,
-                    text=current_entity_orth,
-                    targets=current_entity,
+                    status=None,
+                    source=None,
+                    span=current_entity,
                     ext_refs=list(),
+                    comment=current_entity_orth,
                 )
+
 
                 params["tree"].add_entity_element(
                     entity_data, params["naf_version"], params["language"]
@@ -481,12 +495,14 @@ def add_text_layer(params: dict):
 
             wf_id = "w" + str(token_number + total_tokens)
             wf_data = WordformElement(
-                page=str(current_page),
-                sent=str(sentence_number),
                 id=wf_id,
-                length=str(len(token.text)),
-                text=token.text,
+                sent=str(sentence_number),
+                para=None,
+                page=str(current_page),
                 offset=str(engine.token_offset(token)),
+                length=str(len(token.text)),
+                xpath=None,
+                text=token.text,
             )
 
             params["tree"].add_wf_element(wf_data, params["cdata"])
@@ -545,13 +561,18 @@ def add_terms_layer(params: dict):
 
             term_data = TermElement(
                 id=tid,
+                type=pos_type,
                 lemma=remove_illegal_chars(engine.token_lemma(token)),
                 pos=pos,
-                type=pos_type,
                 morphofeat=engine.token_tag(token),
-                text=current_term_orth,
-                targets=current_term,
+                netype=None,
+                case=None,
+                head=None,
+                component_of=None,
+                compound_type=None,
+                span=current_term,
                 ext_refs=list(),
+                comment=current_term_orth,
             )
 
             params["tree"].add_term_element(
@@ -695,7 +716,7 @@ def add_multiwords_layer(params: dict):
                     netype=None,
                     case=None,
                     head=None,
-                    targets=[t_id],
+                    span=[t_id],
                 )
                 multiword_data.components.append(component_data)
 

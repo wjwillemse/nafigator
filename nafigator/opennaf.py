@@ -20,36 +20,41 @@ def opennaf(input: str):
     # print(naf.version)
     # print(naf.raw)
     # print(naf.text)
-    # print(naf.terms)
+    print(naf.terms)
     # print(naf.entities)
     # print(naf.deps)
     # print(naf.formats)
-    print(naf.multiwords)
-    naf.remove_layer_elements("multiwords")
-    print(naf.multiwords)
+    # print(naf.multiwords)
+    # naf.remove_layer_elements("multiwords")
+    # print(naf.multiwords)
 
-    recommendations = {
-        'id': "recommendation1",
-        'subjectivity': "0.5",
-        'targets': list()
-        }
+    # lp = ProcessorElement(
+    #         name="processorname",
+    #         version="1.0",
+    #         timestamp=None,
+    #         beginTimestamp=None,
+    #         endTimestamp=None,
+    #         hostname=None)
 
-    lp = ProcessorElement(
-        name="processorname",
-        version="1.0",
-        timestamp=None,
-        beginTimestamp=None,
-        endTimestamp=None,
-        hostname=None)
+    # naf.add_processor_element("recommendations", lp)
 
-    naf.add_processor_element("recommendations", lp)
+    # layer = naf.layer("recommendations")
 
-    naf.add_layer_element(data=recommendations,
-                          layer_tag="recommendations",
-                          occurrence_tag="recommendation")
+    # data_recommendation = {
+    #     'id': "recommendation1",
+    #     'subjectivity': 0.5,
+    #     'polarity': 0.25,
+    #     'targets': ['t37', 't39']
+    #     }
 
-    print(naf.recommendations)
-    print(naf.header)
+    # element = naf.subelement(element=layer,
+    #                          tag="recommendation",
+    #                          data=data_recommendation)
+
+    # naf.add_span_element(element=element, 
+    #                      data=data_recommendation)
+
+    # print(naf.recommendations)
 
     # print(naf.sentences)
 
