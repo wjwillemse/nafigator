@@ -138,7 +138,7 @@ Output of doc.header of processed data/example.pdf::
       'filetype': 'application/pdf', 
       'pages': '2'}, 
     'public': {
-      '{http://purl.org/dc/elements/1.1/}uri': 'data/example.pdf', 
+      '{http://purl.org/dc/elements/1.1/}uri': 'data/example.pdf',
       '{http://purl.org/dc/elements/1.1/}format': 'application/pdf'}, 
   ...
 
@@ -183,7 +183,7 @@ Get the entities layer output via::
 Output of doc.entities of processed data/example.pdf::
 
   [
-    {'id': 'e1', 'type': 'PRODUCT', 'text': 'Nafigator', 'targets': [{'id': 't2'}]}, 
+    {'id': 'e1', 'type': 'PRODUCT', 'text': 'Nafigator', 'targets': [{'id': 't2'}]},
     {'id': 'e2', 'type': 'CARDINAL', 'text': 'one', 'targets': [{'id': 't28'}]}]
   ]
 
