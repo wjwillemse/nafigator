@@ -666,6 +666,9 @@ class NafDocument(etree._ElementTree):
                   primary CDATA #IMPLIED
                   status CDATA #IMPLIED>
         """
+        if not isinstance(data, dict):
+            data = data._asdict()
+
         if (naf_version is not None) and naf_version == "v3":
             references = self.subelement(element=element,
                                          tag="references")
@@ -674,13 +677,12 @@ class NafDocument(etree._ElementTree):
         else:
             span = self.subelement(element=element,
                                    tag=SPAN_OCCURRENCE_TAG)
-
         if comments:
-            comment = " ".join(data.comment)
+            comment = " ".join(data['comment'])
             comment = self.prepare_comment_text(comment)
             span.append(etree.Comment(comment))
 
-        for target in data.span:
+        for target in data['span']:
             self.subelement(element=span,
                             tag=TARGET_OCCURRENCE_TAG,
                             data={"id": target})

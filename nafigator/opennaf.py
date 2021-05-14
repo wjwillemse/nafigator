@@ -20,41 +20,41 @@ def opennaf(input: str):
     # print(naf.version)
     # print(naf.raw)
     # print(naf.text)
-    print(naf.terms)
+    # print(naf.terms)
     # print(naf.entities)
-    # print(naf.deps)
+    print(naf.deps)
     # print(naf.formats)
     # print(naf.multiwords)
     # naf.remove_layer_elements("multiwords")
     # print(naf.multiwords)
 
-    # lp = ProcessorElement(
-    #         name="processorname",
-    #         version="1.0",
-    #         timestamp=None,
-    #         beginTimestamp=None,
-    #         endTimestamp=None,
-    #         hostname=None)
+    lp = ProcessorElement(
+            name="processorname",
+            version="1.0",
+            timestamp=None,
+            beginTimestamp=None,
+            endTimestamp=None,
+            hostname=None)
 
-    # naf.add_processor_element("recommendations", lp)
+    naf.add_processor_element("recommendations", lp)
 
-    # layer = naf.layer("recommendations")
+    layer = naf.layer("recommendations")
 
-    # data_recommendation = {
-    #     'id': "recommendation1",
-    #     'subjectivity': 0.5,
-    #     'polarity': 0.25,
-    #     'targets': ['t37', 't39']
-    #     }
+    data_recommendation = {
+        'id': "recommendation1",
+        'subjectivity': 0.5,
+        'polarity': 0.25,
+        'span': ['t37', 't39']
+        }
 
-    # element = naf.subelement(element=layer,
-    #                          tag="recommendation",
-    #                          data=data_recommendation)
+    element = naf.subelement(element=layer,
+                             tag="recommendation",
+                             data=data_recommendation)
 
-    # naf.add_span_element(element=element, 
-    #                      data=data_recommendation)
+    naf.add_span_element(element=element, 
+                         data=data_recommendation)
 
-    # print(naf.recommendations)
+    print(naf.recommendations)
 
     # print(naf.sentences)
 

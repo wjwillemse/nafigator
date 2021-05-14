@@ -25,12 +25,12 @@ nafigator
 
 *This package is currently in a beta phase.*
 
-to nafigate [ **nav**-i-geyt ]
+to nafigate [ **naf**-i-geyt ]
 ------------------------------
 
 	*v.intr*, **nafigated**, **nafigating**
 
-	1. To convert one or more text documents to the NLP Annotation Format.
+	1. To process one of more text documents through a NLP pipeline and output results in the NLP Annotation Format.
 
 
 Features
@@ -256,13 +256,12 @@ Then get the layer and add subelements::
         'id': "recommendation1",
         'subjectivity': 0.5,
         'polarity': 0.25,
-        'targets': [{'id': 't37'}, {'id': 't39'}]
+        'span': [{'id': 't37'}, {'id': 't39'}]
         }
 
     element = self.subelement(element=layer,
                               tag="recommendation",
                               data=data_recommendation)
-
 
     naf.add_span_element(element=element, 
     					 data=data_recommendation)
@@ -270,7 +269,3 @@ Then get the layer and add subelements::
 Retrieve the recommendations with::
 
     naf.recommendations
-
-
-
-
