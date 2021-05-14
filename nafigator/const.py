@@ -36,10 +36,7 @@ udpos2nafpos_info = {
     "ADJ": {"class": "open", "naf_pos": "G"},
     "ADP": {"class": "open", "naf_pos": "P"},
     "ADV": {"class": "open", "naf_pos": "A"},
-    "AUX": {
-        "class": "close",
-        "naf_pos": "V",
-    },
+    "AUX": {"class": "close","naf_pos": "V"},
     "CCONJ": {"class": "close", "naf_pos": "C"},
     "DET": {"class": "close", "naf_pos": "D"},
     "INTJ": {"class": "open", "naf_pos": "O"},
