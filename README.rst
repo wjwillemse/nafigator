@@ -169,11 +169,12 @@ Get the terms layer output via::
 
 Output of doc.terms of processed data/example.pdf::
 
-	[
-	  {'id': 't1', 'lemma': 'the', 'pos': 'DET', 'type': 'open', 'morphofeat': 'Definite=Def|PronType=Art', 'targets': [{'id': 'w1'}]}, 
-	  {'id': 't2', 'lemma': 'Nafigator', 'pos': 'PROPN', 'type': 'open', 'morphofeat': 'Number=Sing', 'targets': [{'id': 'w2'}]}, 
-	  {'id': 't3', 'lemma': 'package', 'pos': 'NOUN', 'type': 'open', 'morphofeat': 'Number=Sing', 'targets': [{'id': 'w3'}]}, 
-	  {'id': 't4', 'lemma': 'allow', 'pos': 'VERB', 'type': 'open', 'morphofeat': 'Mood=Ind|Number=Sing|Person=3|Tense=Pres|VerbForm=Fin', 	...
+  [
+    {'id': 't1', 'lemma': 'the', 'pos': 'DET', 'type': 'open', 'morphofeat': 'Definite=Def|PronType=Art', 'targets': [{'id': 'w1'}]}, 
+    {'id': 't2', 'lemma': 'Nafigator', 'pos': 'PROPN', 'type': 'open', 'morphofeat': 'Number=Sing', 'targets': [{'id': 'w2'}]}, 
+    {'id': 't3', 'lemma': 'package', 'pos': 'NOUN', 'type': 'open', 'morphofeat': 'Number=Sing', 'targets': [{'id': 'w3'}]}, 
+    {'id': 't4', 'lemma': 'allow', 'pos': 'VERB', 'type': 'open', 'morphofeat': 'Mood=Ind|Number=Sing|Person=3|Tense=Pres|VerbForm=Fin', 	
+  ...
 
 Get the entities layer output via::
 
@@ -181,10 +182,10 @@ Get the entities layer output via::
 
 Output of doc.entities of processed data/example.pdf::
 
-	[
-	  {'id': 'e1', 'type': 'PRODUCT', 'text': 'Nafigator', 'targets': [{'id': 't2'}]}, 
-	  {'id': 'e2', 'type': 'CARDINAL', 'text': 'one', 'targets': [{'id': 't28'}]}]
-	]
+  [
+    {'id': 'e1', 'type': 'PRODUCT', 'text': 'Nafigator', 'targets': [{'id': 't2'}]}, 
+	{'id': 'e2', 'type': 'CARDINAL', 'text': 'one', 'targets': [{'id': 't28'}]}]
+  ]
 
 Get the entities layer output via::
 
@@ -192,12 +193,12 @@ Get the entities layer output via::
 
 Output of doc.deps of processed data/example.pdf::
 
-	[
-	  {'from_term': 't3', 'to_term': 't1', 'from_orth': 'package', 'to_orth': 'The', 'rfunc': 'det'}, 
-	  {'from_term': 't4', 'to_term': 't3', 'from_orth': 'allows', 'to_orth': 'package', 'rfunc': 'nsubj'}, 
-	  {'from_term': 't3', 'to_term': 't2', 'from_orth': 'package', 'to_orth': 'Nafigator', 'rfunc': 'compound'}, 
-	  {'from_term': 't4', 'to_term': 't5', 'from_orth': 'allows', 'to_orth': 'you', 'rfunc': 'obj'},
-		...
+  [
+    {'from_term': 't3', 'to_term': 't1', 'from_orth': 'package', 'to_orth': 'The', 'rfunc': 'det'}, 
+	{'from_term': 't4', 'to_term': 't3', 'from_orth': 'allows', 'to_orth': 'package', 'rfunc': 'nsubj'}, 
+	{'from_term': 't3', 'to_term': 't2', 'from_orth': 'package', 'to_orth': 'Nafigator', 'rfunc': 'compound'}, 
+	{'from_term': 't4', 'to_term': 't5', 'from_orth': 'allows', 'to_orth': 'you', 'rfunc': 'obj'},
+  ...
 
 Get the multiwords layer output via::
 
@@ -205,12 +206,11 @@ Get the multiwords layer output via::
 
 Output of doc.multiwords::
 
-	[
-	  {'id': 'mw1', 'lemma': 'set_out', 'pos': 'VERB', 'type': 'phrasal', 'components': [
-		{'id': 'mw1.c1', 'targets': [{'id': 't37'}]}, 
-		{'id': 'mw1.c2', 'targets': [{'id': 't39'}]}]}
-	]
-
+  [
+    {'id': 'mw1', 'lemma': 'set_out', 'pos': 'VERB', 'type': 'phrasal', 'components': [
+	  {'id': 'mw1.c1', 'targets': [{'id': 't37'}]}, 
+	  {'id': 'mw1.c2', 'targets': [{'id': 't39'}]}]}
+  ]
 
 Get the formats layer output via::
 
@@ -218,37 +218,36 @@ Get the formats layer output via::
 
 Output of doc.formats::
 
-	[	
-      {'length': '268', 'offset': '0', 'textboxes': [
-		{'textlines': [
-	      {'texts': [
-			{'font': 'CIDFont+F1', 'size': '12.000', 'length': '87', 'offset': '0', 'text': 'The Nafigator package allows you to store NLP output from custom made spaCy and stanza '
+  [	
+    {'length': '268', 'offset': '0', 'textboxes': [
+	  {'textlines': [
+	    {'texts': [
+	      {'font': 'CIDFont+F1', 'size': '12.000', 'length': '87', 'offset': '0', 'text': 'The Nafigator package allows you to store NLP output from custom made spaCy and stanza '
 		  }]
 		}, 
- 		  {'texts': [
-		    {'font': 'CIDFont+F1', 'size': '12.000', 'length': '77', 'offset': '88', 'text': 'pipelines with (intermediate) results and all processing steps in one format.'
-		  }]
-	...
+        {'texts': [
+		  {'font': 'CIDFont+F1', 'size': '12.000', 'length': '77', 'offset': '88', 'text': 'pipelines with (intermediate) results and all processing steps in one format.'
+  ...
 
 Adding new annotation layers
 ----------------------------
 
 To add a new annotation layer with elements, start with registering the processor of the new annotations::
 
-    lp = ProcessorElement(name="processorname", version="1.0", timestamp=None, beginTimestamp=None,   endTimestamp=None, hostname=None)
+  lp = ProcessorElement(name="processorname", version="1.0", timestamp=None, beginTimestamp=None,   endTimestamp=None, hostname=None)
 
-    naf.add_processor_element("recommendations", lp)
+  naf.add_processor_element("recommendations", lp)
 
 Then get the layer and add subelements::
 
-	layer = naf.layer("recommendations")
+  layer = naf.layer("recommendations")
 
-	data_recommendation = {'id': "recommendation1", 'subjectivity': 0.5, 'polarity': 0.25, 'span': [{'id': 't37'}, {'id': 't39'}]}
+  data_recommendation = {'id': "recommendation1", 'subjectivity': 0.5, 'polarity': 0.25, 'span': [{'id': 't37'}, {'id': 't39'}]}
 
-    element = self.subelement(element=layer, tag="recommendation", data=data_recommendation)
+  element = self.subelement(element=layer, tag="recommendation", data=data_recommendation)
 
-    naf.add_span_element(element=element, data=data_recommendation)
+  naf.add_span_element(element=element, data=data_recommendation)
 
 Retrieve the recommendations with::
 
-    naf.recommendations
+  naf.recommendations
