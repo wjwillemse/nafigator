@@ -13,15 +13,24 @@ nafigator
         :target: https://nafigator.readthedocs.io/en/latest/?version=latest
         :alt: Documentation Status
 
+.. image:: https://img.shields.io/badge/License-MIT-yellow.svg
+		:target: https://opensource.org/licenses/MIT
+		:alt: License: MIT
+
+.. image:: https://img.shields.io/badge/code%20style-black-000000.svg
+		:target: https://github.com/psf/black
+		:alt: Code style: black
 
 **DISCLAIMER - BETA PHASE**
 
-*This parser to naf is currently in a beta phase.*
+*This package is currently in a beta phase.*
 
-Python package to convert text documents to NLP Annotation Format (NAF)
+to nafigate [ **nav**-i-geyt ]
+------------------------------
 
-* Free software: MIT license
-* Documentation: https://nafigator.readthedocs.io.
+	*v.intr*, **nafigated**, **nafigating**
+
+	1. To convert one or more text documents to the NLP Annotation Format.
 
 
 Features
