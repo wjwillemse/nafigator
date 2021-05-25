@@ -7,18 +7,17 @@ import re
 from lxml import etree
 
 
-def load_dtd_as_file_object(dtd_url, verbose=0):
+def load_dtd(dtd_url):
 
     dtd = None
     r = open(dtd_url)
     if r:
         dtd_file_object = io.StringIO(r.read())
         dtd = etree.DTD(dtd_file_object)
-    if verbose >= 1:
-        if dtd is None:
-            print(f"failed to load dtd from {dtd_url}")
-        else:
-            print(f"succesfully loaded dtd from {dtd_url}")
+    if dtd is None:
+        logging.error("failed to load dtd from"+str(dtd_url))
+    else:
+        logging.info("Succesfully to load dtd from"+str(dtd_url))
     return dtd
 
 

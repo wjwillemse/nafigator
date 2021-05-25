@@ -48,6 +48,9 @@ if SPACY_IMPORTED:
         def sentence_tokens(self, sentence):
             return sentence
 
+        def sentence_entities(self, sentence):
+            return sentence.ents
+
         def document_entities(self, doc):
             return doc.ents
 
@@ -102,7 +105,9 @@ if SPACY_IMPORTED:
         def token_reset(self):
             return False
 
+
 else:
+
     class spacyProcessor:
         def __init__(self):
             return None
@@ -125,6 +130,21 @@ if STANZA_IMPORTED:
             self.model_name = f"stanza-model_{lang}"
             self.model_version = f"stanza_version-{stanza.__version__}"
 
+        def processor(self, name):
+
+            if name == "text":
+                return self.nlp.processors.get("tokenize")
+            elif name == "entities":
+                return self.nlp.processors.get("ner")
+            elif name == "terms":
+                return self.nlp.processors.get("pos")
+            elif name == "deps":
+                return self.nlp.processors.get("depparse")
+            elif name == "multiwords":
+                return self.nlp.processors.get("tokenize")
+            elif name == "raw":
+                return self.nlp.processors.get("tokenize")
+
         def nlp(self, text):
             self.doc = self.nlp(text)
             return self.doc
@@ -134,6 +154,9 @@ if STANZA_IMPORTED:
 
         def sentence_tokens(self, sentence):
             return sentence.tokens
+
+        def sentence_entities(self, sentence):
+            return sentence.ents
 
         def document_entities(self, doc):
             return doc.ents
@@ -179,6 +202,12 @@ if STANZA_IMPORTED:
 
         def token_tag(self, token):
             return token.words[0].feats
+
+        def entity_token_start(self, entity):
+            return entity.tokens[0]
+
+        def entity_token_end(self, entity):
+            return entity.tokens[-1]
 
         def entity_span_start(self, entity):
             return entity.tokens[0].id[0]

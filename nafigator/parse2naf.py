@@ -2,16 +2,18 @@
 
 """Main module."""
 
-from datetime import datetime
 import sys
 import click
 import logging
 import os
+import re
+from datetime import datetime
+from socket import getfqdn
 
+from .nafdocument import NafDocument
 from .linguisticprocessor import stanzaProcessor
 from .linguisticprocessor import spacyProcessor
 from .preprocessprocessor import convert_pdf
-from .nafdocument import NafDocument
 from lxml import etree
 import lxml.html
 
@@ -26,6 +28,7 @@ from .const import RawElement
 from .const import MultiwordElement
 from .const import ComponentElement
 from .const import udpos2nafpos_info
+from .const import udpos2olia
 from .const import hidden_table
 from .utils import normalize_token_orth
 from .utils import remove_illegal_chars
@@ -141,7 +144,7 @@ def create_params(
     params["dtd_validation"] = bool(dtd_validation)
     params["language"] = language
     params["engine_name"] = engine
-    params["nlp_object"] = nlp
+    params["nlp"] = nlp
 
     if "fileDesc" not in params.keys():
         params["fileDesc"] = dict()
@@ -151,10 +154,14 @@ def create_params(
     if "public" not in params.keys():
         params["public"] = dict()
     params["public"]["uri"] = input
+
     if os.path.splitext(input)[1].lower() == ".txt":
         params["fileDesc"]["filetype"] = "text/plain"
         params["public"]["format"] = "text/plain"
-    elif os.path.splitext(input)[1] == ".pdf":
+    elif os.path.splitext(input)[1].lower() == ".html":
+        params["fileDesc"]["filetype"] = "text/html"
+        params["public"]["format"] = "text/html"
+    elif os.path.splitext(input)[1].lower() == ".pdf":
         params["fileDesc"]["filetype"] = "application/pdf"
         params["public"]["format"] = "application/pdf"
 
@@ -170,8 +177,8 @@ def create_params(
         ]
     if params.get("cdata", None) is None:
         params["cdata"] = True
-    if params.get("map_udpos2naf_pos", None) is None:
-        params["map_udpos2naf_pos"] = False
+    if params.get("map_udpos2olia", None) is None:
+        params["map_udpos2olia"] = False
     if params.get("layer_to_attributes_to_ignore", None) is None:
         params["layer_to_attributes_to_ignore"] = {"terms": {}}
     if params.get("replace_hidden_characters", None) is None:
@@ -228,6 +235,12 @@ def evaluate_naf(params: dict):
         params["tree"].validate()
 
 
+def norm_spaces(s):
+    """Normalize spaces, splits on all kinds of whitespace and rejoins"""
+    return s
+    # return " ".join((x for x in re.split(r"\s+", s) if x))
+
+
 def process_preprocess_steps(params: dict):
     """ """
     input = params["fileDesc"]["filename"]
@@ -241,22 +254,24 @@ def process_preprocess_steps(params: dict):
     elif input[-3:].lower() == "pdf":
         convert_pdf(input, format="xml", params=params)
         convert_pdf(input, format="text", params=params)
-        params['text'] = params['pdftotext']
+        params["text"] = params["pdftotext"]
 
     text = params["text"].rstrip()
     if params["replace_hidden_characters"]:
-        text_to_use = text.translate(hidden_table)
+        text_to_use = norm_spaces(text.translate(hidden_table))
     else:
-        text_to_use = text
-    if len(text) != len(text_to_use):
-        logging.error("len text != len text.translate")
+        text_to_use = norm_space(text)
+
+    # if len(text) != len(text_to_use):
+    #     logging.error("len text != len text.translate")
+
     params["text"] = text_to_use
 
 
 def process_linguistic_steps(params: dict):
     """ """
     engine_name = params["engine_name"]
-    nlp = params["nlp_object"]
+    nlp = params["nlp"]
     language = params["language"]
     if engine_name.lower() == "stanza":
         params["engine"] = stanzaProcessor(nlp, language)
@@ -266,18 +281,9 @@ def process_linguistic_steps(params: dict):
         logging.error("unknown engine")
         return None
 
-    start_time = datetime.now()
+    params["beginTimestamp"] = datetime.now()
     params["doc"] = params["engine"].nlp(params["text"])
-    end_time = datetime.now()
-
-    params["lp"] = ProcessorElement(
-        name=params["engine"].model_name,
-        version=params["engine"].model_version,
-        timestamp=None,
-        beginTimestamp=start_time,
-        endTimestamp=end_time,
-        hostname=None,
-    )
+    params["endTimestamp"] = datetime.now()
 
     if "pdftoxml" in params.keys():
         add_formats_layer(params)
@@ -341,15 +347,17 @@ def chunk_tuples_for_doc(doc, params: dict):
             phrase=phrase,
             case=None,
             span=["t" + str(tok.i) for tok in chunk],
-            comment=comment
+            comment=comment,
         )
 
+
 def prepare_comment_text(text: str):
-        """ """
-        text = text.replace("--", "DOUBLEDASH")
-        if text.endswith("-"):
-            text = text[:-1] + "SINGLEDASH"
-        return text
+    """ """
+    text = text.replace("--", "DOUBLEDASH")
+    if text.endswith("-"):
+        text = text[:-1] + "SINGLEDASH"
+    return text
+
 
 def dependencies_to_add(sentence, token, total_tokens: int, params: dict):
     """ """
@@ -374,7 +382,7 @@ def dependencies_to_add(sentence, token, total_tokens: int, params: dict):
             to_term=to_term,
             rfunc=rfunc,
             case=None,
-            comment=comment
+            comment=comment,
         )
         deps.append(dep_data)
         token = engine.token_head(sentence, token)
@@ -383,7 +391,17 @@ def dependencies_to_add(sentence, token, total_tokens: int, params: dict):
 
 def add_entities_layer(params: dict):
     """ """
-    params["tree"].add_processor_element("entities", params["lp"])
+    lp = ProcessorElement(
+        name="entities",
+        version=params["engine"].model_version,
+        file=params["engine"].processor("entities")._config["model_path"],
+        timestamp=None,
+        beginTimestamp=params["beginTimestamp"],
+        endTimestamp=params["endTimestamp"],
+        hostname=getfqdn(),
+    )
+
+    params["tree"].add_processor_element("entities", lp)
 
     doc = params["doc"]
     engine = params["engine"]
@@ -438,7 +456,6 @@ def add_entities_layer(params: dict):
                     comment=current_entity_orth,
                 )
 
-
                 params["tree"].add_entity_element(
                     entity_data, params["naf_version"], params["language"]
                 )
@@ -467,7 +484,17 @@ def add_entities_layer(params: dict):
 
 def add_text_layer(params: dict):
     """ """
-    params["tree"].add_processor_element("text", params["lp"])
+    lp = ProcessorElement(
+        name="text",
+        version=params["engine"].model_version,
+        file=params["engine"].processor("text")._config["model_path"],
+        timestamp=None,
+        beginTimestamp=params["beginTimestamp"],
+        endTimestamp=params["endTimestamp"],
+        hostname=getfqdn(),
+    )
+
+    params["tree"].add_processor_element("text", lp)
 
     root = params["tree"].getroot()
 
@@ -519,7 +546,17 @@ def add_text_layer(params: dict):
 
 def add_terms_layer(params: dict):
     """ """
-    params["tree"].add_processor_element("terms", params["lp"])
+    lp = ProcessorElement(
+        name="terms",
+        version=params["engine"].model_version,
+        file=params["engine"].processor("terms")._config["model_path"],
+        timestamp=None,
+        beginTimestamp=params["beginTimestamp"],
+        endTimestamp=params["endTimestamp"],
+        hostname=getfqdn(),
+    )
+
+    params["tree"].add_processor_element("terms", lp)
 
     doc = params["doc"]
     engine = params["engine"]
@@ -544,26 +581,26 @@ def add_terms_layer(params: dict):
             current_term_orth.append(normalize_token_orth(engine.token_orth(token)))
 
             # Create TermElement data:
-            spacy_pos = engine.token_pos(token)
+            token_pos = engine.token_pos(token)
             # :param bool map_udpos2naf_pos: if True, we use "udpos2nafpos_info"
             # to map the Universal Dependencies pos (https://universaldependencies.org/u/pos/)
             # to the NAF pos tagset
-            if params["map_udpos2naf_pos"]:
-                if spacy_pos in udpos2nafpos_info:
-                    pos = udpos2nafpos_info[spacy_pos]["naf_pos"]
-                    pos_type = udpos2nafpos_info[spacy_pos]["class"]
+            if params["map_udpos2olia"]:
+                if token_pos in udpos2olia.keys():
+                    pos_type = udpos2olia[token_pos]["class"]
+                    token_pos = udpos2olia[token_pos]["olia"]
                 else:
-                    pos = "O"
+                    logging.info("unknown token pos: "+str(token_pos))
                     pos_type = "open"
+                    token_pos = "unknown"
             else:
-                pos = spacy_pos
                 pos_type = "open"
 
             term_data = TermElement(
                 id=tid,
                 type=pos_type,
                 lemma=remove_illegal_chars(engine.token_lemma(token)),
-                pos=pos,
+                pos=token_pos,
                 morphofeat=engine.token_tag(token),
                 netype=None,
                 case=None,
@@ -598,7 +635,17 @@ def add_terms_layer(params: dict):
 
 def add_deps_layer(params: dict):
     """ """
-    params["tree"].add_processor_element("deps", params["lp"])
+    lp = ProcessorElement(
+        name="deps",
+        version=params["engine"].model_version,
+        file=params["engine"].processor("deps")._config["model_path"],
+        timestamp=None,
+        beginTimestamp=params["beginTimestamp"],
+        endTimestamp=params["endTimestamp"],
+        hostname=getfqdn(),
+    )
+
+    params["tree"].add_processor_element("deps", lp)
 
     engine = params["engine"]
 
@@ -653,7 +700,17 @@ def create_separable_verb_lemma(verb, particle, language):
 
 def add_multiwords_layer(params: dict):
     """ """
-    params["tree"].add_processor_element("multiwords", params["lp"])
+    lp = ProcessorElement(
+        name="multiwords",
+        version=params["engine"].model_version,
+        file=params["engine"].processor("multiwords")._config["model_path"],
+        timestamp=None,
+        beginTimestamp=params["beginTimestamp"],
+        endTimestamp=params["endTimestamp"],
+        hostname=getfqdn(),
+    )
+
+    params["tree"].add_processor_element("multiwords", lp)
 
     engine = params["engine"]
 
@@ -733,7 +790,17 @@ def add_multiwords_layer(params: dict):
 
 def add_raw_layer(params: dict):
     """ """
-    params["tree"].add_processor_element("raw", params["lp"])
+    lp = ProcessorElement(
+        name="raw",
+        version=params["engine"].model_version,
+        file=params["engine"].processor("raw")._config["model_path"],
+        timestamp=None,
+        beginTimestamp=params["beginTimestamp"],
+        endTimestamp=params["endTimestamp"],
+        hostname=getfqdn(),
+    )
+
+    params["tree"].add_processor_element("raw", lp)
 
     wordforms = params["tree"].text
 
@@ -775,7 +842,17 @@ def add_raw_layer(params: dict):
 
 def add_chunks_layer(params: dict):
     """ """
-    params["tree"].add_processor_element("chunks", params["lp"])
+    lp = ProcessorElement(
+        name="chunks",
+        version=params["engine"].model_version,
+        file=params["engine"].processor("chunks")._config["model_path"],
+        timestamp=None,
+        beginTimestamp=params["beginTimestamp"],
+        endTimestamp=params["endTimestamp"],
+        hostname=getfqdn(),
+    )
+
+    params["tree"].add_processor_element("chunks", lp)
 
     for chunk_data in chunk_tuples_for_doc(params["doc"], params):
         params["tree"].add_chunk_element(chunk_data, params["comments"])
@@ -783,7 +860,17 @@ def add_chunks_layer(params: dict):
 
 def add_formats_layer(params: dict):
     """ """
-    params["tree"].add_processor_element("formats", params["lp"])
+    lp = ProcessorElement(
+        name="formats",
+        version=params["engine"].model_version,
+        file=None,
+        timestamp=None,
+        beginTimestamp=params["beginTimestamp"],
+        endTimestamp=params["endTimestamp"],
+        hostname=getfqdn(),
+    )
+
+    params["tree"].add_processor_element("formats", lp)
 
     params["tree"].add_formats_element(params["pdftoxml"])
 

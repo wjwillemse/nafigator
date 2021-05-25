@@ -5,7 +5,7 @@
 
 import unittest
 from click.testing import CliRunner
-from nafigator import NafDocument, parse
+from nafigator import NafDocument, parse2naf
 from os.path import join
 
 class TestNafigator(unittest.TestCase):
@@ -13,7 +13,7 @@ class TestNafigator(unittest.TestCase):
 
     def test_generate_naf(self):
         """ """
-        tree = parse.generate_naf(input=join("tests", "tests", "example.pdf"),
+        tree = parse2naf.generate_naf(input=join("tests", "tests", "example.pdf"),
                                   engine="stanza", 
                                   language="en", 
                                   naf_version="v3.1")

@@ -103,3 +103,9 @@ ENV/
 
 # IDE settings
 .vscode/
+
+# no nafigator output to git
+/data/*.naf
+/data/*.ttl
+
+/tests/tests/*.naf
