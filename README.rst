@@ -42,7 +42,7 @@ The Nafigator package allows you to store (intermediate) results and processing 
 
   - Supported input media types: application/pdf (.pdf), text/plain (.txt), text/html (.html)
 
-  - Supported output format: .naf (xml)
+  - Supported output format: naf-xml (.naf), naf-rdf in turtle syntax (.ttl) (very experimental)
 
   - Supported NLP processors: spaCy, stanza
 
@@ -104,9 +104,9 @@ To parse an pdf or a txt file run in the root of the project::
 Function calls
 ~~~~~~~~~~~~~~
 
-Example: ::
+To convert a .pdf, .txt or .html-file you can use: ::
 
-    from nafigator.parse import generate_naf
+    from nafigator.parse2naf import generate_naf
 
     doc = generate_naf(input = "../data/example.pdf",
                        engine = "stanza",
@@ -116,13 +116,15 @@ Example: ::
                        params = {'fileDesc': {'author': 'anonymous'}},
                        nlp = None)
 
-- input: text document to convert to naf document
+- input: document to convert to naf document
 - engine: pipeline processor, i.e. 'spacy' or 'stanza'
-- language: 'en' or 'nl'
+- language: for example 'en' or 'nl'
 - naf_version: 'v3' or 'v3.1'
 - dtd_validation: True or False (default = False)
 - params: dictionary with parameters (default = {}) 
 - nlp: custom made pipeline object from spacy or stanza (default = None)
+
+The returning object, doc, is a NafDocument from which layers can be accessed.
 
 Get the document and processors metadata via::
 
@@ -252,3 +254,61 @@ Then get the layer and add subelements::
 Retrieve the recommendations with::
 
   naf.recommendations
+
+
+Convert NAF file to RDF in turtle syntax
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Just run::
+
+	python -m nafigator.convert2rdf
+
+No ontology or vocabulary of NAF exists yet. For now, we map xml tags and attributes to RDF predicates using provisional prefixes and namespaces, for example base attributes are mapped to the prefix naf-base.
+
+Below are some excerpts.
+
+From the nafHeader::
+
+	_:nafHeader
+	    naf-base:hasFileDesc [
+        	naf-fileDesc:hasCreationtime "2021-05-24T11:29:44UTC"^^xsd:dateTime ;
+        	naf-fileDesc:hasFilename "data/example.pdf"^^rdf:XMLLiteral ;
+        	naf-fileDesc:hasFiletype "application/pdf"^^rdf:XMLLiteral ;
+    	] ;
+
+A word::
+
+	_:w1
+	    xl:type naf-base:wordform ;
+	    naf-base:hasText """The"""^^rdf:XMLLiteral ;
+	    naf-base:hasSent "1"^^xsd:integer ;
+	    naf-base:hasPage "1"^^xsd:integer ;
+	    naf-base:hasOffset "0"^^xsd:integer ;
+	    naf-base:hasLength "3"^^xsd:integer .
+
+A term::
+
+	_:t1
+	    xl:type naf-base:term ;
+	    naf-base:hasType naf-base:close ;
+	    naf-base:hasLemma "the" ;
+	    naf-base:hasPos <http://purl.org/olia/olia.owl#Determiner> ;
+	    naf-morphofeat:hasDefinite "Def" ;
+	    naf-morphofeat:hasPronType "Art" ;
+	    naf-base:hasSpan [
+        	naf-base:ref _:w1
+    	] .
+
+An entity::
+
+	_:e1
+	    xl:type naf-base:entity ;
+	    naf-base:hasType naf-entity:PRODUCT ;
+	    naf-base:hasSpan [
+        	naf-base:ref _:t2
+    	] .
+
+A dependency::
+
+	_:t3 naf-rfunc:det _:t1
+
