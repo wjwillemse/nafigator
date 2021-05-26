@@ -9,10 +9,6 @@ nafigator
 .. image:: https://img.shields.io/travis/wjwillemse/nafigator.svg
         :target: https://travis-ci.com/wjwillemse/nafigator
 
-.. image:: https://readthedocs.org/projects/nafigator/badge/?version=latest
-        :target: https://nafigator.readthedocs.io/en/latest/?version=latest
-        :alt: Documentation Status
-
 .. image:: https://img.shields.io/badge/License-MIT-yellow.svg
         :target: https://opensource.org/licenses/MIT
         :alt: License: MIT
