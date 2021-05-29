@@ -120,9 +120,27 @@ class NafDocument(etree._ElementTree):
             for child in self.find(FORMATS_LAYER_TAG):
                 if child.tag == "page":
                     pages_data = dict(child.attrib)
+                    textboxes = list()
                     figures = list()
                     for child2 in child:
-                        if child2.tag == "figure":
+                        if child2.tag == "textbox":
+                            textbox_data = dict(child2.attrib)
+                            textlines = list()
+                            for child3 in child2:
+                                if child3.tag == "textline":
+                                    textline_data = dict(child3.attrib)
+                                    texts = list()
+                                    for child4 in child3:
+                                        if child4.tag == "text":
+                                            text_data = dict(child4.attrib)
+                                            text_data["text"] = child4.text
+                                            texts.append(text_data)
+                                    textline_data["texts"] = texts
+                                    textlines.append(textline_data)
+                            textbox_data["textlines"] = textlines
+                            textboxes.append(textbox_data)
+                        # elif child2.tag == "layout":                        
+                        elif child2.tag == "figure":
                             figure_data = dict(child2.attrib)
                             texts = list()
                             for child3 in child2:
@@ -131,7 +149,8 @@ class NafDocument(etree._ElementTree):
                                     text_data["text"] = child3.text
                                     texts.append(text_data)
                             figure_data["texts"] = texts
-                            figures.append(figure_data)
+                            figures.append(textbox_data)
+                    pages_data["textboxes"] = textboxes
                     pages_data["figures"] = figures
                     pages.append(pages_data)
             return pages

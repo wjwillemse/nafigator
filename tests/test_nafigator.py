@@ -18,11 +18,11 @@ class TestNafigator(unittest.TestCase):
                                   language="en", 
                                   naf_version="v3.1")
 
-        tree.write(join("tests", "tests", "example.naf"))
+        tree.write(join("tests", "tests", "example.naf.xml"))
         
     def test_header_filedesc(self):
         """ """
-        naf = NafDocument().open(join("tests", "tests", "example.naf"))
+        naf = NafDocument().open(join("tests", "tests", "example.naf.xml"))
         actual = naf.header['fileDesc']
         expected = {'creationtime': '2021-05-05T13:25:16UTC', 
                     'filename': 'tests\\tests\\example.pdf', 
@@ -32,14 +32,14 @@ class TestNafigator(unittest.TestCase):
 
     def test_header_public(self):
         """ """
-        naf = NafDocument().open(join("tests", "tests", "example.naf"))
+        naf = NafDocument().open(join("tests", "tests", "example.naf.xml"))
         actual = naf.header['public']
         expected = {'{http://purl.org/dc/elements/1.1/}uri': 'tests\\tests\\example.pdf', 
                     '{http://purl.org/dc/elements/1.1/}format': 'application/pdf'}
         assert actual == expected
 
     # def test_header_linguistic_processors(self):
-    #     naf = NafDocument().open(join("tests", "tests", "example.naf"))
+    #     naf = NafDocument().open(join("tests", "tests", "example.naf.xml"))
     #     actual = naf.header['linguisticProcessors']
     #     expected = [{'layer': 'pdftoxml', 'lps': 
     #                     [{'name': 'pdfminer-pdf2xml', 
@@ -90,7 +90,7 @@ class TestNafigator(unittest.TestCase):
     #     assert actual == expected
 
     def test_formats(self):
-        naf = NafDocument().open(join("tests", "tests", "example.naf"))
+        naf = NafDocument().open(join("tests", "tests", "example.naf.xml"))
         actual = naf.formats
         expected = [{'length': '268', 'offset': '0', 'textboxes': 
                         [{'textlines': 
@@ -125,7 +125,7 @@ class TestNafigator(unittest.TestCase):
         assert actual == expected
 
     def test_entities(self):
-        naf = NafDocument().open(join("tests", "tests", "example.naf"))
+        naf = NafDocument().open(join("tests", "tests", "example.naf.xml"))
         actual = naf.entities
 
         expected = [{'id': 'e1', 'type': 'PRODUCT', 'text': 'Nafigator', 'span': [{'id': 't2'}]}, 
@@ -134,7 +134,7 @@ class TestNafigator(unittest.TestCase):
         assert actual == expected, "expected: "+str(expected)
 
     def test_text(self):
-        naf = NafDocument().open(join("tests", "tests", "example.naf"))
+        naf = NafDocument().open(join("tests", "tests", "example.naf.xml"))
         actual = naf.text
         expected = [{'text': 'The', 'page': '1', 'sent': '1', 'id': 'w1', 'length': '3', 'offset': '0'}, 
                     {'text': 'Nafigator', 'page': '1', 'sent': '1', 'id': 'w2', 'length': '9', 'offset': '4'}, 
@@ -191,7 +191,7 @@ class TestNafigator(unittest.TestCase):
         assert actual == expected
 
     def test_terms(self):
-        naf = NafDocument().open(join("tests", "tests", "example.naf"))
+        naf = NafDocument().open(join("tests", "tests", "example.naf.xml"))
         actual = naf.terms
         expected = [{'id': 't1', 'lemma': 'the', 'pos': 'DET', 'type': 'open', 'morphofeat': 'Definite=Def|PronType=Art', 'span': [{'id': 'w1'}]}, 
           {'id': 't2', 'lemma': 'Nafigator', 'pos': 'PROPN', 'type': 'open', 'morphofeat': 'Number=Sing', 'span': [{'id': 'w2'}]}, 
@@ -247,7 +247,7 @@ class TestNafigator(unittest.TestCase):
         assert actual == expected
 
     def test_dependencies(self):
-        naf = NafDocument().open(join("tests", "tests", "example.naf"))
+        naf = NafDocument().open(join("tests", "tests", "example.naf.xml"))
         actual = naf.deps
         expected = [{'from_term': 't3', 'to_term': 't1', 'rfunc': 'det'}, 
                     {'from_term': 't4', 'to_term': 't3', 'rfunc': 'nsubj'}, 
@@ -301,7 +301,7 @@ class TestNafigator(unittest.TestCase):
         assert actual == expected
 
     def test_multiwords(self):
-        naf = NafDocument().open(join("tests", "tests", "example.naf"))
+        naf = NafDocument().open(join("tests", "tests", "example.naf.xml"))
         actual = naf.multiwords
         expected = [{'id': 'mw1', 'lemma': 'set_out', 'pos': 'VERB', 'type': 'phrasal', 'components': 
                         [{'id': 'mw1.c1', 'span': [{'id': 't37'}]}, 
@@ -309,7 +309,7 @@ class TestNafigator(unittest.TestCase):
         assert actual == expected
 
     def test_raw(self):
-        naf = NafDocument().open(join("tests", "tests", "example.naf"))
+        naf = NafDocument().open(join("tests", "tests", "example.naf.xml"))
         actual = naf.raw
         expected = "The Nafigator package allows you to store NLP output from custom made spaCy and stanza  pipelines with (intermediate) results and all processing steps in one format.  Multiwords like in “we have set that out below” are recognized (depending on your NLP  processor)."
         assert actual == expected

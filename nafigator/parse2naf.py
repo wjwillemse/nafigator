@@ -41,7 +41,7 @@ FORMATS_LAYER_TAG = "formats"
     "--input", default="data/example.pdf", prompt="input file", help="The input file"
 )
 @click.option(
-    "--output", default="data/example.naf", prompt="output file", help="The output file"
+    "--output", default="data/example.naf.xml", prompt="output file", help="The output file"
 )
 @click.option(
     "--engine",
@@ -73,7 +73,7 @@ def nafigator(
     dtd_validation: bool,
 ):
     """ """
-    log_file: str = "".join(output.split(".")[0:-1]) + ".log"
+    log_file: str = os.path.splitext(input)[0] + ".log"
     logging.basicConfig(filename=log_file, level=logging.INFO, filemode="w")
     tree = generate_naf(
         input=input,

@@ -11,7 +11,7 @@ from .const import ProcessorElement
 
 @click.command()
 @click.option(
-    "--input", default="data/example.naf", prompt="input file", help="The input file"
+    "--input", default="data/example.naf.xml", prompt="input file", help="The input file"
 )
 def opennaf(input: str):
     """ """
