@@ -38,7 +38,7 @@ The Nafigator package allows you to store (intermediate) results and processing 
 
   - Supported input media types: application/pdf (.pdf), text/plain (.txt), text/html (.html)
 
-  - Supported output format: naf-xml (.naf), naf-rdf in turtle syntax (.ttl) (very experimental)
+  - Supported output format: naf-xml (.naf), naf-rdf in turtle syntax (.ttl) (experimental)
 
   - Supported NLP processors: spaCy, stanza
 
@@ -46,12 +46,10 @@ The Nafigator package allows you to store (intermediate) results and processing 
 
 * Read .naf documents and access data as Python lists and dicts
 
-In addition to NAF a 'formats' layer is added with text format data (font and size) to allow text classification like header detection.
-
 When reading .naf-files Nafigator stores data in memory as lxml ElementTrees. The lxml package provides a Pythonic binding for C libaries so it should be very fast.
 
-The NAF format
---------------
+The NLP Annotation Format (NAF)
+-------------------------------
 
 Key features:
 
@@ -68,6 +66,17 @@ References:
 * `NAF: the NLP Annotation Format <http://newsreader-project.eu/files/2013/01/techreport.pdf>`_
 
 * `NAF documentation on Github <https://github.com/newsreader/NAF>`_
+
+
+Current changes to NAF:
+
+* a 'formats' layer is added with text format data (font and size) to allow text classification like header detection
+
+* a 'model' attribute is added to LinguisticProcessors to record the model that was used
+
+* all attributes of public are Dublin Core elements and mapped to the dc namespace
+
+* attributes in a dependency relation are renamed 'from_term' and 'to_term' ('from' is a Python reserved word)
 
 
 Installation
