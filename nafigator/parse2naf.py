@@ -394,7 +394,7 @@ def add_entities_layer(params: dict):
     lp = ProcessorElement(
         name="entities",
         version=params["engine"].model_version,
-        file=params["engine"].processor("entities")._config["model_path"],
+        model_path=params["engine"].processor("entities").get('model', ''),
         timestamp=None,
         beginTimestamp=params["beginTimestamp"],
         endTimestamp=params["endTimestamp"],
@@ -487,7 +487,7 @@ def add_text_layer(params: dict):
     lp = ProcessorElement(
         name="text",
         version=params["engine"].model_version,
-        file=params["engine"].processor("text")._config["model_path"],
+        model_path=params["engine"].processor("text").get('model', ''),
         timestamp=None,
         beginTimestamp=params["beginTimestamp"],
         endTimestamp=params["endTimestamp"],
@@ -549,7 +549,7 @@ def add_terms_layer(params: dict):
     lp = ProcessorElement(
         name="terms",
         version=params["engine"].model_version,
-        file=params["engine"].processor("terms")._config["model_path"],
+        model_path=params["engine"].processor("terms").get('model', ''),
         timestamp=None,
         beginTimestamp=params["beginTimestamp"],
         endTimestamp=params["endTimestamp"],
@@ -590,7 +590,7 @@ def add_terms_layer(params: dict):
                     pos_type = udpos2olia[token_pos]["class"]
                     token_pos = udpos2olia[token_pos]["olia"]
                 else:
-                    logging.info("unknown token pos: "+str(token_pos))
+                    logging.info("unknown token pos: " + str(token_pos))
                     pos_type = "open"
                     token_pos = "unknown"
             else:
@@ -638,7 +638,7 @@ def add_deps_layer(params: dict):
     lp = ProcessorElement(
         name="deps",
         version=params["engine"].model_version,
-        file=params["engine"].processor("deps")._config["model_path"],
+        model_path=params["engine"].processor("deps").get('model', ''),
         timestamp=None,
         beginTimestamp=params["beginTimestamp"],
         endTimestamp=params["endTimestamp"],
@@ -703,7 +703,7 @@ def add_multiwords_layer(params: dict):
     lp = ProcessorElement(
         name="multiwords",
         version=params["engine"].model_version,
-        file=params["engine"].processor("multiwords")._config["model_path"],
+        model_path=params["engine"].processor("multiwords").get('model', ''),
         timestamp=None,
         beginTimestamp=params["beginTimestamp"],
         endTimestamp=params["endTimestamp"],
@@ -793,7 +793,7 @@ def add_raw_layer(params: dict):
     lp = ProcessorElement(
         name="raw",
         version=params["engine"].model_version,
-        file=params["engine"].processor("raw")._config["model_path"],
+        model_path=params["engine"].processor("raw").get('model', ''),
         timestamp=None,
         beginTimestamp=params["beginTimestamp"],
         endTimestamp=params["endTimestamp"],
@@ -845,7 +845,7 @@ def add_chunks_layer(params: dict):
     lp = ProcessorElement(
         name="chunks",
         version=params["engine"].model_version,
-        file=params["engine"].processor("chunks")._config["model_path"],
+        model_path=params["engine"].processor("chunks").get('model', ''),
         timestamp=None,
         beginTimestamp=params["beginTimestamp"],
         endTimestamp=params["endTimestamp"],
@@ -863,7 +863,7 @@ def add_formats_layer(params: dict):
     lp = ProcessorElement(
         name="formats",
         version=params["engine"].model_version,
-        file=None,
+        model_path=None,
         timestamp=None,
         beginTimestamp=params["beginTimestamp"],
         endTimestamp=params["endTimestamp"],

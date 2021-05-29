@@ -5,28 +5,37 @@
 from collections import namedtuple
 
 ProcessorElement = namedtuple(
-    "lp", "name version file timestamp beginTimestamp endTimestamp hostname"
+    "lp", "name version model_path timestamp beginTimestamp endTimestamp hostname"
 )
 
 WordformElement = namedtuple("WfElement", "id sent para page offset length xpath text")
 
-TermElement = namedtuple("TermElement", "id type lemma pos morphofeat netype case head component_of compound_type span ext_refs comment")
+TermElement = namedtuple(
+    "TermElement",
+    "id type lemma pos morphofeat netype case head component_of compound_type span ext_refs comment",
+)
 
 Entity = namedtuple("Entity", "start end type")
 
-EntityElement = namedtuple("EntityElement", "id type status source span ext_refs comment")
+EntityElement = namedtuple(
+    "EntityElement", "id type status source span ext_refs comment"
+)
 
 DependencyRelation = namedtuple(
     "DependencyRelation", "from_term to_term rfunc case comment"
 )
-          
+
 ChunkElement = namedtuple("ChunkElement", "id head phrase case span comment")
 
 RawElement = namedtuple("RawElement", "text")
 
-MultiwordElement = namedtuple("MultiwordElement", "id lemma pos morphofeat case status type components")
+MultiwordElement = namedtuple(
+    "MultiwordElement", "id lemma pos morphofeat case status type components"
+)
 
-ComponentElement = namedtuple("ComponentElement", "id type lemma pos morphofeat netype case head span")
+ComponentElement = namedtuple(
+    "ComponentElement", "id type lemma pos morphofeat netype case head span"
+)
 
 hidden_characters = ["\a", "\b", "\t", "\n", "\v", "\f", "\r"]
 
@@ -36,7 +45,7 @@ udpos2nafpos_info = {
     "ADJ": {"class": "open", "naf_pos": "G"},
     "ADP": {"class": "open", "naf_pos": "P"},
     "ADV": {"class": "open", "naf_pos": "A"},
-    "AUX": {"class": "close","naf_pos": "V"},
+    "AUX": {"class": "close", "naf_pos": "V"},
     "CCONJ": {"class": "close", "naf_pos": "C"},
     "DET": {"class": "close", "naf_pos": "D"},
     "INTJ": {"class": "open", "naf_pos": "O"},
@@ -57,9 +66,15 @@ udpos2olia = {
     "ADJ": {"class": "open", "olia": "http://purl.org/olia/olia.owl#Adjective"},
     "ADP": {"class": "open", "olia": "http://purl.org/olia/olia.owl#Adposition"},
     "ADV": {"class": "open", "olia": "http://purl.org/olia/olia.owl#Adverb"},
-    "AUX": {"class": "close","olia": "http://purl.org/olia/olia.owl#AuxiliaryVerb"},
-    "CONJ": {"class": "close", "olia": "http://purl.org/olia/olia.owl#CoordinatingConjunction"},
-    "CCONJ": {"class": "close", "olia": "http://purl.org/olia/olia.owl#CoordinatingConjunction"},
+    "AUX": {"class": "close", "olia": "http://purl.org/olia/olia.owl#AuxiliaryVerb"},
+    "CONJ": {
+        "class": "close",
+        "olia": "http://purl.org/olia/olia.owl#CoordinatingConjunction",
+    },
+    "CCONJ": {
+        "class": "close",
+        "olia": "http://purl.org/olia/olia.owl#CoordinatingConjunction",
+    },
     "DET": {"class": "close", "olia": "http://purl.org/olia/olia.owl#Determiner"},
     "INTJ": {"class": "open", "olia": "http://purl.org/olia/olia.owl#Interjection"},
     "NOUN": {"class": "open", "olia": "http://purl.org/olia/olia.owl#CommonNoun"},
@@ -68,9 +83,11 @@ udpos2olia = {
     "PRON": {"class": "close", "olia": "http://purl.org/olia/olia.owl#Pronoun"},
     "PROPN": {"class": "open", "olia": "http://purl.org/olia/olia.owl#ProperNoun"},
     "PUNCT": {"class": "close", "olia": "http://purl.org/olia/olia.owl#Punctuation"},
-    "SCONJ": {"class": "close", "olia": "http://purl.org/olia/olia.owl#SubordinatingConjunction"},
+    "SCONJ": {
+        "class": "close",
+        "olia": "http://purl.org/olia/olia.owl#SubordinatingConjunction",
+    },
     "SYM": {"class": "open", "olia": "http://purl.org/olia/olia.owl#Symbol"},
     "VERB": {"class": "open", "olia": "http://purl.org/olia/olia.owl#Verb"},
-    "X": {"class": "open", "olia": "&olia-top;Word"}
+    "X": {"class": "open", "olia": "&olia-top;Word"},
 }
-

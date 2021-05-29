@@ -15,9 +15,9 @@ def load_dtd(dtd_url):
         dtd_file_object = io.StringIO(r.read())
         dtd = etree.DTD(dtd_file_object)
     if dtd is None:
-        logging.error("failed to load dtd from"+str(dtd_url))
+        logging.error("failed to load dtd from" + str(dtd_url))
     else:
-        logging.info("Succesfully to load dtd from"+str(dtd_url))
+        logging.info("Succesfully to load dtd from" + str(dtd_url))
     return dtd
 
 

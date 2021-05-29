@@ -136,7 +136,7 @@ def create_params(
         params["metadata"]["language"] = language
 
     params["no_paragraphs"] = False
-    params['debug'] = False
+    params["debug"] = False
     params["setprefix"] = SETPREFIX
 
     # # set default linguistic parameters
@@ -298,23 +298,22 @@ def process_linguistic_layers(params: dict):
     processor = get_processor(params)
 
     params["folia"] = folia.Document(
-        id=document_id, 
-        autodeclare=True, 
-        processor=processor, 
-        debug=params.get('debug', 0)
+        id=document_id,
+        autodeclare=True,
+        processor=processor,
+        debug=params.get("debug", 0),
     )
 
     foliadoc = params["folia"]
 
     node = etree.Element("metadata", attrib={"type": "dc"})
     nsmap = {"dc": "http://purl.org/dc/elements/1.1/"}
-    foreign_data = etree.SubElement(node, 
-                         "foreign-data", 
-                         nsmap=nsmap)
-    for key in params['metadata'].keys():
-        item = etree.SubElement(foreign_data, 
-                                etree.QName('{'+nsmap["dc"]+'}'+key, key))
-        item.text = params['metadata'][key]
+    foreign_data = etree.SubElement(node, "foreign-data", nsmap=nsmap)
+    for key in params["metadata"].keys():
+        item = etree.SubElement(
+            foreign_data, etree.QName("{" + nsmap["dc"] + "}" + key, key)
+        )
+        item.text = params["metadata"][key]
 
     foliadoc.metadata = folia.ForeignData(doc=foliadoc, node=node)
 
@@ -338,19 +337,16 @@ def process_linguistic_layers(params: dict):
 
     params["folia"] = foliadoc
 
+
 def get_processor(params: dict):
 
     """Get FoLiA processors given the provided spacy model (for provenance)"""
 
     model = params["engine"]
-    processor = folia.Processor.create(name="nafigator", 
-                                       version=__version__)
-    
-    for p in params['engine'].nlp.processors.keys():
-        subprocessor = folia.Processor(
-            name=p,
-            version=params["engine"].model_version
-        )
+    processor = folia.Processor.create(name="nafigator", version=__version__)
+
+    for p in params["engine"].nlp.processors.keys():
+        subprocessor = folia.Processor(name=p, version=params["engine"].model_version)
         processor.append(subprocessor)
 
     if model is not None and hasattr(model, "meta"):
@@ -420,7 +416,9 @@ def process_sentence(sentence, anchor, foliasentence, params: dict):
     tokens = params["engine"].sentence_tokens(sentence)
 
     if not pretokenized:
-        foliawords = ([])  # will map 1-1 to the spacy tokens, may contain None elements for linebreaks
+        foliawords = (
+            []
+        )  # will map 1-1 to the spacy tokens, may contain None elements for linebreaks
         foliaword = None
         # tokens = list(sentence)
         for i, word in enumerate(tokens):
@@ -455,14 +453,21 @@ def process_sentence(sentence, anchor, foliasentence, params: dict):
 
     # end = len(sentence)
 
-    for entity in params['engine'].sentence_entities(sentence):
-        ent_start = params['engine'].token_index(params['engine'].entity_token_start(entity))-1
-        ent_end = params['engine'].token_index(params['engine'].entity_token_end(entity))-1
-        spanwords = [w for w in foliawords[ent_start:ent_end+1] if w is not None]
-        foliaentity = foliasentence.add(folia.Entity, 
-                                        *spanwords, 
-                                        set=setprefix+"-namedentitities", 
-                                        cls=params['engine'].entity_type(entity))
+    for entity in params["engine"].sentence_entities(sentence):
+        ent_start = (
+            params["engine"].token_index(params["engine"].entity_token_start(entity))
+            - 1
+        )
+        ent_end = (
+            params["engine"].token_index(params["engine"].entity_token_end(entity)) - 1
+        )
+        spanwords = [w for w in foliawords[ent_start : ent_end + 1] if w is not None]
+        foliaentity = foliasentence.add(
+            folia.Entity,
+            *spanwords,
+            set=setprefix + "-namedentitities",
+            cls=params["engine"].entity_type(entity),
+        )
 
     # for chunk in sentence.noun_chunks:
     #     spanwords = [ w for w in foliawords[chunk.start-start:chunk.end-end] if w is not None ]
@@ -470,13 +475,20 @@ def process_sentence(sentence, anchor, foliasentence, params: dict):
 
     for i, word in enumerate(tokens):
         depword = foliawords[i]
-        deprel = params['engine'].token_dependency(word)        
+        deprel = params["engine"].token_dependency(word)
         if deprel != "root":
-            word_head_id = params['engine'].token_index(params['engine'].token_head(sentence, word))-1
-            headword  = foliawords[word_head_id]
-            dependency = foliasentence.add(folia.Dependency, 
-                                           set=setprefix+"-dependencies", 
-                                           cls=params['engine'].token_dependency(word))
+            word_head_id = (
+                params["engine"].token_index(
+                    params["engine"].token_head(sentence, word)
+                )
+                - 1
+            )
+            headword = foliawords[word_head_id]
+            dependency = foliasentence.add(
+                folia.Dependency,
+                set=setprefix + "-dependencies",
+                cls=params["engine"].token_dependency(word),
+            )
             dependency.append(folia.DependencyHead, headword)
             dependency.append(folia.DependencyDependent, depword)
 

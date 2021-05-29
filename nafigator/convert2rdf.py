@@ -64,16 +64,18 @@ def opennaf(input: str, output: str):
         fh.close()
 
     g = rdflib.Graph()
-    g.parse(data = content, format='turtle')
+    g.parse(data=content, format="turtle")
     content = BytesIO()
-    content.write(g.serialize(format='xml'))
-    fh = open("".join(output.split(".")[0:-1])+".rdf", "wb")
+    content.write(g.serialize(format="xml"))
+    fh = open("".join(output.split(".")[0:-1]) + ".rdf", "wb")
     fh.write(content.getvalue())
     fh.close()
-    
+
 
 def isHttpUrl(url):
-    return isinstance(url, str) and (url.startswith("http://") or url.startswith("https://"))
+    return isinstance(url, str) and (
+        url.startswith("http://") or url.startswith("https://")
+    )
 
 
 def addNamespace(prefix, uri, params):
@@ -283,14 +285,18 @@ def processTerms(element, params):
                         output.write(
                             "    naf-base:"
                             + attrib2pred(key)
-                            + " <"+term.attrib[key]+">"
+                            + " <"
+                            + term.attrib[key]
+                            + ">"
                             + " ;\n"
                         )
                     elif term.attrib[key][0] == "&":
                         output.write(
                             "    naf-base:"
                             + attrib2pred(key)
-                            + ' "'+term.attrib[key]+'" '
+                            + ' "'
+                            + term.attrib[key]
+                            + '" '
                             + " ;\n"
                         )
                     else:
@@ -339,7 +345,7 @@ def processText(element, params):
                     + wf.attrib[key]
                     + '"^^xsd:integer'
                 )
-                if (key == list(wf.attrib.keys())[-1]):
+                if key == list(wf.attrib.keys())[-1]:
                     output.write(" .\n")
                 else:
                     output.write(" ;\n")

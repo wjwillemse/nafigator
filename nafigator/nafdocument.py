@@ -58,18 +58,17 @@ LINGUISTIC_OCCURRENCE_TAG = "lp"
 
 PREFIX_NAF_BASE = "naf-base"
 
-def QName(prefix: str, 
-          name: str):
-    """ """
-    return name
-    # currently no namespaces used
-    # qname = etree.QName('{'+namespaces[prefix]+'}'+name, name)
-    # return qname
-
 namespaces = {
-    "dc": "http://purl.org/dc/elements/1.1/"
+    "dc": "http://purl.org/dc/elements/1.1/",
     # "naf-base": "https://dnb.nl/naf-Base/elements/1.0/",
 }
+
+
+def QName(prefix: str = None, name: str = None):
+    """ """
+    # currently no namespaces used
+    # qname = etree.QName('{'+namespaces[prefix]+'}'+name, name)
+    return name
 
 
 class NafDocument(etree._ElementTree):
@@ -176,12 +175,12 @@ class NafDocument(etree._ElementTree):
                 term_data = dict(child.attrib)
                 for child2 in child:
                     if child2.tag == SPAN_OCCURRENCE_TAG:
-                        targets = [
+                        span = [
                             child3.attrib
                             for child3 in child2
                             if child3.tag == TARGET_OCCURRENCE_TAG
                         ]
-                    term_data["targets"] = targets
+                    term_data["span"] = span
                 terms.append(term_data)
             return terms
 
@@ -197,12 +196,12 @@ class NafDocument(etree._ElementTree):
                         com_data = dict(child2.attrib)
                         for child3 in child2:
                             if child3.tag == SPAN_OCCURRENCE_TAG:
-                                targets = [
+                                span = [
                                     child4.attrib
                                     for child4 in child3
                                     if child4.tag == TARGET_OCCURRENCE_TAG
                                 ]
-                                com_data["targets"] = targets
+                                com_data["span"] = span
                         com.append(com_data)
                 mw_data["components"] = com
                 mw.append(mw_data)
@@ -214,13 +213,13 @@ class NafDocument(etree._ElementTree):
                 entity_data = dict(child.attrib)
                 for child2 in child:
                     if child2.tag == SPAN_OCCURRENCE_TAG:
-                        targets = list()
+                        span = list()
                         for child3 in child2:
                             if child3.tag == etree.Comment:
                                 entity_data["text"] = child3.text
                             elif child3.tag == TARGET_OCCURRENCE_TAG:
-                                targets.append(child3.attrib)
-                    entity_data["targets"] = targets
+                                span.append(child3.attrib)
+                    entity_data["span"] = span
                 entities.append(entity_data)
             return entities
 
@@ -229,19 +228,24 @@ class NafDocument(etree._ElementTree):
             sentence_list = list()
             sent_num = 1
             pages = set()
+            span = list()
             for item in self.text:
-                if item['sent']==str(sent_num):
-                    sentence_list.append(item['text'])
-                    pages.add(item['page'])
+                if item["sent"] == str(sent_num):
+                    sentence_list.append(item["text"])
+                    span.append({"id": item['id']})
+                    pages.add(item["page"])
                 else:
-                    sentences.append({"text": " ".join(sentence_list),
-                                      "page": list(pages)})
-                    sentence_list = list([item['text']])
+                    sentences.append(
+                        {"text": " ".join(sentence_list), "page": list(pages)}
+                    )
+                    sentence_list = list([item["text"]])
+                    span.append({"id": item['id']})
                     pages = set()
-                    pages.add(item['page'])
+                    pages.add(item["page"])
                     sent_num += 1
             if sent_num > 1:
-                sentences.append({"text": " ".join(sentence_list),
+                sentences.append({"text": " ".join(sentence_list), 
+                                  "span": span,
                                   "page": list(pages)})
             return sentences
 
@@ -262,7 +266,7 @@ class NafDocument(etree._ElementTree):
                                 entity_data["text"] = child3.text
                             elif child3.tag == TARGET_OCCURRENCE_TAG:
                                 targets.append(child3.attrib)
-                    item_data["targets"] = targets
+                    item_data["span"] = targets
 
                 l.append(item_data)
 
@@ -289,8 +293,8 @@ class NafDocument(etree._ElementTree):
             return success
         return success
 
-    def remove_layer_elements(self, layer: str=None):
-
+    def remove_layer_elements(self, layer: str = None):
+        """ """
         layer = self.find(layer)
         for items in layer:
             layer.remove(items)
@@ -337,21 +341,21 @@ class NafDocument(etree._ElementTree):
                 del data[key]
         return data
 
-    def layer(self,
-              layer_tag: str):
+    def layer(self, layer_tag: str):
+        """ """
         layer = self.find(layer_tag)
         if layer is None:
-            layer = etree.SubElement(
-                self.getroot(), QName(PREFIX_NAF_BASE, layer_tag)
-            )
+            layer = etree.SubElement(self.getroot(), QName(PREFIX_NAF_BASE, layer_tag))
         return layer
 
-    def subelement(self, 
-                   element: etree._Element=None,
-                   tag: str=None,
-                   data={},
-                   attributes_to_ignore: list=[]):
-
+    def subelement(
+        self,
+        element: etree._Element = None,
+        tag: str = None,
+        data={},
+        attributes_to_ignore: list = [],
+    ):
+        """ """
         if not isinstance(data, dict):
             data = data._asdict()
 
@@ -360,21 +364,20 @@ class NafDocument(etree._ElementTree):
             del data[attr]
 
         subelement = etree.SubElement(
-                element,
-                QName(PREFIX_NAF_BASE, tag),
-                self.get_attributes(data),
-            )
+            element,
+            QName(PREFIX_NAF_BASE, tag),
+            self.get_attributes(data),
+        )
 
         return subelement
-        
+
     def add_nafHeader(self):
         """ """
         self.layer(NAF_HEADER)
 
     def add_filedesc_element(self, data: dict):
         """
-        <!-- FILEDESC ELEMENT -->
-        <!--
+        FILEDESC ELEMENT
             <fileDesc> is an empty element containing information about the
               computer document itself. It has the following attributes:
 
@@ -384,62 +387,59 @@ class NafDocument(etree._ElementTree):
               - filename: the original file name (optional).
               - filetype: the original format (PDF, HTML, DOC, etc) (optional).
               - pages: number of pages of the original document (optional).
-              -->
 
-        <!ELEMENT fileDesc EMPTY>
-        <!ATTLIST fileDesc
-                  title CDATA #IMPLIED
-                  author CDATA #IMPLIED
-                  creationtime CDATA #IMPLIED
-                  filename CDATA #IMPLIED
-                  filetype CDATA #IMPLIED
-                  pages CDATA #IMPLIED>
+        ELEMENT fileDesc EMPTY
+
+        ATTLIST fileDesc
+            title CDATA #IMPLIED
+            author CDATA #IMPLIED
+            creationtime CDATA #IMPLIED
+            filename CDATA #IMPLIED
+            filetype CDATA #IMPLIED
+            pages CDATA #IMPLIED
         """
         naf_header = self.find(NAF_HEADER)
-        filedesc_element = self.subelement(element=naf_header,
-                                           tag=FILEDESC_ELEMENT_TAG,
-                                           data=data)
+        filedesc_element = self.subelement(
+            element=naf_header, tag=FILEDESC_ELEMENT_TAG, data=data
+        )
 
     def add_public_element(self, data: dict):
         """
-        <!-- PUBLIC ELEMENT -->
-        <!--
-             <public> is an empty element which stores public information about
-               the document, such as its URI. It has the following attributes:
+        PUBLIC ELEMENT
+            <public> is an empty element which stores public information about
+            the document, such as its URI. It has the following attributes:
 
-               - publicId: a public identifier (for instance, the number inserted by the capture server) (optional).
-               - uri: a public URI of the document (optional).
+            - publicId: a public identifier (for instance, the number inserted by the capture server) (optional).
+            - uri: a public URI of the document (optional).
 
-               -->
+        ELEMENT public EMPTY
 
-        <!ELEMENT public EMPTY>
-        <!ATTLIST public
-                  publicId CDATA #IMPLIED
-                  uri CDATA #IMPLIED>
+        ATTLIST public
+            publicId CDATA #IMPLIED
+            uri CDATA #IMPLIED
 
         Difference to NAF: here all attributes are mapped to the Dublic Core
         """
-        self.subelement(element=self.find(NAF_HEADER), 
-                        tag=PUBLIC_ELEMENT_TAG,
-                        data=self.get_attributes(data, "http://purl.org/dc/elements/1.1/"))
+        self.subelement(
+            element=self.find(NAF_HEADER),
+            tag=PUBLIC_ELEMENT_TAG,
+            data=self.get_attributes(data, "http://purl.org/dc/elements/1.1/"),
+        )
 
     def add_processor_element(self, layer: str, data: ProcessorElement):
         """
-        <!-- LINGUISTICPROCESSORS ELEMENT -->
-        <!--
-              <linguisticProcessors> elements store the information about which linguistic processors
-                produced the NAF document. There can be several <linguisticProcessors> elements, one
-                  per NAF layer. NAF layers correspond to the top-level elements of the
-                  documents, such as "text", "terms", "deps" etc.
+        LINGUISTICPROCESSORS ELEMENT
+            <linguisticProcessors> elements store the information about which linguistic processors
+            produced the NAF document. There can be several <linguisticProcessors> elements, one
+              per NAF layer. NAF layers correspond to the top-level elements of the
+              documents, such as "text", "terms", "deps" etc.
 
-                  -->
+        ELEMENT linguisticProcessors (lp)+
 
-        <!ELEMENT linguisticProcessors (lp)+>
-        <!ATTLIST linguisticProcessors
-                  layer CDATA #REQUIRED>
+        ATTLIST linguisticProcessors
+            layer CDATA #REQUIRED
 
-        <!-- LP ELEMENT -->
-        <!--
+        LP ELEMENT
              <lp> elements describe one specific linguistic processor. <lp> elements
                  have the following attributes:
 
@@ -460,28 +460,26 @@ class NafDocument(etree._ElementTree):
                  which the processor ended the process. It follows the XML Schema
                  xs:dateTime format.
 
-                 -->
+        ELEMENT lp EMPTY
 
-        <!ELEMENT lp EMPTY>
-        <!ATTLIST lp
-                  name CDATA #REQUIRED
-                  version CDATA #REQUIRED
-                  timestamp CDATA #IMPLIED
-                  beginTimestamp CDATA #IMPLIED
-                  endTimestamp CDATA #IMPLIED
-                  hostname CDATA #IMPLIED>
+        ATTLIST lp
+            name CDATA #REQUIRED
+            version CDATA #REQUIRED
+            timestamp CDATA #IMPLIED
+            beginTimestamp CDATA #IMPLIED
+            endTimestamp CDATA #IMPLIED
+            hostname CDATA #IMPLIED
         """
-        proc = self.subelement(element=self.find(NAF_HEADER), 
-                               tag=LINGUISTIC_LAYER_TAG,
-                               data={"layer": layer})
-        lp = self.subelement(element=proc,
-                            tag=LINGUISTIC_OCCURRENCE_TAG,
-                            data=data)
+        proc = self.subelement(
+            element=self.find(NAF_HEADER),
+            tag=LINGUISTIC_LAYER_TAG,
+            data={"layer": layer},
+        )
+        lp = self.subelement(element=proc, tag=LINGUISTIC_OCCURRENCE_TAG, data=data)
 
     def add_wf_element(self, data: WordformElement, cdata: bool):
         """
-        <!-- WORDFORM ELEMENT -->
-        <!--
+        WORDFORM ELEMENT
             <wf> elements describe and contain all word foorms generated after the tokenization step
               <wf> elements have the following attributes:
                 - id: the id of the word form (REQUIRED and UNIQUE)
@@ -492,65 +490,69 @@ class NafDocument(etree._ElementTree):
                 - length: the length (in characters) of the word form (optional)
                 - xpath: in case of source xml files, the xpath expression identifying the original word form (optional)
 
-                -->
-        <!ELEMENT wf (#PCDATA|subtoken)*>
-        <!ATTLIST wf
-                  id ID #REQUIRED
-                  sent CDATA #IMPLIED
-                  para CDATA #IMPLIED
-                  page CDATA #IMPLIED
-                  offset CDATA #REQUIRED
-                  length CDATA #REQUIRED
-                  xpath CDATA #IMPLIED>
+        ELEMENT wf (#PCDATA|subtoken)*
+
+        ATTLIST wf
+            id ID #REQUIRED
+            sent CDATA #IMPLIED
+            para CDATA #IMPLIED
+            page CDATA #IMPLIED
+            offset CDATA #REQUIRED
+            length CDATA #REQUIRED
+            xpath CDATA #IMPLIED
         """
-        wf = self.subelement(element=self.layer(TEXT_LAYER_TAG),
-                             tag=TEXT_OCCURRENCE_TAG,
-                             data=data,
-                             attributes_to_ignore=["text"])
+        wf = self.subelement(
+            element=self.layer(TEXT_LAYER_TAG),
+            tag=TEXT_OCCURRENCE_TAG,
+            data=data,
+            attributes_to_ignore=["text"],
+        )
 
         wf.text = etree.CDATA(data.text) if cdata else data.text
 
     def add_raw_text_element(self, data: RawElement):
         """
-        <!-- RAW ELEMENT -->
-        <!ELEMENT raw (#PCDATA)>
+        RAW ELEMENT
+
+        ELEMENT raw (#PCDATA)
         """
         self.layer(RAW_LAYER_TAG).text = data.text
 
     def add_dependency_element(self, data: DependencyRelation, comments: bool):
         """
-        <!-- DEPS ELEMENT -->
-        <!ELEMENT deps (dep)+>
+        DEPS ELEMENT
 
-        <!-- DEP ELEMENT -->
-        <!--
+        ELEMENT deps (dep)+
+
+        DEP ELEMENT
             The <dep> elements have the following attributes:
             -   from: term id of the source element (REQUIRED)
             -   to: term id of the target element (REQUIRED)
             -   rfunc: relational function.(REQUIRED)
             -       case: declension case (optional)
-          -->
-        <!ELEMENT dep EMPTY>
-        <!ATTLIST dep
-                  from IDREF #REQUIRED
-                  to IDREF #REQUIRED
-                  rfunc CDATA #REQUIRED
-                  case CDATA #IMPLIED>
+
+        ELEMENT dep EMPTY
+        ATTLIST dep
+            from IDREF #REQUIRED
+            to IDREF #REQUIRED
+            rfunc CDATA #REQUIRED
+            case CDATA #IMPLIED
         """
         layer = self.layer(DEPS_LAYER_TAG)
 
         if comments:
             layer.append(etree.Comment(data.comment))
 
-        dep = self.subelement(element=layer,
-                              tag=DEP_OCCURRENCE_TAG,
-                              data=data,
-                              attributes_to_ignore = ['comment'])
+        dep = self.subelement(
+            element=layer,
+            tag=DEP_OCCURRENCE_TAG,
+            data=data,
+            attributes_to_ignore=["comment"],
+        )
 
     def add_entity_element(self, data: EntityElement, naf_version: str, comments: str):
         """
-        <!-- ENTITY ELEMENT -->
-        <!--
+        ENTITY ELEMENT
             A named entity element has the following attributes:
             -   id: the id for the named entity (REQUIRED)
             -   type:  type of the named entity. (IMPLIED) Currently, 8 values are possible:
@@ -562,17 +564,18 @@ class NafDocument(etree._ElementTree):
             -   Money
             -   Percent
             -   Misc
-          -->
-        <!ELEMENT entity (span|externalReferences)+>
-        <!ATTLIST entity
-                  id ID #REQUIRED
-                  type CDATA #IMPLIED
-                  status CDATA #IMPLIED
-                  source CDATA #IMPLIED>
+
+        ELEMENT entity (span|externalReferences)+
+
+        ATTLIST entity
+            id ID #REQUIRED
+            type CDATA #IMPLIED
+            status CDATA #IMPLIED
+            source CDATA #IMPLIED
         """
-        element = self.subelement(element=self.layer(ENTITIES_LAYER_TAG),
-                                  tag=ENTITY_OCCURRENCE_TAG,
-                                  data=data)
+        element = self.subelement(
+            element=self.layer(ENTITIES_LAYER_TAG), tag=ENTITY_OCCURRENCE_TAG, data=data
+        )
 
         if data.span != []:
             self.add_span_element(
@@ -586,8 +589,7 @@ class NafDocument(etree._ElementTree):
         self, data: TermElement, layer_to_attributes_to_ignore: dict, comments: bool
     ):
         """
-        <!-- TERM ELEMENT -->
-        <!--
+        TERM ELEMENT
             attributes of term elements
             id: unique identifier (REQUIRED AND UNIQUE)
             type: type of the term. (IMPLIED) Currently, 3 values are possible:
@@ -604,150 +606,150 @@ class NafDocument(etree._ElementTree):
             component_of: if the term is part of multiword, i.e., referenced by a multiwords/mw element
             than this attribute can be used to make reference to the multiword.
             compound_type: endocentric or exocentric
-          -->
-        <!ELEMENT term (sentiment?|span|externalReferences|component)+>
-        <!ATTLIST term
-                  id ID #REQUIRED
-                  type CDATA #IMPLIED
-                  lemma CDATA #IMPLIED
-                  pos CDATA #IMPLIED
-                  morphofeat CDATA #IMPLIED
-                  netype CDATA #IMPLIED
-                  case CDATA #IMPLIED
-                  head CDATA #IMPLIED
-                  component_of IDREF #IMPLIED
-                  compound_type CDATA #IMPLIED>
+
+        ELEMENT term (sentiment?|span|externalReferences|component)+
+        ATTLIST term
+            id ID #REQUIRED
+            type CDATA #IMPLIED
+            lemma CDATA #IMPLIED
+            pos CDATA #IMPLIED
+            morphofeat CDATA #IMPLIED
+            netype CDATA #IMPLIED
+            case CDATA #IMPLIED
+            head CDATA #IMPLIED
+            component_of IDREF #IMPLIED
+            compound_type CDATA #IMPLIED
         """
-        element = self.subelement(element=self.layer(TERMS_LAYER_TAG),
-                     tag=TERM_OCCURRENCE_TAG,
-                     data=data,
-                     attributes_to_ignore=layer_to_attributes_to_ignore.get("terms", list()))
+        element = self.subelement(
+            element=self.layer(TERMS_LAYER_TAG),
+            tag=TERM_OCCURRENCE_TAG,
+            data=data,
+            attributes_to_ignore=layer_to_attributes_to_ignore.get("terms", list()),
+        )
 
         if data.span != []:
-            self.add_span_element(
-                element=element, data=data, comments=comments
-            )
+            self.add_span_element(element=element, data=data, comments=comments)
 
         if data.ext_refs != []:
             self.add_external_reference_element(element=element, ext_refs=data.ext_refs)
 
     def add_chunk_element(self, data: ChunkElement, comments: bool):
         """
-        <!-- CHUNKS ELEMENT -->
-        <!ELEMENT chunks (chunk)+>
-        <!-- CHUNK ELEMENT -->
-        <!--
+        CHUNKS ELEMENT
+
+        ELEMENT chunks (chunk)+
+
+        CHUNK ELEMENT
             The <chunk> elements have the following attributes:
             -   id: unique identifier (REQUIRED)
             -   head: the chunk head’s term id  (REQUIRED)
             -   phrase: type of the phrase (REQUIRED)
             -   case: declension case (optional)
-          -->
-        <!ELEMENT chunk (span)+>
-        <!ATTLIST chunk
-                  id ID #REQUIRED
-                  head IDREF #REQUIRED
-                  phrase CDATA #REQUIRED
-                  case CDATA #IMPLIED>
+
+        ELEMENT chunk (span)+
+
+        ATTLIST chunk
+            id ID #REQUIRED
+            head IDREF #REQUIRED
+            phrase CDATA #REQUIRED
+            case CDATA #IMPLIED
         """
-        element = self.subelement(element=self.layer(CHUNKS_LAYER_TAG),
-                                  tag=CHUNK_OCCURRENCE_TAG,
-                                  data=data)
+        element = self.subelement(
+            element=self.layer(CHUNKS_LAYER_TAG), tag=CHUNK_OCCURRENCE_TAG, data=data
+        )
 
         if data.span != []:
-            self.add_span_element(
-                element=element, data=data, comments=comments
-            )
+            self.add_span_element(element=element, data=data, comments=comments)
 
     def add_span_element(self, element, data, comments=False, naf_version: str = None):
         """
-        <!-- SPAN ELEMENT -->
-        <!ELEMENT span (target)+>
-        <!ATTLIST span
-                  primary CDATA #IMPLIED
-                  status CDATA #IMPLIED>
+        SPAN ELEMENT
+
+        ELEMENT span (target)+
+
+        ATTLIST span
+            primary CDATA #IMPLIED
+            status CDATA #IMPLIED
         """
         if not isinstance(data, dict):
             data = data._asdict()
 
-        if (naf_version is not None) and naf_version == "v3":
-            references = self.subelement(element=element,
-                                         tag="references")
-            span = self.subelement(element=references,
-                                   tag=SPAN_OCCURRENCE_TAG)
+        if (naf_version is not None) and (naf_version == "v3"):
+            references = self.subelement(element=element, tag="references")
+            span = self.subelement(element=references, tag=SPAN_OCCURRENCE_TAG)
         else:
-            span = self.subelement(element=element,
-                                   tag=SPAN_OCCURRENCE_TAG)
+            span = self.subelement(element=element, tag=SPAN_OCCURRENCE_TAG)
         if comments:
-            comment = " ".join(data['comment'])
+            comment = " ".join(data["comment"])
             comment = self.prepare_comment_text(comment)
             span.append(etree.Comment(comment))
 
-        for target in data['span']:
-            self.subelement(element=span,
-                            tag=TARGET_OCCURRENCE_TAG,
-                            data={"id": target})
+        for target in data["span"]:
+            self.subelement(
+                element=span, tag=TARGET_OCCURRENCE_TAG, data={"id": target}
+            )
 
     def add_external_reference_element(self, element, ext_refs: list):
         """
-        <!-- EXTERNALREFERENCES ELEMENT -->
-        <!--
+        EXTERNALREFERENCES ELEMENT
             The <externalReferences> element is used to associate terms to
             external resources, such as elements of a Knowledge base, an ontology,
             etc. It consists of several <externalRef> elements, one per
             association.
-          -->
-        <!ELEMENT externalReferences (externalRef)+>
-        <!-- EXTERNALREF ELEMENT -->
-        <!--
-             <externalRef> elements have the following attributes:- resource: indicates the identifier of the resource referred to.
-               - reference: code of the referred element. If the element is a
-               synset of some version of WordNet, it follows the pattern:
-               [a-z]{3}-[0-9]{2}-[0-9]+-[nvars]
-               which is a string composed by four fields separated by a dash.
-               The four fields are the following:
-               - Language code (three characters).
-               - WordNet version (two digits).
-               - Synset identifier composed by digits.
-               - POS character:
-               n noun
-               v verb
-               a adjective
-               r adverb
-               examples of valid patterns are: ``ENG-20-12345678-n'',
-               ``SPA-16-017403-v'', etc.
-               - confidence: a floating number between 0 and 1. Indicates the confidence weight of the association
-               -->
-        <!ELEMENT externalRef (sentiment|externalRef)*>
-        <!ATTLIST externalRef
-                  resource CDATA #IMPLIED
-                  reference CDATA #REQUIRED
-                  reftype CDATA #IMPLIED
-                  status CDATA #IMPLIED
-                  source CDATA #IMPLIED
-                  confidence CDATA #IMPLIED
-                  timestamp CDATA #IMPLIED>
+
+        ELEMENT externalReferences (externalRef)+
+
+        EXTERNALREF ELEMENT
+            <externalRef> elements have the following attributes:- resource: indicates the identifier of the resource referred to.
+            - reference: code of the referred element. If the element is a
+            synset of some version of WordNet, it follows the pattern:
+            [a-z]{3}-[0-9]{2}-[0-9]+-[nvars]
+            which is a string composed by four fields separated by a dash.
+            The four fields are the following:
+            - Language code (three characters).
+            - WordNet version (two digits).
+            - Synset identifier composed by digits.
+            - POS character:
+            n noun
+            v verb
+            a adjective
+            r adverb
+            examples of valid patterns are: ``ENG-20-12345678-n'',
+            ``SPA-16-017403-v'', etc.
+            - confidence: a floating number between 0 and 1. Indicates the confidence weight of the association
+
+        ELEMENT externalRef (sentiment|externalRef)*
+
+        ATTLIST externalRef
+            resource CDATA #IMPLIED
+            reference CDATA #REQUIRED
+            reftype CDATA #IMPLIED
+            status CDATA #IMPLIED
+            source CDATA #IMPLIED
+            confidence CDATA #IMPLIED
+            timestamp CDATA #IMPLIED
         """
         if not isinstance(ext_refs, list):
             logging.info("ext_refs should be a list of dictionaries (can be empty)")
 
-        ext_refs_el = self.subelement(element=element,
-                                   tag="externalReferences")
+        ext_refs_el = self.subelement(element=element, tag="externalReferences")
         for ext_ref in ext_refs:
-            ext_ref_el = self.subelement(element=ext_refs_el, 
-                                      tag="externalRef",
-                                      data={"reference": ext_ref["reference"]})
+            ext_ref_el = self.subelement(
+                element=ext_refs_el,
+                tag="externalRef",
+                data={"reference": ext_ref["reference"]},
+            )
             for optional_attr in ["resource", "source", "timestamp"]:
                 if optional_attr in ext_ref:
                     ext_ref_el.set(optional_attr, ext_ref[optional_attr])
 
     def add_multiword_element(self, data: MultiwordElement):
         """
-        <!-- MULTIWORDS ELEMENT -->
-        <!ELEMENT multiwords (mw)+>
+        MULTIWORDS ELEMENT
 
-        <!-- MW ELEMENT -->
-        <!--
+        ELEMENT multiwords (mw)+
+
+        MW ELEMENT
             attributes of mw elements
             id: unique identifier (REQUIRED AND UNIQUE)
             lemma: lemma of the term (IMPLIED).
@@ -756,126 +758,28 @@ class NafDocument(etree._ElementTree):
             case: declension case (IMPLIED)
             status: manual | system | deprecated
             type: phrasal, idiom
-          -->
 
-        <!ELEMENT mw (component|externalReferences)+>
-        <!ATTLIST mw
-                  id ID #REQUIRED
-                  lemma CDATA #IMPLIED
-                  pos CDATA #IMPLIED
-                  morphofeat CDATA #IMPLIED
-                  case CDATA #IMPLIED
-                  status CDATA #IMPLIED
-                  type CDATA #REQUIRED>
+        ELEMENT mw (component|externalReferences)+
+
+        ATTLIST mw
+            id ID #REQUIRED
+            lemma CDATA #IMPLIED
+            pos CDATA #IMPLIED
+            morphofeat CDATA #IMPLIED
+            case CDATA #IMPLIED
+            status CDATA #IMPLIED
+            type CDATA #REQUIRED
         """
-        mw = self.subelement(element=self.layer(MULTIWORDS_LAYER_TAG),
-                             tag=MULTIWORD_OCCURRENCE_TAG,
-                             data=data)
+        mw = self.subelement(
+            element=self.layer(MULTIWORDS_LAYER_TAG),
+            tag=MULTIWORD_OCCURRENCE_TAG,
+            data=data,
+        )
         for component in data.components:
-            com = self.subelement(element=mw,
-                                  tag=COMPONENT_OCCURRENCE_TAG,
-                                  data=component)
+            com = self.subelement(
+                element=mw, tag=COMPONENT_OCCURRENCE_TAG, data=component
+            )
             self.add_span_element(element=com, data=component)
-
-    # def get_mws_layer(self):
-    #     """ """
-    #     layer = self.find("multiwords")
-    #     if layer is None:
-    #         layer = etree.SubElement(
-    #             self.getroot(), QName(PREFIX_NAF_BASE, "multiwords")
-    #         )
-    #     return layer
-
-    # def get_next_mw_id(self):
-    #     """ """
-    #     layer = self.find("multiwords")
-    #     if layer is None:
-    #         layer = etree.SubElement(
-    #             self.getroot(), QName(PREFIX_NAF_BASE, "multiwords")
-    #         )
-    #     mw_ids = [int(mw_el.get("id")[2:]) for mw_el in layer.xpath("mw")]
-    #     if mw_ids:
-    #         next_mw_id = max(mw_ids) + 1
-    #     else:
-    #         next_mw_id = 1
-    #     return f"mw{next_mw_id}"
-
-    # def add_multi_words(self, naf_version: str, language: str):
-    #     """
-    #     <!-- MULTIWORDS ELEMENT -->
-    #     <!ELEMENT multiwords (mw)+>
-    #     <!-- MW ELEMENT -->
-    #     <!--
-    #         attributes of mw elements
-    #         id: unique identifier (REQUIRED AND UNIQUE)
-    #         lemma: lemma of the term (IMPLIED).
-    #         pos: part of speech. (IMPLIED)
-    #         morphofeat: morphosyntactic feature encoded as a single attribute. (IMPLIED)
-    #         case: declension case (IMPLIED)
-    #         status: manual | system | deprecated
-    #         type: phrasal, idiom
-    #       -->
-    #     <!ELEMENT mw (component|externalReferences)+>
-    #     <!ATTLIST mw
-    #               id ID #REQUIRED
-    #               lemma CDATA #IMPLIED
-    #               pos CDATA #IMPLIED
-    #               morphofeat CDATA #IMPLIED
-    #               case CDATA #IMPLIED
-    #               status CDATA #IMPLIED
-    #               type CDATA #REQUIRED>
-    #     """
-
-    #     # dictionary from tid -> term_el
-    #     tid_to_term = {
-    #         term.get("id"): term for term in self.getroot().xpath("terms/term")
-    #     }
-
-    #     num_of_compound_prts = 0
-
-    #     # loop deps el
-    #     for dep in self.findall(DEPS_LAYER_TAG + "/" + DEP_OCCURRENCE_TAG):
-
-    #         if dep.get("rfunc") == "compound:prt":
-
-    #             mws_layer = self.get_mws_layer()
-    #             next_mw_id = self.get_next_mw_id()
-
-    #             idverb = dep.get("from_term")
-    #             idparticle = dep.get("to_term")
-    #             num_of_compound_prts += 1
-
-    #             verb_term_el = tid_to_term[idverb]
-    #             verb = verb_term_el.get("lemma")
-    #             verb_term_el.set("component_of", next_mw_id)
-
-    #             particle_term_el = tid_to_term[idparticle]
-    #             particle = particle_term_el.get("lemma")
-    #             particle_term_el.set("component_of", next_mw_id)
-
-    #             separable_verb_lemma = self.create_separable_verb_lemma(
-    #                 verb, particle, language
-    #             )
-    #             attributes = [
-    #                 ("id", next_mw_id),
-    #                 ("lemma", separable_verb_lemma),
-    #                 ("pos", "VERB"),
-    #                 ("type", "phrasal"),
-    #             ]
-
-    #             mw_element = etree.SubElement(mws_layer, "mw", attributes)
-
-    #             # add component elements
-    #             components = [
-    #                 (f"{next_mw_id}.c1", idverb),
-    #                 (f"{next_mw_id}.c2", idparticle),
-    #             ]
-    #             for c_id, t_id in components:
-    #                 component = etree.SubElement(
-    #                     mw_element, "component", attrib={"id": c_id}
-    #                 )
-    #                 span = etree.SubElement(component, "span")
-    #                 etree.SubElement(span, "target", attrib={"id": t_id})
 
     def add_formats_element(self, formats: str):
 
@@ -890,26 +794,26 @@ class NafDocument(etree._ElementTree):
                 self.getroot(), QName(PREFIX_NAF_BASE, FORMATS_LAYER_TAG)
             )
 
-        def add_element(el, tag):
-            c = etree.SubElement(el, tag)
-            for item in el.attrib.keys():
+        def add_element(element, tag):
+            subelement = etree.SubElement(element, tag)
+            for item in element.attrib.keys():
                 if item not in ["bbox", "colourspace", "ncolour"]:
-                    c.attrib[item] = el.attrib[item]
-            return c
+                    subelement.attrib[item] = element.attrib[item]
+            return subelement
 
-        def add_text_element(el, tag, text, attrib, offset):
+        def add_text_element(element, tag, text, attrib, offset):
             if text is not None:
-                text_element = etree.SubElement(el, tag)
+                text_element = etree.SubElement(element, tag)
                 for item in attrib.keys():
                     text_element.attrib[item] = attrib[item]
                 text_element.text = text
                 text_element.set("length", str(len(text)))
                 text_element.set("offset", str(offset))
 
-        def copy_dict(el2):
+        def copy_dict(element):
             return {
-                item: el2.attrib[item]
-                for item in el2.keys()
+                item: element.attrib[item]
+                for item in element.keys()
                 if item not in ["bbox", "colourspace", "ncolour"]
             }
 
@@ -918,9 +822,7 @@ class NafDocument(etree._ElementTree):
             page_element = add_element(layer, "page")
             page_length = 0
             for page_item in page:
-
                 if page_item.tag == "textbox":
-
                     page_item_element = add_element(page_element, page_item.tag)
                     for textline in page_item:
                         textline_element = add_element(page_item_element, textline.tag)
@@ -929,7 +831,6 @@ class NafDocument(etree._ElementTree):
                             previous_attrib = copy_dict(textline[0])
                             for idx, char in enumerate(textline[1:]):
                                 char_attrib = copy_dict(char)
-
                                 if previous_attrib == char_attrib:
                                     previous_text += char.text
                                     if idx == len(textline) - 1:
@@ -942,7 +843,6 @@ class NafDocument(etree._ElementTree):
                                         )
                                         page_length += len(previous_text)
                                         offset += len(previous_text)
-
                                 else:  # -> previous_attrib != char_attrib
 
                                     add_text_element(

@@ -38,6 +38,27 @@ if SPACY_IMPORTED:
             )
             self.model_version = f'spaCy_version-{spacy.__version__}__model_version-{self.nlp.meta["version"]}'
 
+        def processor(self, name):
+
+            processors = {proc_name: proc for proc_name, proc in self.nlp.pipeline}
+
+            # where is the tokenizer object in spacy?
+            if name == "text":
+                processor = processors.get("tagger", None)
+            elif name == "entities":
+                processor = processors.get("ner", None)
+            elif name == "terms":
+                processor = processors.get("tagger", None)
+            elif name == "deps":
+                processor = processors.get("parser", None)
+            elif name == "multiwords":
+                processor = processors.get("tagger", None)
+            elif name == "raw":
+                processor = processors.get("tagger", None)
+            
+            # need a better solution for this
+            return {"model": str(processor.model)}
+
         def nlp(self, text):
             self.doc = self.nlp(text)
             return self.doc
@@ -123,7 +144,9 @@ if STANZA_IMPORTED:
         ):
 
             if nlp is None:
-                self.nlp = stanza.Pipeline(lang=lang, verbose=False)
+                self.nlp = stanza.Pipeline(lang=lang, 
+                                           processors='tokenize,pos,lemma,ner,depparse',
+                                           verbose=False)
             else:
                 self.nlp = nlp
             self.lang = lang
@@ -133,17 +156,19 @@ if STANZA_IMPORTED:
         def processor(self, name):
 
             if name == "text":
-                return self.nlp.processors.get("tokenize")
+                processor = self.nlp.processors.get("tokenize")
             elif name == "entities":
-                return self.nlp.processors.get("ner")
+                processor = self.nlp.processors.get("ner")
             elif name == "terms":
-                return self.nlp.processors.get("pos")
+                processor = self.nlp.processors.get("pos")
             elif name == "deps":
-                return self.nlp.processors.get("depparse")
+                processor = self.nlp.processors.get("depparse")
             elif name == "multiwords":
-                return self.nlp.processors.get("tokenize")
+                processor = self.nlp.processors.get("tokenize")
             elif name == "raw":
-                return self.nlp.processors.get("tokenize")
+                processor = self.nlp.processors.get("tokenize")
+
+            return {"model": processor._config["model_path"]}
 
         def nlp(self, text):
             self.doc = self.nlp(text)

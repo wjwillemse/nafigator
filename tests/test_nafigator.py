@@ -128,8 +128,8 @@ class TestNafigator(unittest.TestCase):
         naf = NafDocument().open(join("tests", "tests", "example.naf"))
         actual = naf.entities
 
-        expected = [{'id': 'e1', 'type': 'PRODUCT', 'text': 'Nafigator', 'targets': [{'id': 't2'}]}, 
-                    {'id': 'e2', 'type': 'CARDINAL', 'text': 'one', 'targets': [{'id': 't28'}]}]
+        expected = [{'id': 'e1', 'type': 'PRODUCT', 'text': 'Nafigator', 'span': [{'id': 't2'}]}, 
+                    {'id': 'e2', 'type': 'CARDINAL', 'text': 'one', 'span': [{'id': 't28'}]}]
 
         assert actual == expected, "expected: "+str(expected)
 
@@ -193,57 +193,57 @@ class TestNafigator(unittest.TestCase):
     def test_terms(self):
         naf = NafDocument().open(join("tests", "tests", "example.naf"))
         actual = naf.terms
-        expected = [{'id': 't1', 'lemma': 'the', 'pos': 'DET', 'type': 'open', 'morphofeat': 'Definite=Def|PronType=Art', 'targets': [{'id': 'w1'}]}, 
-          {'id': 't2', 'lemma': 'Nafigator', 'pos': 'PROPN', 'type': 'open', 'morphofeat': 'Number=Sing', 'targets': [{'id': 'w2'}]}, 
-          {'id': 't3', 'lemma': 'package', 'pos': 'NOUN', 'type': 'open', 'morphofeat': 'Number=Sing', 'targets': [{'id': 'w3'}]}, 
-          {'id': 't4', 'lemma': 'allow', 'pos': 'VERB', 'type': 'open', 'morphofeat': 'Mood=Ind|Number=Sing|Person=3|Tense=Pres|VerbForm=Fin', 'targets': [{'id': 'w4'}]},
-          {'id': 't5', 'lemma': 'you', 'pos': 'PRON', 'type': 'open', 'morphofeat': 'Case=Acc|Person=2|PronType=Prs', 'targets': [{'id': 'w5'}]}, 
-          {'id': 't6', 'lemma': 'to', 'pos': 'PART', 'type': 'open', 'targets': [{'id': 'w6'}]}, 
-          {'id': 't7', 'lemma': 'store', 'pos': 'VERB', 'type': 'open', 'morphofeat': 'VerbForm=Inf', 'targets': [{'id': 'w7'}]}, 
-          {'id': 't8', 'lemma': 'nlp', 'pos': 'NOUN', 'type': 'open', 'morphofeat': 'Number=Sing', 'targets': [{'id': 'w8'}]}, 
-          {'id': 't9', 'lemma': 'output', 'pos': 'NOUN', 'type': 'open', 'morphofeat': 'Number=Sing', 'targets': [{'id': 'w9'}]}, 
-          {'id': 't10', 'lemma': 'from', 'pos': 'ADP', 'type': 'open', 'targets': [{'id': 'w10'}]}, 
-          {'id': 't11', 'lemma': 'custom', 'pos': 'ADJ', 'type': 'open', 'morphofeat': 'Degree=Pos', 'targets': [{'id': 'w11'}]}, 
-          {'id': 't12', 'lemma': 'make', 'pos': 'VERB', 'type': 'open', 'morphofeat': 'Tense=Past|VerbForm=Part', 'targets': [{'id': 'w12'}]},
-          {'id': 't13', 'lemma': 'spa', 'pos': 'NOUN', 'type': 'open', 'morphofeat': 'Number=Sing', 'targets': [{'id': 'w13'}]}, 
-          {'id': 't14', 'lemma': 'cy', 'pos': 'NOUN', 'type': 'open', 'morphofeat': 'Number=Sing', 'targets': [{'id': 'w14'}]}, 
-          {'id': 't15', 'lemma': 'and', 'pos': 'CCONJ', 'type': 'open', 'targets': [{'id': 'w15'}]}, 
-          {'id': 't16', 'lemma': 'stanza', 'pos': 'NOUN', 'type': 'open', 'morphofeat': 'Number=Sing', 'targets': [{'id': 'w16'}]}, 
-          {'id': 't17', 'lemma': 'pipeline', 'pos': 'NOUN', 'type': 'open', 'morphofeat': 'Number=Plur', 'targets': [{'id': 'w17'}]}, 
-          {'id': 't18', 'lemma': 'with', 'pos': 'ADP', 'type': 'open', 'targets': [{'id': 'w18'}]}, 
-          {'id': 't19', 'lemma': '(', 'pos': 'PUNCT', 'type': 'open', 'targets': [{'id': 'w19'}]}, 
-          {'id': 't20', 'lemma': 'intermediate', 'pos': 'ADJ', 'type': 'open', 'morphofeat': 'Degree=Pos', 'targets': [{'id': 'w20'}]},
-          {'id': 't21', 'lemma': ')', 'pos': 'PUNCT', 'type': 'open', 'targets': [{'id': 'w21'}]}, 
-          {'id': 't22', 'lemma': 'result', 'pos': 'NOUN', 'type': 'open', 'morphofeat': 'Number=Plur', 'targets': [{'id': 'w22'}]}, 
-          {'id': 't23', 'lemma': 'and', 'pos': 'CCONJ', 'type': 'open', 'targets': [{'id': 'w23'}]}, 
-          {'id': 't24', 'lemma': 'all', 'pos': 'DET', 'type': 'open', 'targets': [{'id': 'w24'}]}, 
-          {'id': 't25', 'lemma': 'processing', 'pos': 'NOUN', 'type': 'open', 'morphofeat': 'Number=Sing', 'targets': [{'id': 'w25'}]}, 
-          {'id': 't26', 'lemma': 'step', 'pos': 'NOUN', 'type': 'open', 'morphofeat': 'Number=Plur', 'targets': [{'id': 'w26'}]}, 
-          {'id': 't27', 'lemma': 'in', 'pos': 'ADP', 'type': 'open', 'targets': [{'id': 'w27'}]}, 
-          {'id': 't28', 'lemma': 'one', 'pos': 'NUM', 'type': 'open', 'morphofeat': 'NumType=Card', 'targets': [{'id': 'w28'}]}, 
-          {'id': 't29', 'lemma': 'format', 'pos': 'NOUN', 'type': 'open', 'morphofeat': 'Number=Sing', 'targets': [{'id': 'w29'}]}, 
-          {'id': 't30', 'lemma': '.', 'pos': 'PUNCT', 'type': 'open', 'targets': [{'id': 'w30'}]}, 
-          {'id': 't31', 'lemma': 'multiword', 'pos': 'NOUN', 'type': 'open', 'morphofeat': 'Number=Plur', 'targets': [{'id': 'w31'}]}, 
-          {'id': 't32', 'lemma': 'like', 'pos': 'ADP', 'type': 'open', 'targets': [{'id': 'w32'}]}, 
-          {'id': 't33', 'lemma': 'in', 'pos': 'ADP', 'type': 'open', 'targets': [{'id': 'w33'}]},
-          {'id': 't34', 'lemma': '"', 'pos': 'PUNCT', 'type': 'open', 'targets': [{'id': 'w34'}]}, 
-          {'id': 't35', 'lemma': 'we', 'pos': 'PRON', 'type': 'open', 'morphofeat': 'Case=Nom|Number=Plur|Person=1|PronType=Prs', 'targets': [{'id': 'w35'}]},
-          {'id': 't36', 'lemma': 'have', 'pos': 'AUX', 'type': 'open', 'morphofeat': 'Mood=Ind|Tense=Pres|VerbForm=Fin', 'targets': [{'id': 'w36'}]}, 
-          {'id': 't37', 'lemma': 'set', 'pos': 'VERB', 'type': 'open', 'morphofeat': 'Tense=Past|VerbForm=Part', 'component_of': 'mw1', 'targets': [{'id': 'w37'}]}, 
-          {'id': 't38', 'lemma': 'that', 'pos': 'SCONJ', 'type': 'open', 'targets': [{'id': 'w38'}]}, 
-          {'id': 't39', 'lemma': 'out', 'pos': 'ADP', 'type': 'open', 'component_of': 'mw1', 'targets': [{'id': 'w39'}]},
-          {'id': 't40', 'lemma': 'below', 'pos': 'ADV', 'type': 'open', 'targets': [{'id': 'w40'}]}, 
-          {'id': 't41', 'lemma': '"', 'pos': 'PUNCT', 'type': 'open', 'targets': [{'id': 'w41'}]}, 
-          {'id': 't42', 'lemma': 'be', 'pos': 'AUX', 'type': 'open', 'morphofeat': 'Mood=Ind|Tense=Pres|VerbForm=Fin', 'targets': [{'id': 'w42'}]}, 
-          {'id': 't43', 'lemma': 'recognize', 'pos': 'VERB', 'type': 'open', 'morphofeat': 'Tense=Past|VerbForm=Part|Voice=Pass', 'targets': [{'id': 'w43'}]},
-          {'id': 't44', 'lemma': '(', 'pos': 'PUNCT', 'type': 'open', 'targets': [{'id': 'w44'}]}, 
-          {'id': 't45', 'lemma': 'depend', 'pos': 'VERB', 'type': 'open', 'morphofeat': 'VerbForm=Ger', 'targets': [{'id': 'w45'}]}, 
-          {'id': 't46', 'lemma': 'on', 'pos': 'ADP', 'type': 'open', 'targets': [{'id': 'w46'}]}, 
-          {'id': 't47', 'lemma': 'you', 'pos': 'PRON', 'type': 'open', 'morphofeat': 'Person=2|Poss=Yes|PronType=Prs', 'targets': [{'id': 'w47'}]},
-          {'id': 't48', 'lemma': 'nlp', 'pos': 'NOUN', 'type': 'open', 'morphofeat': 'Number=Sing', 'targets': [{'id': 'w48'}]},
-          {'id': 't49', 'lemma': 'processor', 'pos': 'NOUN', 'type': 'open', 'morphofeat': 'Number=Sing', 'targets': [{'id': 'w49'}]},
-          {'id': 't50', 'lemma': ')', 'pos': 'PUNCT', 'type': 'open', 'targets': [{'id': 'w50'}]},
-          {'id': 't51', 'lemma': '.', 'pos': 'PUNCT', 'type': 'open', 'targets': [{'id': 'w51'}]}]
+        expected = [{'id': 't1', 'lemma': 'the', 'pos': 'DET', 'type': 'open', 'morphofeat': 'Definite=Def|PronType=Art', 'span': [{'id': 'w1'}]}, 
+          {'id': 't2', 'lemma': 'Nafigator', 'pos': 'PROPN', 'type': 'open', 'morphofeat': 'Number=Sing', 'span': [{'id': 'w2'}]}, 
+          {'id': 't3', 'lemma': 'package', 'pos': 'NOUN', 'type': 'open', 'morphofeat': 'Number=Sing', 'span': [{'id': 'w3'}]}, 
+          {'id': 't4', 'lemma': 'allow', 'pos': 'VERB', 'type': 'open', 'morphofeat': 'Mood=Ind|Number=Sing|Person=3|Tense=Pres|VerbForm=Fin', 'span': [{'id': 'w4'}]},
+          {'id': 't5', 'lemma': 'you', 'pos': 'PRON', 'type': 'open', 'morphofeat': 'Case=Acc|Person=2|PronType=Prs', 'span': [{'id': 'w5'}]}, 
+          {'id': 't6', 'lemma': 'to', 'pos': 'PART', 'type': 'open', 'span': [{'id': 'w6'}]}, 
+          {'id': 't7', 'lemma': 'store', 'pos': 'VERB', 'type': 'open', 'morphofeat': 'VerbForm=Inf', 'span': [{'id': 'w7'}]}, 
+          {'id': 't8', 'lemma': 'nlp', 'pos': 'NOUN', 'type': 'open', 'morphofeat': 'Number=Sing', 'span': [{'id': 'w8'}]}, 
+          {'id': 't9', 'lemma': 'output', 'pos': 'NOUN', 'type': 'open', 'morphofeat': 'Number=Sing', 'span': [{'id': 'w9'}]}, 
+          {'id': 't10', 'lemma': 'from', 'pos': 'ADP', 'type': 'open', 'span': [{'id': 'w10'}]}, 
+          {'id': 't11', 'lemma': 'custom', 'pos': 'ADJ', 'type': 'open', 'morphofeat': 'Degree=Pos', 'span': [{'id': 'w11'}]}, 
+          {'id': 't12', 'lemma': 'make', 'pos': 'VERB', 'type': 'open', 'morphofeat': 'Tense=Past|VerbForm=Part', 'span': [{'id': 'w12'}]},
+          {'id': 't13', 'lemma': 'spa', 'pos': 'NOUN', 'type': 'open', 'morphofeat': 'Number=Sing', 'span': [{'id': 'w13'}]}, 
+          {'id': 't14', 'lemma': 'cy', 'pos': 'NOUN', 'type': 'open', 'morphofeat': 'Number=Sing', 'span': [{'id': 'w14'}]}, 
+          {'id': 't15', 'lemma': 'and', 'pos': 'CCONJ', 'type': 'open', 'span': [{'id': 'w15'}]}, 
+          {'id': 't16', 'lemma': 'stanza', 'pos': 'NOUN', 'type': 'open', 'morphofeat': 'Number=Sing', 'span': [{'id': 'w16'}]}, 
+          {'id': 't17', 'lemma': 'pipeline', 'pos': 'NOUN', 'type': 'open', 'morphofeat': 'Number=Plur', 'span': [{'id': 'w17'}]}, 
+          {'id': 't18', 'lemma': 'with', 'pos': 'ADP', 'type': 'open', 'span': [{'id': 'w18'}]}, 
+          {'id': 't19', 'lemma': '(', 'pos': 'PUNCT', 'type': 'open', 'span': [{'id': 'w19'}]}, 
+          {'id': 't20', 'lemma': 'intermediate', 'pos': 'ADJ', 'type': 'open', 'morphofeat': 'Degree=Pos', 'span': [{'id': 'w20'}]},
+          {'id': 't21', 'lemma': ')', 'pos': 'PUNCT', 'type': 'open', 'span': [{'id': 'w21'}]}, 
+          {'id': 't22', 'lemma': 'result', 'pos': 'NOUN', 'type': 'open', 'morphofeat': 'Number=Plur', 'span': [{'id': 'w22'}]}, 
+          {'id': 't23', 'lemma': 'and', 'pos': 'CCONJ', 'type': 'open', 'span': [{'id': 'w23'}]}, 
+          {'id': 't24', 'lemma': 'all', 'pos': 'DET', 'type': 'open', 'span': [{'id': 'w24'}]}, 
+          {'id': 't25', 'lemma': 'processing', 'pos': 'NOUN', 'type': 'open', 'morphofeat': 'Number=Sing', 'span': [{'id': 'w25'}]}, 
+          {'id': 't26', 'lemma': 'step', 'pos': 'NOUN', 'type': 'open', 'morphofeat': 'Number=Plur', 'span': [{'id': 'w26'}]}, 
+          {'id': 't27', 'lemma': 'in', 'pos': 'ADP', 'type': 'open', 'span': [{'id': 'w27'}]}, 
+          {'id': 't28', 'lemma': 'one', 'pos': 'NUM', 'type': 'open', 'morphofeat': 'NumType=Card', 'span': [{'id': 'w28'}]}, 
+          {'id': 't29', 'lemma': 'format', 'pos': 'NOUN', 'type': 'open', 'morphofeat': 'Number=Sing', 'span': [{'id': 'w29'}]}, 
+          {'id': 't30', 'lemma': '.', 'pos': 'PUNCT', 'type': 'open', 'span': [{'id': 'w30'}]}, 
+          {'id': 't31', 'lemma': 'multiword', 'pos': 'NOUN', 'type': 'open', 'morphofeat': 'Number=Plur', 'span': [{'id': 'w31'}]}, 
+          {'id': 't32', 'lemma': 'like', 'pos': 'ADP', 'type': 'open', 'span': [{'id': 'w32'}]}, 
+          {'id': 't33', 'lemma': 'in', 'pos': 'ADP', 'type': 'open', 'span': [{'id': 'w33'}]},
+          {'id': 't34', 'lemma': '"', 'pos': 'PUNCT', 'type': 'open', 'span': [{'id': 'w34'}]}, 
+          {'id': 't35', 'lemma': 'we', 'pos': 'PRON', 'type': 'open', 'morphofeat': 'Case=Nom|Number=Plur|Person=1|PronType=Prs', 'span': [{'id': 'w35'}]},
+          {'id': 't36', 'lemma': 'have', 'pos': 'AUX', 'type': 'open', 'morphofeat': 'Mood=Ind|Tense=Pres|VerbForm=Fin', 'span': [{'id': 'w36'}]}, 
+          {'id': 't37', 'lemma': 'set', 'pos': 'VERB', 'type': 'open', 'morphofeat': 'Tense=Past|VerbForm=Part', 'component_of': 'mw1', 'span': [{'id': 'w37'}]}, 
+          {'id': 't38', 'lemma': 'that', 'pos': 'SCONJ', 'type': 'open', 'span': [{'id': 'w38'}]}, 
+          {'id': 't39', 'lemma': 'out', 'pos': 'ADP', 'type': 'open', 'component_of': 'mw1', 'span': [{'id': 'w39'}]},
+          {'id': 't40', 'lemma': 'below', 'pos': 'ADV', 'type': 'open', 'span': [{'id': 'w40'}]}, 
+          {'id': 't41', 'lemma': '"', 'pos': 'PUNCT', 'type': 'open', 'span': [{'id': 'w41'}]}, 
+          {'id': 't42', 'lemma': 'be', 'pos': 'AUX', 'type': 'open', 'morphofeat': 'Mood=Ind|Tense=Pres|VerbForm=Fin', 'span': [{'id': 'w42'}]}, 
+          {'id': 't43', 'lemma': 'recognize', 'pos': 'VERB', 'type': 'open', 'morphofeat': 'Tense=Past|VerbForm=Part|Voice=Pass', 'span': [{'id': 'w43'}]},
+          {'id': 't44', 'lemma': '(', 'pos': 'PUNCT', 'type': 'open', 'span': [{'id': 'w44'}]}, 
+          {'id': 't45', 'lemma': 'depend', 'pos': 'VERB', 'type': 'open', 'morphofeat': 'VerbForm=Ger', 'span': [{'id': 'w45'}]}, 
+          {'id': 't46', 'lemma': 'on', 'pos': 'ADP', 'type': 'open', 'span': [{'id': 'w46'}]}, 
+          {'id': 't47', 'lemma': 'you', 'pos': 'PRON', 'type': 'open', 'morphofeat': 'Person=2|Poss=Yes|PronType=Prs', 'span': [{'id': 'w47'}]},
+          {'id': 't48', 'lemma': 'nlp', 'pos': 'NOUN', 'type': 'open', 'morphofeat': 'Number=Sing', 'span': [{'id': 'w48'}]},
+          {'id': 't49', 'lemma': 'processor', 'pos': 'NOUN', 'type': 'open', 'morphofeat': 'Number=Sing', 'span': [{'id': 'w49'}]},
+          {'id': 't50', 'lemma': ')', 'pos': 'PUNCT', 'type': 'open', 'span': [{'id': 'w50'}]},
+          {'id': 't51', 'lemma': '.', 'pos': 'PUNCT', 'type': 'open', 'span': [{'id': 'w51'}]}]
         assert actual == expected
 
     def test_dependencies(self):
@@ -304,8 +304,8 @@ class TestNafigator(unittest.TestCase):
         naf = NafDocument().open(join("tests", "tests", "example.naf"))
         actual = naf.multiwords
         expected = [{'id': 'mw1', 'lemma': 'set_out', 'pos': 'VERB', 'type': 'phrasal', 'components': 
-                        [{'id': 'mw1.c1', 'targets': [{'id': 't37'}]}, 
-                         {'id': 'mw1.c2', 'targets': [{'id': 't39'}]}]}]
+                        [{'id': 'mw1.c1', 'span': [{'id': 't37'}]}, 
+                         {'id': 'mw1.c2', 'span': [{'id': 't39'}]}]}]
         assert actual == expected
 
     def test_raw(self):
