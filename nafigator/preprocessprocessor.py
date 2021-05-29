@@ -56,7 +56,7 @@ def convert_pdf(path, format="text", codec="utf-8", password="", params=None):
     pp = ProcessorElement(
         name="pdfminer-pdf2" + format,
         version=f"pdfminer_version-{pdfminer.__version__}",
-        model_path=None,
+        model=None,
         timestamp=None,
         beginTimestamp=start_time,
         endTimestamp=end_time,

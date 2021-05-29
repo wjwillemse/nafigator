@@ -5,7 +5,7 @@
 from collections import namedtuple
 
 ProcessorElement = namedtuple(
-    "lp", "name version model_path timestamp beginTimestamp endTimestamp hostname"
+    "lp", "name version model timestamp beginTimestamp endTimestamp hostname"
 )
 
 WordformElement = namedtuple("WfElement", "id sent para page offset length xpath text")

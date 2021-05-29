@@ -394,7 +394,7 @@ def add_entities_layer(params: dict):
     lp = ProcessorElement(
         name="entities",
         version=params["engine"].model_version,
-        model_path=params["engine"].processor("entities").get('model', ''),
+        model=params["engine"].processor("entities").get('model', ''),
         timestamp=None,
         beginTimestamp=params["beginTimestamp"],
         endTimestamp=params["endTimestamp"],
@@ -487,7 +487,7 @@ def add_text_layer(params: dict):
     lp = ProcessorElement(
         name="text",
         version=params["engine"].model_version,
-        model_path=params["engine"].processor("text").get('model', ''),
+        model=params["engine"].processor("text").get('model', ''),
         timestamp=None,
         beginTimestamp=params["beginTimestamp"],
         endTimestamp=params["endTimestamp"],
@@ -549,7 +549,7 @@ def add_terms_layer(params: dict):
     lp = ProcessorElement(
         name="terms",
         version=params["engine"].model_version,
-        model_path=params["engine"].processor("terms").get('model', ''),
+        model=params["engine"].processor("terms").get('model', ''),
         timestamp=None,
         beginTimestamp=params["beginTimestamp"],
         endTimestamp=params["endTimestamp"],
@@ -638,7 +638,7 @@ def add_deps_layer(params: dict):
     lp = ProcessorElement(
         name="deps",
         version=params["engine"].model_version,
-        model_path=params["engine"].processor("deps").get('model', ''),
+        model=params["engine"].processor("deps").get('model', ''),
         timestamp=None,
         beginTimestamp=params["beginTimestamp"],
         endTimestamp=params["endTimestamp"],
@@ -703,7 +703,7 @@ def add_multiwords_layer(params: dict):
     lp = ProcessorElement(
         name="multiwords",
         version=params["engine"].model_version,
-        model_path=params["engine"].processor("multiwords").get('model', ''),
+        model=params["engine"].processor("multiwords").get('model', ''),
         timestamp=None,
         beginTimestamp=params["beginTimestamp"],
         endTimestamp=params["endTimestamp"],
@@ -793,7 +793,7 @@ def add_raw_layer(params: dict):
     lp = ProcessorElement(
         name="raw",
         version=params["engine"].model_version,
-        model_path=params["engine"].processor("raw").get('model', ''),
+        model=params["engine"].processor("raw").get('model', ''),
         timestamp=None,
         beginTimestamp=params["beginTimestamp"],
         endTimestamp=params["endTimestamp"],
@@ -845,7 +845,7 @@ def add_chunks_layer(params: dict):
     lp = ProcessorElement(
         name="chunks",
         version=params["engine"].model_version,
-        model_path=params["engine"].processor("chunks").get('model', ''),
+        model=params["engine"].processor("chunks").get('model', ''),
         timestamp=None,
         beginTimestamp=params["beginTimestamp"],
         endTimestamp=params["endTimestamp"],
@@ -863,7 +863,7 @@ def add_formats_layer(params: dict):
     lp = ProcessorElement(
         name="formats",
         version=params["engine"].model_version,
-        model_path=None,
+        model=None,
         timestamp=None,
         beginTimestamp=params["beginTimestamp"],
         endTimestamp=params["endTimestamp"],
