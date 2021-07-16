@@ -18,8 +18,9 @@ import rdflib
 @click.option(
     "--output", default="data/example.ttl", prompt="output file", help="The output file"
 )
-def opennaf(input: str, output: str):
+def convert2rdf(input: str, output: str):
     """ """
+    
     naf = NafDocument().open(input)
 
     params: dict = dict()
@@ -392,4 +393,4 @@ def genDepName(params: dict) -> str:
 
 
 if __name__ == "__main__":
-    sys.exit(opennaf())
+    sys.exit(convert2rdf())

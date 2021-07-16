@@ -224,28 +224,42 @@ class NafDocument(etree._ElementTree):
             return entities
 
         if name == "sentences":
+
+            word2term = {item['id']: term['id'] for term in self.terms for item in term['span']}
+
             sentences = list()
             sentence_list = list()
             sent_num = 1
             pages = set()
             span = list()
+            terms = list()
             for item in self.text:
                 if item["sent"] == str(sent_num):
                     sentence_list.append(item["text"])
                     span.append({"id": item['id']})
+                    if item['id'] in word2term.keys():
+                        terms.append({"id": word2term.get(item['id'])})
                     pages.add(item["page"])
                 else:
                     sentences.append(
-                        {"text": " ".join(sentence_list), "page": list(pages)}
+                        {"text": " ".join(sentence_list), 
+                         "page": list(pages),
+                         "span": span,
+                         "terms": terms}
                     )
                     sentence_list = list([item["text"]])
-                    span.append({"id": item['id']})
                     pages = set()
+                    span = list()
+                    terms = list()
+                    span.append({"id": item['id']})
+                    if item['id'] in word2term.keys():
+                        terms.append({"id": word2term.get(item['id'])})
                     pages.add(item["page"])
                     sent_num += 1
             if sent_num > 1:
                 sentences.append({"text": " ".join(sentence_list), 
                                   "span": span,
+                                  "terms": terms,
                                   "page": list(pages)})
             return sentences
 

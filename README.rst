@@ -34,19 +34,19 @@ Features
 
 The Nafigator package allows you to store (intermediate) results and processing steps from custom made spaCy and stanza pipelines in one format.
 
-* Convert text files to .naf-files that satisfy the NLP Annotation Format (NAF)
+* Convert text files to naf-files that satisfy the NLP Annotation Format (NAF)
 
   - Supported input media types: application/pdf (.pdf), text/plain (.txt), text/html (.html)
 
-  - Supported output format: naf-xml (.naf), naf-rdf in turtle syntax (.ttl) (experimental)
+  - Supported output formats: naf-xml (.naf.xml), naf-rdf in turtle-syntax (.ttl) and xml-syntax (.rdf) (experimental)
 
   - Supported NLP processors: spaCy, stanza
 
   - Supported NAF layers: raw, text, terms, entities, deps, multiwords
 
-* Read .naf documents and access data as Python lists and dicts
+* Read naf-files and access data as Python lists and dicts
 
-When reading .naf-files Nafigator stores data in memory as lxml ElementTrees. The lxml package provides a Pythonic binding for C libaries so it should be very fast.
+When reading naf-files Nafigator stores data in memory as lxml ElementTrees. The lxml package provides a Pythonic binding for C libaries so it should be very fast.
 
 The NLP Annotation Format (NAF)
 -------------------------------

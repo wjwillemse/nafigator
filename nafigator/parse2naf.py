@@ -463,15 +463,14 @@ def add_entities_layer(params: dict):
                 entity_number += 1
                 current_entity = list()
                 current_entity_orth = list()
+                
                 # Move to the next entity
                 parsing_entity = False
                 try:
                     next_entity = next(entity_gen)
                 except StopIteration:
-                    # No more entities...
                     next_entity = Entity(start=None, end=None, type=None)
 
-        # At the end of the sentence, add all the dependencies to the XML structure.
         if engine.token_reset() is False:
             current_token = token_number + 1
             total_tokens = 0
