@@ -13,7 +13,7 @@ from socket import getfqdn
 from .nafdocument import NafDocument
 from .linguisticprocessor import stanzaProcessor
 from .linguisticprocessor import spacyProcessor
-from .preprocessprocessor import convert_pdf
+from .preprocessprocessor import convert_pdf, convert_docx
 from lxml import etree
 import lxml.html
 
@@ -41,7 +41,10 @@ FORMATS_LAYER_TAG = "formats"
     "--input", default="data/example.pdf", prompt="input file", help="The input file"
 )
 @click.option(
-    "--output", default="data/example.naf.xml", prompt="output file", help="The output file"
+    "--output",
+    default="data/example.naf.xml",
+    prompt="output file",
+    help="The output file",
 )
 @click.option(
     "--engine",
@@ -164,6 +167,13 @@ def create_params(
     elif os.path.splitext(input)[1].lower() == ".pdf":
         params["fileDesc"]["filetype"] = "application/pdf"
         params["public"]["format"] = "application/pdf"
+    elif os.path.splitext(input)[1].lower() == ".docx":
+        params["fileDesc"][
+            "filetype"
+        ] = "application/vnd.openxmlformats-officedocument.wordprocessingml.document"
+        params["public"][
+            "format"
+        ] = "application/vnd.openxmlformats-officedocument.wordprocessingml.document"
 
     # set default linguistic parameters
     if "linguistic_layers" not in params.keys():
@@ -251,6 +261,10 @@ def process_preprocess_steps(params: dict):
         with open(input) as f:
             doc = lxml.html.document_fromstring(f.read())
             params["text"] = doc.text_content()
+    elif input[-4:].lower() == "docx":
+        convert_docx(input, format="xml", params=params)
+        convert_docx(input, format="text", params=params)
+        params["text"] = params["docxtotext"]
     elif input[-3:].lower() == "pdf":
         convert_pdf(input, format="xml", params=params)
         convert_pdf(input, format="text", params=params)
@@ -286,7 +300,10 @@ def process_linguistic_steps(params: dict):
     params["endTimestamp"] = datetime.now()
 
     if "pdftoxml" in params.keys():
-        add_formats_layer(params)
+        add_formats_layer("pdf", params)
+
+    if "docxtoxml" in params.keys():
+        add_formats_layer("docx", params)
 
     process_linguistic_layers(params)
 
@@ -394,7 +411,7 @@ def add_entities_layer(params: dict):
     lp = ProcessorElement(
         name="entities",
         version=params["engine"].model_version,
-        model=params["engine"].processor("entities").get('model', ''),
+        model=params["engine"].processor("entities").get("model", ""),
         timestamp=None,
         beginTimestamp=params["beginTimestamp"],
         endTimestamp=params["endTimestamp"],
@@ -463,7 +480,7 @@ def add_entities_layer(params: dict):
                 entity_number += 1
                 current_entity = list()
                 current_entity_orth = list()
-                
+
                 # Move to the next entity
                 parsing_entity = False
                 try:
@@ -486,7 +503,7 @@ def add_text_layer(params: dict):
     lp = ProcessorElement(
         name="text",
         version=params["engine"].model_version,
-        model=params["engine"].processor("text").get('model', ''),
+        model=params["engine"].processor("text").get("model", ""),
         timestamp=None,
         beginTimestamp=params["beginTimestamp"],
         endTimestamp=params["endTimestamp"],
@@ -498,9 +515,18 @@ def add_text_layer(params: dict):
     root = params["tree"].getroot()
 
     pages_offset = None
+    paragraphs_offset = None
     formats = root.find(FORMATS_LAYER_TAG)
     if formats is not None:
         pages_offset = [int(page.get("offset")) for page in formats]
+        paragraphs_offset = [0] + [
+            int(text.get("offset")) + len(text.text)
+            for page in formats
+            for textbox in page
+            for textline in textbox
+            for text in textline
+            if len(text.text.strip()) > 0 and text.text.strip()[-1] == "."
+        ]
 
     doc = params["doc"]
     engine = params["engine"]
@@ -508,6 +534,7 @@ def add_text_layer(params: dict):
     current_token: int = 1
     total_tokens: int = 0
     current_page: int = 0
+    current_paragraph: int = 0
 
     for sentence_number, sentence in enumerate(engine.document_sentences(doc), start=1):
 
@@ -519,11 +546,17 @@ def add_text_layer(params: dict):
                 if engine.token_offset(token) >= pages_offset[current_page]:
                     current_page += 1
 
+            if (paragraphs_offset is not None) and (
+                current_paragraph < len(paragraphs_offset)
+            ):
+                if engine.token_offset(token) >= paragraphs_offset[current_paragraph]:
+                    current_paragraph += 1
+
             wf_id = "w" + str(token_number + total_tokens)
             wf_data = WordformElement(
                 id=wf_id,
                 sent=str(sentence_number),
-                para=None,
+                para=str(current_paragraph),
                 page=str(current_page),
                 offset=str(engine.token_offset(token)),
                 length=str(len(token.text)),
@@ -548,7 +581,7 @@ def add_terms_layer(params: dict):
     lp = ProcessorElement(
         name="terms",
         version=params["engine"].model_version,
-        model=params["engine"].processor("terms").get('model', ''),
+        model=params["engine"].processor("terms").get("model", ""),
         timestamp=None,
         beginTimestamp=params["beginTimestamp"],
         endTimestamp=params["endTimestamp"],
@@ -637,7 +670,7 @@ def add_deps_layer(params: dict):
     lp = ProcessorElement(
         name="deps",
         version=params["engine"].model_version,
-        model=params["engine"].processor("deps").get('model', ''),
+        model=params["engine"].processor("deps").get("model", ""),
         timestamp=None,
         beginTimestamp=params["beginTimestamp"],
         endTimestamp=params["endTimestamp"],
@@ -702,7 +735,7 @@ def add_multiwords_layer(params: dict):
     lp = ProcessorElement(
         name="multiwords",
         version=params["engine"].model_version,
-        model=params["engine"].processor("multiwords").get('model', ''),
+        model=params["engine"].processor("multiwords").get("model", ""),
         timestamp=None,
         beginTimestamp=params["beginTimestamp"],
         endTimestamp=params["endTimestamp"],
@@ -792,7 +825,7 @@ def add_raw_layer(params: dict):
     lp = ProcessorElement(
         name="raw",
         version=params["engine"].model_version,
-        model=params["engine"].processor("raw").get('model', ''),
+        model=params["engine"].processor("raw").get("model", ""),
         timestamp=None,
         beginTimestamp=params["beginTimestamp"],
         endTimestamp=params["endTimestamp"],
@@ -844,7 +877,7 @@ def add_chunks_layer(params: dict):
     lp = ProcessorElement(
         name="chunks",
         version=params["engine"].model_version,
-        model=params["engine"].processor("chunks").get('model', ''),
+        model=params["engine"].processor("chunks").get("model", ""),
         timestamp=None,
         beginTimestamp=params["beginTimestamp"],
         endTimestamp=params["endTimestamp"],
@@ -857,7 +890,7 @@ def add_chunks_layer(params: dict):
         params["tree"].add_chunk_element(chunk_data, params["comments"])
 
 
-def add_formats_layer(params: dict):
+def add_formats_layer(source: str, params: dict):
     """ """
     lp = ProcessorElement(
         name="formats",
@@ -871,7 +904,10 @@ def add_formats_layer(params: dict):
 
     params["tree"].add_processor_element("formats", lp)
 
-    params["tree"].add_formats_element(params["pdftoxml"])
+    if source == "pdf":
+        params["tree"].add_formats_element(source, params["pdftoxml"])
+    elif source == "docx":
+        params["tree"].add_formats_element(source, params["docxtoxml"])
 
 
 if __name__ == "__main__":

@@ -11,6 +11,8 @@ from io import BytesIO
 from datetime import datetime
 from .const import ProcessorElement
 
+import docx
+import zipfile
 
 def convert_pdf(path, format="text", codec="utf-8", password="", params=None):
 
@@ -68,3 +70,33 @@ def convert_pdf(path, format="text", codec="utf-8", password="", params=None):
     params["pdfto" + format] = text
 
     return text
+
+def convert_docx(path, format="text", codec="utf-8", password="", params=None):
+
+    start_time = datetime.now()
+
+    if format == "text":
+        document = docx.Document(path)
+        text = ""
+        for para in document.paragraphs:
+            text += para.text
+    elif format == "xml":
+        with open(path, "rb") as f:
+            zip = zipfile.ZipFile(f)
+            text = zip.read('word/document.xml')
+
+    end_time = datetime.now()
+
+    pp = ProcessorElement(
+        name="python-docx2" + format,
+        version=f"python-docx_version-{docx.__version__}",
+        model=None,
+        timestamp=None,
+        beginTimestamp=start_time,
+        endTimestamp=end_time,
+        hostname=None,
+    )
+
+    params["tree"].add_processor_element("docxto" + format, pp)
+
+    params["docxto" + format] = text

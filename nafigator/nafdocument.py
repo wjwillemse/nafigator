@@ -263,6 +263,46 @@ class NafDocument(etree._ElementTree):
                                   "page": list(pages)})
             return sentences
 
+        if name == "paragraphs":
+
+            word2term = {item['id']: term['id'] for term in self.terms for item in term['span']}
+
+            paragraphs = list()
+            paragraph_list = list()
+            para_num = 1
+            pages = set()
+            span = list()
+            terms = list()
+            for item in self.text:
+                if item["para"] == str(para_num):
+                    paragraph_list.append(item["text"])
+                    span.append({"id": item['id']})
+                    if item['id'] in word2term.keys():
+                        terms.append({"id": word2term.get(item['id'])})
+                    pages.add(item["page"])
+                else:
+                    paragraphs.append(
+                        {"text": " ".join(paragraph_list), 
+                         "page": list(pages),
+                         "span": span,
+                         "terms": terms}
+                    )
+                    paragraph_list = list([item["text"]])
+                    pages = set()
+                    span = list()
+                    terms = list()
+                    span.append({"id": item['id']})
+                    if item['id'] in word2term.keys():
+                        terms.append({"id": word2term.get(item['id'])})
+                    pages.add(item["page"])
+                    para_num += 1
+            if para_num > 1:
+                paragraphs.append({"text": " ".join(paragraph_list), 
+                                   "span": span,
+                                   "terms": terms,
+                                   "page": list(pages)})
+            return paragraphs
+
         layer = self.find(name)
         if layer is not None:
             l = list()
@@ -795,59 +835,73 @@ class NafDocument(etree._ElementTree):
             )
             self.add_span_element(element=com, data=component)
 
-    def add_formats_element(self, formats: str):
+    def add_formats_element(self, source: str, formats: str):
 
         """ """
-        formats = bytes(bytearray(formats, encoding="utf-8"))
-        parser = etree.XMLParser(ns_clean=True, recover=True, encoding="utf-8")
-        formats_root = etree.fromstring(formats, parser=parser)
 
-        layer = self.find(FORMATS_LAYER_TAG)
-        if layer is None:
-            layer = etree.SubElement(
-                self.getroot(), QName(PREFIX_NAF_BASE, FORMATS_LAYER_TAG)
-            )
+        if source == "pdf":
 
-        def add_element(element, tag):
-            subelement = etree.SubElement(element, tag)
-            for item in element.attrib.keys():
-                if item not in ["bbox", "colourspace", "ncolour"]:
-                    subelement.attrib[item] = element.attrib[item]
-            return subelement
+            formats = bytes(bytearray(formats, encoding="utf-8"))
+            parser = etree.XMLParser(ns_clean=True, recover=True, encoding="utf-8")
+            formats_root = etree.fromstring(formats, parser=parser)
 
-        def add_text_element(element, tag, text, attrib, offset):
-            if text is not None:
-                text_element = etree.SubElement(element, tag)
-                for item in attrib.keys():
-                    text_element.attrib[item] = attrib[item]
-                text_element.text = text
-                text_element.set("length", str(len(text)))
-                text_element.set("offset", str(offset))
+            layer = self.find(FORMATS_LAYER_TAG)
+            if layer is None:
+                layer = etree.SubElement(
+                    self.getroot(), QName(PREFIX_NAF_BASE, FORMATS_LAYER_TAG)
+                )
 
-        def copy_dict(element):
-            return {
-                item: element.attrib[item]
-                for item in element.keys()
-                if item not in ["bbox", "colourspace", "ncolour"]
-            }
+            def add_element(element, tag):
+                subelement = etree.SubElement(element, tag)
+                for item in element.attrib.keys():
+                    if item not in ["bbox", "colourspace", "ncolour"]:
+                        subelement.attrib[item] = element.attrib[item]
+                return subelement
 
-        offset = 0
-        for page in formats_root:
-            page_element = add_element(layer, "page")
-            page_length = 0
-            for page_item in page:
-                if page_item.tag == "textbox":
-                    page_item_element = add_element(page_element, page_item.tag)
-                    for textline in page_item:
-                        textline_element = add_element(page_item_element, textline.tag)
-                        if len(textline) > 0:
-                            previous_text = textline[0].text
-                            previous_attrib = copy_dict(textline[0])
-                            for idx, char in enumerate(textline[1:]):
-                                char_attrib = copy_dict(char)
-                                if previous_attrib == char_attrib:
-                                    previous_text += char.text
-                                    if idx == len(textline) - 1:
+            def add_text_element(element, tag, text, attrib, offset):
+                if text is not None:
+                    text_element = etree.SubElement(element, tag)
+                    for item in attrib.keys():
+                        text_element.attrib[item] = attrib[item]
+                    text_element.text = text
+                    text_element.set("length", str(len(text)))
+                    text_element.set("offset", str(offset))
+
+            def copy_dict(element):
+                return {
+                    item: element.attrib[item]
+                    for item in element.keys()
+                    if item not in ["bbox", "colourspace", "ncolour"]
+                }
+
+            offset = 0
+            for page in formats_root:
+                page_element = add_element(layer, "page")
+                page_length = 0
+                for page_item in page:
+                    if page_item.tag == "textbox":
+                        page_item_element = add_element(page_element, page_item.tag)
+                        for textline in page_item:
+                            textline_element = add_element(page_item_element, textline.tag)
+                            if len(textline) > 0:
+                                previous_text = textline[0].text
+                                previous_attrib = copy_dict(textline[0])
+                                for idx, char in enumerate(textline[1:]):
+                                    char_attrib = copy_dict(char)
+                                    if previous_attrib == char_attrib:
+                                        previous_text += char.text
+                                        if idx == len(textline) - 1:
+                                            add_text_element(
+                                                textline_element,
+                                                char.tag,
+                                                previous_text,
+                                                previous_attrib,
+                                                offset,
+                                            )
+                                            page_length += len(previous_text)
+                                            offset += len(previous_text)
+                                    else:  # -> previous_attrib != char_attrib
+
                                         add_text_element(
                                             textline_element,
                                             char.tag,
@@ -857,54 +911,54 @@ class NafDocument(etree._ElementTree):
                                         )
                                         page_length += len(previous_text)
                                         offset += len(previous_text)
-                                else:  # -> previous_attrib != char_attrib
 
-                                    add_text_element(
-                                        textline_element,
-                                        char.tag,
-                                        previous_text,
-                                        previous_attrib,
-                                        offset,
-                                    )
-                                    page_length += len(previous_text)
-                                    offset += len(previous_text)
+                                        previous_text = char.text
+                                        previous_attrib = char_attrib
+                                        if idx == len(textline) - 1:
+                                            add_text_element(
+                                                textline_element,
+                                                char.tag,
+                                                previous_text,
+                                                previous_attrib,
+                                                offset,
+                                            )
+                                            page_length += len(previous_text)
+                                            offset += len(previous_text)
+                            page_length += 1
+                            offset += 1
 
-                                    previous_text = char.text
-                                    previous_attrib = char_attrib
-                                    if idx == len(textline) - 1:
-                                        add_text_element(
-                                            textline_element,
-                                            char.tag,
-                                            previous_text,
-                                            previous_attrib,
-                                            offset,
-                                        )
-                                        page_length += len(previous_text)
-                                        offset += len(previous_text)
                         page_length += 1
                         offset += 1
 
-                    page_length += 1
-                    offset += 1
-
-                elif page_item.tag == "layout":
-                    page_length += 1
-                    offset += 1
-                elif page_item.tag == "figure":
-                    page_item_element = add_element(page_element, page_item.tag)
-                    if len(page_item) > 0:
-                        previous_text = None
-                        previous_attrib = None
-                        if 0 < len(page_item):
-                            for idx, char in enumerate(page_item):
-                                if char.tag in ["text", "line"]:
-                                    char_attrib = copy_dict(char)
-                                    if previous_attrib == char_attrib:
-                                        if previous_text is not None:
-                                            previous_text += char.text
-                                        else:
-                                            previous_text = char.text
-                                        if idx == len(page_item) - 1:
+                    elif page_item.tag == "layout":
+                        page_length += 1
+                        offset += 1
+                    elif page_item.tag == "figure":
+                        page_item_element = add_element(page_element, page_item.tag)
+                        if len(page_item) > 0:
+                            previous_text = None
+                            previous_attrib = None
+                            if 0 < len(page_item):
+                                for idx, char in enumerate(page_item):
+                                    if char.tag in ["text", "line"]:
+                                        char_attrib = copy_dict(char)
+                                        if previous_attrib == char_attrib:
+                                            if previous_text is not None:
+                                                previous_text += char.text
+                                            else:
+                                                previous_text = char.text
+                                            if idx == len(page_item) - 1:
+                                                add_text_element(
+                                                    page_item_element,
+                                                    char.tag,
+                                                    previous_text,
+                                                    previous_attrib,
+                                                    offset,
+                                                )
+                                                if previous_text is not None:
+                                                    page_length += len(previous_text)
+                                                    offset += len(previous_text)
+                                        else:  # -> previous_attrib != char_attrib
                                             add_text_element(
                                                 page_item_element,
                                                 char.tag,
@@ -915,30 +969,33 @@ class NafDocument(etree._ElementTree):
                                             if previous_text is not None:
                                                 page_length += len(previous_text)
                                                 offset += len(previous_text)
-                                    else:  # -> previous_attrib != char_attrib
-                                        add_text_element(
-                                            page_item_element,
-                                            char.tag,
-                                            previous_text,
-                                            previous_attrib,
-                                            offset,
-                                        )
-                                        if previous_text is not None:
-                                            page_length += len(previous_text)
-                                            offset += len(previous_text)
 
-                                        if idx == len(page_item) - 1:
-                                            add_text_element(
-                                                page_item_element,
-                                                char.tag,
-                                                char.text,
-                                                char_attrib,
-                                                offset,
-                                            )
-                                            page_length += len(char.text)
-                                            offset += len(char.text)
-                                        else:
-                                            previous_text = char.text
-                                            previous_attrib = char_attrib
-            page_element.set("length", str(page_length))
-            page_element.set("offset", str(offset - page_length))
+                                            if idx == len(page_item) - 1:
+                                                add_text_element(
+                                                    page_item_element,
+                                                    char.tag,
+                                                    char.text,
+                                                    char_attrib,
+                                                    offset,
+                                                )
+                                                page_length += len(char.text)
+                                                offset += len(char.text)
+                                            else:
+                                                previous_text = char.text
+                                                previous_attrib = char_attrib
+                page_element.set("length", str(page_length))
+                page_element.set("offset", str(offset - page_length))
+
+        elif source == "docx":
+
+            # formats = bytes(bytearray(formats, encoding="utf-8"))
+            parser = etree.XMLParser(ns_clean=True, recover=True, encoding="utf-8")
+            formats_root = etree.fromstring(formats, parser=parser)
+            
+            # layer = self.find(FORMATS_LAYER_TAG)
+            # if layer is None:
+            #     layer = etree.SubElement(
+            #         self.getroot(), QName(PREFIX_NAF_BASE, FORMATS_LAYER_TAG)
+            #     )
+
+            print("not yet implemented")

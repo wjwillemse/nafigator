@@ -23,10 +23,11 @@ def opennaf(input: str):
     # print(naf.terms)
     # print(naf.entities)
     # print(naf.deps)
-    print(naf.formats)
+    # print(naf.formats)
     # print(naf.multiwords)
     # naf.remove_layer_elements("multiwords")
     # print(naf.multiwords)
+    print(naf.paragraphs)
 
     # lp = ProcessorElement(
     #     name="processorname",
