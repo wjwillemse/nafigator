@@ -10,11 +10,11 @@ with open('README.rst') as readme_file:
 with open('HISTORY.rst') as history_file:
     history = history_file.read()
 
-requirements = ['click>=7.0', 'pdfminer.six', 'lxml']
+requirements = ['click>=7.0', 'pdfminer.six', 'lxml', 'python-docx']
 
-setup_requirements = ['click>=7.0', 'pdfminer.six', 'lxml']
+setup_requirements = ['click>=7.0', 'pdfminer.six', 'lxml', 'python-docx']
 
-test_requirements = ['click>=7.0', 'pdfminer.six', 'lxml', 'stanza', 'spacy']
+test_requirements = ['click>=7.0', 'pdfminer.six', 'lxml', 'python-docx', 'stanza', 'spacy']
 
 setup(
     author="Willem Jan Willemse",
@@ -47,6 +47,6 @@ setup(
     test_suite='tests',
     tests_require=test_requirements,
     url='https://github.com/wjwillemse/nafigator',
-    version='0.1.24',
+    version='0.1.25',
     zip_safe=False,
 )
