@@ -230,7 +230,7 @@ def evaluate_naf(params: dict):
         if wf.get("text", None) != token:
             logging.error(
                 "mismatch in alignment of wf element ["
-                + str(wf.text)
+                + str(wf.get('text'))
                 + "] ("
                 + str(wf.get("id"))
                 + ") with raw layer text ["
@@ -274,7 +274,7 @@ def process_preprocess_steps(params: dict):
     if params["replace_hidden_characters"]:
         text_to_use = norm_spaces(text.translate(hidden_table))
     else:
-        text_to_use = norm_space(text)
+        text_to_use = norm_spaces(text)
 
     # if len(text) != len(text_to_use):
     #     logging.error("len text != len text.translate")

@@ -859,7 +859,7 @@ class NafDocument(etree._ElementTree):
                 return subelement
 
             def add_text_element(element, tag, text, attrib, offset):
-                if text is not None:
+                if (text is not None) and (text.strip() != ''):
                     text_element = etree.SubElement(element, tag)
                     for item in attrib.keys():
                         text_element.attrib[item] = attrib[item]
@@ -978,8 +978,9 @@ class NafDocument(etree._ElementTree):
                                                     char_attrib,
                                                     offset,
                                                 )
-                                                page_length += len(char.text)
-                                                offset += len(char.text)
+                                                if char.text is not None:
+                                                    page_length += len(char.text)
+                                                    offset += len(char.text)
                                             else:
                                                 previous_text = char.text
                                                 previous_attrib = char_attrib
