@@ -55,7 +55,7 @@ if SPACY_IMPORTED:
                 processor = processors.get("tagger", None)
             elif name == "raw":
                 processor = processors.get("tagger", None)
-            
+
             # need a better solution for this
             return {"model": str(processor.model)}
 
@@ -144,9 +144,11 @@ if STANZA_IMPORTED:
         ):
 
             if nlp is None:
-                self.nlp = stanza.Pipeline(lang=lang, 
-                                           processors='tokenize,pos,lemma,ner,depparse',
-                                           verbose=False)
+                self.nlp = stanza.Pipeline(
+                    lang=lang,
+                    processors="tokenize,pos,lemma,ner,depparse",
+                    verbose=False,
+                )
             else:
                 self.nlp = nlp
             self.lang = lang

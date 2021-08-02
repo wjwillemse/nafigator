@@ -230,7 +230,7 @@ def evaluate_naf(params: dict):
         if wf.get("text", None) != token:
             logging.error(
                 "mismatch in alignment of wf element ["
-                + str(wf.get('text'))
+                + str(wf.get("text"))
                 + "] ("
                 + str(wf.get("id"))
                 + ") with raw layer text ["

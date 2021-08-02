@@ -7,11 +7,15 @@ import click
 from .nafdocument import NafDocument
 from .const import MultiwordElement
 from .const import ProcessorElement
+from .const import EntityElement
 
 
 @click.command()
 @click.option(
-    "--input", default="data/example.naf.xml", prompt="input file", help="The input file"
+    "--input",
+    default="data/example.naf.xml",
+    prompt="input file",
+    help="The input file",
 )
 def opennaf(input: str):
     """ """
@@ -21,13 +25,27 @@ def opennaf(input: str):
     # print(naf.raw)
     # print(naf.text)
     # print(naf.terms)
-    # print(naf.entities)
+
+    entity_data = EntityElement(
+        id="test_id",
+        type="PERSON",
+        status=None,
+        source="source",
+        span=["t1"],
+        ext_refs=[
+            {"resource": "res", "reference": "https:ref"},
+            {"resource": "res2", "reference": "https:ref2"},
+        ],
+        comment=["comment"],
+    )
+    naf.add_entity_element(data=entity_data, naf_version="v3.1", comments=True)
+    print(naf.entities)
     # print(naf.deps)
     # print(naf.formats)
     # print(naf.multiwords)
     # naf.remove_layer_elements("multiwords")
     # print(naf.multiwords)
-    print(naf.paragraphs)
+    # print(naf.paragraphs)
 
     # lp = ProcessorElement(
     #     name="processorname",

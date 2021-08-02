@@ -14,6 +14,7 @@ from .const import ProcessorElement
 import docx
 import zipfile
 
+
 def convert_pdf(path, format="text", codec="utf-8", password="", params=None):
 
     start_time = datetime.now()
@@ -71,6 +72,7 @@ def convert_pdf(path, format="text", codec="utf-8", password="", params=None):
 
     return text
 
+
 def convert_docx(path, format="text", codec="utf-8", password="", params=None):
 
     start_time = datetime.now()
@@ -83,7 +85,7 @@ def convert_docx(path, format="text", codec="utf-8", password="", params=None):
     elif format == "xml":
         with open(path, "rb") as f:
             zip = zipfile.ZipFile(f)
-            text = zip.read('word/document.xml')
+            text = zip.read("word/document.xml")
 
     end_time = datetime.now()
 

@@ -20,7 +20,7 @@ import rdflib
 )
 def convert2rdf(input: str, output: str):
     """ """
-    
+
     naf = NafDocument().open(input)
 
     params: dict = dict()
