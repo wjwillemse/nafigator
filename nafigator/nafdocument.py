@@ -52,6 +52,8 @@ NAF_HEADER = "nafHeader"
 
 SPAN_OCCURRENCE_TAG = "span"
 TARGET_OCCURRENCE_TAG = "target"
+EXT_REFS_OCCURRENCE_TAG = "externalReferences"
+EXT_REF_OCCURRENCE_TAG = "externalRef"
 
 LINGUISTIC_LAYER_TAG = "linguisticProcessors"
 LINGUISTIC_OCCURRENCE_TAG = "lp"
@@ -139,7 +141,7 @@ class NafDocument(etree._ElementTree):
                                     textlines.append(textline_data)
                             textbox_data["textlines"] = textlines
                             textboxes.append(textbox_data)
-                        # elif child2.tag == "layout":                        
+                        # elif child2.tag == "layout":
                         elif child2.tag == "figure":
                             figure_data = dict(child2.attrib)
                             texts = list()
@@ -180,7 +182,13 @@ class NafDocument(etree._ElementTree):
                             for child3 in child2
                             if child3.tag == TARGET_OCCURRENCE_TAG
                         ]
-                    term_data["span"] = span
+                        term_data["span"] = span
+                    if child2.tag == EXT_REFS_OCCURRENCE_TAG:
+                        ext_refs = list()
+                        for child3 in child2:
+                            if child3.tag == EXT_REF_OCCURRENCE_TAG:
+                                ext_refs.append(child3.attrib)
+                        entity_data["ext_refs"] = ext_refs
                 terms.append(term_data)
             return terms
 
@@ -202,6 +210,12 @@ class NafDocument(etree._ElementTree):
                                     if child4.tag == TARGET_OCCURRENCE_TAG
                                 ]
                                 com_data["span"] = span
+                            if child3.tag == EXT_REFS_OCCURRENCE_TAG:
+                                ext_refs = list()
+                                for child4 in child3:
+                                    if child4.tag == EXT_REF_OCCURRENCE_TAG:
+                                        ext_refs.append(child4.attrib)
+                                com_data["ext_refs"] = ext_refs
                         com.append(com_data)
                 mw_data["components"] = com
                 mw.append(mw_data)
@@ -219,88 +233,118 @@ class NafDocument(etree._ElementTree):
                                 entity_data["text"] = child3.text
                             elif child3.tag == TARGET_OCCURRENCE_TAG:
                                 span.append(child3.attrib)
-                    entity_data["span"] = span
+                        entity_data["span"] = span
+                    if child2.tag == EXT_REFS_OCCURRENCE_TAG:
+                        ext_refs = list()
+                        for child3 in child2:
+                            if child3.tag == EXT_REF_OCCURRENCE_TAG:
+                                ext_refs.append(child3.attrib)
+                        entity_data["ext_refs"] = ext_refs
                 entities.append(entity_data)
             return entities
 
         if name == "sentences":
-
-            word2term = {item['id']: term['id'] for term in self.terms for item in term['span']}
-
+            word2term = {
+                item["id"]: term["id"] for term in self.terms for item in term["span"]
+            }
             sentences = list()
             sentence_list = list()
             sent_num = 1
             pages = set()
+            para = set()
             span = list()
             terms = list()
             for item in self.text:
                 if item["sent"] == str(sent_num):
                     sentence_list.append(item["text"])
-                    span.append({"id": item['id']})
-                    if item['id'] in word2term.keys():
-                        terms.append({"id": word2term.get(item['id'])})
+                    span.append({"id": item["id"]})
+                    if item["id"] in word2term.keys():
+                        terms.append({"id": word2term.get(item["id"])})
                     pages.add(item["page"])
+                    para.add(item["para"])
                 else:
                     sentences.append(
-                        {"text": " ".join(sentence_list), 
-                         "page": list(pages),
-                         "span": span,
-                         "terms": terms}
+                        {
+                            "text": " ".join(sentence_list),
+                            "para": list(para),
+                            "page": list(pages),
+                            "span": span,
+                            "terms": terms,
+                        }
                     )
                     sentence_list = list([item["text"]])
                     pages = set()
+                    para = set()
                     span = list()
                     terms = list()
-                    span.append({"id": item['id']})
-                    if item['id'] in word2term.keys():
-                        terms.append({"id": word2term.get(item['id'])})
+                    span.append({"id": item["id"]})
+                    if item["id"] in word2term.keys():
+                        terms.append({"id": word2term.get(item["id"])})
                     pages.add(item["page"])
+                    para.add(item["para"])
                     sent_num += 1
             if sent_num > 1:
-                sentences.append({"text": " ".join(sentence_list), 
-                                  "span": span,
-                                  "terms": terms,
-                                  "page": list(pages)})
+                sentences.append(
+                    {
+                        "text": " ".join(sentence_list),
+                        "para": list(para),
+                        "page": list(pages),
+                        "span": span,
+                        "terms": terms,
+                    }
+                )
             return sentences
 
         if name == "paragraphs":
-
-            word2term = {item['id']: term['id'] for term in self.terms for item in term['span']}
-
+            word2term = {
+                item["id"]: term["id"] for term in self.terms for item in term["span"]
+            }
             paragraphs = list()
             paragraph_list = list()
             para_num = 1
             pages = set()
+            para = set()
             span = list()
             terms = list()
             for item in self.text:
                 if item["para"] == str(para_num):
                     paragraph_list.append(item["text"])
-                    span.append({"id": item['id']})
-                    if item['id'] in word2term.keys():
-                        terms.append({"id": word2term.get(item['id'])})
+                    span.append({"id": item["id"]})
+                    if item["id"] in word2term.keys():
+                        terms.append({"id": word2term.get(item["id"])})
                     pages.add(item["page"])
+                    para.add(item["para"])
                 else:
                     paragraphs.append(
-                        {"text": " ".join(paragraph_list), 
-                         "page": list(pages),
-                         "span": span,
-                         "terms": terms}
+                        {
+                            "text": " ".join(paragraph_list),
+                            "para": list(para),
+                            "page": list(pages),
+                            "span": span,
+                            "terms": terms,
+                        }
                     )
                     paragraph_list = list([item["text"]])
                     pages = set()
+                    para = set()
                     span = list()
                     terms = list()
-                    span.append({"id": item['id']})
-                    if item['id'] in word2term.keys():
-                        terms.append({"id": word2term.get(item['id'])})
+                    span.append({"id": item["id"]})
+                    if item["id"] in word2term.keys():
+                        terms.append({"id": word2term.get(item["id"])})
                     pages.add(item["page"])
+                    para.add(item["para"])
                     para_num += 1
             if para_num > 1:
-                paragraphs.append({"text": " ".join(paragraph_list), 
-                                   "span": span,
-                                   "terms": terms,
-                                   "page": list(pages)})
+                paragraphs.append(
+                    {
+                        "text": " ".join(paragraph_list),
+                        "para": list(para),
+                        "page": list(pages),
+                        "span": span,
+                        "terms": terms,
+                    }
+                )
             return paragraphs
 
         layer = self.find(name)
@@ -859,7 +903,7 @@ class NafDocument(etree._ElementTree):
                 return subelement
 
             def add_text_element(element, tag, text, attrib, offset):
-                if (text is not None) and (text.strip() != ''):
+                if (text is not None) and (text.strip() != ""):
                     text_element = etree.SubElement(element, tag)
                     for item in attrib.keys():
                         text_element.attrib[item] = attrib[item]
@@ -882,7 +926,9 @@ class NafDocument(etree._ElementTree):
                     if page_item.tag == "textbox":
                         page_item_element = add_element(page_element, page_item.tag)
                         for textline in page_item:
-                            textline_element = add_element(page_item_element, textline.tag)
+                            textline_element = add_element(
+                                page_item_element, textline.tag
+                            )
                             if len(textline) > 0:
                                 previous_text = textline[0].text
                                 previous_attrib = copy_dict(textline[0])
@@ -992,7 +1038,7 @@ class NafDocument(etree._ElementTree):
             # formats = bytes(bytearray(formats, encoding="utf-8"))
             parser = etree.XMLParser(ns_clean=True, recover=True, encoding="utf-8")
             formats_root = etree.fromstring(formats, parser=parser)
-            
+
             # layer = self.find(FORMATS_LAYER_TAG)
             # if layer is None:
             #     layer = etree.SubElement(
