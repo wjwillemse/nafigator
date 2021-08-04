@@ -36,7 +36,7 @@ The Nafigator package allows you to store (intermediate) results and processing 
 
 * Convert text files to naf-files that satisfy the NLP Annotation Format (NAF)
 
-  - Supported input media types: application/pdf (.pdf), text/plain (.txt), text/html (.html)
+  - Supported input media types: application/pdf (.pdf), text/plain (.txt), text/html (.html), MS Word (.docx)
 
   - Supported output formats: naf-xml (.naf.xml), naf-rdf in turtle-syntax (.ttl) and xml-syntax (.rdf) (experimental)
 
@@ -242,23 +242,23 @@ Adding new annotation layers
 
 To add a new annotation layer with elements, start with registering the processor of the new annotations::
 
-  lp = ProcessorElement(name="processorname", version="1.0", timestamp=None, beginTimestamp=None,   endTimestamp=None, hostname=None)
+  lp = ProcessorElement(name="processorname", model="modelname", version="1.0", timestamp=None, beginTimestamp=None,   endTimestamp=None, hostname=None)
 
-  naf.add_processor_element("recommendations", lp)
+  doc.add_processor_element("recommendations", lp)
 
 Then get the layer and add subelements::
 
-  layer = naf.layer("recommendations")
+  layer = doc.layer("recommendations")
 
-  data_recommendation = {'id': "recommendation1", 'subjectivity': 0.5, 'polarity': 0.25, 'span': [{'id': 't37'}, {'id': 't39'}]}
+  data_recommendation = {'id': "recommendation1", 'subjectivity': 0.5, 'polarity': 0.25, 'span': ['t37', 't39']}
 
-  element = self.subelement(element=layer, tag="recommendation", data=data_recommendation)
+  element = doc.subelement(element=layer, tag="recommendation", data=data_recommendation)
 
-  naf.add_span_element(element=element, data=data_recommendation)
+  doc.add_span_element(element=element, data=data_recommendation)
 
 Retrieve the recommendations with::
 
-  naf.recommendations
+  doc.recommendations
 
 
 Convert NAF file to RDF in turtle syntax
