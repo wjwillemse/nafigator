@@ -87,25 +87,18 @@ def convert_docx(path, format="text", codec="utf-8", password="", params=None):
     start_time = datetime.now()
 
     if format == "text":
-        # first try with docx
-        document = docx.Document(path)
-        text = ""
-        for para in document.paragraphs:
-            text += para.text
-        # second try with reading xml
-        if text == "":
-            document = zipfile.ZipFile(path)
-            xml_content = document.read('word/document.xml')
-            document.close()
-            tree = XML(xml_content)
-            paragraphs = []
-            for paragraph in tree.getiterator(PARA):
-                texts = [node.text
-                    for node in paragraph.getiterator(TEXT)
-                    if node.text]
-                if texts:
-                    paragraphs.append(''.join(texts))
-            text = '\n\n'.join(paragraphs)
+        document = zipfile.ZipFile(path)
+        xml_content = document.read('word/document.xml')
+        document.close()
+        tree = XML(xml_content)
+        paragraphs = []
+        for paragraph in tree.getiterator(PARA):
+            texts = [node.text
+                for node in paragraph.getiterator(TEXT)
+                if node.text]
+            if texts:
+                paragraphs.append(''.join(texts))
+        text = '\n\n'.join(paragraphs)
 
     elif format == "xml":
         with open(path, "rb") as f:
