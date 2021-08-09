@@ -260,8 +260,8 @@ class NafDocument(etree._ElementTree):
                     span.append({"id": item["id"]})
                     if item["id"] in word2term.keys():
                         terms.append({"id": word2term.get(item["id"])})
-                    pages.add(item["page"])
-                    para.add(item["para"])
+                    pages.add(item.get("page", '0'))
+                    para.add(item.get("para", '0'))
                 else:
                     sentences.append(
                         {
@@ -280,8 +280,8 @@ class NafDocument(etree._ElementTree):
                     span.append({"id": item["id"]})
                     if item["id"] in word2term.keys():
                         terms.append({"id": word2term.get(item["id"])})
-                    pages.add(item["page"])
-                    para.add(item["para"])
+                    pages.add(item.get("page", '0'))
+                    para.add(item.get("para", '0'))
                     sent_num += 1
             if sent_num > 1:
                 sentences.append(
@@ -312,8 +312,8 @@ class NafDocument(etree._ElementTree):
                     span.append({"id": item["id"]})
                     if item["id"] in word2term.keys():
                         terms.append({"id": word2term.get(item["id"])})
-                    pages.add(item["page"])
-                    para.add(item["para"])
+                    pages.add(item.get("page", '0'))
+                    para.add(item.get("para", '0'))
                 else:
                     paragraphs.append(
                         {
@@ -332,8 +332,8 @@ class NafDocument(etree._ElementTree):
                     span.append({"id": item["id"]})
                     if item["id"] in word2term.keys():
                         terms.append({"id": word2term.get(item["id"])})
-                    pages.add(item["page"])
-                    para.add(item["para"])
+                    pages.add(item.get("page", '0'))
+                    para.add(item.get("para", '0'))
                     para_num += 1
             if para_num > 1:
                 paragraphs.append(

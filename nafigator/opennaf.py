@@ -39,7 +39,9 @@ def opennaf(input: str):
         comment=["comment"],
     )
     naf.add_entity_element(data=entity_data, naf_version="v3.1", comments=True)
-    print(naf.entities)
+    # print(naf.entities)
+
+    print(naf.sentences)
     # print(naf.deps)
     # print(naf.formats)
     # print(naf.multiwords)
