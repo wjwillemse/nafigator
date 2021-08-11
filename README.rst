@@ -103,7 +103,7 @@ Command line interface
 
 To parse an pdf or a txt file run in the root of the project::
 
-    python -m nafigator.parse
+    python -m nafigator.parse2naf
 
 
 Function calls
