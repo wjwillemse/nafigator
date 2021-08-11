@@ -8,7 +8,7 @@ from click.testing import CliRunner
 from nafigator import NafDocument, parse2naf
 from os.path import join
 
-class TestNafigator(unittest.TestCase):
+class TestNafigator_pdf(unittest.TestCase):
     """Tests for `nafigator` package."""
 
     def test_generate_naf(self):
@@ -17,15 +17,13 @@ class TestNafigator(unittest.TestCase):
                                   engine="stanza", 
                                   language="en", 
                                   naf_version="v3.1")
+        assert tree.write(join("tests", "tests", "example.naf.xml")) == None
 
-        tree.write(join("tests", "tests", "example.naf.xml"))
-        
     def test_header_filedesc(self):
         """ """
         naf = NafDocument().open(join("tests", "tests", "example.naf.xml"))
         actual = naf.header['fileDesc']
-        expected = {'creationtime': '2021-05-05T13:25:16UTC', 
-                    'filename': 'tests\\tests\\example.pdf', 
+        expected = {'filename': 'tests\\tests\\example.pdf', 
                     'filetype': 'application/pdf'}
         assert actual['filename'] == expected['filename']
         assert actual['filetype'] == expected['filetype']
@@ -323,3 +321,32 @@ class TestNafigator(unittest.TestCase):
     #     help_result = runner.invoke(cli.main, ['--help'])
     #     assert help_result.exit_code == 0
     #     assert '--help  Show this message and exit.' in help_result.output
+
+# class TestNafigator_docx(unittest.TestCase):
+
+#     def test_generate_naf(self):
+#         """ """
+#         tree = parse2naf.generate_naf(input=join("tests", "tests", "example.docx"),
+#                                   engine="stanza", 
+#                                   language="en", 
+#                                   naf_version="v3.1")
+#         assert tree.write(join("tests", "tests", "example.docx.naf.xml")) == None
+
+#     def test_header_filedesc(self):
+#         """ """
+#         naf = NafDocument().open(join("tests", "tests", "example.docx.naf.xml"))
+#         actual = naf.header['fileDesc']
+#         expected = {'filename': 'tests\\tests\\example.docx', 
+#                     'filetype': 'application/vnd.openxmlformats-officedocument.wordprocessingml.document'}
+#         assert actual['filename'] == expected['filename']
+#         assert actual['filetype'] == expected['filetype']
+
+#     def test_header_public(self):
+#         """ """
+#         naf = NafDocument().open(join("tests", "tests", "example.docx.naf.xml"))
+#         actual = naf.header['public']
+#         expected = {'{http://purl.org/dc/elements/1.1/}uri': 'tests\\tests\\example.docx', 
+#                     '{http://purl.org/dc/elements/1.1/}format': 'application/vnd.openxmlformats-officedocument.wordprocessingml.document'}
+#         assert actual == expected
+
+    
