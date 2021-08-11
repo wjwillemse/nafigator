@@ -14,6 +14,7 @@ from .const import ChunkElement
 from .const import RawElement
 from .utils import time_in_correct_format
 from .utils import load_dtd
+from .utils import prepare_comment_text
 import datetime
 import logging
 
@@ -74,6 +75,8 @@ def QName(prefix: str = None, name: str = None):
 
 
 class NafDocument(etree._ElementTree):
+    """ """
+
     def generate(self, params: dict):
         self._setroot(etree.Element("NAF", nsmap=namespaces))
         self.set_version(params["naf_version"])
@@ -83,207 +86,167 @@ class NafDocument(etree._ElementTree):
         self.add_public_element(params["public"])
 
     def open(self, input):
+        """ """
         with open(input, "r", encoding="utf-8") as f:
             self._setroot(etree.parse(f).getroot())
         return self
 
     def write(self, output):
+        """ """
         super().write(output, encoding="utf-8", pretty_print=True, xml_declaration=True)
 
-    def __getattr__(self, name):
+    @property
+    def version(self):
+        """Returns version of the NAF document"""
+        return self.getroot().get("version")
 
-        if name == "version":
-            return self.getroot().get("version")
+    @property
+    def language(self):
+        """Returns language of the NAF document"""
+        return self.getroot().get("{http://www.w3.org/XML/1998/namespace}lang")
 
-        if name == "language":
-            return self.getroot().get("{http://www.w3.org/XML/1998/namespace}lang")
-
-        if name == "header":
-            header = dict()
-            ling_proc = list()
-            for child in self.find(NAF_HEADER):
-                if child.tag == "fileDesc":
-                    header["fileDesc"] = dict(child.attrib)
-                if child.tag == "public":
-                    header["public"] = dict(child.attrib)
-                if child.tag == LINGUISTIC_LAYER_TAG:
-                    header_data = dict(child.attrib)
-                    lp = list()
-                    for child2 in child:
-                        if child2.tag == LINGUISTIC_OCCURRENCE_TAG:
-                            lp.append(child2.attrib)
-                    header_data["lps"] = lp
-                    ling_proc.append(header_data)
-            header[LINGUISTIC_LAYER_TAG] = ling_proc
-            return header
-
-        if name == "formats":
-            pages = list()
-            for child in self.find(FORMATS_LAYER_TAG):
-                if child.tag == "page":
-                    pages_data = dict(child.attrib)
-                    textboxes = list()
-                    figures = list()
-                    for child2 in child:
-                        if child2.tag == "textbox":
-                            textbox_data = dict(child2.attrib)
-                            textlines = list()
-                            for child3 in child2:
-                                if child3.tag == "textline":
-                                    textline_data = dict(child3.attrib)
-                                    texts = list()
-                                    for child4 in child3:
-                                        if child4.tag == "text":
-                                            text_data = dict(child4.attrib)
-                                            text_data["text"] = child4.text
-                                            texts.append(text_data)
-                                    textline_data["texts"] = texts
-                                    textlines.append(textline_data)
-                            textbox_data["textlines"] = textlines
-                            textboxes.append(textbox_data)
-                        # elif child2.tag == "layout":
-                        elif child2.tag == "figure":
-                            figure_data = dict(child2.attrib)
-                            texts = list()
-                            for child3 in child2:
-                                if child3.tag in ["text", "line"]:
-                                    text_data = dict(child3.attrib)
-                                    text_data["text"] = child3.text
-                                    texts.append(text_data)
-                            figure_data["texts"] = texts
-                            figures.append(textbox_data)
-                    pages_data["textboxes"] = textboxes
-                    pages_data["figures"] = figures
-                    pages.append(pages_data)
-            return pages
-
-        if name == "raw":
-            return self.find(RAW_LAYER_TAG).text
-
-        if name == "deps":
-            return [
-                dep.attrib
-                for dep in self.findall(DEPS_LAYER_TAG + "/" + DEP_OCCURRENCE_TAG)
-            ]
-        if name == "text":
-            return [
-                dict({"text": wf.text}, **dict(wf.attrib))
-                for wf in self.findall(TEXT_LAYER_TAG + "/" + TEXT_OCCURRENCE_TAG)
-            ]
-
-        if name == "terms":
-            terms = list()
-            for child in self.findall(TERMS_LAYER_TAG + "/" + TERM_OCCURRENCE_TAG):
-                term_data = dict(child.attrib)
+    @property
+    def header(self):
+        """Returns header of the NAF document as a dict"""
+        header = dict()
+        ling_proc = list()
+        for child in self.find(NAF_HEADER):
+            if child.tag == "fileDesc":
+                header["fileDesc"] = dict(child.attrib)
+            if child.tag == "public":
+                header["public"] = dict(child.attrib)
+            if child.tag == LINGUISTIC_LAYER_TAG:
+                header_data = dict(child.attrib)
+                lp = list()
                 for child2 in child:
-                    if child2.tag == SPAN_OCCURRENCE_TAG:
-                        span = [
-                            child3.attrib
-                            for child3 in child2
-                            if child3.tag == TARGET_OCCURRENCE_TAG
-                        ]
-                        term_data["span"] = span
-                    if child2.tag == EXT_REFS_OCCURRENCE_TAG:
-                        ext_refs = list()
-                        for child3 in child2:
-                            if child3.tag == EXT_REF_OCCURRENCE_TAG:
-                                ext_refs.append(child3.attrib)
-                        entity_data["ext_refs"] = ext_refs
-                terms.append(term_data)
-            return terms
+                    if child2.tag == LINGUISTIC_OCCURRENCE_TAG:
+                        lp.append(child2.attrib)
+                header_data["lps"] = lp
+                ling_proc.append(header_data)
+        header[LINGUISTIC_LAYER_TAG] = ling_proc
+        return header
 
-        if name == "multiwords":
-            mw = list()
-            for child in self.findall(
-                MULTIWORDS_LAYER_TAG + "/" + MULTIWORD_OCCURRENCE_TAG
-            ):
-                mw_data = dict(child.attrib)
-                com = list()
-                for child2 in child:
-                    if child2.tag == COMPONENT_OCCURRENCE_TAG:
-                        com_data = dict(child2.attrib)
-                        for child3 in child2:
-                            if child3.tag == SPAN_OCCURRENCE_TAG:
-                                span = [
-                                    child4.attrib
-                                    for child4 in child3
-                                    if child4.tag == TARGET_OCCURRENCE_TAG
-                                ]
-                                com_data["span"] = span
-                            if child3.tag == EXT_REFS_OCCURRENCE_TAG:
-                                ext_refs = list()
-                                for child4 in child3:
-                                    if child4.tag == EXT_REF_OCCURRENCE_TAG:
-                                        ext_refs.append(child4.attrib)
-                                com_data["ext_refs"] = ext_refs
-                        com.append(com_data)
-                mw_data["components"] = com
-                mw.append(mw_data)
-            return mw
+    @property
+    def raw(self):
+        """Returns raw layer of the NAF document as string"""
+        return self.find(RAW_LAYER_TAG).text
 
-        if name == "entities":
-            entities = list()
-            for child in self.findall(ENTITIES_LAYER_TAG + "/" + ENTITY_OCCURRENCE_TAG):
-                entity_data = dict(child.attrib)
-                for child2 in child:
-                    if child2.tag == SPAN_OCCURRENCE_TAG:
-                        span = list()
-                        for child3 in child2:
-                            if child3.tag == etree.Comment:
-                                entity_data["text"] = child3.text
-                            elif child3.tag == TARGET_OCCURRENCE_TAG:
-                                span.append(child3.attrib)
-                        entity_data["span"] = span
-                    if child2.tag == EXT_REFS_OCCURRENCE_TAG:
-                        ext_refs = list()
-                        for child3 in child2:
-                            if child3.tag == EXT_REF_OCCURRENCE_TAG:
-                                ext_refs.append(child3.attrib)
-                        entity_data["ext_refs"] = ext_refs
-                entities.append(entity_data)
-            return entities
+    @property
+    def deps(self):
+        """Returns dependencies layer of the NAF document as list"""
+        return [
+            dep.attrib
+            for dep in self.findall(DEPS_LAYER_TAG + "/" + DEP_OCCURRENCE_TAG)
+        ]
 
-        if name == "sentences":
-            word2term = {
-                item["id"]: term["id"] for term in self.terms for item in term["span"]
-            }
-            sentences = list()
-            sentence_list = list()
-            sent_num = 1
-            pages = set()
-            para = set()
-            span = list()
-            terms = list()
-            for item in self.text:
-                if item["sent"] == str(sent_num):
-                    sentence_list.append(item["text"])
-                    span.append({"id": item["id"]})
-                    if item["id"] in word2term.keys():
-                        terms.append({"id": word2term.get(item["id"])})
-                    pages.add(item.get("page", '0'))
-                    para.add(item.get("para", '0'))
-                else:
-                    sentences.append(
-                        {
-                            "text": " ".join(sentence_list),
-                            "para": list(para),
-                            "page": list(pages),
-                            "span": span,
-                            "terms": terms,
-                        }
-                    )
-                    sentence_list = list([item["text"]])
-                    pages = set()
-                    para = set()
+    @property
+    def text(self):
+        """Returns text layer of the NAF document as list of dicts"""
+        return [
+            dict({"text": wf.text}, **dict(wf.attrib))
+            for wf in self.findall(TEXT_LAYER_TAG + "/" + TEXT_OCCURRENCE_TAG)
+        ]
+
+    @property
+    def terms(self):
+        """Returns terms layer of the NAF document as list of dicts"""
+        terms = list()
+        for child in self.findall(TERMS_LAYER_TAG + "/" + TERM_OCCURRENCE_TAG):
+            term_data = dict(child.attrib)
+            for child2 in child:
+                if child2.tag == SPAN_OCCURRENCE_TAG:
+                    span = [
+                        child3.attrib
+                        for child3 in child2
+                        if child3.tag == TARGET_OCCURRENCE_TAG
+                    ]
+                    term_data["span"] = span
+                if child2.tag == EXT_REFS_OCCURRENCE_TAG:
+                    ext_refs = list()
+                    for child3 in child2:
+                        if child3.tag == EXT_REF_OCCURRENCE_TAG:
+                            ext_refs.append(child3.attrib)
+                    entity_data["ext_refs"] = ext_refs
+            terms.append(term_data)
+        return terms
+
+    @property
+    def multiwords(self):
+        """Returns multiword layer of the NAF document as list of dicts"""
+        mw = list()
+        for child in self.findall(
+            MULTIWORDS_LAYER_TAG + "/" + MULTIWORD_OCCURRENCE_TAG
+        ):
+            mw_data = dict(child.attrib)
+            com = list()
+            for child2 in child:
+                if child2.tag == COMPONENT_OCCURRENCE_TAG:
+                    com_data = dict(child2.attrib)
+                    for child3 in child2:
+                        if child3.tag == SPAN_OCCURRENCE_TAG:
+                            span = [
+                                child4.attrib
+                                for child4 in child3
+                                if child4.tag == TARGET_OCCURRENCE_TAG
+                            ]
+                            com_data["span"] = span
+                        if child3.tag == EXT_REFS_OCCURRENCE_TAG:
+                            ext_refs = list()
+                            for child4 in child3:
+                                if child4.tag == EXT_REF_OCCURRENCE_TAG:
+                                    ext_refs.append(child4.attrib)
+                            com_data["ext_refs"] = ext_refs
+                    com.append(com_data)
+            mw_data["components"] = com
+            mw.append(mw_data)
+        return mw
+
+    @property
+    def entities(self):
+        """Returns entities layer of the NAF document as list of dicts"""
+        entities = list()
+        for child in self.findall(ENTITIES_LAYER_TAG + "/" + ENTITY_OCCURRENCE_TAG):
+            entity_data = dict(child.attrib)
+            for child2 in child:
+                if child2.tag == SPAN_OCCURRENCE_TAG:
                     span = list()
-                    terms = list()
-                    span.append({"id": item["id"]})
-                    if item["id"] in word2term.keys():
-                        terms.append({"id": word2term.get(item["id"])})
-                    pages.add(item.get("page", '0'))
-                    para.add(item.get("para", '0'))
-                    sent_num += 1
-            if sent_num > 1:
+                    for child3 in child2:
+                        if child3.tag == etree.Comment:
+                            entity_data["text"] = child3.text
+                        elif child3.tag == TARGET_OCCURRENCE_TAG:
+                            span.append(child3.attrib)
+                    entity_data["span"] = span
+                if child2.tag == EXT_REFS_OCCURRENCE_TAG:
+                    ext_refs = list()
+                    for child3 in child2:
+                        if child3.tag == EXT_REF_OCCURRENCE_TAG:
+                            ext_refs.append(child3.attrib)
+                    entity_data["ext_refs"] = ext_refs
+            entities.append(entity_data)
+        return entities
+
+    @property
+    def sentences(self):
+        """Returns sentences of the NAF document as list of dicts"""
+        word2term = {
+            item["id"]: term["id"] for term in self.terms for item in term["span"]
+        }
+        sentences = list()
+        sentence_list = list()
+        sent_num = 1
+        pages = set()
+        para = set()
+        span = list()
+        terms = list()
+        for item in self.text:
+            if item["sent"] == str(sent_num):
+                sentence_list.append(item["text"])
+                span.append({"id": item["id"]})
+                if item["id"] in word2term.keys():
+                    terms.append({"id": word2term.get(item["id"])})
+                pages.add(item.get("page", "0"))
+                para.add(item.get("para", "0"))
+            else:
                 sentences.append(
                     {
                         "text": " ".join(sentence_list),
@@ -293,49 +256,51 @@ class NafDocument(etree._ElementTree):
                         "terms": terms,
                     }
                 )
-            return sentences
+                sentence_list = list([item["text"]])
+                pages = set()
+                para = set()
+                span = list()
+                terms = list()
+                span.append({"id": item["id"]})
+                if item["id"] in word2term.keys():
+                    terms.append({"id": word2term.get(item["id"])})
+                pages.add(item.get("page", "0"))
+                para.add(item.get("para", "0"))
+                sent_num += 1
+        if sent_num > 1:
+            sentences.append(
+                {
+                    "text": " ".join(sentence_list),
+                    "para": list(para),
+                    "page": list(pages),
+                    "span": span,
+                    "terms": terms,
+                }
+            )
+        return sentences
 
-        if name == "paragraphs":
-            word2term = {
-                item["id"]: term["id"] for term in self.terms for item in term["span"]
-            }
-            paragraphs = list()
-            paragraph_list = list()
-            para_num = 1
-            pages = set()
-            para = set()
-            span = list()
-            terms = list()
-            for item in self.text:
-                if item["para"] == str(para_num):
-                    paragraph_list.append(item["text"])
-                    span.append({"id": item["id"]})
-                    if item["id"] in word2term.keys():
-                        terms.append({"id": word2term.get(item["id"])})
-                    pages.add(item.get("page", '0'))
-                    para.add(item.get("para", '0'))
-                else:
-                    paragraphs.append(
-                        {
-                            "text": " ".join(paragraph_list),
-                            "para": list(para),
-                            "page": list(pages),
-                            "span": span,
-                            "terms": terms,
-                        }
-                    )
-                    paragraph_list = list([item["text"]])
-                    pages = set()
-                    para = set()
-                    span = list()
-                    terms = list()
-                    span.append({"id": item["id"]})
-                    if item["id"] in word2term.keys():
-                        terms.append({"id": word2term.get(item["id"])})
-                    pages.add(item.get("page", '0'))
-                    para.add(item.get("para", '0'))
-                    para_num += 1
-            if para_num > 1:
+    @property
+    def paragraphs(self):
+        """Returns paragraphs of the NAF document as list of dicts"""
+        word2term = {
+            item["id"]: term["id"] for term in self.terms for item in term["span"]
+        }
+        paragraphs = list()
+        paragraph_list = list()
+        para_num = 1
+        pages = set()
+        para = set()
+        span = list()
+        terms = list()
+        for item in self.text:
+            if item["para"] == str(para_num):
+                paragraph_list.append(item["text"])
+                span.append({"id": item["id"]})
+                if item["id"] in word2term.keys():
+                    terms.append({"id": word2term.get(item["id"])})
+                pages.add(item.get("page", "0"))
+                para.add(item.get("para", "0"))
+            else:
                 paragraphs.append(
                     {
                         "text": " ".join(paragraph_list),
@@ -345,8 +310,73 @@ class NafDocument(etree._ElementTree):
                         "terms": terms,
                     }
                 )
-            return paragraphs
+                paragraph_list = list([item["text"]])
+                pages = set()
+                para = set()
+                span = list()
+                terms = list()
+                span.append({"id": item["id"]})
+                if item["id"] in word2term.keys():
+                    terms.append({"id": word2term.get(item["id"])})
+                pages.add(item.get("page", "0"))
+                para.add(item.get("para", "0"))
+                para_num += 1
+        if para_num > 1:
+            paragraphs.append(
+                {
+                    "text": " ".join(paragraph_list),
+                    "para": list(para),
+                    "page": list(pages),
+                    "span": span,
+                    "terms": terms,
+                }
+            )
+        return paragraphs
 
+    @property
+    def formats(self):
+        """Returns formats layer of the NAF document as list of dicts"""
+        pages = list()
+        for child in self.find(FORMATS_LAYER_TAG):
+            if child.tag == "page":
+                pages_data = dict(child.attrib)
+                textboxes = list()
+                figures = list()
+                for child2 in child:
+                    if child2.tag == "textbox":
+                        textbox_data = dict(child2.attrib)
+                        textlines = list()
+                        for child3 in child2:
+                            if child3.tag == "textline":
+                                textline_data = dict(child3.attrib)
+                                texts = list()
+                                for child4 in child3:
+                                    if child4.tag == "text":
+                                        text_data = dict(child4.attrib)
+                                        text_data["text"] = child4.text
+                                        texts.append(text_data)
+                                textline_data["texts"] = texts
+                                textlines.append(textline_data)
+                        textbox_data["textlines"] = textlines
+                        textboxes.append(textbox_data)
+                    # elif child2.tag == "layout":
+                    elif child2.tag == "figure":
+                        figure_data = dict(child2.attrib)
+                        texts = list()
+                        for child3 in child2:
+                            if child3.tag in ["text", "line"]:
+                                text_data = dict(child3.attrib)
+                                text_data["text"] = child3.text
+                                texts.append(text_data)
+                        figure_data["texts"] = texts
+                        figures.append(textbox_data)
+                pages_data["textboxes"] = textboxes
+                pages_data["figures"] = figures
+                pages.append(pages_data)
+        return pages
+
+    def __getattr__(self, name):
+        """Return custom made layer of the NAF document"""
         layer = self.find(name)
         if layer is not None:
             l = list()
@@ -355,7 +385,6 @@ class NafDocument(etree._ElementTree):
                     item_data = dict({"text": item.text}, **dict(item.attrib))
                 else:
                     item_data = dict(item.attrib)
-
                 for span in item:
                     if span.tag == SPAN_OCCURRENCE_TAG:
                         targets = list()
@@ -365,23 +394,30 @@ class NafDocument(etree._ElementTree):
                             elif child3.tag == TARGET_OCCURRENCE_TAG:
                                 targets.append(child3.attrib)
                     item_data["span"] = targets
-
                 l.append(item_data)
-
             return l
-
         return super().name
 
     def set_language(self, language: str):
-        """ """
+        """Set language of the NAF document"""
         self.getroot().set("{http://www.w3.org/XML/1998/namespace}lang", language)
 
     def set_version(self, version):
-        """ """
+        """Set version of the NAF document"""
         self.getroot().set("version", version)
 
+    def tree2string(self, byte: bool = False):
+        """Return xml string of the NAF document"""
+        xml_string = etree.tostring(
+            self, pretty_print=True, xml_declaration=True, encoding="utf-8"
+        )
+        if byte:
+            return xml_string
+        else:
+            return xml_string.decode("utf-8")
+
     def validate(self):
-        """ """
+        """Validate xml string of the NAF document"""
         dtd = load_dtd(NAF_VERSION_TO_DTD[self.get_version()])
         success = dtd.validate(self.getroot())
         if not success:
@@ -392,27 +428,10 @@ class NafDocument(etree._ElementTree):
         return success
 
     def remove_layer_elements(self, layer: str = None):
-        """ """
+        """Remove all elements in layer"""
         layer = self.find(layer)
         for items in layer:
             layer.remove(items)
-
-    def tree2string(self, byte: bool = False):
-        """ """
-        xml_string = etree.tostring(
-            self, pretty_print=True, xml_declaration=True, encoding="utf-8"
-        )
-        if byte:
-            return xml_string
-        else:
-            return xml_string.decode("utf-8")
-
-    def prepare_comment_text(self, text: str):
-        """ """
-        text = text.replace("--", "DOUBLEDASH")
-        if text.endswith("-"):
-            text = text[:-1] + "SINGLEDASH"
-        return text
 
     def get_attributes(self, data, namespace=None, exclude=list()):
         """ """
@@ -779,7 +798,7 @@ class NafDocument(etree._ElementTree):
             span = self.subelement(element=element, tag=SPAN_OCCURRENCE_TAG)
         if comments:
             comment = " ".join(data["comment"])
-            comment = self.prepare_comment_text(comment)
+            comment = prepare_comment_text(comment)
             span.append(etree.Comment(comment))
 
         for target in data["span"]:
@@ -935,7 +954,8 @@ class NafDocument(etree._ElementTree):
                                 for idx, char in enumerate(textline[1:]):
                                     char_attrib = copy_dict(char)
                                     if previous_attrib == char_attrib:
-                                        previous_text += char.text
+                                        if char.text is not None:
+                                            previous_text += char.text
                                         if idx == len(textline) - 1:
                                             add_text_element(
                                                 textline_element,
@@ -955,9 +975,9 @@ class NafDocument(etree._ElementTree):
                                             previous_attrib,
                                             offset,
                                         )
-                                        page_length += len(previous_text)
-                                        offset += len(previous_text)
-
+                                        if previous_text is not None:
+                                            page_length += len(previous_text)
+                                            offset += len(previous_text)
                                         previous_text = char.text
                                         previous_attrib = char_attrib
                                         if idx == len(textline) - 1:
@@ -968,8 +988,9 @@ class NafDocument(etree._ElementTree):
                                                 previous_attrib,
                                                 offset,
                                             )
-                                            page_length += len(previous_text)
-                                            offset += len(previous_text)
+                                            if previous_text is not None:
+                                                page_length += len(previous_text)
+                                                offset += len(previous_text)
                             page_length += 1
                             offset += 1
 
@@ -1044,5 +1065,4 @@ class NafDocument(etree._ElementTree):
             #     layer = etree.SubElement(
             #         self.getroot(), QName(PREFIX_NAF_BASE, FORMATS_LAYER_TAG)
             #     )
-
-            print("not yet implemented")
+            logging.warning("Formats layer for docx not yet implemented.")

@@ -78,9 +78,10 @@ def convert_pdf(path, format="text", codec="utf-8", password="", params=None):
     return text
 
 
-WORD_NAMESPACE = '{http://schemas.openxmlformats.org/wordprocessingml/2006/main}'
-PARA = WORD_NAMESPACE + 'p'
-TEXT = WORD_NAMESPACE + 't'
+WORD_NAMESPACE = "{http://schemas.openxmlformats.org/wordprocessingml/2006/main}"
+PARA = WORD_NAMESPACE + "p"
+TEXT = WORD_NAMESPACE + "t"
+
 
 def convert_docx(path, format="text", codec="utf-8", password="", params=None):
 
@@ -88,17 +89,15 @@ def convert_docx(path, format="text", codec="utf-8", password="", params=None):
 
     if format == "text":
         document = zipfile.ZipFile(path)
-        xml_content = document.read('word/document.xml')
+        xml_content = document.read("word/document.xml")
         document.close()
         tree = XML(xml_content)
         paragraphs = []
         for paragraph in tree.getiterator(PARA):
-            texts = [node.text
-                for node in paragraph.getiterator(TEXT)
-                if node.text]
+            texts = [node.text for node in paragraph.getiterator(TEXT) if node.text]
             if texts:
-                paragraphs.append(''.join(texts))
-        text = '\n\n'.join(paragraphs)
+                paragraphs.append("".join(texts))
+        text = "\n\n".join(paragraphs)
 
     elif format == "xml":
         with open(path, "rb") as f:

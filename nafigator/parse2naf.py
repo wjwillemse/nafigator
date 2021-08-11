@@ -32,6 +32,7 @@ from .const import udpos2olia
 from .const import hidden_table
 from .utils import normalize_token_orth
 from .utils import remove_illegal_chars
+from .utils import prepare_comment_text
 
 FORMATS_LAYER_TAG = "formats"
 
@@ -75,7 +76,7 @@ def nafigator(
     naf_version: str,
     dtd_validation: bool,
 ):
-    """ """
+    """Command line interface function to generate and write NAF file"""
     log_file: str = os.path.splitext(input)[0] + ".log"
     logging.basicConfig(filename=log_file, level=logging.INFO, filemode="w")
     tree = generate_naf(
@@ -97,7 +98,7 @@ def generate_naf(
     params: dict = {},
     nlp=None,
 ):
-    """ """
+    """Parse input file, generate and return NAF xml tree"""
     if (input is None) or not (os.path.isfile(input)):
         logging.error("no or non-existing input specified")
         return None
@@ -142,7 +143,7 @@ def create_params(
     params: dict = {},
     nlp=None,
 ):
-    """ """
+    """Return params dictionary with all params used in the parse process"""
     params["naf_version"] = naf_version
     params["dtd_validation"] = bool(dtd_validation)
     params["language"] = language
@@ -200,7 +201,7 @@ def create_params(
 
 
 def evaluate_naf(params: dict):
-    """ """
+    """Perform alignment between raw layer, document text and text layer in the NAF xml tree"""
     # verify alignment between raw layer and document text
     doc_text = params["engine"].document_text(params["doc"])
     raw = params["tree"].raw
@@ -239,7 +240,6 @@ def evaluate_naf(params: dict):
                 + str(wf.get("length"))
                 + ")"
             )
-
     # validate naf tree
     if params["dtd_validation"]:
         params["tree"].validate()
@@ -252,7 +252,7 @@ def norm_spaces(s):
 
 
 def process_preprocess_steps(params: dict):
-    """ """
+    """Perform preprocessor steps to generate text as input for linguistic layers"""
     input = params["fileDesc"]["filename"]
     if input[-3:].lower() == "txt":
         with open(input) as f:
@@ -283,7 +283,7 @@ def process_preprocess_steps(params: dict):
 
 
 def process_linguistic_steps(params: dict):
-    """ """
+    """Perform linguistic steps to generate linguistics layers"""
     engine_name = params["engine_name"]
     nlp = params["nlp"]
     language = params["language"]
@@ -309,7 +309,7 @@ def process_linguistic_steps(params: dict):
 
 
 def process_linguistic_layers(params: dict):
-
+    """Perform linguistic layers"""
     layers = params["linguistic_layers"]
 
     if "entities" in layers:
@@ -335,7 +335,7 @@ def process_linguistic_layers(params: dict):
 
 
 def entities_generator(doc, params: dict):
-    """ """
+    """Return entities in doc as a generator"""
     engine = params["engine"]
     for ent in engine.document_entities(doc):
         yield Entity(
@@ -346,7 +346,7 @@ def entities_generator(doc, params: dict):
 
 
 def chunks_for_doc(doc, params: dict):
-    """ """
+    """Return chunks in doc as a generator"""
     for chunk in params["engine"].document_noun_chunks(doc):
         if chunk.root.head.pos_ == "ADP":
             span = doc[chunk.start - 1 : chunk.end]
@@ -355,7 +355,7 @@ def chunks_for_doc(doc, params: dict):
 
 
 def chunk_tuples_for_doc(doc, params: dict):
-    """ """
+    """Return chunk tuples as a generator"""
     for i, (chunk, phrase) in enumerate(chunks_for_doc(doc, params)):
         comment = remove_illegal_chars(chunk.orth_.replace("\n", " "))
         yield ChunkElement(
@@ -368,16 +368,8 @@ def chunk_tuples_for_doc(doc, params: dict):
         )
 
 
-def prepare_comment_text(text: str):
-    """ """
-    text = text.replace("--", "DOUBLEDASH")
-    if text.endswith("-"):
-        text = text[:-1] + "SINGLEDASH"
-    return text
-
-
 def dependencies_to_add(sentence, token, total_tokens: int, params: dict):
-    """ """
+    """Generate list of dependencies to add to deps layer"""
     engine = params["engine"]
     deps = list()
     cor = engine.offset_token_index()
@@ -407,7 +399,7 @@ def dependencies_to_add(sentence, token, total_tokens: int, params: dict):
 
 
 def add_entities_layer(params: dict):
-    """ """
+    """Generate and add all entities in document to entities layer"""
     lp = ProcessorElement(
         name="entities",
         version=params["engine"].model_version,
@@ -499,7 +491,7 @@ def add_entities_layer(params: dict):
 
 
 def add_text_layer(params: dict):
-    """ """
+    """Generate and add all words in document to text layer"""
     lp = ProcessorElement(
         name="text",
         version=params["engine"].model_version,
@@ -577,7 +569,7 @@ def add_text_layer(params: dict):
 
 
 def add_terms_layer(params: dict):
-    """ """
+    """Generate and add all terms in document to terms layer"""
     lp = ProcessorElement(
         name="terms",
         version=params["engine"].model_version,
@@ -666,7 +658,7 @@ def add_terms_layer(params: dict):
 
 
 def add_deps_layer(params: dict):
-    """ """
+    """Generate and add all dependencies in document to deps layer"""
     lp = ProcessorElement(
         name="deps",
         version=params["engine"].model_version,
@@ -709,7 +701,7 @@ def add_deps_layer(params: dict):
 
 
 def get_next_mw_id(params):
-    """ """
+    """Return multiword id for new multiword"""
     layer = params["tree"].find("multiwords")
     if layer is None:
         layer = etree.SubElement(params["tree"].getroot(), "multiwords")
@@ -722,7 +714,7 @@ def get_next_mw_id(params):
 
 
 def create_separable_verb_lemma(verb, particle, language):
-    """ """
+    """return lemma (particle plus verb) for nl and en"""
     if language == "nl":
         lemma = particle + verb
     if language == "en":
@@ -731,7 +723,7 @@ def create_separable_verb_lemma(verb, particle, language):
 
 
 def add_multiwords_layer(params: dict):
-    """ """
+    """Generate and add all multiwords in document to multiwords layer"""
     lp = ProcessorElement(
         name="multiwords",
         version=params["engine"].model_version,
@@ -821,7 +813,7 @@ def add_multiwords_layer(params: dict):
 
 
 def add_raw_layer(params: dict):
-    """ """
+    """Generate and add raw text in document to raw layer"""
     lp = ProcessorElement(
         name="raw",
         version=params["engine"].model_version,
@@ -873,7 +865,7 @@ def add_raw_layer(params: dict):
 
 
 def add_chunks_layer(params: dict):
-    """ """
+    """Generate and add all chunks in document to chunks layer"""
     lp = ProcessorElement(
         name="chunks",
         version=params["engine"].model_version,
@@ -891,7 +883,7 @@ def add_chunks_layer(params: dict):
 
 
 def add_formats_layer(source: str, params: dict):
-    """ """
+    """Generate and add all format elements in document to formats layer"""
     lp = ProcessorElement(
         name="formats",
         version=params["engine"].model_version,
