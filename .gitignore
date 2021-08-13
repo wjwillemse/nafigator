@@ -111,7 +111,8 @@ ENV/
 /data/*.docx
 !/data/example.pdf
 !/data/example.docx
+!/data/example.rdf
 !/data/example.naf.xml
 !/data/example.docx.naf.xml
 
-/tests/tests/*.xml.naf
+/tests/tests/*.naf.xml

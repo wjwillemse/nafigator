@@ -1,0 +1,1161 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rdf:RDF
+   xmlns:dc="http://purl.org/dc/elements/1.1/#"
+   xmlns:naf-base="https://dnb.nl/naf-base/#"
+   xmlns:naf-fileDesc="https://dnb.nl/naf-fileDesc/#"
+   xmlns:naf-morphofeat="https://dnb.nl/naf-morphofeat/#"
+   xmlns:naf-rfunc="https://dnb.nl/naf-rfunc/#"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:xl="http://www.xbrl.org/2003/XLink/#"
+>
+  <rdf:Description rdf:nodeID="fb9db65a2ec5d43b2afa47384644bead9b26">
+    <naf-base:hasSent rdf:datatype="http://www.w3.org/2001/XMLSchema/#integer">1</naf-base:hasSent>
+    <xl:type rdf:resource="https://dnb.nl/naf-base/#wordform"/>
+    <naf-base:hasLength rdf:datatype="http://www.w3.org/2001/XMLSchema/#integer">1</naf-base:hasLength>
+    <naf-base:hasOffset rdf:datatype="http://www.w3.org/2001/XMLSchema/#integer">103</naf-base:hasOffset>
+    <naf-base:hasText rdf:datatype="http://www.w3.org/1999/02/22-rdf-syntax-ns/#XMLLiteral">(</naf-base:hasText>
+    <naf-base:hasPage rdf:datatype="http://www.w3.org/2001/XMLSchema/#integer">1</naf-base:hasPage>
+  </rdf:Description>
+  <rdf:Description rdf:nodeID="fb9db65a2ec5d43b2afa47384644bead9b46">
+    <naf-base:hasSent rdf:datatype="http://www.w3.org/2001/XMLSchema/#integer">2</naf-base:hasSent>
+    <xl:type rdf:resource="https://dnb.nl/naf-base/#wordform"/>
+    <naf-base:hasText rdf:datatype="http://www.w3.org/1999/02/22-rdf-syntax-ns/#XMLLiteral">out</naf-base:hasText>
+    <naf-base:hasOffset rdf:datatype="http://www.w3.org/2001/XMLSchema/#integer">204</naf-base:hasOffset>
+    <naf-base:hasPage rdf:datatype="http://www.w3.org/2001/XMLSchema/#integer">1</naf-base:hasPage>
+    <naf-base:hasLength rdf:datatype="http://www.w3.org/2001/XMLSchema/#integer">3</naf-base:hasLength>
+  </rdf:Description>
+  <rdf:Description rdf:nodeID="fb9db65a2ec5d43b2afa47384644bead9b47">
+    <xl:type rdf:resource="https://dnb.nl/naf-base/#wordform"/>
+    <naf-base:hasLength rdf:datatype="http://www.w3.org/2001/XMLSchema/#integer">5</naf-base:hasLength>
+    <naf-base:hasPage rdf:datatype="http://www.w3.org/2001/XMLSchema/#integer">1</naf-base:hasPage>
+    <naf-base:hasSent rdf:datatype="http://www.w3.org/2001/XMLSchema/#integer">2</naf-base:hasSent>
+    <naf-base:hasText rdf:datatype="http://www.w3.org/1999/02/22-rdf-syntax-ns/#XMLLiteral">below</naf-base:hasText>
+    <naf-base:hasOffset rdf:datatype="http://www.w3.org/2001/XMLSchema/#integer">208</naf-base:hasOffset>
+  </rdf:Description>
+  <rdf:Description rdf:nodeID="fb9db65a2ec5d43b2afa47384644bead9b34">
+    <naf-base:hasPage rdf:datatype="http://www.w3.org/2001/XMLSchema/#integer">1</naf-base:hasPage>
+    <naf-base:hasLength rdf:datatype="http://www.w3.org/2001/XMLSchema/#integer">2</naf-base:hasLength>
+    <xl:type rdf:resource="https://dnb.nl/naf-base/#wordform"/>
+    <naf-base:hasSent rdf:datatype="http://www.w3.org/2001/XMLSchema/#integer">1</naf-base:hasSent>
+    <naf-base:hasOffset rdf:datatype="http://www.w3.org/2001/XMLSchema/#integer">151</naf-base:hasOffset>
+    <naf-base:hasText rdf:datatype="http://www.w3.org/1999/02/22-rdf-syntax-ns/#XMLLiteral">in</naf-base:hasText>
+  </rdf:Description>
+  <rdf:Description rdf:nodeID="fb9db65a2ec5d43b2afa47384644bead9b15">
+    <xl:type rdf:resource="https://dnb.nl/naf-base/#wordform"/>
+    <naf-base:hasSent rdf:datatype="http://www.w3.org/2001/XMLSchema/#integer">1</naf-base:hasSent>
+    <naf-base:hasLength rdf:datatype="http://www.w3.org/2001/XMLSchema/#integer">5</naf-base:hasLength>
+    <naf-base:hasPage rdf:datatype="http://www.w3.org/2001/XMLSchema/#integer">1</naf-base:hasPage>
+    <naf-base:hasText rdf:datatype="http://www.w3.org/1999/02/22-rdf-syntax-ns/#XMLLiteral">store</naf-base:hasText>
+    <naf-base:hasOffset rdf:datatype="http://www.w3.org/2001/XMLSchema/#integer">36</naf-base:hasOffset>
+  </rdf:Description>
+  <rdf:Description rdf:nodeID="fb9db65a2ec5d43b2afa47384644bead9b59">
+    <naf-base:hasLemma>the</naf-base:hasLemma>
+    <xl:type rdf:resource="https://dnb.nl/naf-base/#term"/>
+    <naf-base:hasPos rdf:resource="http://purl.org/olia/olia.owl#Determiner"/>
+    <naf-base:hasSpan rdf:nodeID="ub1bL554C22"/>
+    <naf-morphofeat:hasDefinite>Def</naf-morphofeat:hasDefinite>
+    <naf-morphofeat:hasPronType>Art</naf-morphofeat:hasPronType>
+    <naf-base:hasType rdf:resource="https://dnb.nl/naf-base/#close"/>
+  </rdf:Description>
+  <rdf:Description rdf:nodeID="fb9db65a2ec5d43b2afa47384644bead9b68">
+    <naf-base:hasPos rdf:resource="http://purl.org/olia/olia.owl#CommonNoun"/>
+    <naf-base:hasLemma>custom</naf-base:hasLemma>
+    <naf-morphofeat:hasNumber>Sing</naf-morphofeat:hasNumber>
+    <naf-base:hasSpan rdf:nodeID="ub1bL658C22"/>
+    <xl:type rdf:resource="https://dnb.nl/naf-base/#term"/>
+    <naf-base:hasType rdf:resource="https://dnb.nl/naf-base/#open"/>
+  </rdf:Description>
+  <rdf:Description rdf:nodeID="fb9db65a2ec5d43b2afa47384644bead9b66">
+    <naf-base:hasPos rdf:resource="http://purl.org/olia/olia.owl#CommonNoun"/>
+    <xl:type rdf:resource="https://dnb.nl/naf-base/#term"/>
+    <naf-base:hasSpan rdf:nodeID="ub1bL639C22"/>
+    <naf-base:hasType rdf:resource="https://dnb.nl/naf-base/#open"/>
+    <naf-morphofeat:hasNumber>Sing</naf-morphofeat:hasNumber>
+    <naf-rfunc:compound rdf:nodeID="fb9db65a2ec5d43b2afa47384644bead9b65"/>
+    <naf-rfunc:nmod rdf:nodeID="fb9db65a2ec5d43b2afa47384644bead9b6"/>
+    <naf-base:hasLemma>output</naf-base:hasLemma>
+  </rdf:Description>
+  <rdf:Description rdf:nodeID="fb9db65a2ec5d43b2afa47384644bead9b36">
+    <naf-base:hasOffset rdf:datatype="http://www.w3.org/2001/XMLSchema/#integer">158</naf-base:hasOffset>
+    <naf-base:hasSent rdf:datatype="http://www.w3.org/2001/XMLSchema/#integer">1</naf-base:hasSent>
+    <naf-base:hasText rdf:datatype="http://www.w3.org/1999/02/22-rdf-syntax-ns/#XMLLiteral">format</naf-base:hasText>
+    <xl:type rdf:resource="https://dnb.nl/naf-base/#wordform"/>
+    <naf-base:hasLength rdf:datatype="http://www.w3.org/2001/XMLSchema/#integer">6</naf-base:hasLength>
+    <naf-base:hasPage rdf:datatype="http://www.w3.org/2001/XMLSchema/#integer">1</naf-base:hasPage>
+  </rdf:Description>
+  <rdf:Description rdf:nodeID="fb9db65a2ec5d43b2afa47384644bead9b17">
+    <naf-base:hasPage rdf:datatype="http://www.w3.org/2001/XMLSchema/#integer">1</naf-base:hasPage>
+    <naf-base:hasLength rdf:datatype="http://www.w3.org/2001/XMLSchema/#integer">6</naf-base:hasLength>
+    <xl:type rdf:resource="https://dnb.nl/naf-base/#wordform"/>
+    <naf-base:hasSent rdf:datatype="http://www.w3.org/2001/XMLSchema/#integer">1</naf-base:hasSent>
+    <naf-base:hasText rdf:datatype="http://www.w3.org/1999/02/22-rdf-syntax-ns/#XMLLiteral">output</naf-base:hasText>
+    <naf-base:hasOffset rdf:datatype="http://www.w3.org/2001/XMLSchema/#integer">46</naf-base:hasOffset>
+  </rdf:Description>
+  <rdf:Description rdf:nodeID="fb9db65a2ec5d43b2afa47384644bead9b41">
+    <naf-base:hasLength rdf:datatype="http://www.w3.org/2001/XMLSchema/#integer">1</naf-base:hasLength>
+    <naf-base:hasPage rdf:datatype="http://www.w3.org/2001/XMLSchema/#integer">1</naf-base:hasPage>
+    <naf-base:hasSent rdf:datatype="http://www.w3.org/2001/XMLSchema/#integer">2</naf-base:hasSent>
+    <xl:type rdf:resource="https://dnb.nl/naf-base/#wordform"/>
+    <naf-base:hasText rdf:datatype="http://www.w3.org/1999/02/22-rdf-syntax-ns/#XMLLiteral">“</naf-base:hasText>
+    <naf-base:hasOffset rdf:datatype="http://www.w3.org/2001/XMLSchema/#integer">186</naf-base:hasOffset>
+  </rdf:Description>
+  <rdf:Description rdf:nodeID="fb9db65a2ec5d43b2afa47384644bead9b62">
+    <naf-base:hasLemma>you</naf-base:hasLemma>
+    <naf-base:hasType rdf:resource="https://dnb.nl/naf-base/#close"/>
+    <naf-morphofeat:hasPerson>2</naf-morphofeat:hasPerson>
+    <naf-morphofeat:hasCase>Acc</naf-morphofeat:hasCase>
+    <naf-morphofeat:hasPronType>Prs</naf-morphofeat:hasPronType>
+    <naf-base:hasSpan rdf:nodeID="ub1bL600C22"/>
+    <xl:type rdf:resource="https://dnb.nl/naf-base/#term"/>
+    <naf-base:hasPos rdf:resource="http://purl.org/olia/olia.owl#Pronoun"/>
+  </rdf:Description>
+  <rdf:Description rdf:nodeID="fb9db65a2ec5d43b2afa47384644bead9b71">
+    <naf-base:hasPos rdf:resource="http://purl.org/olia/olia.owl#CommonNoun"/>
+    <naf-base:hasType rdf:resource="https://dnb.nl/naf-base/#open"/>
+    <naf-base:hasSpan rdf:nodeID="ub1bL698C22"/>
+    <xl:type rdf:resource="https://dnb.nl/naf-base/#term"/>
+    <naf-morphofeat:hasNumber>Sing</naf-morphofeat:hasNumber>
+    <naf-base:hasLemma>stanza</naf-base:hasLemma>
+  </rdf:Description>
+  <rdf:Description rdf:nodeID="ub1bL822C22">
+    <naf-base:ref rdf:nodeID="fb9db65a2ec5d43b2afa47384644bead9b36"/>
+  </rdf:Description>
+  <rdf:Description rdf:nodeID="ub1bL72C21">
+    <naf-base:hasEndTimestamp rdf:datatype="http://www.w3.org/2001/XMLSchema/#dateTime">2021-05-24T11:29:47UTC</naf-base:hasEndTimestamp>
+    <naf-base:hasHostname rdf:datatype="http://www.w3.org/1999/02/22-rdf-syntax-ns/#XMLLiteral">computer-woonkamer</naf-base:hasHostname>
+    <naf-base:hasName rdf:datatype="http://www.w3.org/1999/02/22-rdf-syntax-ns/#XMLLiteral">text</naf-base:hasName>
+    <naf-base:hasFile rdf:datatype="http://www.w3.org/1999/02/22-rdf-syntax-ns/#XMLLiteral">C:\Users\wjwil\stanza_resources\en\tokenize\ewt.pt</naf-base:hasFile>
+    <naf-base:hasVersion rdf:datatype="http://www.w3.org/1999/02/22-rdf-syntax-ns/#XMLLiteral">stanza_version-1.2</naf-base:hasVersion>
+    <naf-base:hasBeginTimestamp rdf:datatype="http://www.w3.org/2001/XMLSchema/#dateTime">2021-05-24T11:29:47UTC</naf-base:hasBeginTimestamp>
+  </rdf:Description>
+  <rdf:Description rdf:nodeID="fb9db65a2ec5d43b2afa47384644bead9b50">
+    <naf-base:hasSent rdf:datatype="http://www.w3.org/2001/XMLSchema/#integer">2</naf-base:hasSent>
+    <naf-base:hasLength rdf:datatype="http://www.w3.org/2001/XMLSchema/#integer">10</naf-base:hasLength>
+    <xl:type rdf:resource="https://dnb.nl/naf-base/#wordform"/>
+    <naf-base:hasText rdf:datatype="http://www.w3.org/1999/02/22-rdf-syntax-ns/#XMLLiteral">recognized</naf-base:hasText>
+    <naf-base:hasOffset rdf:datatype="http://www.w3.org/2001/XMLSchema/#integer">219</naf-base:hasOffset>
+    <naf-base:hasPage rdf:datatype="http://www.w3.org/2001/XMLSchema/#integer">1</naf-base:hasPage>
+  </rdf:Description>
+  <rdf:Description rdf:nodeID="ub1bL755C22">
+    <naf-base:ref rdf:nodeID="fb9db65a2ec5d43b2afa47384644bead9b29"/>
+  </rdf:Description>
+  <rdf:Description rdf:nodeID="fb9db65a2ec5d43b2afa47384644bead9b76">
+    <naf-base:hasLemma>)</naf-base:hasLemma>
+    <naf-base:hasType rdf:resource="https://dnb.nl/naf-base/#close"/>
+    <xl:type rdf:resource="https://dnb.nl/naf-base/#term"/>
+    <naf-base:hasSpan rdf:nodeID="ub1bL745C22"/>
+    <naf-base:hasPos rdf:resource="http://purl.org/olia/olia.owl#Punctuation"/>
+  </rdf:Description>
+  <rdf:Description rdf:nodeID="fb9db65a2ec5d43b2afa47384644bead9b4">
+    <naf-base:hasType rdf:resource="https://dnb.nl/naf-base/#open"/>
+    <naf-base:hasSpan rdf:nodeID="ub1bL564C22"/>
+    <xl:type rdf:resource="https://dnb.nl/naf-base/#term"/>
+    <naf-base:hasPos rdf:resource="http://purl.org/olia/olia.owl#ProperNoun"/>
+    <naf-base:hasLemma>Nafigator</naf-base:hasLemma>
+    <naf-morphofeat:hasNumber>Sing</naf-morphofeat:hasNumber>
+  </rdf:Description>
+  <rdf:Description rdf:nodeID="fb9db65a2ec5d43b2afa47384644bead9b2">
+    <naf-base:hasLinguisticProcessors rdf:nodeID="ub1bL70C38"/>
+    <naf-base:hasLinguisticProcessors rdf:nodeID="ub1bL92C38"/>
+    <naf-base:hasLinguisticProcessors rdf:nodeID="ub1bL31C38"/>
+    <naf-base:hasLinguisticProcessors rdf:nodeID="ub1bL103C38"/>
+    <naf-base:hasLinguisticProcessors rdf:nodeID="ub1bL49C38"/>
+    <naf-base:hasLinguisticProcessors rdf:nodeID="ub1bL59C38"/>
+    <naf-base:hasLinguisticProcessors rdf:nodeID="ub1bL114C38"/>
+    <naf-base:hasLinguisticProcessors rdf:nodeID="ub1bL81C38"/>
+    <naf-base:hasPublic rdf:nodeID="ub1bL27C24"/>
+    <naf-base:hasFileDesc rdf:nodeID="ub1bL22C26"/>
+    <naf-base:hasLinguisticProcessors rdf:nodeID="ub1bL40C38"/>
+  </rdf:Description>
+  <rdf:Description rdf:nodeID="fb9db65a2ec5d43b2afa47384644bead9b11">
+    <naf-base:hasSent rdf:datatype="http://www.w3.org/2001/XMLSchema/#integer">1</naf-base:hasSent>
+    <naf-base:hasOffset rdf:datatype="http://www.w3.org/2001/XMLSchema/#integer">14</naf-base:hasOffset>
+    <naf-base:hasText rdf:datatype="http://www.w3.org/1999/02/22-rdf-syntax-ns/#XMLLiteral">package</naf-base:hasText>
+    <xl:type rdf:resource="https://dnb.nl/naf-base/#wordform"/>
+    <naf-base:hasLength rdf:datatype="http://www.w3.org/2001/XMLSchema/#integer">7</naf-base:hasLength>
+    <naf-base:hasPage rdf:datatype="http://www.w3.org/2001/XMLSchema/#integer">1</naf-base:hasPage>
+  </rdf:Description>
+  <rdf:Description rdf:nodeID="fb9db65a2ec5d43b2afa47384644bead9b16">
+    <naf-base:hasLength rdf:datatype="http://www.w3.org/2001/XMLSchema/#integer">3</naf-base:hasLength>
+    <xl:type rdf:resource="https://dnb.nl/naf-base/#wordform"/>
+    <naf-base:hasPage rdf:datatype="http://www.w3.org/2001/XMLSchema/#integer">1</naf-base:hasPage>
+    <naf-base:hasOffset rdf:datatype="http://www.w3.org/2001/XMLSchema/#integer">42</naf-base:hasOffset>
+    <naf-base:hasSent rdf:datatype="http://www.w3.org/2001/XMLSchema/#integer">1</naf-base:hasSent>
+    <naf-base:hasText rdf:datatype="http://www.w3.org/1999/02/22-rdf-syntax-ns/#XMLLiteral">NLP</naf-base:hasText>
+  </rdf:Description>
+  <rdf:Description rdf:nodeID="fb9db65a2ec5d43b2afa47384644bead9b28">
+    <naf-base:hasLength rdf:datatype="http://www.w3.org/2001/XMLSchema/#integer">1</naf-base:hasLength>
+    <xl:type rdf:resource="https://dnb.nl/naf-base/#wordform"/>
+    <naf-base:hasText rdf:datatype="http://www.w3.org/1999/02/22-rdf-syntax-ns/#XMLLiteral">)</naf-base:hasText>
+    <naf-base:hasSent rdf:datatype="http://www.w3.org/2001/XMLSchema/#integer">1</naf-base:hasSent>
+    <naf-base:hasOffset rdf:datatype="http://www.w3.org/2001/XMLSchema/#integer">116</naf-base:hasOffset>
+    <naf-base:hasPage rdf:datatype="http://www.w3.org/2001/XMLSchema/#integer">1</naf-base:hasPage>
+  </rdf:Description>
+  <rdf:Description rdf:nodeID="fb9db65a2ec5d43b2afa47384644bead9b54">
+    <naf-base:hasOffset rdf:datatype="http://www.w3.org/2001/XMLSchema/#integer">244</naf-base:hasOffset>
+    <naf-base:hasLength rdf:datatype="http://www.w3.org/2001/XMLSchema/#integer">4</naf-base:hasLength>
+    <naf-base:hasSent rdf:datatype="http://www.w3.org/2001/XMLSchema/#integer">2</naf-base:hasSent>
+    <xl:type rdf:resource="https://dnb.nl/naf-base/#wordform"/>
+    <naf-base:hasPage rdf:datatype="http://www.w3.org/2001/XMLSchema/#integer">1</naf-base:hasPage>
+    <naf-base:hasText rdf:datatype="http://www.w3.org/1999/02/22-rdf-syntax-ns/#XMLLiteral">your</naf-base:hasText>
+  </rdf:Description>
+  <rdf:Description rdf:nodeID="fb9db65a2ec5d43b2afa47384644bead9b85">
+    <naf-base:hasPos rdf:resource="http://purl.org/olia/olia.owl#CommonNoun"/>
+    <xl:type rdf:resource="https://dnb.nl/naf-base/#term"/>
+    <naf-base:hasSpan rdf:nodeID="ub1bL841C22"/>
+    <naf-base:hasType rdf:resource="https://dnb.nl/naf-base/#open"/>
+    <naf-morphofeat:hasNumber>Plur</naf-morphofeat:hasNumber>
+    <naf-base:hasLemma>multiword</naf-base:hasLemma>
+    <naf-rfunc:acl rdf:nodeID="fb9db65a2ec5d43b2afa47384644bead9b99"/>
+  </rdf:Description>
+  <rdf:Description rdf:nodeID="fb9db65a2ec5d43b2afa47384644bead9b75">
+    <xl:type rdf:resource="https://dnb.nl/naf-base/#term"/>
+    <naf-morphofeat:hasDegree>Pos</naf-morphofeat:hasDegree>
+    <naf-base:hasSpan rdf:nodeID="ub1bL736C22"/>
+    <naf-base:hasType rdf:resource="https://dnb.nl/naf-base/#open"/>
+    <naf-base:hasPos rdf:resource="http://purl.org/olia/olia.owl#Adjective"/>
+    <naf-base:hasLemma>intermediate</naf-base:hasLemma>
+  </rdf:Description>
+  <rdf:Description rdf:nodeID="ub1bL42C21">
+    <naf-base:hasName rdf:datatype="http://www.w3.org/1999/02/22-rdf-syntax-ns/#XMLLiteral">pdfminer-pdf2text</naf-base:hasName>
+    <naf-base:hasEndTimestamp rdf:datatype="http://www.w3.org/2001/XMLSchema/#dateTime">2021-05-24T11:29:45UTC</naf-base:hasEndTimestamp>
+    <naf-base:hasVersion rdf:datatype="http://www.w3.org/1999/02/22-rdf-syntax-ns/#XMLLiteral">pdfminer_version-20201018</naf-base:hasVersion>
+    <naf-base:hasBeginTimestamp rdf:datatype="http://www.w3.org/2001/XMLSchema/#dateTime">2021-05-24T11:29:44UTC</naf-base:hasBeginTimestamp>
+  </rdf:Description>
+  <rdf:Description rdf:nodeID="fb9db65a2ec5d43b2afa47384644bead9b23">
+    <naf-base:hasText rdf:datatype="http://www.w3.org/1999/02/22-rdf-syntax-ns/#XMLLiteral">stanza</naf-base:hasText>
+    <naf-base:hasSent rdf:datatype="http://www.w3.org/2001/XMLSchema/#integer">1</naf-base:hasSent>
+    <naf-base:hasLength rdf:datatype="http://www.w3.org/2001/XMLSchema/#integer">6</naf-base:hasLength>
+    <naf-base:hasOffset rdf:datatype="http://www.w3.org/2001/XMLSchema/#integer">80</naf-base:hasOffset>
+    <naf-base:hasPage rdf:datatype="http://www.w3.org/2001/XMLSchema/#integer">1</naf-base:hasPage>
+    <xl:type rdf:resource="https://dnb.nl/naf-base/#wordform"/>
+  </rdf:Description>
+  <rdf:Description rdf:nodeID="ub1bL114C38">
+    <naf-base:lp rdf:nodeID="ub1bL116C21"/>
+    <naf-base:hasLayer rdf:resource="https://dnb.nl/naf-base/#raw"/>
+  </rdf:Description>
+  <rdf:Description rdf:nodeID="ub1bL40C38">
+    <naf-base:lp rdf:nodeID="ub1bL42C21"/>
+    <naf-base:hasLayer rdf:resource="https://dnb.nl/naf-base/#pdftotext"/>
+  </rdf:Description>
+  <rdf:Description rdf:nodeID="fb9db65a2ec5d43b2afa47384644bead9b56">
+    <naf-base:hasText rdf:datatype="http://www.w3.org/1999/02/22-rdf-syntax-ns/#XMLLiteral">processor</naf-base:hasText>
+    <naf-base:hasOffset rdf:datatype="http://www.w3.org/2001/XMLSchema/#integer">254</naf-base:hasOffset>
+    <naf-base:hasSent rdf:datatype="http://www.w3.org/2001/XMLSchema/#integer">2</naf-base:hasSent>
+    <xl:type rdf:resource="https://dnb.nl/naf-base/#wordform"/>
+    <naf-base:hasLength rdf:datatype="http://www.w3.org/2001/XMLSchema/#integer">9</naf-base:hasLength>
+    <naf-base:hasPage rdf:datatype="http://www.w3.org/2001/XMLSchema/#integer">1</naf-base:hasPage>
+  </rdf:Description>
+  <rdf:Description rdf:nodeID="fb9db65a2ec5d43b2afa47384644bead9b98">
+    <naf-base:hasType rdf:resource="https://dnb.nl/naf-base/#close"/>
+    <xl:type rdf:resource="https://dnb.nl/naf-base/#term"/>
+    <naf-base:hasLemma>.</naf-base:hasLemma>
+    <naf-base:hasSpan rdf:nodeID="ub1bL1044C22"/>
+    <naf-base:hasPos rdf:resource="http://purl.org/olia/olia.owl#Punctuation"/>
+  </rdf:Description>
+  <rdf:Description rdf:nodeID="fb9db65a2ec5d43b2afa47384644bead9b83">
+    <xl:type rdf:resource="https://dnb.nl/naf-base/#term"/>
+    <naf-base:hasLemma>format</naf-base:hasLemma>
+    <naf-base:hasSpan rdf:nodeID="ub1bL822C22"/>
+    <naf-rfunc:nummod rdf:nodeID="fb9db65a2ec5d43b2afa47384644bead9b8"/>
+    <naf-rfunc:case rdf:nodeID="fb9db65a2ec5d43b2afa47384644bead9b82"/>
+    <naf-base:hasPos rdf:resource="http://purl.org/olia/olia.owl#CommonNoun"/>
+    <naf-morphofeat:hasNumber>Sing</naf-morphofeat:hasNumber>
+    <naf-base:hasType rdf:resource="https://dnb.nl/naf-base/#open"/>
+  </rdf:Description>
+  <rdf:Description rdf:nodeID="fb9db65a2ec5d43b2afa47384644bead9b74">
+    <naf-base:hasLemma>(</naf-base:hasLemma>
+    <naf-base:hasType rdf:resource="https://dnb.nl/naf-base/#close"/>
+    <xl:type rdf:resource="https://dnb.nl/naf-base/#term"/>
+    <naf-base:hasPos rdf:resource="http://purl.org/olia/olia.owl#Punctuation"/>
+    <naf-base:hasSpan rdf:nodeID="ub1bL726C22"/>
+  </rdf:Description>
+  <rdf:Description rdf:nodeID="fb9db65a2ec5d43b2afa47384644bead9b20">
+    <xl:type rdf:resource="https://dnb.nl/naf-base/#wordform"/>
+    <naf-base:hasOffset rdf:datatype="http://www.w3.org/2001/XMLSchema/#integer">65</naf-base:hasOffset>
+    <naf-base:hasPage rdf:datatype="http://www.w3.org/2001/XMLSchema/#integer">1</naf-base:hasPage>
+    <naf-base:hasText rdf:datatype="http://www.w3.org/1999/02/22-rdf-syntax-ns/#XMLLiteral">made</naf-base:hasText>
+    <naf-base:hasSent rdf:datatype="http://www.w3.org/2001/XMLSchema/#integer">1</naf-base:hasSent>
+    <naf-base:hasLength rdf:datatype="http://www.w3.org/2001/XMLSchema/#integer">4</naf-base:hasLength>
+  </rdf:Description>
+  <rdf:Description rdf:nodeID="fb9db65a2ec5d43b2afa47384644bead9b9">
+    <xl:type rdf:resource="https://dnb.nl/naf-base/#wordform"/>
+    <naf-base:hasText rdf:datatype="http://www.w3.org/1999/02/22-rdf-syntax-ns/#XMLLiteral">The</naf-base:hasText>
+    <naf-base:hasSent rdf:datatype="http://www.w3.org/2001/XMLSchema/#integer">1</naf-base:hasSent>
+    <naf-base:hasOffset rdf:datatype="http://www.w3.org/2001/XMLSchema/#integer">0</naf-base:hasOffset>
+    <naf-base:hasPage rdf:datatype="http://www.w3.org/2001/XMLSchema/#integer">1</naf-base:hasPage>
+    <naf-base:hasLength rdf:datatype="http://www.w3.org/2001/XMLSchema/#integer">3</naf-base:hasLength>
+  </rdf:Description>
+  <rdf:Description rdf:nodeID="fb9db65a2ec5d43b2afa47384644bead9b22">
+    <naf-base:hasOffset rdf:datatype="http://www.w3.org/2001/XMLSchema/#integer">76</naf-base:hasOffset>
+    <naf-base:hasText rdf:datatype="http://www.w3.org/1999/02/22-rdf-syntax-ns/#XMLLiteral">and</naf-base:hasText>
+    <xl:type rdf:resource="https://dnb.nl/naf-base/#wordform"/>
+    <naf-base:hasSent rdf:datatype="http://www.w3.org/2001/XMLSchema/#integer">1</naf-base:hasSent>
+    <naf-base:hasPage rdf:datatype="http://www.w3.org/2001/XMLSchema/#integer">1</naf-base:hasPage>
+    <naf-base:hasLength rdf:datatype="http://www.w3.org/2001/XMLSchema/#integer">3</naf-base:hasLength>
+  </rdf:Description>
+  <rdf:Description rdf:nodeID="fb9db65a2ec5d43b2afa47384644bead9b94">
+    <naf-morphofeat:hasPoss>Yes</naf-morphofeat:hasPoss>
+    <naf-base:hasSpan rdf:nodeID="ub1bL1006C22"/>
+    <naf-base:hasType rdf:resource="https://dnb.nl/naf-base/#close"/>
+    <naf-morphofeat:hasPronType>Prs</naf-morphofeat:hasPronType>
+    <naf-morphofeat:hasPerson>2</naf-morphofeat:hasPerson>
+    <naf-base:hasLemma>you</naf-base:hasLemma>
+    <xl:type rdf:resource="https://dnb.nl/naf-base/#term"/>
+    <naf-base:hasPos rdf:resource="http://purl.org/olia/olia.owl#Pronoun"/>
+  </rdf:Description>
+  <rdf:Description rdf:nodeID="fb9db65a2ec5d43b2afa47384644bead9b106">
+    <naf-base:hasRaw rdf:datatype="http://www.w3.org/1999/02/22-rdf-syntax-ns/#XMLLiteral">The Nafigator package allows you to store NLP output from custom made Spacy and stanza  pipelines with (intermediate) results and all processing steps in one format.  Multiwords like in “we have set that out below” are recognized (depending on your NLP  processor).</naf-base:hasRaw>
+    <xl:type rdf:resource="https://dnb.nl/naf-base/#raw"/>
+  </rdf:Description>
+  <rdf:Description rdf:nodeID="fb9db65a2ec5d43b2afa47384644bead9b69">
+    <naf-base:hasType rdf:resource="https://dnb.nl/naf-base/#open"/>
+    <naf-base:hasPos rdf:resource="http://purl.org/olia/olia.owl#Verb"/>
+    <naf-morphofeat:hasTense>Past</naf-morphofeat:hasTense>
+    <naf-rfunc:compound rdf:nodeID="fb9db65a2ec5d43b2afa47384644bead9b68"/>
+    <naf-base:hasLemma>make</naf-base:hasLemma>
+    <naf-morphofeat:hasVerbForm>Part</naf-morphofeat:hasVerbForm>
+    <naf-base:hasSpan rdf:nodeID="ub1bL669C22"/>
+    <xl:type rdf:resource="https://dnb.nl/naf-base/#term"/>
+  </rdf:Description>
+  <rdf:Description rdf:nodeID="fb9db65a2ec5d43b2afa47384644bead9b88">
+    <naf-base:hasSpan rdf:nodeID="ub1bL942C22"/>
+    <xl:type rdf:resource="https://dnb.nl/naf-base/#term"/>
+    <naf-base:hasLemma> ;
+    naf-base:hasPos &lt;http://purl.org/olia/olia.owl#Punctuation&gt; ;
+    naf-base:hasSpan [
+        naf-base:ref _:w33
+    ] .
+
+_:t34
+    xl:type naf-base:term ;
+    naf-base:hasType naf-base:close ;
+    naf-base:hasLemma "we" ;
+    naf-base:hasPos &lt;http://purl.org/olia/olia.owl#Pronoun&gt; ;
+    naf-morphofeat:hasCase "Nom" ;
+    naf-morphofeat:hasNumber "Plur" ;
+    naf-morphofeat:hasPerson "1" ;
+    naf-morphofeat:hasPronType "Prs" ;
+    naf-base:hasSpan [
+        naf-base:ref _:w34
+    ] .
+
+_:t35
+    xl:type naf-base:term ;
+    naf-base:hasType naf-base:close ;
+    naf-base:hasLemma "have" ;
+    naf-base:hasPos &lt;http://purl.org/olia/olia.owl#AuxiliaryVerb&gt; ;
+    naf-morphofeat:hasMood "Ind" ;
+    naf-morphofeat:hasTense "Pres" ;
+    naf-morphofeat:hasVerbForm "Fin" ;
+    naf-base:hasSpan [
+        naf-base:ref _:w35
+    ] .
+
+_:t36
+    xl:type naf-base:term ;
+    naf-base:hasType naf-base:open ;
+    naf-base:hasLemma "set" ;
+    naf-base:hasPos &lt;http://purl.org/olia/olia.owl#Verb&gt; ;
+    naf-morphofeat:hasTense "Past" ;
+    naf-morphofeat:hasVerbForm "Part" ;
+    naf-base:isComponent_of _:mw1 ;
+    naf-base:hasSpan [
+        naf-base:ref _:w36
+    ] .
+
+_:t37
+    xl:type naf-base:term ;
+    naf-base:hasType naf-base:close ;
+    naf-base:hasLemma "that" ;
+    naf-base:hasPos &lt;http://purl.org/olia/olia.owl#SubordinatingConjunction&gt; ;
+    naf-base:hasSpan [
+        naf-base:ref _:w37
+    ] .
+
+_:t38
+    xl:type naf-base:term ;
+    naf-base:hasType naf-base:open ;
+    naf-base:hasLemma "out" ;
+    naf-base:hasPos &lt;http://purl.org/olia/olia.owl#Adposition&gt; ;
+    naf-base:isComponent_of _:mw1 ;
+    naf-base:hasSpan [
+        naf-base:ref _:w38
+    ] .
+
+_:t39
+    xl:type naf-base:term ;
+    naf-base:hasType naf-base:open ;
+    naf-base:hasLemma "below" ;
+    naf-base:hasPos &lt;http://purl.org/olia/olia.owl#Adverb&gt; ;
+    naf-base:hasSpan [
+        naf-base:ref _:w39
+    ] .
+
+_:t40
+    xl:type naf-base:term ;
+    naf-base:hasType naf-base:close ;
+    naf-base:hasLemma </naf-base:hasLemma>
+    <naf-base:hasPos rdf:resource="http://purl.org/olia/olia.owl#Punctuation"/>
+    <naf-base:hasType rdf:resource="https://dnb.nl/naf-base/#close"/>
+  </rdf:Description>
+  <rdf:Description rdf:nodeID="fb9db65a2ec5d43b2afa47384644bead9b27">
+    <xl:type rdf:resource="https://dnb.nl/naf-base/#wordform"/>
+    <naf-base:hasSent rdf:datatype="http://www.w3.org/2001/XMLSchema/#integer">1</naf-base:hasSent>
+    <naf-base:hasText rdf:datatype="http://www.w3.org/1999/02/22-rdf-syntax-ns/#XMLLiteral">intermediate</naf-base:hasText>
+    <naf-base:hasOffset rdf:datatype="http://www.w3.org/2001/XMLSchema/#integer">104</naf-base:hasOffset>
+    <naf-base:hasLength rdf:datatype="http://www.w3.org/2001/XMLSchema/#integer">12</naf-base:hasLength>
+    <naf-base:hasPage rdf:datatype="http://www.w3.org/2001/XMLSchema/#integer">1</naf-base:hasPage>
+  </rdf:Description>
+  <rdf:Description rdf:nodeID="ub1bL27C24">
+    <dc:uri rdf:datatype="http://www.w3.org/1999/02/22-rdf-syntax-ns/#XMLLiteral">data/example.pdf</dc:uri>
+    <dc:format rdf:datatype="http://www.w3.org/1999/02/22-rdf-syntax-ns/#XMLLiteral">application/pdf</dc:format>
+  </rdf:Description>
+  <rdf:Description rdf:nodeID="fb9db65a2ec5d43b2afa47384644bead9b52">
+    <xl:type rdf:resource="https://dnb.nl/naf-base/#wordform"/>
+    <naf-base:hasOffset rdf:datatype="http://www.w3.org/2001/XMLSchema/#integer">231</naf-base:hasOffset>
+    <naf-base:hasLength rdf:datatype="http://www.w3.org/2001/XMLSchema/#integer">9</naf-base:hasLength>
+    <naf-base:hasPage rdf:datatype="http://www.w3.org/2001/XMLSchema/#integer">1</naf-base:hasPage>
+    <naf-base:hasSent rdf:datatype="http://www.w3.org/2001/XMLSchema/#integer">2</naf-base:hasSent>
+    <naf-base:hasText rdf:datatype="http://www.w3.org/1999/02/22-rdf-syntax-ns/#XMLLiteral">depending</naf-base:hasText>
+  </rdf:Description>
+  <rdf:Description rdf:nodeID="fb9db65a2ec5d43b2afa47384644bead9b73">
+    <xl:type rdf:resource="https://dnb.nl/naf-base/#term"/>
+    <naf-base:hasLemma>with</naf-base:hasLemma>
+    <naf-base:hasPos rdf:resource="http://purl.org/olia/olia.owl#Adposition"/>
+    <naf-base:hasType rdf:resource="https://dnb.nl/naf-base/#open"/>
+    <naf-base:hasSpan rdf:nodeID="ub1bL717C22"/>
+  </rdf:Description>
+  <rdf:Description rdf:nodeID="fb9db65a2ec5d43b2afa47384644bead9b99">
+    <naf-rfunc:nsubj rdf:nodeID="fb9db65a2ec5d43b2afa47384644bead9b100"/>
+    <naf-rfunc:mark rdf:nodeID="fb9db65a2ec5d43b2afa47384644bead9b87"/>
+    <naf-rfunc:ccomp rdf:nodeID="fb9db65a2ec5d43b2afa47384644bead9b90"/>
+    <naf-rfunc:punct rdf:nodeID="fb9db65a2ec5d43b2afa47384644bead9b105"/>
+    <naf-rfunc:aux rdf:nodeID="fb9db65a2ec5d43b2afa47384644bead9b101"/>
+    <naf-rfunc:mark rdf:nodeID="fb9db65a2ec5d43b2afa47384644bead9b86"/>
+    <naf-rfunc:compound:prt rdf:nodeID="fb9db65a2ec5d43b2afa47384644bead9b103"/>
+    <naf-rfunc:punct rdf:nodeID="fb9db65a2ec5d43b2afa47384644bead9b88"/>
+    <naf-rfunc:advmod rdf:nodeID="fb9db65a2ec5d43b2afa47384644bead9b104"/>
+  </rdf:Description>
+  <rdf:Description rdf:nodeID="fb9db65a2ec5d43b2afa47384644bead9b72">
+    <naf-base:hasType rdf:resource="https://dnb.nl/naf-base/#open"/>
+    <naf-base:hasPos rdf:resource="http://purl.org/olia/olia.owl#CommonNoun"/>
+    <naf-base:hasLemma>pipeline</naf-base:hasLemma>
+    <xl:type rdf:resource="https://dnb.nl/naf-base/#term"/>
+    <naf-morphofeat:hasNumber>Plur</naf-morphofeat:hasNumber>
+    <naf-rfunc:compound rdf:nodeID="fb9db65a2ec5d43b2afa47384644bead9b71"/>
+    <naf-rfunc:cc rdf:nodeID="fb9db65a2ec5d43b2afa47384644bead9b70"/>
+    <naf-base:hasSpan rdf:nodeID="ub1bL708C22"/>
+  </rdf:Description>
+  <rdf:Description rdf:nodeID="fb9db65a2ec5d43b2afa47384644bead9b82">
+    <naf-base:hasPos rdf:resource="http://purl.org/olia/olia.owl#Adposition"/>
+    <naf-base:hasSpan rdf:nodeID="ub1bL802C22"/>
+    <xl:type rdf:resource="https://dnb.nl/naf-base/#term"/>
+    <naf-base:hasType rdf:resource="https://dnb.nl/naf-base/#open"/>
+    <naf-base:hasLemma>in</naf-base:hasLemma>
+  </rdf:Description>
+  <rdf:Description rdf:nodeID="fb9db65a2ec5d43b2afa47384644bead9b55">
+    <naf-base:hasLength rdf:datatype="http://www.w3.org/2001/XMLSchema/#integer">3</naf-base:hasLength>
+    <naf-base:hasOffset rdf:datatype="http://www.w3.org/2001/XMLSchema/#integer">249</naf-base:hasOffset>
+    <naf-base:hasText rdf:datatype="http://www.w3.org/1999/02/22-rdf-syntax-ns/#XMLLiteral">NLP</naf-base:hasText>
+    <naf-base:hasPage rdf:datatype="http://www.w3.org/2001/XMLSchema/#integer">1</naf-base:hasPage>
+    <naf-base:hasSent rdf:datatype="http://www.w3.org/2001/XMLSchema/#integer">2</naf-base:hasSent>
+    <xl:type rdf:resource="https://dnb.nl/naf-base/#wordform"/>
+  </rdf:Description>
+  <rdf:Description rdf:nodeID="fb9db65a2ec5d43b2afa47384644bead9b65">
+    <naf-base:hasPos rdf:resource="http://purl.org/olia/olia.owl#CommonNoun"/>
+    <naf-base:hasType rdf:resource="https://dnb.nl/naf-base/#open"/>
+    <naf-base:hasSpan rdf:nodeID="ub1bL629C22"/>
+    <xl:type rdf:resource="https://dnb.nl/naf-base/#term"/>
+    <naf-base:hasLemma>nlp</naf-base:hasLemma>
+    <naf-morphofeat:hasNumber>Sing</naf-morphofeat:hasNumber>
+  </rdf:Description>
+  <rdf:Description rdf:nodeID="fb9db65a2ec5d43b2afa47384644bead9b14">
+    <naf-base:hasSent rdf:datatype="http://www.w3.org/2001/XMLSchema/#integer">1</naf-base:hasSent>
+    <naf-base:hasOffset rdf:datatype="http://www.w3.org/2001/XMLSchema/#integer">33</naf-base:hasOffset>
+    <naf-base:hasLength rdf:datatype="http://www.w3.org/2001/XMLSchema/#integer">2</naf-base:hasLength>
+    <naf-base:hasText rdf:datatype="http://www.w3.org/1999/02/22-rdf-syntax-ns/#XMLLiteral">to</naf-base:hasText>
+    <xl:type rdf:resource="https://dnb.nl/naf-base/#wordform"/>
+    <naf-base:hasPage rdf:datatype="http://www.w3.org/2001/XMLSchema/#integer">1</naf-base:hasPage>
+  </rdf:Description>
+  <rdf:Description rdf:nodeID="fb9db65a2ec5d43b2afa47384644bead9b5">
+    <xl:type rdf:resource="https://dnb.nl/naf-base/#entity"/>
+    <naf-base:hasType rdf:resource="https://dnb.nl/naf-entity/#PRODUCT"/>
+    <naf-base:hasSpan rdf:nodeID="ub1bL136C22"/>
+  </rdf:Description>
+  <rdf:Description rdf:nodeID="fb9db65a2ec5d43b2afa47384644bead9b93">
+    <naf-base:hasType rdf:resource="https://dnb.nl/naf-base/#open"/>
+    <naf-base:hasSpan rdf:nodeID="ub1bL994C22"/>
+    <naf-base:hasLemma>on</naf-base:hasLemma>
+    <naf-base:hasPos rdf:resource="http://purl.org/olia/olia.owl#Adposition"/>
+    <xl:type rdf:resource="https://dnb.nl/naf-base/#term"/>
+  </rdf:Description>
+  <rdf:Description rdf:nodeID="ub1bL1035C22">
+    <naf-base:ref rdf:nodeID="fb9db65a2ec5d43b2afa47384644bead9b57"/>
+  </rdf:Description>
+  <rdf:Description rdf:nodeID="fb9db65a2ec5d43b2afa47384644bead9b77">
+    <naf-rfunc:case rdf:nodeID="fb9db65a2ec5d43b2afa47384644bead9b73"/>
+    <naf-morphofeat:hasNumber>Plur</naf-morphofeat:hasNumber>
+    <naf-base:hasPos rdf:resource="http://purl.org/olia/olia.owl#CommonNoun"/>
+    <naf-base:hasSpan rdf:nodeID="ub1bL755C22"/>
+    <naf-rfunc:punct rdf:nodeID="fb9db65a2ec5d43b2afa47384644bead9b76"/>
+    <naf-base:hasLemma>result</naf-base:hasLemma>
+    <naf-rfunc:amod rdf:nodeID="fb9db65a2ec5d43b2afa47384644bead9b75"/>
+    <xl:type rdf:resource="https://dnb.nl/naf-base/#term"/>
+    <naf-base:hasType rdf:resource="https://dnb.nl/naf-base/#open"/>
+    <naf-rfunc:punct rdf:nodeID="fb9db65a2ec5d43b2afa47384644bead9b74"/>
+  </rdf:Description>
+  <rdf:Description rdf:nodeID="fb9db65a2ec5d43b2afa47384644bead9b10">
+    <naf-base:hasSent rdf:datatype="http://www.w3.org/2001/XMLSchema/#integer">1</naf-base:hasSent>
+    <naf-base:hasOffset rdf:datatype="http://www.w3.org/2001/XMLSchema/#integer">4</naf-base:hasOffset>
+    <xl:type rdf:resource="https://dnb.nl/naf-base/#wordform"/>
+    <naf-base:hasText rdf:datatype="http://www.w3.org/1999/02/22-rdf-syntax-ns/#XMLLiteral">Nafigator</naf-base:hasText>
+    <naf-base:hasLength rdf:datatype="http://www.w3.org/2001/XMLSchema/#integer">9</naf-base:hasLength>
+    <naf-base:hasPage rdf:datatype="http://www.w3.org/2001/XMLSchema/#integer">1</naf-base:hasPage>
+  </rdf:Description>
+  <rdf:Description rdf:nodeID="fb9db65a2ec5d43b2afa47384644bead9b42">
+    <naf-base:hasLength rdf:datatype="http://www.w3.org/2001/XMLSchema/#integer">2</naf-base:hasLength>
+    <naf-base:hasSent rdf:datatype="http://www.w3.org/2001/XMLSchema/#integer">2</naf-base:hasSent>
+    <xl:type rdf:resource="https://dnb.nl/naf-base/#wordform"/>
+    <naf-base:hasText rdf:datatype="http://www.w3.org/1999/02/22-rdf-syntax-ns/#XMLLiteral">we</naf-base:hasText>
+    <naf-base:hasOffset rdf:datatype="http://www.w3.org/2001/XMLSchema/#integer">187</naf-base:hasOffset>
+    <naf-base:hasPage rdf:datatype="http://www.w3.org/2001/XMLSchema/#integer">1</naf-base:hasPage>
+  </rdf:Description>
+  <rdf:Description rdf:nodeID="fb9db65a2ec5d43b2afa47384644bead9b48">
+    <naf-base:hasText rdf:datatype="http://www.w3.org/1999/02/22-rdf-syntax-ns/#XMLLiteral">”</naf-base:hasText>
+    <xl:type rdf:resource="https://dnb.nl/naf-base/#wordform"/>
+    <naf-base:hasLength rdf:datatype="http://www.w3.org/2001/XMLSchema/#integer">1</naf-base:hasLength>
+    <naf-base:hasSent rdf:datatype="http://www.w3.org/2001/XMLSchema/#integer">2</naf-base:hasSent>
+    <naf-base:hasOffset rdf:datatype="http://www.w3.org/2001/XMLSchema/#integer">213</naf-base:hasOffset>
+    <naf-base:hasPage rdf:datatype="http://www.w3.org/2001/XMLSchema/#integer">1</naf-base:hasPage>
+  </rdf:Description>
+  <rdf:Description rdf:nodeID="fb9db65a2ec5d43b2afa47384644bead9b40">
+    <naf-base:hasLength rdf:datatype="http://www.w3.org/2001/XMLSchema/#integer">2</naf-base:hasLength>
+    <xl:type rdf:resource="https://dnb.nl/naf-base/#wordform"/>
+    <naf-base:hasPage rdf:datatype="http://www.w3.org/2001/XMLSchema/#integer">1</naf-base:hasPage>
+    <naf-base:hasText rdf:datatype="http://www.w3.org/1999/02/22-rdf-syntax-ns/#XMLLiteral">in</naf-base:hasText>
+    <naf-base:hasOffset rdf:datatype="http://www.w3.org/2001/XMLSchema/#integer">183</naf-base:hasOffset>
+    <naf-base:hasSent rdf:datatype="http://www.w3.org/2001/XMLSchema/#integer">2</naf-base:hasSent>
+  </rdf:Description>
+  <rdf:Description rdf:nodeID="fb9db65a2ec5d43b2afa47384644bead9b33">
+    <naf-base:hasSent rdf:datatype="http://www.w3.org/2001/XMLSchema/#integer">1</naf-base:hasSent>
+    <naf-base:hasLength rdf:datatype="http://www.w3.org/2001/XMLSchema/#integer">5</naf-base:hasLength>
+    <naf-base:hasOffset rdf:datatype="http://www.w3.org/2001/XMLSchema/#integer">145</naf-base:hasOffset>
+    <naf-base:hasPage rdf:datatype="http://www.w3.org/2001/XMLSchema/#integer">1</naf-base:hasPage>
+    <naf-base:hasText rdf:datatype="http://www.w3.org/1999/02/22-rdf-syntax-ns/#XMLLiteral">steps</naf-base:hasText>
+    <xl:type rdf:resource="https://dnb.nl/naf-base/#wordform"/>
+  </rdf:Description>
+  <rdf:Description rdf:nodeID="fb9db65a2ec5d43b2afa47384644bead9b24">
+    <naf-base:hasText rdf:datatype="http://www.w3.org/1999/02/22-rdf-syntax-ns/#XMLLiteral">pipelines</naf-base:hasText>
+    <naf-base:hasSent rdf:datatype="http://www.w3.org/2001/XMLSchema/#integer">1</naf-base:hasSent>
+    <xl:type rdf:resource="https://dnb.nl/naf-base/#wordform"/>
+    <naf-base:hasLength rdf:datatype="http://www.w3.org/2001/XMLSchema/#integer">9</naf-base:hasLength>
+    <naf-base:hasPage rdf:datatype="http://www.w3.org/2001/XMLSchema/#integer">1</naf-base:hasPage>
+    <naf-base:hasOffset rdf:datatype="http://www.w3.org/2001/XMLSchema/#integer">88</naf-base:hasOffset>
+  </rdf:Description>
+  <rdf:Description rdf:nodeID="fb9db65a2ec5d43b2afa47384644bead9b43">
+    <naf-base:hasLength rdf:datatype="http://www.w3.org/2001/XMLSchema/#integer">4</naf-base:hasLength>
+    <naf-base:hasSent rdf:datatype="http://www.w3.org/2001/XMLSchema/#integer">2</naf-base:hasSent>
+    <xl:type rdf:resource="https://dnb.nl/naf-base/#wordform"/>
+    <naf-base:hasText rdf:datatype="http://www.w3.org/1999/02/22-rdf-syntax-ns/#XMLLiteral">have</naf-base:hasText>
+    <naf-base:hasPage rdf:datatype="http://www.w3.org/2001/XMLSchema/#integer">1</naf-base:hasPage>
+    <naf-base:hasOffset rdf:datatype="http://www.w3.org/2001/XMLSchema/#integer">190</naf-base:hasOffset>
+  </rdf:Description>
+  <rdf:Description rdf:nodeID="fb9db65a2ec5d43b2afa47384644bead9b57">
+    <xl:type rdf:resource="https://dnb.nl/naf-base/#wordform"/>
+    <naf-base:hasLength rdf:datatype="http://www.w3.org/2001/XMLSchema/#integer">1</naf-base:hasLength>
+    <naf-base:hasSent rdf:datatype="http://www.w3.org/2001/XMLSchema/#integer">2</naf-base:hasSent>
+    <naf-base:hasText rdf:datatype="http://www.w3.org/1999/02/22-rdf-syntax-ns/#XMLLiteral">)</naf-base:hasText>
+    <naf-base:hasPage rdf:datatype="http://www.w3.org/2001/XMLSchema/#integer">1</naf-base:hasPage>
+    <naf-base:hasOffset rdf:datatype="http://www.w3.org/2001/XMLSchema/#integer">263</naf-base:hasOffset>
+  </rdf:Description>
+  <rdf:Description rdf:nodeID="fb9db65a2ec5d43b2afa47384644bead9b39">
+    <naf-base:hasLength rdf:datatype="http://www.w3.org/2001/XMLSchema/#integer">4</naf-base:hasLength>
+    <naf-base:hasOffset rdf:datatype="http://www.w3.org/2001/XMLSchema/#integer">178</naf-base:hasOffset>
+    <naf-base:hasPage rdf:datatype="http://www.w3.org/2001/XMLSchema/#integer">1</naf-base:hasPage>
+    <xl:type rdf:resource="https://dnb.nl/naf-base/#wordform"/>
+    <naf-base:hasText rdf:datatype="http://www.w3.org/1999/02/22-rdf-syntax-ns/#XMLLiteral">like</naf-base:hasText>
+    <naf-base:hasSent rdf:datatype="http://www.w3.org/2001/XMLSchema/#integer">2</naf-base:hasSent>
+  </rdf:Description>
+  <rdf:Description rdf:nodeID="fb9db65a2ec5d43b2afa47384644bead9b51">
+    <naf-base:hasSent rdf:datatype="http://www.w3.org/2001/XMLSchema/#integer">2</naf-base:hasSent>
+    <naf-base:hasOffset rdf:datatype="http://www.w3.org/2001/XMLSchema/#integer">230</naf-base:hasOffset>
+    <naf-base:hasPage rdf:datatype="http://www.w3.org/2001/XMLSchema/#integer">1</naf-base:hasPage>
+    <naf-base:hasLength rdf:datatype="http://www.w3.org/2001/XMLSchema/#integer">1</naf-base:hasLength>
+    <naf-base:hasText rdf:datatype="http://www.w3.org/1999/02/22-rdf-syntax-ns/#XMLLiteral">(</naf-base:hasText>
+    <xl:type rdf:resource="https://dnb.nl/naf-base/#wordform"/>
+  </rdf:Description>
+  <rdf:Description rdf:nodeID="fb9db65a2ec5d43b2afa47384644bead9b25">
+    <naf-base:hasSent rdf:datatype="http://www.w3.org/2001/XMLSchema/#integer">1</naf-base:hasSent>
+    <naf-base:hasText rdf:datatype="http://www.w3.org/1999/02/22-rdf-syntax-ns/#XMLLiteral">with</naf-base:hasText>
+    <naf-base:hasOffset rdf:datatype="http://www.w3.org/2001/XMLSchema/#integer">98</naf-base:hasOffset>
+    <naf-base:hasPage rdf:datatype="http://www.w3.org/2001/XMLSchema/#integer">1</naf-base:hasPage>
+    <naf-base:hasLength rdf:datatype="http://www.w3.org/2001/XMLSchema/#integer">4</naf-base:hasLength>
+    <xl:type rdf:resource="https://dnb.nl/naf-base/#wordform"/>
+  </rdf:Description>
+  <rdf:Description rdf:nodeID="fb9db65a2ec5d43b2afa47384644bead9b89">
+    <naf-morphofeat:hasMood>Ind</naf-morphofeat:hasMood>
+    <xl:type rdf:resource="https://dnb.nl/naf-base/#term"/>
+    <naf-morphofeat:hasTense>Pres</naf-morphofeat:hasTense>
+    <naf-base:hasLemma>be</naf-base:hasLemma>
+    <naf-base:hasSpan rdf:nodeID="ub1bL954C22"/>
+    <naf-morphofeat:hasVerbForm>Fin</naf-morphofeat:hasVerbForm>
+    <naf-base:hasPos rdf:resource="http://purl.org/olia/olia.owl#AuxiliaryVerb"/>
+    <naf-base:hasType rdf:resource="https://dnb.nl/naf-base/#close"/>
+  </rdf:Description>
+  <rdf:Description rdf:nodeID="fb9db65a2ec5d43b2afa47384644bead9b61">
+    <naf-morphofeat:hasPerson>3</naf-morphofeat:hasPerson>
+    <naf-base:hasLemma>allow</naf-base:hasLemma>
+    <naf-base:hasPos rdf:resource="http://purl.org/olia/olia.owl#Verb"/>
+    <xl:type rdf:resource="https://dnb.nl/naf-base/#term"/>
+    <naf-morphofeat:hasTense>Pres</naf-morphofeat:hasTense>
+    <naf-base:hasType rdf:resource="https://dnb.nl/naf-base/#open"/>
+    <naf-rfunc:xcomp rdf:nodeID="fb9db65a2ec5d43b2afa47384644bead9b64"/>
+    <naf-rfunc:obj rdf:nodeID="fb9db65a2ec5d43b2afa47384644bead9b62"/>
+    <naf-rfunc:punct rdf:nodeID="fb9db65a2ec5d43b2afa47384644bead9b84"/>
+    <naf-rfunc:nsubj rdf:nodeID="fb9db65a2ec5d43b2afa47384644bead9b60"/>
+    <naf-morphofeat:hasMood>Ind</naf-morphofeat:hasMood>
+    <naf-base:hasSpan rdf:nodeID="ub1bL588C22"/>
+    <naf-morphofeat:hasVerbForm>Fin</naf-morphofeat:hasVerbForm>
+    <naf-morphofeat:hasNumber>Sing</naf-morphofeat:hasNumber>
+  </rdf:Description>
+  <rdf:Description rdf:nodeID="ub1bL859C22">
+    <naf-base:ref rdf:nodeID="fb9db65a2ec5d43b2afa47384644bead9b40"/>
+  </rdf:Description>
+  <rdf:Description rdf:nodeID="fb9db65a2ec5d43b2afa47384644bead9b13">
+    <naf-base:hasOffset rdf:datatype="http://www.w3.org/2001/XMLSchema/#integer">29</naf-base:hasOffset>
+    <naf-base:hasPage rdf:datatype="http://www.w3.org/2001/XMLSchema/#integer">1</naf-base:hasPage>
+    <naf-base:hasSent rdf:datatype="http://www.w3.org/2001/XMLSchema/#integer">1</naf-base:hasSent>
+    <naf-base:hasText rdf:datatype="http://www.w3.org/1999/02/22-rdf-syntax-ns/#XMLLiteral">you</naf-base:hasText>
+    <xl:type rdf:resource="https://dnb.nl/naf-base/#wordform"/>
+    <naf-base:hasLength rdf:datatype="http://www.w3.org/2001/XMLSchema/#integer">3</naf-base:hasLength>
+  </rdf:Description>
+  <rdf:Description rdf:nodeID="fb9db65a2ec5d43b2afa47384644bead9b45">
+    <naf-base:hasPage rdf:datatype="http://www.w3.org/2001/XMLSchema/#integer">1</naf-base:hasPage>
+    <naf-base:hasText rdf:datatype="http://www.w3.org/1999/02/22-rdf-syntax-ns/#XMLLiteral">that</naf-base:hasText>
+    <naf-base:hasLength rdf:datatype="http://www.w3.org/2001/XMLSchema/#integer">4</naf-base:hasLength>
+    <naf-base:hasOffset rdf:datatype="http://www.w3.org/2001/XMLSchema/#integer">199</naf-base:hasOffset>
+    <naf-base:hasSent rdf:datatype="http://www.w3.org/2001/XMLSchema/#integer">2</naf-base:hasSent>
+    <xl:type rdf:resource="https://dnb.nl/naf-base/#wordform"/>
+  </rdf:Description>
+  <rdf:Description rdf:nodeID="fb9db65a2ec5d43b2afa47384644bead9b37">
+    <naf-base:hasPage rdf:datatype="http://www.w3.org/2001/XMLSchema/#integer">1</naf-base:hasPage>
+    <naf-base:hasText rdf:datatype="http://www.w3.org/1999/02/22-rdf-syntax-ns/#XMLLiteral">.</naf-base:hasText>
+    <xl:type rdf:resource="https://dnb.nl/naf-base/#wordform"/>
+    <naf-base:hasSent rdf:datatype="http://www.w3.org/2001/XMLSchema/#integer">1</naf-base:hasSent>
+    <naf-base:hasOffset rdf:datatype="http://www.w3.org/2001/XMLSchema/#integer">164</naf-base:hasOffset>
+    <naf-base:hasLength rdf:datatype="http://www.w3.org/2001/XMLSchema/#integer">1</naf-base:hasLength>
+  </rdf:Description>
+  <rdf:Description rdf:nodeID="ub1bL61C21">
+    <naf-base:hasHostname rdf:datatype="http://www.w3.org/1999/02/22-rdf-syntax-ns/#XMLLiteral">computer-woonkamer</naf-base:hasHostname>
+    <naf-base:hasBeginTimestamp rdf:datatype="http://www.w3.org/2001/XMLSchema/#dateTime">2021-05-24T11:29:47UTC</naf-base:hasBeginTimestamp>
+    <naf-base:hasVersion rdf:datatype="http://www.w3.org/1999/02/22-rdf-syntax-ns/#XMLLiteral">stanza_version-1.2</naf-base:hasVersion>
+    <naf-base:hasEndTimestamp rdf:datatype="http://www.w3.org/2001/XMLSchema/#dateTime">2021-05-24T11:29:47UTC</naf-base:hasEndTimestamp>
+    <naf-base:hasName rdf:datatype="http://www.w3.org/1999/02/22-rdf-syntax-ns/#XMLLiteral">entities</naf-base:hasName>
+    <naf-base:hasFile rdf:datatype="http://www.w3.org/1999/02/22-rdf-syntax-ns/#XMLLiteral">C:\Users\wjwil\stanza_resources\en\ner\ontonotes.pt</naf-base:hasFile>
+  </rdf:Description>
+  <rdf:Description rdf:nodeID="ub1bL83C21">
+    <naf-base:hasName rdf:datatype="http://www.w3.org/1999/02/22-rdf-syntax-ns/#XMLLiteral">terms</naf-base:hasName>
+    <naf-base:hasHostname rdf:datatype="http://www.w3.org/1999/02/22-rdf-syntax-ns/#XMLLiteral">computer-woonkamer</naf-base:hasHostname>
+    <naf-base:hasFile rdf:datatype="http://www.w3.org/1999/02/22-rdf-syntax-ns/#XMLLiteral">C:\Users\wjwil\stanza_resources\en\pos\ewt.pt</naf-base:hasFile>
+    <naf-base:hasEndTimestamp rdf:datatype="http://www.w3.org/2001/XMLSchema/#dateTime">2021-05-24T11:29:47UTC</naf-base:hasEndTimestamp>
+    <naf-base:hasVersion rdf:datatype="http://www.w3.org/1999/02/22-rdf-syntax-ns/#XMLLiteral">stanza_version-1.2</naf-base:hasVersion>
+    <naf-base:hasBeginTimestamp rdf:datatype="http://www.w3.org/2001/XMLSchema/#dateTime">2021-05-24T11:29:47UTC</naf-base:hasBeginTimestamp>
+  </rdf:Description>
+  <rdf:Description rdf:nodeID="fb9db65a2ec5d43b2afa47384644bead9b95">
+    <naf-base:hasSpan rdf:nodeID="ub1bL1016C22"/>
+    <xl:type rdf:resource="https://dnb.nl/naf-base/#term"/>
+    <naf-morphofeat:hasNumber>Sing</naf-morphofeat:hasNumber>
+    <naf-base:hasLemma>nlp</naf-base:hasLemma>
+    <naf-base:hasPos rdf:resource="http://purl.org/olia/olia.owl#CommonNoun"/>
+    <naf-base:hasType rdf:resource="https://dnb.nl/naf-base/#open"/>
+  </rdf:Description>
+  <rdf:Description rdf:nodeID="fb9db65a2ec5d43b2afa47384644bead9b49">
+    <naf-base:hasLength rdf:datatype="http://www.w3.org/2001/XMLSchema/#integer">3</naf-base:hasLength>
+    <naf-base:hasPage rdf:datatype="http://www.w3.org/2001/XMLSchema/#integer">1</naf-base:hasPage>
+    <naf-base:hasText rdf:datatype="http://www.w3.org/1999/02/22-rdf-syntax-ns/#XMLLiteral">are</naf-base:hasText>
+    <naf-base:hasSent rdf:datatype="http://www.w3.org/2001/XMLSchema/#integer">2</naf-base:hasSent>
+    <xl:type rdf:resource="https://dnb.nl/naf-base/#wordform"/>
+    <naf-base:hasOffset rdf:datatype="http://www.w3.org/2001/XMLSchema/#integer">215</naf-base:hasOffset>
+  </rdf:Description>
+  <rdf:Description rdf:nodeID="fb9db65a2ec5d43b2afa47384644bead9b78">
+    <naf-base:hasType rdf:resource="https://dnb.nl/naf-base/#close"/>
+    <naf-base:hasPos rdf:resource="http://purl.org/olia/olia.owl#CoordinatingConjunction"/>
+    <naf-base:hasSpan rdf:nodeID="ub1bL764C22"/>
+    <xl:type rdf:resource="https://dnb.nl/naf-base/#term"/>
+    <naf-base:hasLemma>and</naf-base:hasLemma>
+  </rdf:Description>
+  <rdf:Description rdf:nodeID="ub1bL802C22">
+    <naf-base:ref rdf:nodeID="fb9db65a2ec5d43b2afa47384644bead9b34"/>
+  </rdf:Description>
+  <rdf:Description rdf:nodeID="fb9db65a2ec5d43b2afa47384644bead9b70">
+    <naf-base:hasType rdf:resource="https://dnb.nl/naf-base/#close"/>
+    <naf-base:hasPos rdf:resource="http://purl.org/olia/olia.owl#CoordinatingConjunction"/>
+    <naf-base:hasSpan rdf:nodeID="ub1bL688C22"/>
+    <xl:type rdf:resource="https://dnb.nl/naf-base/#term"/>
+    <naf-base:hasLemma>and</naf-base:hasLemma>
+  </rdf:Description>
+  <rdf:Description rdf:nodeID="ub1bL812C22">
+    <naf-base:ref rdf:nodeID="fb9db65a2ec5d43b2afa47384644bead9b35"/>
+  </rdf:Description>
+  <rdf:Description rdf:nodeID="fb9db65a2ec5d43b2afa47384644bead9b18">
+    <naf-base:hasSent rdf:datatype="http://www.w3.org/2001/XMLSchema/#integer">1</naf-base:hasSent>
+    <naf-base:hasOffset rdf:datatype="http://www.w3.org/2001/XMLSchema/#integer">53</naf-base:hasOffset>
+    <naf-base:hasText rdf:datatype="http://www.w3.org/1999/02/22-rdf-syntax-ns/#XMLLiteral">from</naf-base:hasText>
+    <naf-base:hasLength rdf:datatype="http://www.w3.org/2001/XMLSchema/#integer">4</naf-base:hasLength>
+    <naf-base:hasPage rdf:datatype="http://www.w3.org/2001/XMLSchema/#integer">1</naf-base:hasPage>
+    <xl:type rdf:resource="https://dnb.nl/naf-base/#wordform"/>
+  </rdf:Description>
+  <rdf:Description rdf:nodeID="ub1bL49C38">
+    <naf-base:lp rdf:nodeID="ub1bL51C21"/>
+    <naf-base:hasLayer rdf:resource="https://dnb.nl/naf-base/#formats"/>
+  </rdf:Description>
+  <rdf:Description rdf:nodeID="fb9db65a2ec5d43b2afa47384644bead9b92">
+    <naf-morphofeat:hasVerbForm>Ger</naf-morphofeat:hasVerbForm>
+    <naf-base:hasLemma>depend</naf-base:hasLemma>
+    <naf-base:hasType rdf:resource="https://dnb.nl/naf-base/#open"/>
+    <naf-base:hasPos rdf:resource="http://purl.org/olia/olia.owl#Verb"/>
+    <naf-base:hasSpan rdf:nodeID="ub1bL985C22"/>
+    <xl:type rdf:resource="https://dnb.nl/naf-base/#term"/>
+  </rdf:Description>
+  <rdf:Description rdf:nodeID="fb9db65a2ec5d43b2afa47384644bead9b6">
+    <naf-base:hasSpan rdf:nodeID="ub1bL679C22"/>
+    <naf-base:hasType rdf:resource="https://dnb.nl/naf-base/#open"/>
+    <naf-rfunc:conj rdf:nodeID="fb9db65a2ec5d43b2afa47384644bead9b81"/>
+    <naf-base:hasLemma>spacy</naf-base:hasLemma>
+    <naf-morphofeat:hasNumber>Sing</naf-morphofeat:hasNumber>
+    <naf-rfunc:case rdf:nodeID="fb9db65a2ec5d43b2afa47384644bead9b67"/>
+    <naf-base:hasPos rdf:resource="http://purl.org/olia/olia.owl#CommonNoun"/>
+    <naf-rfunc:conj rdf:nodeID="fb9db65a2ec5d43b2afa47384644bead9b72"/>
+    <naf-rfunc:amod rdf:nodeID="fb9db65a2ec5d43b2afa47384644bead9b69"/>
+    <xl:type rdf:resource="https://dnb.nl/naf-base/#term"/>
+  </rdf:Description>
+  <rdf:Description rdf:nodeID="fb9db65a2ec5d43b2afa47384644bead9b58">
+    <naf-base:hasPage rdf:datatype="http://www.w3.org/2001/XMLSchema/#integer">1</naf-base:hasPage>
+    <naf-base:hasOffset rdf:datatype="http://www.w3.org/2001/XMLSchema/#integer">264</naf-base:hasOffset>
+    <naf-base:hasText rdf:datatype="http://www.w3.org/1999/02/22-rdf-syntax-ns/#XMLLiteral">.</naf-base:hasText>
+    <xl:type rdf:resource="https://dnb.nl/naf-base/#wordform"/>
+    <naf-base:hasLength rdf:datatype="http://www.w3.org/2001/XMLSchema/#integer">1</naf-base:hasLength>
+    <naf-base:hasSent rdf:datatype="http://www.w3.org/2001/XMLSchema/#integer">2</naf-base:hasSent>
+  </rdf:Description>
+  <rdf:Description rdf:nodeID="fb9db65a2ec5d43b2afa47384644bead9b87">
+    <naf-base:hasPos rdf:resource="http://purl.org/olia/olia.owl#Adposition"/>
+    <naf-base:hasSpan rdf:nodeID="ub1bL859C22"/>
+    <naf-base:hasType rdf:resource="https://dnb.nl/naf-base/#open"/>
+    <xl:type rdf:resource="https://dnb.nl/naf-base/#term"/>
+    <naf-base:hasLemma>in</naf-base:hasLemma>
+  </rdf:Description>
+  <rdf:Description rdf:nodeID="fb9db65a2ec5d43b2afa47384644bead9b30">
+    <xl:type rdf:resource="https://dnb.nl/naf-base/#wordform"/>
+    <naf-base:hasText rdf:datatype="http://www.w3.org/1999/02/22-rdf-syntax-ns/#XMLLiteral">and</naf-base:hasText>
+    <naf-base:hasSent rdf:datatype="http://www.w3.org/2001/XMLSchema/#integer">1</naf-base:hasSent>
+    <naf-base:hasOffset rdf:datatype="http://www.w3.org/2001/XMLSchema/#integer">126</naf-base:hasOffset>
+    <naf-base:hasPage rdf:datatype="http://www.w3.org/2001/XMLSchema/#integer">1</naf-base:hasPage>
+    <naf-base:hasLength rdf:datatype="http://www.w3.org/2001/XMLSchema/#integer">3</naf-base:hasLength>
+  </rdf:Description>
+  <rdf:Description rdf:nodeID="fb9db65a2ec5d43b2afa47384644bead9b86">
+    <naf-base:hasSpan rdf:nodeID="ub1bL850C22"/>
+    <naf-base:hasLemma>like</naf-base:hasLemma>
+    <xl:type rdf:resource="https://dnb.nl/naf-base/#term"/>
+    <naf-base:hasPos rdf:resource="http://purl.org/olia/olia.owl#Adposition"/>
+    <naf-base:hasType rdf:resource="https://dnb.nl/naf-base/#open"/>
+  </rdf:Description>
+  <rdf:Description rdf:nodeID="fb9db65a2ec5d43b2afa47384644bead9b67">
+    <naf-base:hasSpan rdf:nodeID="ub1bL648C22"/>
+    <xl:type rdf:resource="https://dnb.nl/naf-base/#term"/>
+    <naf-base:hasType rdf:resource="https://dnb.nl/naf-base/#open"/>
+    <naf-base:hasLemma>from</naf-base:hasLemma>
+    <naf-base:hasPos rdf:resource="http://purl.org/olia/olia.owl#Adposition"/>
+  </rdf:Description>
+  <rdf:Description rdf:nodeID="fb9db65a2ec5d43b2afa47384644bead9b31">
+    <naf-base:hasPage rdf:datatype="http://www.w3.org/2001/XMLSchema/#integer">1</naf-base:hasPage>
+    <naf-base:hasLength rdf:datatype="http://www.w3.org/2001/XMLSchema/#integer">3</naf-base:hasLength>
+    <naf-base:hasText rdf:datatype="http://www.w3.org/1999/02/22-rdf-syntax-ns/#XMLLiteral">all</naf-base:hasText>
+    <naf-base:hasOffset rdf:datatype="http://www.w3.org/2001/XMLSchema/#integer">130</naf-base:hasOffset>
+    <xl:type rdf:resource="https://dnb.nl/naf-base/#wordform"/>
+    <naf-base:hasSent rdf:datatype="http://www.w3.org/2001/XMLSchema/#integer">1</naf-base:hasSent>
+  </rdf:Description>
+  <rdf:Description rdf:nodeID="fb9db65a2ec5d43b2afa47384644bead9b90">
+    <naf-rfunc:aux:pass rdf:nodeID="fb9db65a2ec5d43b2afa47384644bead9b89"/>
+    <naf-base:hasLemma>recognize</naf-base:hasLemma>
+    <naf-morphofeat:hasVoice>Pass</naf-morphofeat:hasVoice>
+    <naf-rfunc:punct rdf:nodeID="fb9db65a2ec5d43b2afa47384644bead9b98"/>
+    <naf-rfunc:obl rdf:nodeID="fb9db65a2ec5d43b2afa47384644bead9b96"/>
+    <xl:type rdf:resource="https://dnb.nl/naf-base/#term"/>
+    <naf-base:hasType rdf:resource="https://dnb.nl/naf-base/#open"/>
+    <naf-rfunc:mark rdf:nodeID="fb9db65a2ec5d43b2afa47384644bead9b102"/>
+    <naf-morphofeat:hasTense>Past</naf-morphofeat:hasTense>
+    <naf-base:hasPos rdf:resource="http://purl.org/olia/olia.owl#Verb"/>
+    <naf-base:hasSpan rdf:nodeID="ub1bL966C22"/>
+    <naf-morphofeat:hasVerbForm>Part</naf-morphofeat:hasVerbForm>
+  </rdf:Description>
+  <rdf:Description rdf:nodeID="ub1bL564C22">
+    <naf-base:ref rdf:nodeID="fb9db65a2ec5d43b2afa47384644bead9b10"/>
+  </rdf:Description>
+  <rdf:Description rdf:nodeID="ub1bL629C22">
+    <naf-base:ref rdf:nodeID="fb9db65a2ec5d43b2afa47384644bead9b16"/>
+  </rdf:Description>
+  <rdf:Description rdf:nodeID="ub1bL51C21">
+    <naf-base:hasEndTimestamp rdf:datatype="http://www.w3.org/2001/XMLSchema/#dateTime">2021-05-24T11:29:47UTC</naf-base:hasEndTimestamp>
+    <naf-base:hasName rdf:datatype="http://www.w3.org/1999/02/22-rdf-syntax-ns/#XMLLiteral">formats</naf-base:hasName>
+    <naf-base:hasBeginTimestamp rdf:datatype="http://www.w3.org/2001/XMLSchema/#dateTime">2021-05-24T11:29:47UTC</naf-base:hasBeginTimestamp>
+    <naf-base:hasHostname rdf:datatype="http://www.w3.org/1999/02/22-rdf-syntax-ns/#XMLLiteral">computer-woonkamer</naf-base:hasHostname>
+    <naf-base:hasVersion rdf:datatype="http://www.w3.org/1999/02/22-rdf-syntax-ns/#XMLLiteral">stanza_version-1.2</naf-base:hasVersion>
+  </rdf:Description>
+  <rdf:Description rdf:nodeID="fb9db65a2ec5d43b2afa47384644bead9b53">
+    <naf-base:hasText rdf:datatype="http://www.w3.org/1999/02/22-rdf-syntax-ns/#XMLLiteral">on</naf-base:hasText>
+    <naf-base:hasPage rdf:datatype="http://www.w3.org/2001/XMLSchema/#integer">1</naf-base:hasPage>
+    <naf-base:hasOffset rdf:datatype="http://www.w3.org/2001/XMLSchema/#integer">241</naf-base:hasOffset>
+    <naf-base:hasLength rdf:datatype="http://www.w3.org/2001/XMLSchema/#integer">2</naf-base:hasLength>
+    <xl:type rdf:resource="https://dnb.nl/naf-base/#wordform"/>
+    <naf-base:hasSent rdf:datatype="http://www.w3.org/2001/XMLSchema/#integer">2</naf-base:hasSent>
+  </rdf:Description>
+  <rdf:Description rdf:nodeID="ub1bL94C21">
+    <naf-base:hasHostname rdf:datatype="http://www.w3.org/1999/02/22-rdf-syntax-ns/#XMLLiteral">computer-woonkamer</naf-base:hasHostname>
+    <naf-base:hasName rdf:datatype="http://www.w3.org/1999/02/22-rdf-syntax-ns/#XMLLiteral">deps</naf-base:hasName>
+    <naf-base:hasEndTimestamp rdf:datatype="http://www.w3.org/2001/XMLSchema/#dateTime">2021-05-24T11:29:47UTC</naf-base:hasEndTimestamp>
+    <naf-base:hasFile rdf:datatype="http://www.w3.org/1999/02/22-rdf-syntax-ns/#XMLLiteral">C:\Users\wjwil\stanza_resources\en\depparse\ewt.pt</naf-base:hasFile>
+    <naf-base:hasBeginTimestamp rdf:datatype="http://www.w3.org/2001/XMLSchema/#dateTime">2021-05-24T11:29:47UTC</naf-base:hasBeginTimestamp>
+    <naf-base:hasVersion rdf:datatype="http://www.w3.org/1999/02/22-rdf-syntax-ns/#XMLLiteral">stanza_version-1.2</naf-base:hasVersion>
+  </rdf:Description>
+  <rdf:Description rdf:nodeID="fb9db65a2ec5d43b2afa47384644bead9b12">
+    <naf-base:hasLength rdf:datatype="http://www.w3.org/2001/XMLSchema/#integer">6</naf-base:hasLength>
+    <naf-base:hasText rdf:datatype="http://www.w3.org/1999/02/22-rdf-syntax-ns/#XMLLiteral">allows</naf-base:hasText>
+    <xl:type rdf:resource="https://dnb.nl/naf-base/#wordform"/>
+    <naf-base:hasSent rdf:datatype="http://www.w3.org/2001/XMLSchema/#integer">1</naf-base:hasSent>
+    <naf-base:hasOffset rdf:datatype="http://www.w3.org/2001/XMLSchema/#integer">22</naf-base:hasOffset>
+    <naf-base:hasPage rdf:datatype="http://www.w3.org/2001/XMLSchema/#integer">1</naf-base:hasPage>
+  </rdf:Description>
+  <rdf:Description rdf:nodeID="fb9db65a2ec5d43b2afa47384644bead9b64">
+    <naf-morphofeat:hasVerbForm>Inf</naf-morphofeat:hasVerbForm>
+    <naf-base:hasPos rdf:resource="http://purl.org/olia/olia.owl#Verb"/>
+    <xl:type rdf:resource="https://dnb.nl/naf-base/#term"/>
+    <naf-base:hasType rdf:resource="https://dnb.nl/naf-base/#open"/>
+    <naf-rfunc:obl rdf:nodeID="fb9db65a2ec5d43b2afa47384644bead9b77"/>
+    <naf-rfunc:mark rdf:nodeID="fb9db65a2ec5d43b2afa47384644bead9b63"/>
+    <naf-base:hasLemma>store</naf-base:hasLemma>
+    <naf-base:hasSpan rdf:nodeID="ub1bL619C22"/>
+    <naf-rfunc:obj rdf:nodeID="fb9db65a2ec5d43b2afa47384644bead9b66"/>
+  </rdf:Description>
+  <rdf:Description rdf:nodeID="fb9db65a2ec5d43b2afa47384644bead9b60">
+    <xl:type rdf:resource="https://dnb.nl/naf-base/#term"/>
+    <naf-rfunc:det rdf:nodeID="fb9db65a2ec5d43b2afa47384644bead9b59"/>
+    <naf-base:hasPos rdf:resource="http://purl.org/olia/olia.owl#CommonNoun"/>
+    <naf-base:hasSpan rdf:nodeID="ub1bL574C22"/>
+    <naf-rfunc:compound rdf:nodeID="fb9db65a2ec5d43b2afa47384644bead9b4"/>
+    <naf-morphofeat:hasNumber>Sing</naf-morphofeat:hasNumber>
+    <naf-base:hasType rdf:resource="https://dnb.nl/naf-base/#open"/>
+    <naf-base:hasLemma>package</naf-base:hasLemma>
+  </rdf:Description>
+  <rdf:Description rdf:nodeID="fb9db65a2ec5d43b2afa47384644bead9b91">
+    <naf-base:hasPos rdf:resource="http://purl.org/olia/olia.owl#Punctuation"/>
+    <xl:type rdf:resource="https://dnb.nl/naf-base/#term"/>
+    <naf-base:hasType rdf:resource="https://dnb.nl/naf-base/#close"/>
+    <naf-base:hasLemma>(</naf-base:hasLemma>
+    <naf-base:hasSpan rdf:nodeID="ub1bL975C22"/>
+  </rdf:Description>
+  <rdf:Description rdf:nodeID="fb9db65a2ec5d43b2afa47384644bead9b81">
+    <naf-rfunc:det rdf:nodeID="fb9db65a2ec5d43b2afa47384644bead9b79"/>
+    <naf-rfunc:compound rdf:nodeID="fb9db65a2ec5d43b2afa47384644bead9b80"/>
+    <naf-base:hasPos rdf:resource="http://purl.org/olia/olia.owl#CommonNoun"/>
+    <naf-base:hasType rdf:resource="https://dnb.nl/naf-base/#open"/>
+    <naf-rfunc:cc rdf:nodeID="fb9db65a2ec5d43b2afa47384644bead9b78"/>
+    <xl:type rdf:resource="https://dnb.nl/naf-base/#term"/>
+    <naf-morphofeat:hasNumber>Plur</naf-morphofeat:hasNumber>
+    <naf-rfunc:nmod rdf:nodeID="fb9db65a2ec5d43b2afa47384644bead9b83"/>
+    <naf-base:hasLemma>step</naf-base:hasLemma>
+    <naf-base:hasSpan rdf:nodeID="ub1bL793C22"/>
+  </rdf:Description>
+  <rdf:Description rdf:nodeID="fb9db65a2ec5d43b2afa47384644bead9b32">
+    <naf-base:hasLength rdf:datatype="http://www.w3.org/2001/XMLSchema/#integer">10</naf-base:hasLength>
+    <xl:type rdf:resource="https://dnb.nl/naf-base/#wordform"/>
+    <naf-base:hasSent rdf:datatype="http://www.w3.org/2001/XMLSchema/#integer">1</naf-base:hasSent>
+    <naf-base:hasText rdf:datatype="http://www.w3.org/1999/02/22-rdf-syntax-ns/#XMLLiteral">processing</naf-base:hasText>
+    <naf-base:hasPage rdf:datatype="http://www.w3.org/2001/XMLSchema/#integer">1</naf-base:hasPage>
+    <naf-base:hasOffset rdf:datatype="http://www.w3.org/2001/XMLSchema/#integer">134</naf-base:hasOffset>
+  </rdf:Description>
+  <rdf:Description rdf:nodeID="ub1bL773C22">
+    <naf-base:ref rdf:nodeID="fb9db65a2ec5d43b2afa47384644bead9b31"/>
+  </rdf:Description>
+  <rdf:Description rdf:nodeID="fb9db65a2ec5d43b2afa47384644bead9b63">
+    <xl:type rdf:resource="https://dnb.nl/naf-base/#term"/>
+    <naf-base:hasSpan rdf:nodeID="ub1bL609C22"/>
+    <naf-base:hasPos rdf:resource="http://purl.org/olia/olia.owl#Particle"/>
+    <naf-base:hasLemma>to</naf-base:hasLemma>
+    <naf-base:hasType rdf:resource="https://dnb.nl/naf-base/#close"/>
+  </rdf:Description>
+  <rdf:Description rdf:nodeID="fb9db65a2ec5d43b2afa47384644bead9b97">
+    <xl:type rdf:resource="https://dnb.nl/naf-base/#term"/>
+    <naf-base:hasPos rdf:resource="http://purl.org/olia/olia.owl#Punctuation"/>
+    <naf-base:hasLemma>)</naf-base:hasLemma>
+    <naf-base:hasType rdf:resource="https://dnb.nl/naf-base/#close"/>
+    <naf-base:hasSpan rdf:nodeID="ub1bL1035C22"/>
+  </rdf:Description>
+  <rdf:Description rdf:nodeID="ub1bL600C22">
+    <naf-base:ref rdf:nodeID="fb9db65a2ec5d43b2afa47384644bead9b13"/>
+  </rdf:Description>
+  <rdf:Description rdf:nodeID="ub1bL105C21">
+    <naf-base:hasVersion rdf:datatype="http://www.w3.org/1999/02/22-rdf-syntax-ns/#XMLLiteral">stanza_version-1.2</naf-base:hasVersion>
+    <naf-base:hasFile rdf:datatype="http://www.w3.org/1999/02/22-rdf-syntax-ns/#XMLLiteral">C:\Users\wjwil\stanza_resources\en\tokenize\ewt.pt</naf-base:hasFile>
+    <naf-base:hasBeginTimestamp rdf:datatype="http://www.w3.org/2001/XMLSchema/#dateTime">2021-05-24T11:29:47UTC</naf-base:hasBeginTimestamp>
+    <naf-base:hasHostname rdf:datatype="http://www.w3.org/1999/02/22-rdf-syntax-ns/#XMLLiteral">computer-woonkamer</naf-base:hasHostname>
+    <naf-base:hasName rdf:datatype="http://www.w3.org/1999/02/22-rdf-syntax-ns/#XMLLiteral">multiwords</naf-base:hasName>
+    <naf-base:hasEndTimestamp rdf:datatype="http://www.w3.org/2001/XMLSchema/#dateTime">2021-05-24T11:29:47UTC</naf-base:hasEndTimestamp>
+  </rdf:Description>
+  <rdf:Description rdf:nodeID="fb9db65a2ec5d43b2afa47384644bead9b80">
+    <naf-base:hasPos rdf:resource="http://purl.org/olia/olia.owl#CommonNoun"/>
+    <naf-base:hasSpan rdf:nodeID="ub1bL783C22"/>
+    <naf-morphofeat:hasNumber>Sing</naf-morphofeat:hasNumber>
+    <naf-base:hasLemma>processing</naf-base:hasLemma>
+    <naf-base:hasType rdf:resource="https://dnb.nl/naf-base/#open"/>
+    <xl:type rdf:resource="https://dnb.nl/naf-base/#term"/>
+  </rdf:Description>
+  <rdf:Description rdf:nodeID="fb9db65a2ec5d43b2afa47384644bead9b96">
+    <naf-morphofeat:hasNumber>Sing</naf-morphofeat:hasNumber>
+    <naf-base:hasLemma>processor</naf-base:hasLemma>
+    <naf-rfunc:case rdf:nodeID="fb9db65a2ec5d43b2afa47384644bead9b92"/>
+    <naf-base:hasSpan rdf:nodeID="ub1bL1026C22"/>
+    <xl:type rdf:resource="https://dnb.nl/naf-base/#term"/>
+    <naf-rfunc:punct rdf:nodeID="fb9db65a2ec5d43b2afa47384644bead9b97"/>
+    <naf-rfunc:punct rdf:nodeID="fb9db65a2ec5d43b2afa47384644bead9b91"/>
+    <naf-rfunc:nmod:poss rdf:nodeID="fb9db65a2ec5d43b2afa47384644bead9b94"/>
+    <naf-base:hasType rdf:resource="https://dnb.nl/naf-base/#open"/>
+    <naf-rfunc:compound rdf:nodeID="fb9db65a2ec5d43b2afa47384644bead9b95"/>
+    <naf-base:hasPos rdf:resource="http://purl.org/olia/olia.owl#CommonNoun"/>
+    <naf-rfunc:case rdf:nodeID="fb9db65a2ec5d43b2afa47384644bead9b93"/>
+  </rdf:Description>
+  <rdf:Description rdf:nodeID="ub1bL619C22">
+    <naf-base:ref rdf:nodeID="fb9db65a2ec5d43b2afa47384644bead9b15"/>
+  </rdf:Description>
+  <rdf:Description rdf:nodeID="ub1bL70C38">
+    <naf-base:hasLayer rdf:resource="https://dnb.nl/naf-base/#text"/>
+    <naf-base:lp rdf:nodeID="ub1bL72C21"/>
+  </rdf:Description>
+  <rdf:Description rdf:nodeID="ub1bL688C22">
+    <naf-base:ref rdf:nodeID="fb9db65a2ec5d43b2afa47384644bead9b22"/>
+  </rdf:Description>
+  <rdf:Description rdf:nodeID="fb9db65a2ec5d43b2afa47384644bead9b84">
+    <naf-base:hasLemma>.</naf-base:hasLemma>
+    <naf-base:hasPos rdf:resource="http://purl.org/olia/olia.owl#Punctuation"/>
+    <naf-base:hasSpan rdf:nodeID="ub1bL831C22"/>
+    <naf-base:hasType rdf:resource="https://dnb.nl/naf-base/#close"/>
+    <xl:type rdf:resource="https://dnb.nl/naf-base/#term"/>
+  </rdf:Description>
+  <rdf:Description rdf:nodeID="ub1bL103C38">
+    <naf-base:hasLayer rdf:resource="https://dnb.nl/naf-base/#multiwords"/>
+    <naf-base:lp rdf:nodeID="ub1bL105C21"/>
+  </rdf:Description>
+  <rdf:Description rdf:nodeID="fb9db65a2ec5d43b2afa47384644bead9b35">
+    <xl:type rdf:resource="https://dnb.nl/naf-base/#wordform"/>
+    <naf-base:hasSent rdf:datatype="http://www.w3.org/2001/XMLSchema/#integer">1</naf-base:hasSent>
+    <naf-base:hasOffset rdf:datatype="http://www.w3.org/2001/XMLSchema/#integer">154</naf-base:hasOffset>
+    <naf-base:hasText rdf:datatype="http://www.w3.org/1999/02/22-rdf-syntax-ns/#XMLLiteral">one</naf-base:hasText>
+    <naf-base:hasPage rdf:datatype="http://www.w3.org/2001/XMLSchema/#integer">1</naf-base:hasPage>
+    <naf-base:hasLength rdf:datatype="http://www.w3.org/2001/XMLSchema/#integer">3</naf-base:hasLength>
+  </rdf:Description>
+  <rdf:Description rdf:nodeID="ub1bL1026C22">
+    <naf-base:ref rdf:nodeID="fb9db65a2ec5d43b2afa47384644bead9b56"/>
+  </rdf:Description>
+  <rdf:Description rdf:nodeID="fb9db65a2ec5d43b2afa47384644bead9b79">
+    <naf-base:hasLemma>all</naf-base:hasLemma>
+    <naf-base:hasType rdf:resource="https://dnb.nl/naf-base/#close"/>
+    <xl:type rdf:resource="https://dnb.nl/naf-base/#term"/>
+    <naf-base:hasPos rdf:resource="http://purl.org/olia/olia.owl#Determiner"/>
+    <naf-base:hasSpan rdf:nodeID="ub1bL773C22"/>
+  </rdf:Description>
+  <rdf:Description rdf:nodeID="ub1bL717C22">
+    <naf-base:ref rdf:nodeID="fb9db65a2ec5d43b2afa47384644bead9b25"/>
+  </rdf:Description>
+  <rdf:Description rdf:nodeID="ub1bL33C21">
+    <naf-base:hasEndTimestamp rdf:datatype="http://www.w3.org/2001/XMLSchema/#dateTime">2021-05-24T11:29:44UTC</naf-base:hasEndTimestamp>
+    <naf-base:hasBeginTimestamp rdf:datatype="http://www.w3.org/2001/XMLSchema/#dateTime">2021-05-24T11:29:44UTC</naf-base:hasBeginTimestamp>
+    <naf-base:hasVersion rdf:datatype="http://www.w3.org/1999/02/22-rdf-syntax-ns/#XMLLiteral">pdfminer_version-20201018</naf-base:hasVersion>
+    <naf-base:hasName rdf:datatype="http://www.w3.org/1999/02/22-rdf-syntax-ns/#XMLLiteral">pdfminer-pdf2xml</naf-base:hasName>
+  </rdf:Description>
+  <rdf:Description rdf:nodeID="ub1bL59C38">
+    <naf-base:hasLayer rdf:resource="https://dnb.nl/naf-base/#entities"/>
+    <naf-base:lp rdf:nodeID="ub1bL61C21"/>
+  </rdf:Description>
+  <rdf:Description rdf:nodeID="ub1bL609C22">
+    <naf-base:ref rdf:nodeID="fb9db65a2ec5d43b2afa47384644bead9b14"/>
+  </rdf:Description>
+  <rdf:Description rdf:nodeID="ub1bL116C21">
+    <naf-base:hasHostname rdf:datatype="http://www.w3.org/1999/02/22-rdf-syntax-ns/#XMLLiteral">computer-woonkamer</naf-base:hasHostname>
+    <naf-base:hasEndTimestamp rdf:datatype="http://www.w3.org/2001/XMLSchema/#dateTime">2021-05-24T11:29:47UTC</naf-base:hasEndTimestamp>
+    <naf-base:hasVersion rdf:datatype="http://www.w3.org/1999/02/22-rdf-syntax-ns/#XMLLiteral">stanza_version-1.2</naf-base:hasVersion>
+    <naf-base:hasFile rdf:datatype="http://www.w3.org/1999/02/22-rdf-syntax-ns/#XMLLiteral">C:\Users\wjwil\stanza_resources\en\tokenize\ewt.pt</naf-base:hasFile>
+    <naf-base:hasName rdf:datatype="http://www.w3.org/1999/02/22-rdf-syntax-ns/#XMLLiteral">raw</naf-base:hasName>
+    <naf-base:hasBeginTimestamp rdf:datatype="http://www.w3.org/2001/XMLSchema/#dateTime">2021-05-24T11:29:47UTC</naf-base:hasBeginTimestamp>
+  </rdf:Description>
+  <rdf:Description rdf:nodeID="fb9db65a2ec5d43b2afa47384644bead9b8">
+    <xl:type rdf:resource="https://dnb.nl/naf-base/#term"/>
+    <naf-morphofeat:hasNumType>Card</naf-morphofeat:hasNumType>
+    <naf-base:hasPos>&amp;olia;Quantifier</naf-base:hasPos>
+    <naf-base:hasType rdf:resource="https://dnb.nl/naf-base/#close"/>
+    <naf-base:hasLemma>one</naf-base:hasLemma>
+    <naf-base:hasSpan rdf:nodeID="ub1bL812C22"/>
+  </rdf:Description>
+  <rdf:Description rdf:nodeID="ub1bL1016C22">
+    <naf-base:ref rdf:nodeID="fb9db65a2ec5d43b2afa47384644bead9b55"/>
+  </rdf:Description>
+  <rdf:Description rdf:nodeID="fb9db65a2ec5d43b2afa47384644bead9b7">
+    <naf-base:hasSpan rdf:nodeID="ub1bL143C22"/>
+    <xl:type rdf:resource="https://dnb.nl/naf-base/#entity"/>
+    <naf-base:hasType rdf:resource="https://dnb.nl/naf-entity/#CARDINAL"/>
+  </rdf:Description>
+  <rdf:Description rdf:nodeID="ub1bL22C26">
+    <naf-fileDesc:hasFiletype rdf:datatype="http://www.w3.org/1999/02/22-rdf-syntax-ns/#XMLLiteral">application/pdf</naf-fileDesc:hasFiletype>
+    <naf-fileDesc:hasFilename rdf:datatype="http://www.w3.org/1999/02/22-rdf-syntax-ns/#XMLLiteral">data/example.pdf</naf-fileDesc:hasFilename>
+    <naf-fileDesc:hasCreationtime rdf:datatype="http://www.w3.org/2001/XMLSchema/#dateTime">2021-05-24T11:29:44UTC</naf-fileDesc:hasCreationtime>
+  </rdf:Description>
+  <rdf:Description rdf:nodeID="fb9db65a2ec5d43b2afa47384644bead9b1">
+    <xl:instance>data/example.naf</xl:instance>
+  </rdf:Description>
+  <rdf:Description rdf:nodeID="ub1bL81C38">
+    <naf-base:hasLayer rdf:resource="https://dnb.nl/naf-base/#terms"/>
+    <naf-base:lp rdf:nodeID="ub1bL83C21"/>
+  </rdf:Description>
+  <rdf:Description rdf:nodeID="ub1bL658C22">
+    <naf-base:ref rdf:nodeID="fb9db65a2ec5d43b2afa47384644bead9b19"/>
+  </rdf:Description>
+  <rdf:Description rdf:nodeID="ub1bL831C22">
+    <naf-base:ref rdf:nodeID="fb9db65a2ec5d43b2afa47384644bead9b37"/>
+  </rdf:Description>
+  <rdf:Description rdf:nodeID="ub1bL136C22">
+    <naf-base:ref rdf:nodeID="fb9db65a2ec5d43b2afa47384644bead9b6"/>
+  </rdf:Description>
+  <rdf:Description rdf:nodeID="fb9db65a2ec5d43b2afa47384644bead9b44">
+    <naf-base:hasPage rdf:datatype="http://www.w3.org/2001/XMLSchema/#integer">1</naf-base:hasPage>
+    <naf-base:hasOffset rdf:datatype="http://www.w3.org/2001/XMLSchema/#integer">195</naf-base:hasOffset>
+    <naf-base:hasLength rdf:datatype="http://www.w3.org/2001/XMLSchema/#integer">3</naf-base:hasLength>
+    <naf-base:hasSent rdf:datatype="http://www.w3.org/2001/XMLSchema/#integer">2</naf-base:hasSent>
+    <naf-base:hasText rdf:datatype="http://www.w3.org/1999/02/22-rdf-syntax-ns/#XMLLiteral">set</naf-base:hasText>
+    <xl:type rdf:resource="https://dnb.nl/naf-base/#wordform"/>
+  </rdf:Description>
+  <rdf:Description rdf:nodeID="fb9db65a2ec5d43b2afa47384644bead9b38">
+    <naf-base:hasText rdf:datatype="http://www.w3.org/1999/02/22-rdf-syntax-ns/#XMLLiteral">Multiwords</naf-base:hasText>
+    <naf-base:hasOffset rdf:datatype="http://www.w3.org/2001/XMLSchema/#integer">167</naf-base:hasOffset>
+    <naf-base:hasSent rdf:datatype="http://www.w3.org/2001/XMLSchema/#integer">2</naf-base:hasSent>
+    <xl:type rdf:resource="https://dnb.nl/naf-base/#wordform"/>
+    <naf-base:hasLength rdf:datatype="http://www.w3.org/2001/XMLSchema/#integer">10</naf-base:hasLength>
+    <naf-base:hasPage rdf:datatype="http://www.w3.org/2001/XMLSchema/#integer">1</naf-base:hasPage>
+  </rdf:Description>
+  <rdf:Description rdf:nodeID="ub1bL92C38">
+    <naf-base:hasLayer rdf:resource="https://dnb.nl/naf-base/#deps"/>
+    <naf-base:lp rdf:nodeID="ub1bL94C21"/>
+  </rdf:Description>
+  <rdf:Description rdf:nodeID="fb9db65a2ec5d43b2afa47384644bead9b19">
+    <naf-base:hasSent rdf:datatype="http://www.w3.org/2001/XMLSchema/#integer">1</naf-base:hasSent>
+    <naf-base:hasOffset rdf:datatype="http://www.w3.org/2001/XMLSchema/#integer">58</naf-base:hasOffset>
+    <naf-base:hasLength rdf:datatype="http://www.w3.org/2001/XMLSchema/#integer">6</naf-base:hasLength>
+    <xl:type rdf:resource="https://dnb.nl/naf-base/#wordform"/>
+    <naf-base:hasPage rdf:datatype="http://www.w3.org/2001/XMLSchema/#integer">1</naf-base:hasPage>
+    <naf-base:hasText rdf:datatype="http://www.w3.org/1999/02/22-rdf-syntax-ns/#XMLLiteral">custom</naf-base:hasText>
+  </rdf:Description>
+  <rdf:Description rdf:nodeID="ub1bL129C22">
+    <naf-base:ref rdf:nodeID="fb9db65a2ec5d43b2afa47384644bead9b4"/>
+  </rdf:Description>
+  <rdf:Description rdf:nodeID="ub1bL985C22">
+    <naf-base:ref rdf:nodeID="fb9db65a2ec5d43b2afa47384644bead9b52"/>
+  </rdf:Description>
+  <rdf:Description rdf:nodeID="ub1bL942C22">
+    <naf-base:ref rdf:nodeID="fb9db65a2ec5d43b2afa47384644bead9b48"/>
+  </rdf:Description>
+  <rdf:Description rdf:nodeID="ub1bL726C22">
+    <naf-base:ref rdf:nodeID="fb9db65a2ec5d43b2afa47384644bead9b26"/>
+  </rdf:Description>
+  <rdf:Description rdf:nodeID="fb9db65a2ec5d43b2afa47384644bead9b21">
+    <xl:type rdf:resource="https://dnb.nl/naf-base/#wordform"/>
+    <naf-base:hasSent rdf:datatype="http://www.w3.org/2001/XMLSchema/#integer">1</naf-base:hasSent>
+    <naf-base:hasPage rdf:datatype="http://www.w3.org/2001/XMLSchema/#integer">1</naf-base:hasPage>
+    <naf-base:hasLength rdf:datatype="http://www.w3.org/2001/XMLSchema/#integer">5</naf-base:hasLength>
+    <naf-base:hasText rdf:datatype="http://www.w3.org/1999/02/22-rdf-syntax-ns/#XMLLiteral">Spacy</naf-base:hasText>
+    <naf-base:hasOffset rdf:datatype="http://www.w3.org/2001/XMLSchema/#integer">70</naf-base:hasOffset>
+  </rdf:Description>
+  <rdf:Description rdf:nodeID="ub1bL745C22">
+    <naf-base:ref rdf:nodeID="fb9db65a2ec5d43b2afa47384644bead9b28"/>
+  </rdf:Description>
+  <rdf:Description rdf:nodeID="ub1bL1006C22">
+    <naf-base:ref rdf:nodeID="fb9db65a2ec5d43b2afa47384644bead9b54"/>
+  </rdf:Description>
+  <rdf:Description rdf:nodeID="ub1bL783C22">
+    <naf-base:ref rdf:nodeID="fb9db65a2ec5d43b2afa47384644bead9b32"/>
+  </rdf:Description>
+  <rdf:Description rdf:nodeID="fb9db65a2ec5d43b2afa47384644bead9b29">
+    <naf-base:hasText rdf:datatype="http://www.w3.org/1999/02/22-rdf-syntax-ns/#XMLLiteral">results</naf-base:hasText>
+    <naf-base:hasOffset rdf:datatype="http://www.w3.org/2001/XMLSchema/#integer">118</naf-base:hasOffset>
+    <naf-base:hasPage rdf:datatype="http://www.w3.org/2001/XMLSchema/#integer">1</naf-base:hasPage>
+    <naf-base:hasLength rdf:datatype="http://www.w3.org/2001/XMLSchema/#integer">7</naf-base:hasLength>
+    <xl:type rdf:resource="https://dnb.nl/naf-base/#wordform"/>
+    <naf-base:hasSent rdf:datatype="http://www.w3.org/2001/XMLSchema/#integer">1</naf-base:hasSent>
+  </rdf:Description>
+  <rdf:Description rdf:nodeID="ub1bL639C22">
+    <naf-base:ref rdf:nodeID="fb9db65a2ec5d43b2afa47384644bead9b17"/>
+  </rdf:Description>
+  <rdf:Description rdf:nodeID="ub1bL679C22">
+    <naf-base:ref rdf:nodeID="fb9db65a2ec5d43b2afa47384644bead9b21"/>
+  </rdf:Description>
+  <rdf:Description rdf:nodeID="ub1bL554C22">
+    <naf-base:ref rdf:nodeID="fb9db65a2ec5d43b2afa47384644bead9b9"/>
+  </rdf:Description>
+  <rdf:Description rdf:nodeID="ub1bL954C22">
+    <naf-base:ref rdf:nodeID="fb9db65a2ec5d43b2afa47384644bead9b49"/>
+  </rdf:Description>
+  <rdf:Description rdf:nodeID="ub1bL793C22">
+    <naf-base:ref rdf:nodeID="fb9db65a2ec5d43b2afa47384644bead9b33"/>
+  </rdf:Description>
+  <rdf:Description rdf:nodeID="ub1bL648C22">
+    <naf-base:ref rdf:nodeID="fb9db65a2ec5d43b2afa47384644bead9b18"/>
+  </rdf:Description>
+  <rdf:Description rdf:nodeID="ub1bL669C22">
+    <naf-base:ref rdf:nodeID="fb9db65a2ec5d43b2afa47384644bead9b20"/>
+  </rdf:Description>
+  <rdf:Description rdf:nodeID="ub1bL698C22">
+    <naf-base:ref rdf:nodeID="fb9db65a2ec5d43b2afa47384644bead9b23"/>
+  </rdf:Description>
+  <rdf:Description rdf:nodeID="ub1bL994C22">
+    <naf-base:ref rdf:nodeID="fb9db65a2ec5d43b2afa47384644bead9b53"/>
+  </rdf:Description>
+  <rdf:Description rdf:nodeID="ub1bL31C38">
+    <naf-base:hasLayer rdf:resource="https://dnb.nl/naf-base/#pdftoxml"/>
+    <naf-base:lp rdf:nodeID="ub1bL33C21"/>
+  </rdf:Description>
+  <rdf:Description rdf:nodeID="ub1bL841C22">
+    <naf-base:ref rdf:nodeID="fb9db65a2ec5d43b2afa47384644bead9b38"/>
+  </rdf:Description>
+  <rdf:Description rdf:nodeID="ub1bL588C22">
+    <naf-base:ref rdf:nodeID="fb9db65a2ec5d43b2afa47384644bead9b12"/>
+  </rdf:Description>
+  <rdf:Description rdf:nodeID="ub1bL708C22">
+    <naf-base:ref rdf:nodeID="fb9db65a2ec5d43b2afa47384644bead9b24"/>
+  </rdf:Description>
+  <rdf:Description rdf:nodeID="ub1bL1044C22">
+    <naf-base:ref rdf:nodeID="fb9db65a2ec5d43b2afa47384644bead9b58"/>
+  </rdf:Description>
+  <rdf:Description rdf:nodeID="ub1bL574C22">
+    <naf-base:ref rdf:nodeID="fb9db65a2ec5d43b2afa47384644bead9b11"/>
+  </rdf:Description>
+  <rdf:Description rdf:nodeID="ub1bL975C22">
+    <naf-base:ref rdf:nodeID="fb9db65a2ec5d43b2afa47384644bead9b51"/>
+  </rdf:Description>
+  <rdf:Description rdf:nodeID="ub1bL143C22">
+    <naf-base:ref rdf:nodeID="fb9db65a2ec5d43b2afa47384644bead9b8"/>
+  </rdf:Description>
+  <rdf:Description rdf:nodeID="ub1bL736C22">
+    <naf-base:ref rdf:nodeID="fb9db65a2ec5d43b2afa47384644bead9b27"/>
+  </rdf:Description>
+  <rdf:Description rdf:nodeID="ub1bL966C22">
+    <naf-base:ref rdf:nodeID="fb9db65a2ec5d43b2afa47384644bead9b50"/>
+  </rdf:Description>
+  <rdf:Description rdf:nodeID="fb9db65a2ec5d43b2afa47384644bead9b3">
+    <naf-base:hasSpan rdf:nodeID="ub1bL129C22"/>
+    <xl:type rdf:resource="https://dnb.nl/naf-base/#entity"/>
+    <naf-base:hasType rdf:resource="https://dnb.nl/naf-entity/#PRODUCT"/>
+  </rdf:Description>
+  <rdf:Description rdf:nodeID="ub1bL850C22">
+    <naf-base:ref rdf:nodeID="fb9db65a2ec5d43b2afa47384644bead9b39"/>
+  </rdf:Description>
+  <rdf:Description rdf:nodeID="ub1bL764C22">
+    <naf-base:ref rdf:nodeID="fb9db65a2ec5d43b2afa47384644bead9b30"/>
+  </rdf:Description>
+</rdf:RDF>
