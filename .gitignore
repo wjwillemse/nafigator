@@ -108,7 +108,10 @@ ENV/
 /data/*.naf.xml
 /data/*.ttl
 /data/*.pdf
+/data/*.docx
 !/data/example.pdf
+!/data/example.docx
 !/data/example.naf.xml
+!/data/example.docx.naf.xml
 
 /tests/tests/*.xml.naf
