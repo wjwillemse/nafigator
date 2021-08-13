@@ -105,7 +105,10 @@ ENV/
 .vscode/
 
 # no nafigator output to git
-/data/*.naf
+/data/*.naf.xml
 /data/*.ttl
+/data/*.pdf
+!/data/example.pdf
+!/data/example.naf.xml
 
-/tests/tests/*.naf
+/tests/tests/*.xml.naf
