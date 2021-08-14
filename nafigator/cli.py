@@ -1,13 +1,61 @@
 """Console script for nafigator."""
 import sys
 import click
+import os
+import logging
+from nafigator import parse2naf
 
 
 @click.command()
-def main(args=None):
-    """Console script for stanza2naf."""
-    click.echo("Replace this message by putting your code into " "naf.cli.main")
-    click.echo("See click documentation at https://click.palletsprojects.com/")
+@click.option(
+    "--input", default="data/example.pdf", prompt="input file", help="The input file"
+)
+@click.option(
+    "--output",
+    default="data/example.naf.xml",
+    prompt="output file",
+    help="The output file",
+)
+@click.option(
+    "--engine",
+    default="stanza",
+    prompt="NLP-package",
+    help="The package to parse the text",
+)
+@click.option(
+    "--language", default="en", prompt="language", help="The language of the input file"
+)
+@click.option(
+    "--naf_version",
+    default="v3.1",
+    prompt="naf version",
+    help="NAF version to convert to",
+)
+@click.option(
+    "--dtd_validation",
+    default=False,
+    prompt="dtd validation",
+    help="Validate the NAF dtd",
+)
+def main(
+    input: str,
+    output: str,
+    engine: str,
+    language: str,
+    naf_version: str,
+    dtd_validation: bool,
+):
+    """Command line interface function to generate and write NAF file"""
+    log_file: str = os.path.splitext(input)[0] + ".log"
+    logging.basicConfig(filename=log_file, level=logging.INFO, filemode="w")
+    tree = parse2naf.generate_naf(
+        input=input,
+        engine=engine,
+        language=language,
+        naf_version=naf_version,
+        dtd_validation=dtd_validation,
+    )
+    tree.write(output)
     return 0
 
 

@@ -103,13 +103,13 @@ Command line interface
 
 To parse an pdf or a txt file run in the root of the project::
 
-    python -m nafigator.parse2naf
+    python -m nafigator.cli
 
 
 Function calls
 ~~~~~~~~~~~~~~
 
-To convert a .pdf, .txt or .html-file you can use: ::
+To convert a .pdf, .docx, .txt or .html-file you can use: ::
 
     from nafigator.parse2naf import generate_naf
 

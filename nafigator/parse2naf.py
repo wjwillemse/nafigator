@@ -37,58 +37,6 @@ from .utils import prepare_comment_text
 FORMATS_LAYER_TAG = "formats"
 
 
-@click.command()
-@click.option(
-    "--input", default="data/example.pdf", prompt="input file", help="The input file"
-)
-@click.option(
-    "--output",
-    default="data/example.naf.xml",
-    prompt="output file",
-    help="The output file",
-)
-@click.option(
-    "--engine",
-    default="stanza",
-    prompt="NLP-package",
-    help="The package to parse the text",
-)
-@click.option(
-    "--language", default="en", prompt="language", help="The language of the input file"
-)
-@click.option(
-    "--naf_version",
-    default="v3.1",
-    prompt="naf version",
-    help="NAF version to convert to",
-)
-@click.option(
-    "--dtd_validation",
-    default=False,
-    prompt="dtd validation",
-    help="Validate the NAF dtd",
-)
-def nafigator(
-    input: str,
-    output: str,
-    engine: str,
-    language: str,
-    naf_version: str,
-    dtd_validation: bool,
-):
-    """Command line interface function to generate and write NAF file"""
-    log_file: str = os.path.splitext(input)[0] + ".log"
-    logging.basicConfig(filename=log_file, level=logging.INFO, filemode="w")
-    tree = generate_naf(
-        input=input,
-        engine=engine,
-        language=language,
-        naf_version=naf_version,
-        dtd_validation=dtd_validation,
-    )
-    tree.write(output)
-
-
 def generate_naf(
     input: str = None,
     engine: str = None,
@@ -900,7 +848,3 @@ def add_formats_layer(source: str, params: dict):
         params["tree"].add_formats_element(source, params["pdftoxml"])
     elif source == "docx":
         params["tree"].add_formats_element(source, params["docxtoxml"])
-
-
-if __name__ == "__main__":
-    sys.exit(nafigator())
