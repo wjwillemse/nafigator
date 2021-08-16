@@ -4,11 +4,92 @@
 
 import io
 import re
+import os
 from lxml import etree
+import pandas as pd
+import logging
+from nafigator import parse2naf
+
+
+def dataframe2naf(
+    df_meta: pd.DataFrame,
+    overwrite_existing_naf: bool = False,
+    rerun_files_with_naf_errors: bool = False,
+    engine: str = None,
+    naf_version: str = None,
+    dtd_validation: bool = False,
+    params: dict = {},
+    nlp=None,
+):
+    """ """
+    if "naf:status" not in df_meta.columns:
+        df_meta["naf:status"] = ""
+
+    for row in df_meta.index:
+
+        if "dc:language" in df_meta.columns:
+            dc_language = df_meta.loc[row, "dc:language"].lower()
+        else:
+            dc_language = None
+            df_meta.loc[row, "naf:status"] = "ERROR, no dc:language in DataFrame"
+
+        if "dc:source" in df_meta.columns:
+            dc_source = df_meta.loc[row, "dc:source"]
+        else:
+            dc_source = None
+            df_meta.loc[row, "naf:status"] = "ERROR, no dc:source in DataFrame"
+
+        if "naf:source" in df_meta.columns:
+            output = df_meta.loc[row, "naf:source"]
+        else:
+            if dc_source is not None:
+                output = os.path.splitext(dc_source)[0]+".naf.xml"
+
+        if dc_source and dc_language and output:
+
+            # logging per processed file
+            log_file: str = os.path.splitext(dc_source)[0] + ".log"
+            logging.basicConfig(filename=log_file, level=logging.WARNING, filemode="w")
+
+            if os.path.exists(output) and not overwrite_existing_naf:
+                # the NAF file exists and we should not overwrite existing naf files -> skip
+                df_meta.loc[row, "naf:status"] = "OK"
+                df_meta.loc[row, "naf:source"] = output
+                continue
+            elif (
+                "error" in df_meta.loc[row, "naf:status"].lower()
+                and not rerun_files_with_naf_errors
+            ):
+                # the status is ERROR and we should not rerun files with errors -> skip
+                continue
+            else:
+                # put columns in params
+                params = {col: df_meta.loc[row, col] for col in df_meta.columns if col not in ["naf:source", "naf:status"]}
+                try:
+                    doc = parse2naf.generate_naf(
+                        input=dc_source,
+                        engine=engine,
+                        language=dc_language,
+                        naf_version=naf_version,
+                        dtd_validation=dtd_validation,
+                        params=params,
+                        nlp=nlp,
+                    )
+                    if not os.path.exists(output):
+                        doc.write(output)
+                    else:
+                        if overwrite_existing_naf:
+                            doc.write(output)
+                    df_meta.loc[row, "naf:status"] = "OK"
+                    df_meta.loc[row, "naf:source"] = output
+                except:
+                    df_meta.loc[row, "naf:status"] = "ERROR, generate_naf"
+
+    return df_meta
 
 
 def load_dtd(dtd_url):
-
+    """ """
     dtd = None
     r = open(dtd_url)
     if r:
