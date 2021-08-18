@@ -465,7 +465,7 @@ def add_text_layer(params: dict):
             for textbox in page
             for textline in textbox
             for text in textline
-            if len(text.text.strip()) > 0 and text.text.strip()[-1] == "."
+            if len(text.text.strip()) > 0 and text.text.strip()[-1] in [".", "?"]
         ]
 
     doc = params["doc"]

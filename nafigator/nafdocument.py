@@ -1107,14 +1107,22 @@ class NafDocument(etree._ElementTree):
                                         text_el = add_text_element(r, "text", text.text, text.attrib, offset)
                                         page_length += len(text.text)
                                         offset += len(text.text)
+                                        
+                                        page_length += 1
+                                        offset += 1
                                     
                                     elif text.tag == "{http://schemas.openxmlformats.org/wordprocessingml/2006/main}rPr":
+
+                                        continue
+
+                                    elif text.tag == "{http://schemas.openxmlformats.org/wordprocessingml/2006/main}footnoteReference":
 
                                         continue
 
                             elif run.tag == "{http://schemas.openxmlformats.org/wordprocessingml/2006/main}pPr":
 
                                 continue
+
 
                         page_length += 1
                         offset += 1

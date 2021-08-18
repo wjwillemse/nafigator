@@ -96,7 +96,7 @@ def convert_docx(path, format="text", codec="utf-8", password="", params=None):
         for paragraph in tree.getiterator(PARA):
             texts = [node.text for node in paragraph.getiterator(TEXT) if node.text]
             if texts:
-                paragraphs.append("".join(texts))
+                paragraphs.append("\n".join(texts))
         text = "\n\n".join(paragraphs)
 
     elif format == "xml":
