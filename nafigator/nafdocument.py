@@ -1056,13 +1056,82 @@ class NafDocument(etree._ElementTree):
 
         elif source == "docx":
 
+            WORD_NAMESPACE = "{http://schemas.openxmlformats.org/wordprocessingml/2006/main}"
+            PARA = WORD_NAMESPACE + "p"
+            RUN = WORD_NAMESPACE + "r"
+            TEXT = WORD_NAMESPACE + "t"
+
             # formats = bytes(bytearray(formats, encoding="utf-8"))
             parser = etree.XMLParser(ns_clean=True, recover=True, encoding="utf-8")
             formats_root = etree.fromstring(formats, parser=parser)
 
-            # layer = self.find(FORMATS_LAYER_TAG)
-            # if layer is None:
-            #     layer = etree.SubElement(
-            #         self.getroot(), QName(PREFIX_NAF_BASE, FORMATS_LAYER_TAG)
-            #     )
-            logging.warning("Formats layer for docx not yet implemented.")
+            layer = self.find(FORMATS_LAYER_TAG)
+            if layer is None:
+                layer = etree.SubElement(
+                    self.getroot(), QName(PREFIX_NAF_BASE, FORMATS_LAYER_TAG)
+                )
+
+            def add_element(element, tag):
+                subelement = etree.SubElement(element, tag)
+                for item in element.attrib.keys():
+                    subelement.attrib[item] = element.attrib[item]
+                return subelement
+
+            def add_text_element(element, tag, text, attrib, offset):
+                if (text is not None) and (text.strip() != ""):
+                    text_element = etree.SubElement(element, tag)
+                    for item in attrib.keys():
+                        text_element.attrib[item] = attrib[item]
+                    text_element.text = text
+                    text_element.set("length", str(len(text)))
+                    text_element.set("offset", str(offset))
+
+            offset = 0
+            for body in formats_root:
+                page = add_element(layer, "page")
+                page_length = 0
+                for paragraph in body:
+                    # p
+                    # sectPr
+                    if paragraph.tag == PARA:
+                        p = add_element(page, "textbox")
+                        for run in paragraph:
+                            # r
+                            # pPr
+                            if run.tag == RUN:
+                                r = add_element(p, "textline")
+                                for text in run:
+                                    # t
+                                    # rPr
+                                    if text.tag == TEXT:
+                                        text_el = add_text_element(r, "text", text.text, text.attrib, offset)
+                                        page_length += len(text.text)
+                                        offset += len(text.text)
+                                    
+                                    elif text.tag == "{http://schemas.openxmlformats.org/wordprocessingml/2006/main}rPr":
+
+                                        continue
+
+                            elif run.tag == "{http://schemas.openxmlformats.org/wordprocessingml/2006/main}pPr":
+
+                                continue
+
+                        page_length += 1
+                        offset += 1
+
+                    elif paragraph.tag == "{http://schemas.openxmlformats.org/wordprocessingml/2006/main}sectPr":
+
+                        # type
+                        # pgSz
+                        # pgMar
+                        # pgNumType
+                        # formProt
+                        # textDirection
+                        # docGrid
+
+                        continue
+
+                page.set("length", str(page_length))
+                page.set("offset", str(offset - page_length))
+                   
+            # logging.warning("Formats layer for docx not yet implemented.")
