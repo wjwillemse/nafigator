@@ -47,6 +47,6 @@ setup(
     test_suite='tests',
     tests_require=test_requirements,
     url='https://github.com/wjwillemse/nafigator',
-    version='0.1.30',
+    version='0.1.31',
     zip_safe=False,
 )
