@@ -10,11 +10,11 @@ with open('README.rst') as readme_file:
 with open('HISTORY.rst') as history_file:
     history = history_file.read()
 
-requirements = ['click>=7.0', 'pdfminer.six', 'lxml', 'python-docx', 'folia']
+requirements = ['click>=7.0', 'pdfminer.six', 'lxml', 'python-docx', 'folia', 'pandas']
 
-setup_requirements = ['click>=7.0', 'pdfminer.six', 'lxml', 'python-docx', 'folia']
+setup_requirements = ['click>=7.0', 'pdfminer.six', 'lxml', 'python-docx', 'folia', 'pandas']
 
-test_requirements = ['click>=7.0', 'pdfminer.six', 'lxml', 'python-docx', 'folia', 'stanza', 'spacy']
+test_requirements = ['click>=7.0', 'pdfminer.six', 'lxml', 'python-docx', 'folia', 'pandas', 'stanza', 'spacy']
 
 setup(
     author="Willem Jan Willemse",
