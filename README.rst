@@ -78,6 +78,7 @@ Current changes to NAF:
 
 * attributes in a dependency relation are renamed 'from_term' and 'to_term' ('from' is a Python reserved word)
 
+The code of the SpaCy converter to NAF is partially based on `SpaCy-to-NAF <https://github.com/cltl/SpaCy-to-NAF>`_
 
 Installation
 ------------
