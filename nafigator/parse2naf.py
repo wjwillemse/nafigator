@@ -59,6 +59,12 @@ def generate_naf(
     if naf_version is None:
         logging.error("no naf version specified")
         return None
+    if engine.lower() == "stanza" and "stanza" not in sys.modules:
+        logging.error("stanza not installed")
+        return None
+    if engine.lower() == "spacy" and "spacy" not in sys.modules:
+        logging.error("SpaCy not installed")
+        return None
 
     params = create_params(
         input=input,
@@ -236,8 +242,10 @@ def process_linguistic_steps(params: dict):
     nlp = params["nlp"]
     language = params["language"]
     if engine_name.lower() == "stanza":
+        # check if installed
         params["engine"] = stanzaProcessor(nlp, language)
     elif engine_name.lower() == "spacy":
+        # check if installed
         params["engine"] = spacyProcessor(nlp, language)
     else:
         logging.error("unknown engine")
