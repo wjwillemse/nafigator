@@ -102,7 +102,7 @@ How to run
 Command line interface
 ~~~~~~~~~~~~~~~~~~~~~~
 
-To parse an pdf or a txt file run in the root of the project::
+To parse a pdf, .docx, .txt or .html-file from the command line interface run in the root of the project::
 
     python -m nafigator.cli
 
@@ -110,7 +110,7 @@ To parse an pdf or a txt file run in the root of the project::
 Function calls
 ~~~~~~~~~~~~~~
 
-To convert a .pdf, .docx, .txt or .html-file you can use: ::
+To convert a .pdf, .docx, .txt or .html-file in Python code you can use: ::
 
     from nafigator.parse2naf import generate_naf
 
