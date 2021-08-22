@@ -55,7 +55,9 @@ def main(
         naf_version=naf_version,
         dtd_validation=dtd_validation,
     )
-    tree.write(output)
+    if tree is not None:
+        tree.write(output)
+    
     return 0
 
 
