@@ -93,8 +93,8 @@ def convert_docx(path, format="text", codec="utf-8", password="", params=None):
         document.close()
         tree = XML(xml_content)
         paragraphs = []
-        for paragraph in tree.getiterator(PARA):
-            texts = [node.text for node in paragraph.getiterator(TEXT) if node.text]
+        for paragraph in tree.iter(PARA):
+            texts = [node.text for node in paragraph.iter(TEXT) if node.text]
             if texts:
                 paragraphs.append("".join(texts))
         text = "\n\n".join(paragraphs)
