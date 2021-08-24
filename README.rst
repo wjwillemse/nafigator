@@ -6,9 +6,6 @@ nafigator
 .. image:: https://img.shields.io/pypi/v/nafigator.svg
         :target: https://pypi.python.org/pypi/nafigator
 
-.. image:: https://img.shields.io/travis/wjwillemse/nafigator.svg
-        :target: https://travis-ci.com/wjwillemse/nafigator
-
 .. image:: https://img.shields.io/badge/License-MIT-yellow.svg
         :target: https://opensource.org/licenses/MIT
         :alt: License: MIT
@@ -93,7 +90,7 @@ To install the package from Github
 
 ::
 
-    pip install -e git+https://github.com/wjwillemse/nafigator.git#egg=nafigator
+    pip install -e git+https://github.com/denederlandschebank/nafigator.git#egg=nafigator
 
 
 How to run
