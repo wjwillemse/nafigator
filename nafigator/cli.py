@@ -1,4 +1,12 @@
-"""Console script for nafigator."""
+# -*- coding: utf-8 -*-
+
+"""Cli module.
+
+Console script for nafigator.
+
+"""
+
+
 import sys
 import click
 import os
@@ -45,7 +53,21 @@ def main(
     naf_version: str,
     dtd_validation: bool,
 ):
-    """Command line interface function to generate and write NAF file"""
+    """Command line interface function to generate and write NAF file
+
+    Args:
+        input: location of the document file to be converted
+        output: location of the NAF file
+        engine: name of the NLP processor
+        language: language of the document file
+        naf_version: naf version to be used
+        dtd_validation: if True then the NAF file will be validated
+
+    Returns:
+        int: The return value. 0 for success
+
+    """
+
     log_file: str = os.path.splitext(input)[0] + ".log"
     logging.basicConfig(filename=log_file, level=logging.INFO, filemode="w")
     tree = parse2naf.generate_naf(
@@ -57,7 +79,7 @@ def main(
     )
     if tree is not None:
         tree.write(output)
-    
+
     return 0
 
 

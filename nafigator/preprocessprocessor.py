@@ -20,8 +20,26 @@ except ImportError:
     from xml.etree.ElementTree import XML
 
 
-def convert_pdf(path, format="text", codec="utf-8", password="", params=None):
+def convert_pdf(
+    path: str = None,
+    format: str = "text",
+    codec: str = "utf-8",
+    password: str = "",
+    params: dict = None,
+) -> str:
+    """Function to convert pdf to xml or text
 
+    Args:
+        path: location of the file to be converted
+        format: html, text or xml
+        codec: codec to be used to conversion
+        password: password to be used for conversion
+        params: the general params dict to store results
+
+    Returns:
+        str: the result of the conversion
+
+    """
     start_time = datetime.now()
 
     rsrcmgr = PDFResourceManager()
@@ -83,7 +101,26 @@ PARA = WORD_NAMESPACE + "p"
 TEXT = WORD_NAMESPACE + "t"
 
 
-def convert_docx(path, format="text", codec="utf-8", password="", params=None):
+def convert_docx(
+    path: str = None,
+    format: str = "text",
+    codec: str = "utf-8",
+    password: str = "",
+    params: dict = None,
+) -> str:
+    """Function to convert docx to xml or text
+
+    Args:
+        path: location of the file to be converted
+        format: text or xml
+        codec: codec to be used to conversion
+        password: password to be used for conversion
+        params: the general params dict to store results
+
+    Returns:
+        str: the result of the conversion
+
+    """
 
     start_time = datetime.now()
 
