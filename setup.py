@@ -17,8 +17,8 @@ setup_requirements = ['click>=7.0', 'pdfminer.six', 'lxml', 'python-docx', 'foli
 test_requirements = ['click>=7.0', 'pdfminer.six', 'lxml', 'python-docx', 'folia', 'pandas', 'stanza', 'spacy']
 
 setup(
-    author="Willem Jan Willemse",
-    author_email='w.j.willemse@xs4all.nl',
+    author="De Nederlandsche Bank",
+    author_email='w.j.willemse@dnb.nl',
     python_requires='>=3.6',
     classifiers=[
         'Development Status :: 2 - Pre-Alpha',
@@ -46,7 +46,7 @@ setup(
     setup_requires=setup_requirements,
     test_suite='tests',
     tests_require=test_requirements,
-    url='https://github.com/wjwillemse/nafigator',
+    url='https://github.com/denederlandschebank/nafigator',
     version='0.1.31',
     zip_safe=False,
 )
