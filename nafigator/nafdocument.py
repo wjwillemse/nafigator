@@ -342,6 +342,7 @@ class NafDocument(etree._ElementTree):
                 pages_data = dict(child.attrib)
                 textboxes = list()
                 figures = list()
+                headers = list() #
                 for child2 in child:
                     if child2.tag == "textbox":
                         textbox_data = dict(child2.attrib)
@@ -359,7 +360,12 @@ class NafDocument(etree._ElementTree):
                                 textlines.append(textline_data)
                         textbox_data["textlines"] = textlines
                         textboxes.append(textbox_data)
-                    # elif child2.tag == "layout":
+                    ######
+                    elif child2.tag == "header":
+                        header_data = dict(child2.attrib)
+                        for child3 in child2:
+                            headers.append(child3)
+                    ######
                     elif child2.tag == "figure":
                         figure_data = dict(child2.attrib)
                         texts = list()
@@ -372,6 +378,7 @@ class NafDocument(etree._ElementTree):
                         figures.append(textbox_data)
                 pages_data["textboxes"] = textboxes
                 pages_data["figures"] = figures
+                pages_data["headers"] = headers #
                 pages.append(pages_data)
         return pages
 
