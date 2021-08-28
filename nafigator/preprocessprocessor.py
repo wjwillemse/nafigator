@@ -75,7 +75,7 @@ def convert_pdf(path, format="text", codec="utf-8", password="", params=None):
 
     params["pdfto" + format] = text
 
-    return text
+    return None
 
 
 WORD_NAMESPACE = "{http://schemas.openxmlformats.org/wordprocessingml/2006/main}"
@@ -103,6 +103,7 @@ def convert_docx(path, format="text", codec="utf-8", password="", params=None):
         with open(path, "rb") as f:
             zip = zipfile.ZipFile(f)
             text = zip.read("word/document.xml")
+            styles = zip.read("word/styles.xml")  # not used yet
 
     end_time = datetime.now()
 
@@ -119,3 +120,5 @@ def convert_docx(path, format="text", codec="utf-8", password="", params=None):
     params["tree"].add_processor_element("docxto" + format, pp)
 
     params["docxto" + format] = text
+
+    return None
