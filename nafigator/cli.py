@@ -52,7 +52,7 @@ def main(
     language: str,
     naf_version: str,
     dtd_validation: bool,
-):
+) -> int:
     """Command line interface function to generate and write NAF file
 
     Args:
