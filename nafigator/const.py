@@ -1,6 +1,10 @@
 # coding: utf-8
 
-"""Const module."""
+"""Const module.
+
+This module contains constants for nafigator package
+
+"""
 
 from collections import namedtuple
 
