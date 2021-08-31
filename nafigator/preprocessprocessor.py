@@ -7,6 +7,13 @@ from pdfminer.pdfinterp import PDFResourceManager, PDFPageInterpreter
 from pdfminer.converter import TextConverter, XMLConverter, HTMLConverter
 from pdfminer.layout import LAParams
 from pdfminer.pdfpage import PDFPage
+
+try:
+    import pdfplumber
+    PDFPLUMBER = True
+except
+    PDFPLUMBER = False
+
 from io import BytesIO
 from datetime import datetime
 from .const import ProcessorElement
@@ -74,6 +81,13 @@ def convert_pdf(path, format="text", codec="utf-8", password="", params=None):
     params["tree"].add_processor_element("pdfto" + format, pp)
 
     params["pdfto" + format] = text
+
+    if PDFPLUMBER:
+        tables = []
+        fp = pdfplumber.open(path)
+        for page in fp.pages:
+            tables.append(page.extract_tables(params.get('pdfplumber_table_extraction', {})))
+        params['pdftotables'] = tables
 
     return None
 
