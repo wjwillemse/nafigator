@@ -1,6 +1,10 @@
-# coding: utf-8
+# -*- coding: utf-8 -*-
 
-"""Utils module."""
+"""Utils module.
+
+This module contains utility functions for nafigator package
+
+"""
 
 import io
 import re
@@ -11,6 +15,7 @@ import logging
 from nafigator import parse2naf
 import docx
 from docx.enum.dml import MSO_THEME_COLOR_INDEX
+import datetime
 
 
 def dataframe2naf(
@@ -22,8 +27,22 @@ def dataframe2naf(
     dtd_validation: bool = False,
     params: dict = {},
     nlp=None,
-):
-    """ """
+) -> pd.DataFrame:
+    """Batch processor for NAF
+
+    Args:
+        df_meta: the dataframe containing the meta data for the NAF files.
+        overwrite_existing_naf: if True then existing NAF files are overwritten (default = False)
+        rerun_files_with_naf_errors: if True then documents that produced NAF errors are run again (default = False)
+        engine: name of the NLP processor to be used (default = None)
+        naf_version: NAF version to be used
+        dtd_validation: perform validation of each NAF file (default = False)
+        params: additional parameters for NAF conversion
+
+    Returns:
+        pd.DataFrame: the dataframe with (updated) metadata
+
+    """
     if "naf:status" not in df_meta.columns:
         df_meta["naf:status"] = ""
 
@@ -94,8 +113,16 @@ def dataframe2naf(
     return df_meta
 
 
-def load_dtd(dtd_url):
-    """ """
+def load_dtd(dtd_url: str) -> etree.DTD:
+    """Utility function to load the dtd
+
+    Args:
+        dtd_url: the location of the dtd file
+
+    Returns:
+        etree.DTD: the dtd object to be used for validation
+
+    """
     dtd = None
     r = open(dtd_url)
     if r:
@@ -108,22 +135,48 @@ def load_dtd(dtd_url):
     return dtd
 
 
-def time_in_correct_format(datetime_obj):
+def time_in_correct_format(datetime_obj: datetime.datetime) -> str:
     """
     Function that returns the current time (UTC)
+
+    Args:
+        datetime_obj: the input to be converted
+
+    Returns:
+        str: the time in correct format
+
     """
     return datetime_obj.strftime("%Y-%m-%dT%H:%M:%SUTC")
 
 
-def normalize_token_orth(orth):
+def normalize_token_orth(orth: str) -> str:
+    """
+    Function that normalizes the token text
+
+    Args:
+        orth: the token text to be normalized
+
+    Returns:
+        str: the normalized token text
+
+    """
     if "\n" in orth:
         return "NEWLINE"
     else:
         return remove_control_characters(orth)
 
 
-def prepare_comment_text(text: str):
-    """ """
+def prepare_comment_text(text: str) -> str:
+    """
+    Function to prepare comment text for xml
+
+    Args:
+        text: comment to be converted to xml comment
+
+    Returns:
+        str: converted comment text
+
+    """
     text = text.replace("--", "DOUBLEDASH")
     if text.endswith("-"):
         text = text[:-1] + "SINGLEDASH"
@@ -146,26 +199,46 @@ ILLEGAL_XML_CHARS_RE = re.compile(
 )
 
 
-def remove_illegal_chars(text):
+def remove_illegal_chars(text: str) -> str:
+    """
+    Function to remove illegal characters in text
+
+    Args:
+        text: string from which illegal characters need to be removed
+
+    Returns:
+        str: string with removed illegal characters
+
+    """
     return re.sub(ILLEGAL_XML_CHARS_RE, "", text)
 
 
-def remove_control_characters(html):
-    # type: (t.Text) -> t.Text
+def remove_control_characters(html: str) -> str:
     """
-    Strip invalid XML characters that `lxml` cannot parse.
+    Function to strip invalid XML characters that `lxml` cannot parse.
+
+    type: (t.Text) -> t.Text
+
+    See: https://github.com/html5lib/html5lib-python/issues/96
+
+    The XML 1.0 spec defines the valid character range as:
+    Char ::= #x9 | #xA | #xD | [#x20-#xD7FF] | [#xE000-#xFFFD] | [#x10000-#x10FFFF]
+
+    We can instead match the invalid characters by inverting that range into:
+    InvalidChar ::= #xb | #xc | #xFFFE | #xFFFF | [#x0-#x8] | [#xe-#x1F] | [#xD800-#xDFFF]
+
+    Sources:
+    https://www.w3.org/TR/REC-xml/#charsets,
+    https://lsimons.wordpress.com/2011/03/17/stripping-illegal-characters-out-of-xml-in-python/
+
+    Args:
+        html: text from which control characters need to be removed
+
+    Returns:
+        str: string with removed control characters
+
     """
-    # See: https://github.com/html5lib/html5lib-python/issues/96
-    #
-    # The XML 1.0 spec defines the valid character range as:
-    # Char ::= #x9 | #xA | #xD | [#x20-#xD7FF] | [#xE000-#xFFFD] | [#x10000-#x10FFFF]
-    #
-    # We can instead match the invalid characters by inverting that range into:
-    # InvalidChar ::= #xb | #xc | #xFFFE | #xFFFF | [#x0-#x8] | [#xe-#x1F] | [#xD800-#xDFFF]
-    #
-    # Sources:
-    # https://www.w3.org/TR/REC-xml/#charsets,
-    # https://lsimons.wordpress.com/2011/03/17/stripping-illegal-characters-out-of-xml-in-python/
+
     def strip_illegal_xml_characters(s, default, base=10):
         # Compare the "invalid XML character range" numerically
         n = int(s, base)
