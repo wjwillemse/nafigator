@@ -7,6 +7,13 @@ from pdfminer.pdfinterp import PDFResourceManager, PDFPageInterpreter
 from pdfminer.converter import TextConverter, XMLConverter, HTMLConverter
 from pdfminer.layout import LAParams
 from pdfminer.pdfpage import PDFPage
+
+try:
+    import pdfplumber
+    PDFPLUMBER = True
+except
+    PDFPLUMBER = False
+
 from io import BytesIO
 from datetime import datetime
 from .const import ProcessorElement
@@ -93,7 +100,14 @@ def convert_pdf(
 
     params["pdfto" + format] = text
 
-    return text
+    if PDFPLUMBER:
+        tables = []
+        fp = pdfplumber.open(path)
+        for page in fp.pages:
+            tables.append(page.extract_tables(params.get('pdfplumber_table_extraction', {})))
+        params['pdftotables'] = tables
+
+    return None
 
 
 WORD_NAMESPACE = "{http://schemas.openxmlformats.org/wordprocessingml/2006/main}"
@@ -140,6 +154,7 @@ def convert_docx(
         with open(path, "rb") as f:
             zip = zipfile.ZipFile(f)
             text = zip.read("word/document.xml")
+            styles = zip.read("word/styles.xml")  # not used yet
 
     end_time = datetime.now()
 
@@ -156,3 +171,5 @@ def convert_docx(
     params["tree"].add_processor_element("docxto" + format, pp)
 
     params["docxto" + format] = text
+
+    return None

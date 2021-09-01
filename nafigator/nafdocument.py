@@ -1079,6 +1079,16 @@ class NafDocument(etree._ElementTree):
             PARA = WORD_NAMESPACE + "p"
             RUN = WORD_NAMESPACE + "r"
             TEXT = WORD_NAMESPACE + "t"
+            FONT = WORD_NAMESPACE + "rFonts"
+            RPR = WORD_NAMESPACE + "rPr"
+            PPR = WORD_NAMESPACE + "pPr"
+            ASCII = WORD_NAMESPACE + 'ascii'
+            SIZE = WORD_NAMESPACE + 'sz'
+            VAL = WORD_NAMESPACE + 'val'
+            FOOTNOTEREF = WORD_NAMESPACE + "footnoteReference"
+            SECTPR = WORD_NAMESPACE + "sectPr"
+            BOLD = WORD_NAMESPACE + "b"
+            ITALICS = WORD_NAMESPACE + "i"
 
             # formats = bytes(bytearray(formats, encoding="utf-8"))
             parser = etree.XMLParser(ns_clean=True, recover=True, encoding="utf-8")
@@ -1119,47 +1129,41 @@ class NafDocument(etree._ElementTree):
                             # pPr
                             if run.tag == RUN:
                                 r = add_element(p, "textline")
+                                font = {}
                                 for text in run:
                                     # t
                                     # rPr
-                                    if text.tag == TEXT:
-                                        text_el = add_text_element(
-                                            r, "text", text.text, text.attrib, offset
-                                        )
+                                    if text.tag == RPR:
+                                        for item in text:
+                                            if item.tag == FONT:
+                                                if ASCII in item.attrib.keys():
+                                                    font.update({'font': font.get('font', '')+item.attrib.get(ASCII)})
+                                            elif item.tag == SIZE:
+                                                if VAL in item.attrib.keys():
+                                                    # docx xml counts size in halves
+                                                    font.update({'size': str(float(item.attrib.get(VAL))/2)})
+                                            elif item.tag == BOLD:
+                                                # bold is stored in the font data (like pdfminer)
+                                                font.update({'font': font.get('font', '')+"_bold"})
+                                            elif item.tag == ITALICS:
+                                                # italics is stored in the font data (like pdfminer)
+                                                font.update({'font': font.get('font', '')+"_italics"})
+                                    elif text.tag == TEXT:
+                                        text_el = add_text_element(r, "text", text.text, font, offset)
                                         page_length += len(text.text)
                                         offset += len(text.text)
-
                                         page_length += 1
                                         offset += 1
-
-                                    elif (
-                                        text.tag
-                                        == "{http://schemas.openxmlformats.org/wordprocessingml/2006/main}rPr"
-                                    ):
-
+                                    elif text.tag == FOOTNOTEREF:
+                                        # not implemented
                                         continue
-
-                                    elif (
-                                        text.tag
-                                        == "{http://schemas.openxmlformats.org/wordprocessingml/2006/main}footnoteReference"
-                                    ):
-
-                                        continue
-
-                            elif (
-                                run.tag
-                                == "{http://schemas.openxmlformats.org/wordprocessingml/2006/main}pPr"
-                            ):
-
+                            elif run.tag == PPR:
+                                # not implemented
                                 continue
-
                         page_length += 1
                         offset += 1
 
-                    elif (
-                        paragraph.tag
-                        == "{http://schemas.openxmlformats.org/wordprocessingml/2006/main}sectPr"
-                    ):
+                    elif paragraph.tag == SECTPR:
 
                         # type
                         # pgSz
@@ -1169,6 +1173,7 @@ class NafDocument(etree._ElementTree):
                         # textDirection
                         # docGrid
 
+                        # not implemented
                         continue
 
                 page.set("length", str(page_length))
