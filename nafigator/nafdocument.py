@@ -339,11 +339,12 @@ class NafDocument(etree._ElementTree):
         pages = list()
         headers = list()
         for child in self.find(FORMATS_LAYER_TAG):
+            pages = list()
+            headers = list()
             if child.tag == "page":
                 pages_data = dict(child.attrib)
                 textboxes = list()
                 figures = list()
-                headers = list() #
                 for child2 in child:
                     if child2.tag == "textbox":
                         textbox_data = dict(child2.attrib)
@@ -361,9 +362,7 @@ class NafDocument(etree._ElementTree):
                                 textlines.append(textline_data)
                         textbox_data["textlines"] = textlines
                         textboxes.append(textbox_data)
-                    ######
                     # elif child2.tag == "layout":
-                    ######
                     elif child2.tag == "figure":
                         figure_data = dict(child2.attrib)
                         texts = list()
@@ -373,20 +372,21 @@ class NafDocument(etree._ElementTree):
                                 text_data["text"] = child3.text
                                 texts.append(text_data)
                         figure_data["texts"] = texts
-                        figures.append(figure_data)
+                        figures.append(textbox_data)
+                    elif child2.tag == "header":
+                        spans = list()
+                        for child3 in child2:
+                            for child4 in child3:
+                                spans.append(child4.attrib)
+                        headers_data = dict(child2.attrib) 
+                        headers_data["spans"] = spans
+                        headers.append(headers_data)
+
                 pages_data["textboxes"] = textboxes
                 pages_data["figures"] = figures
+                pages_data["headers"] = headers
                 pages.append(pages_data)
-            if child.tag == "headers":
-                for child2 in child: 
-                    spans = list()
-                    for child3 in child2:
-                        for child4 in child3:
-                            spans.append(child4.attrib)         
-                    headers_data = dict(child2.attrib) 
-                    headers_data["spans"] = spans
-                    headers.append(headers_data)
-        return pages, headers
+        return pages
 
     def __getattr__(self, name):
         """Return custom made layer of the NAF document"""
