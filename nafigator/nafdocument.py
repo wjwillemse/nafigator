@@ -1,4 +1,3 @@
-
 # coding: utf-8
 
 """naf document."""
@@ -338,12 +337,13 @@ class NafDocument(etree._ElementTree):
     def formats(self):
         """Returns formats layer of the NAF document as list of dicts"""
         pages = list()
+        headers = list()
         for child in self.find(FORMATS_LAYER_TAG):
             if child.tag == "page":
                 pages_data = dict(child.attrib)
                 textboxes = list()
-                headers = list()
                 figures = list()
+                headers = list() #
                 for child2 in child:
                     if child2.tag == "textbox":
                         textbox_data = dict(child2.attrib)
@@ -361,9 +361,9 @@ class NafDocument(etree._ElementTree):
                                 textlines.append(textline_data)
                         textbox_data["textlines"] = textlines
                         textboxes.append(textbox_data)
-                    elif child2.tag == "headers":
-                        continue
-
+                    ######
+                    # elif child2.tag == "layout":
+                    ######
                     elif child2.tag == "figure":
                         figure_data = dict(child2.attrib)
                         texts = list()
@@ -376,9 +376,17 @@ class NafDocument(etree._ElementTree):
                         figures.append(figure_data)
                 pages_data["textboxes"] = textboxes
                 pages_data["figures"] = figures
-                pages_data["headers"] = headers
                 pages.append(pages_data)
-        return pages
+            if child.tag == "headers":
+                for child2 in child: 
+                    spans = list()
+                    for child3 in child2:
+                        for child4 in child3:
+                            spans.append(child4.attrib)         
+                    headers_data = dict(child2.attrib) 
+                    headers_data["spans"] = spans
+                    headers.append(headers_data)
+        return pages, headers
 
     def __getattr__(self, name):
         """Return custom made layer of the NAF document"""
@@ -502,13 +510,16 @@ class NafDocument(etree._ElementTree):
         FILEDESC ELEMENT
             <fileDesc> is an empty element containing information about the
               computer document itself. It has the following attributes:
+
               - title: the title of the document (optional).
               - author: the author of the document (optional).
               - creationtime: when the document was created. In ISO 8601. (optional)
               - filename: the original file name (optional).
               - filetype: the original format (PDF, HTML, DOC, etc) (optional).
               - pages: number of pages of the original document (optional).
+
         ELEMENT fileDesc EMPTY
+
         ATTLIST fileDesc
             title CDATA #IMPLIED
             author CDATA #IMPLIED
@@ -527,12 +538,16 @@ class NafDocument(etree._ElementTree):
         PUBLIC ELEMENT
             <public> is an empty element which stores public information about
             the document, such as its URI. It has the following attributes:
+
             - publicId: a public identifier (for instance, the number inserted by the capture server) (optional).
             - uri: a public URI of the document (optional).
+
         ELEMENT public EMPTY
+
         ATTLIST public
             publicId CDATA #IMPLIED
             uri CDATA #IMPLIED
+
         Difference to NAF: here all attributes are mapped to the Dublic Core
         """
         self.subelement(
@@ -548,12 +563,16 @@ class NafDocument(etree._ElementTree):
             produced the NAF document. There can be several <linguisticProcessors> elements, one
               per NAF layer. NAF layers correspond to the top-level elements of the
               documents, such as "text", "terms", "deps" etc.
+
         ELEMENT linguisticProcessors (lp)+
+
         ATTLIST linguisticProcessors
             layer CDATA #REQUIRED
+
         LP ELEMENT
              <lp> elements describe one specific linguistic processor. <lp> elements
                  have the following attributes:
+
                  - name: the name of the processor
                  - version: processor's version
                  - timestamp: a timestamp, denoting the date/time at which the processor was
@@ -570,7 +589,9 @@ class NafDocument(etree._ElementTree):
                  - endTimestamp (optional): a timestamp, denoting the date/time at
                  which the processor ended the process. It follows the XML Schema
                  xs:dateTime format.
+
         ELEMENT lp EMPTY
+
         ATTLIST lp
             name CDATA #REQUIRED
             version CDATA #REQUIRED
@@ -598,7 +619,9 @@ class NafDocument(etree._ElementTree):
                 - offset: the offset (in characters) of the word form (optional)
                 - length: the length (in characters) of the word form (optional)
                 - xpath: in case of source xml files, the xpath expression identifying the original word form (optional)
+
         ELEMENT wf (#PCDATA|subtoken)*
+
         ATTLIST wf
             id ID #REQUIRED
             sent CDATA #IMPLIED
@@ -620,6 +643,7 @@ class NafDocument(etree._ElementTree):
     def add_raw_text_element(self, data: RawElement):
         """
         RAW ELEMENT
+
         ELEMENT raw (#PCDATA)
         """
         self.layer(RAW_LAYER_TAG).text = data.text
@@ -627,13 +651,16 @@ class NafDocument(etree._ElementTree):
     def add_dependency_element(self, data: DependencyRelation, comments: bool):
         """
         DEPS ELEMENT
+
         ELEMENT deps (dep)+
+
         DEP ELEMENT
             The <dep> elements have the following attributes:
             -   from: term id of the source element (REQUIRED)
             -   to: term id of the target element (REQUIRED)
             -   rfunc: relational function.(REQUIRED)
             -       case: declension case (optional)
+
         ELEMENT dep EMPTY
         ATTLIST dep
             from IDREF #REQUIRED
@@ -667,7 +694,9 @@ class NafDocument(etree._ElementTree):
             -   Money
             -   Percent
             -   Misc
+
         ELEMENT entity (span|externalReferences)+
+
         ATTLIST entity
             id ID #REQUIRED
             type CDATA #IMPLIED
@@ -707,6 +736,7 @@ class NafDocument(etree._ElementTree):
             component_of: if the term is part of multiword, i.e., referenced by a multiwords/mw element
             than this attribute can be used to make reference to the multiword.
             compound_type: endocentric or exocentric
+
         ELEMENT term (sentiment?|span|externalReferences|component)+
         ATTLIST term
             id ID #REQUIRED
@@ -736,14 +766,18 @@ class NafDocument(etree._ElementTree):
     def add_chunk_element(self, data: ChunkElement, comments: bool):
         """
         CHUNKS ELEMENT
+
         ELEMENT chunks (chunk)+
+
         CHUNK ELEMENT
             The <chunk> elements have the following attributes:
             -   id: unique identifier (REQUIRED)
             -   head: the chunk head’s term id  (REQUIRED)
             -   phrase: type of the phrase (REQUIRED)
             -   case: declension case (optional)
+
         ELEMENT chunk (span)+
+
         ATTLIST chunk
             id ID #REQUIRED
             head IDREF #REQUIRED
@@ -760,7 +794,9 @@ class NafDocument(etree._ElementTree):
     def add_span_element(self, element, data, comments=False, naf_version: str = None):
         """
         SPAN ELEMENT
+
         ELEMENT span (target)+
+
         ATTLIST span
             primary CDATA #IMPLIED
             status CDATA #IMPLIED
@@ -790,7 +826,9 @@ class NafDocument(etree._ElementTree):
             external resources, such as elements of a Knowledge base, an ontology,
             etc. It consists of several <externalRef> elements, one per
             association.
+
         ELEMENT externalReferences (externalRef)+
+
         EXTERNALREF ELEMENT
             <externalRef> elements have the following attributes:- resource: indicates the identifier of the resource referred to.
             - reference: code of the referred element. If the element is a
@@ -809,7 +847,9 @@ class NafDocument(etree._ElementTree):
             examples of valid patterns are: ``ENG-20-12345678-n'',
             ``SPA-16-017403-v'', etc.
             - confidence: a floating number between 0 and 1. Indicates the confidence weight of the association
+
         ELEMENT externalRef (sentiment|externalRef)*
+
         ATTLIST externalRef
             resource CDATA #IMPLIED
             reference CDATA #REQUIRED
@@ -836,7 +876,9 @@ class NafDocument(etree._ElementTree):
     def add_multiword_element(self, data: MultiwordElement):
         """
         MULTIWORDS ELEMENT
+
         ELEMENT multiwords (mw)+
+
         MW ELEMENT
             attributes of mw elements
             id: unique identifier (REQUIRED AND UNIQUE)
@@ -846,7 +888,9 @@ class NafDocument(etree._ElementTree):
             case: declension case (IMPLIED)
             status: manual | system | deprecated
             type: phrasal, idiom
+
         ELEMENT mw (component|externalReferences)+
+
         ATTLIST mw
             id ID #REQUIRED
             lemma CDATA #IMPLIED
