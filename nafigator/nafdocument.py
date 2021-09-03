@@ -353,8 +353,6 @@ class NafDocument(etree._ElementTree):
     @property
     def formats(self):
         """Returns formats layer of the NAF document as list of dicts"""
-        pages = list()
-        headers = list()
         for child in self.find(FORMATS_LAYER_TAG):
             pages = list()
             headers = list()
