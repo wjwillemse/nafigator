@@ -353,8 +353,9 @@ class NafDocument(etree._ElementTree):
     @property
     def formats(self):
         """Returns formats layer of the NAF document as list of dicts"""
-        pages = list()
         for child in self.find(FORMATS_LAYER_TAG):
+            pages = list()
+            headers = list()
             if child.tag == "page":
                 pages_data = dict(child.attrib)
                 textboxes = list()
@@ -387,8 +388,18 @@ class NafDocument(etree._ElementTree):
                                 texts.append(text_data)
                         figure_data["texts"] = texts
                         figures.append(textbox_data)
+                    elif child2.tag == "header":
+                        spans = list()
+                        for child3 in child2:
+                            for child4 in child3:
+                                spans.append(child4.attrib)
+                        headers_data = dict(child2.attrib) 
+                        headers_data["spans"] = spans
+                        headers.append(headers_data)
+
                 pages_data["textboxes"] = textboxes
                 pages_data["figures"] = figures
+                pages_data["headers"] = headers
                 pages.append(pages_data)
         return pages
 
