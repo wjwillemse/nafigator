@@ -75,10 +75,9 @@ def QName(prefix: str = None, name: str = None):
 
 
 class NafDocument(etree._ElementTree):
-    """The NafDocument class (subclass of an etree.elementtree)"""
+    """ """
 
     def generate(self, params: dict):
-        """Initialize a NafDocument with data from the params dict"""
         self._setroot(etree.Element("NAF", nsmap=namespaces))
         self.set_version(params["naf_version"])
         self.set_language(params["language"])
@@ -86,30 +85,14 @@ class NafDocument(etree._ElementTree):
         self.add_filedesc_element(params["fileDesc"])
         self.add_public_element(params["public"])
 
-    def open(self, input: str) -> NafDocument:
-        """Function to open a NafDocument
-
-        Args:
-            input: the location of the NafDocument to be opened
-
-        Returns:
-            NafDocument: the NAF document that is opened
-
-        """
+    def open(self, input):
+        """ """
         with open(input, "r", encoding="utf-8") as f:
             self._setroot(etree.parse(f).getroot())
         return self
 
-    def write(self, output: str) -> None:
-        """Function to write a NafDocument
-
-        Args:
-            output: the location of the NafDocument to be stored
-
-        Returns:
-            None
-
-        """
+    def write(self, output):
+        """ """
         super().write(output, encoding="utf-8", pretty_print=True, xml_declaration=True)
 
     @property
@@ -354,7 +337,10 @@ class NafDocument(etree._ElementTree):
     def formats(self):
         """Returns formats layer of the NAF document as list of dicts"""
         pages = list()
+        headers = list()
         for child in self.find(FORMATS_LAYER_TAG):
+            pages = list()
+            headers = list()
             if child.tag == "page":
                 pages_data = dict(child.attrib)
                 textboxes = list()
@@ -387,8 +373,18 @@ class NafDocument(etree._ElementTree):
                                 texts.append(text_data)
                         figure_data["texts"] = texts
                         figures.append(textbox_data)
+                    elif child2.tag == "header":
+                        spans = list()
+                        for child3 in child2:
+                            for child4 in child3:
+                                spans.append(child4.attrib)
+                        headers_data = dict(child2.attrib) 
+                        headers_data["spans"] = spans
+                        headers.append(headers_data)
+
                 pages_data["textboxes"] = textboxes
                 pages_data["figures"] = figures
+                pages_data["headers"] = headers
                 pages.append(pages_data)
         return pages
 
@@ -1073,22 +1069,10 @@ class NafDocument(etree._ElementTree):
 
         elif source == "docx":
 
-            WORD_NAMESPACE = (
-                "{http://schemas.openxmlformats.org/wordprocessingml/2006/main}"
-            )
+            WORD_NAMESPACE = "{http://schemas.openxmlformats.org/wordprocessingml/2006/main}"
             PARA = WORD_NAMESPACE + "p"
             RUN = WORD_NAMESPACE + "r"
             TEXT = WORD_NAMESPACE + "t"
-            FONT = WORD_NAMESPACE + "rFonts"
-            RPR = WORD_NAMESPACE + "rPr"
-            PPR = WORD_NAMESPACE + "pPr"
-            ASCII = WORD_NAMESPACE + 'ascii'
-            SIZE = WORD_NAMESPACE + 'sz'
-            VAL = WORD_NAMESPACE + 'val'
-            FOOTNOTEREF = WORD_NAMESPACE + "footnoteReference"
-            SECTPR = WORD_NAMESPACE + "sectPr"
-            BOLD = WORD_NAMESPACE + "b"
-            ITALICS = WORD_NAMESPACE + "i"
 
             # formats = bytes(bytearray(formats, encoding="utf-8"))
             parser = etree.XMLParser(ns_clean=True, recover=True, encoding="utf-8")
@@ -1129,41 +1113,34 @@ class NafDocument(etree._ElementTree):
                             # pPr
                             if run.tag == RUN:
                                 r = add_element(p, "textline")
-                                font = {}
                                 for text in run:
                                     # t
                                     # rPr
-                                    if text.tag == RPR:
-                                        for item in text:
-                                            if item.tag == FONT:
-                                                if ASCII in item.attrib.keys():
-                                                    font.update({'font': font.get('font', '')+item.attrib.get(ASCII)})
-                                            elif item.tag == SIZE:
-                                                if VAL in item.attrib.keys():
-                                                    # docx xml counts size in halves
-                                                    font.update({'size': str(float(item.attrib.get(VAL))/2)})
-                                            elif item.tag == BOLD:
-                                                # bold is stored in the font data (like pdfminer)
-                                                font.update({'font': font.get('font', '')+"_bold"})
-                                            elif item.tag == ITALICS:
-                                                # italics is stored in the font data (like pdfminer)
-                                                font.update({'font': font.get('font', '')+"_italics"})
-                                    elif text.tag == TEXT:
-                                        text_el = add_text_element(r, "text", text.text, font, offset)
+                                    if text.tag == TEXT:
+                                        text_el = add_text_element(r, "text", text.text, text.attrib, offset)
                                         page_length += len(text.text)
                                         offset += len(text.text)
+                                        
                                         page_length += 1
                                         offset += 1
-                                    elif text.tag == FOOTNOTEREF:
-                                        # not implemented
+                                    
+                                    elif text.tag == "{http://schemas.openxmlformats.org/wordprocessingml/2006/main}rPr":
+
                                         continue
-                            elif run.tag == PPR:
-                                # not implemented
+
+                                    elif text.tag == "{http://schemas.openxmlformats.org/wordprocessingml/2006/main}footnoteReference":
+
+                                        continue
+
+                            elif run.tag == "{http://schemas.openxmlformats.org/wordprocessingml/2006/main}pPr":
+
                                 continue
+
+
                         page_length += 1
                         offset += 1
 
-                    elif paragraph.tag == SECTPR:
+                    elif paragraph.tag == "{http://schemas.openxmlformats.org/wordprocessingml/2006/main}sectPr":
 
                         # type
                         # pgSz
@@ -1173,10 +1150,9 @@ class NafDocument(etree._ElementTree):
                         # textDirection
                         # docGrid
 
-                        # not implemented
                         continue
 
                 page.set("length", str(page_length))
                 page.set("offset", str(offset - page_length))
-
+                   
             # logging.warning("Formats layer for docx not yet implemented.")
