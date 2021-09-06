@@ -1,6 +1,10 @@
-# coding: utf-8
+# -*- coding: utf-8 -*-
 
-"""Convert2rdf module."""
+"""Convert2rdf module.
+
+This module contains RDF conversion functions for nafigator package
+
+"""
 
 import sys
 import click
@@ -18,9 +22,17 @@ import rdflib
 @click.option(
     "--output", default="data/example.ttl", prompt="output file", help="The output file"
 )
-def convert2rdf(input: str, output: str):
-    """ """
+def convert2rdf(input: str, output: str) -> None:
+    """Main function to convert NAF to RDF
 
+    Args:
+        input: location of the NAF file
+        output: location of the RDF file
+
+    Returns:
+        pd.DataFrame: the dataframe with (updated) metadata
+
+    """
     naf = NafDocument().open(input)
 
     params: dict = dict()
@@ -73,13 +85,33 @@ def convert2rdf(input: str, output: str):
     fh.close()
 
 
-def isHttpUrl(url):
+def isHttpUrl(url: str) -> bool:
+    """Check is url is http url
+
+    Args:
+        url: url to be checked
+
+    Returns:
+        bool: True is url is http or https url
+
+    """
     return isinstance(url, str) and (
         url.startswith("http://") or url.startswith("https://")
     )
 
 
-def addNamespace(prefix, uri, params):
+def addNamespace(prefix: str = None, uri: str = None, params: dict = {}) -> int:
+    """Add namespace to list of namespaces
+
+    Args:
+        prefix: prefix of the uri
+        uri: complete uri of the prefix
+        params: dict of params containing the namespaces
+
+    Returns:
+        int: 0 if success
+
+    """
     namespaces = params["namespaces"]
     found = namespaces.get(uri, None)
     if found:
@@ -90,7 +122,16 @@ def addNamespace(prefix, uri, params):
     return 0
 
 
-def printNamespaces(params):
+def printNamespaces(params: dict = {}) -> str:
+    """Get string of list of namespaces
+
+    Args:
+        params: dict of params containing the namespaces
+
+    Returns:
+        str: string of namespaces
+
+    """
     namespaces = params["namespaces"]
     res: str = ""
     for uri in namespaces:
@@ -101,10 +142,18 @@ def printNamespaces(params):
     return res
 
 
-def processNaf(naf, params):
+def processNaf(naf: etree.Element, params: dict = {}) -> None:
+    """Function to process elements of NAF file to RDF
 
+    Args:
+        naf: etree.element
+        params: dict of params to store results
+
+    Returns:
+        None
+
+    """
     provenance = genProvenanceName(params)
-
     for child in params["naf"].getroot():
         child_name: str = etree.QName(child).localname
         if child_name == "nafHeader":
@@ -123,14 +172,33 @@ def processNaf(naf, params):
             processDeps(child, params)
         # if child_name == "multiwords":
         #   processMultiwords(child, params)
+    return None
 
 
-def attrib2pred(s):
+def attrib2pred(s: str) -> str:
+    """Function to convert attribute to RDF predicate
+
+    Args:
+        s: the attribute
+
+    Returns:
+        str: the RDF predicate
+
+    """
     return "has" + s[0].upper() + s[1:]
 
 
-def processHeader(element, params):
+def processHeader(element: etree.Element, params: dict = {}) -> None:
+    """Function to NAF header layer to RDF
 
+    Args:
+        element: element containing the header layer
+        params: dict of params to store results
+
+    Returns:
+        None
+
+    """
     output = params["out"]
     output.write("_:nafHeader\n")
     for item in element:
@@ -212,9 +280,20 @@ def processHeader(element, params):
         else:
             output.write(" ;\n")
     output.write("\n")
+    return None
 
 
-def processSpan(element, params):
+def processSpan(element: etree.Element, params: dict = {}) -> None:
+    """Function to NAF span to RDF
+
+    Args:
+        element: element containing the span
+        params: dict of params to store results
+
+    Returns:
+        None
+
+    """
     output = params["out"]
     for span in element:
         output.write("    naf-base:hasSpan [\n")
@@ -222,10 +301,19 @@ def processSpan(element, params):
             if target.tag == "target":
                 output.write("        naf-base:ref _:" + target.attrib["id"] + "\n")
         output.write("    ] .\n")
+    return None
 
 
-def processEntities(element, params):
+def processEntities(element: etree.Element, params: dict = {}) -> None:
+    """Function to NAF entities layer to RDF
 
+    Args:
+        element: element containing the entities layer
+
+    Returns:
+        None
+
+    """
     output = params["out"]
     for entity in element:
         eid = entity.attrib.get("id", None)
@@ -242,19 +330,39 @@ def processEntities(element, params):
                 )
         processSpan(entity, params)
         output.write("\n")
+    return None
 
 
-def processRaw(element, params):
+def processRaw(element: etree.Element, params: dict = {}) -> None:
+    """Function to NAF raw layer to RDF
 
+    Args:
+        element: element containing the raw layer
+        params: dict of params to store results
+
+    Returns:
+        None
+
+    """
     output = params["out"]
     output.write("_:raw\n")
     output.write("    xl:type naf-base:raw ;\n")
     output.write('    naf-base:hasRaw """' + element.text + '"""^^rdf:XMLLiteral ;\n')
     output.write(" .\n")
+    return None
 
 
-def processTerms(element, params):
+def processTerms(element: etree.Element, params: dict = {}) -> None:
+    """Function to NAF terms layer to RDF
 
+    Args:
+        element: element containing the terms layer
+        params: dict of params to store results
+
+    Returns:
+        None
+
+    """
     output = params["out"]
     for term in element:
         tid = term.attrib.get("id", None)
@@ -327,10 +435,20 @@ def processTerms(element, params):
                     )
         processSpan(term, params)
         output.write("\n")
+    return None
 
 
-def processText(element, params):
+def processText(element: etree.Element, params: dict = {}) -> None:
+    """Function to NAF text layer to RDF
 
+    Args:
+        element: element containing the text layer
+        params: dict of params to store results
+
+    Returns:
+        None
+
+    """
     output = params["out"]
     for wf in element:
         wid = wf.attrib.get("id", None)
@@ -351,10 +469,20 @@ def processText(element, params):
                 else:
                     output.write(" ;\n")
         output.write("\n")
+    return None
 
 
-def processDeps(element, params):
+def processDeps(element: etree.Element, params: dict = {}) -> None:
+    """Function to NAF deps layer to RDF
 
+    Args:
+        element: element containing the deps layer
+        params: dict of params to store results
+
+    Returns:
+        None
+
+    """
     output = params["out"]
     for dep in element:
         if dep.tag == "dep":
@@ -373,9 +501,20 @@ def processDeps(element, params):
             #         else:
             #             output.write("    naf-base:"+attrib2pred(key)+' _:'+dep.attrib[key]+' ;\n')
             output.write(" .\n")
+    return None
 
 
 def genProvenanceName(params: dict) -> str:
+    """Function to produce the provenance in RDF
+
+    Args:
+        element: element containing the header layer
+        params: dict of params to store results
+
+    Returns:
+        str: name of provenance
+
+    """
     output = params["out"]
     params["provenanceNumber"] += 1
     name: str = "_:provenance" + str(params["provenanceNumber"])
@@ -386,10 +525,20 @@ def genProvenanceName(params: dict) -> str:
 
 
 def genDepName(params: dict) -> str:
+    """Function to generate dependency name in RDF
+
+    Args:
+        params: dict of params to store results
+
+    Returns:
+        str: name of dependency
+
+    """
     output = params["out"]
     params["depNumber"] += 1
     name: str = "_:dep" + str(params["depNumber"])
     output.write(name + " \n")
+    return name
 
 
 if __name__ == "__main__":

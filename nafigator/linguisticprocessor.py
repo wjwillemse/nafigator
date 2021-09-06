@@ -1,6 +1,10 @@
-# coding: utf-8
+# -*- coding: utf-8 -*-
 
-"""Linguistic processor module."""
+"""Linguistic processor module.
+
+This module contains the linguistic classes for nafigator
+
+"""
 
 try:
     import spacy
@@ -19,12 +23,16 @@ except:
 if SPACY_IMPORTED:
 
     class spacyProcessor:
-        def __init__(
-            self,
-            nlp=None,
-            lang: str = None,
-        ):
+        def __init__(self, nlp=None, lang: str = None) -> None:
+            """Initialize spacy processor
 
+            Args:
+                nlp: optional NLP processor
+                lang: language
+            Returns:
+                None
+
+            """
             if nlp is None:
                 if lang == "en":
                     self.nlp = spacy.load("en_core_web_sm")
@@ -39,7 +47,14 @@ if SPACY_IMPORTED:
             self.model_version = f'spaCy_version-{spacy.__version__}__model_version-{self.nlp.meta["version"]}'
 
         def processor(self, name):
+            """Return processor of each pipeline element
 
+            Args:
+                name: name of processor
+            Returns:
+                dict: dictionary with name of processor
+
+            """
             processors = {proc_name: proc for proc_name, proc in self.nlp.pipeline}
 
             # where is the tokenizer object in spacy?
