@@ -47,6 +47,6 @@ setup(
     test_suite='tests',
     tests_require=test_requirements,
     url='https://github.com/denederlandschebank/nafigator',
-    version='0.1.31',
+    version='0.1.32',
     zip_safe=False,
 )
