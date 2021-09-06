@@ -268,6 +268,152 @@ def remove_control_characters(html: str) -> str:
     return html
 
 
+def sublist_indices(sub, full):
+    """
+    Returns a list of indices of the full list that contain the sub list
+    :param sub: list
+    :param full: list
+    :return: list
+
+    >>> sublist_indices(['Felix'], ['De', 'kat', 'genaamd', 'Felix', 'eet', 'geen', 'Felix'])
+    [[3], [6]]
+    >>> sublist_indices(['Felix', 'Maximiliaan'], ['De', 'kat', 'genaamd', 'Felix', 'Maximiliaan', 'eet', 'geen', 'Felix'])
+    [[3, 4]]
+    """
+    if sub == []:
+        return []
+    if full == []:
+        return []
+    found = []
+    for idx, item in enumerate(full):
+        if item == sub[0]:
+            if len(sub) == 1:
+                found.append([idx])
+            else:
+                match = True
+                for i, s in enumerate(sub[1:]):
+                    if len(full) > idx + i + 1:
+                        if s != full[idx + i + 1]:
+                            match = False
+                    else:
+                        match = False
+                if match:
+                    found.append(list(range(idx, idx + len(sub))))
+    return found
+
+
+def remove_sublists(lst):
+    """
+    Returns a list where all sublists are removed
+    :param lst: list
+    :return: list
+
+    >>> remove_sublists([[1, 2, 3], [1, 2]])
+    [[1, 2, 3]]
+    >>> remove_sublists([[1, 2, 3], [1]])
+    [[1, 2, 3]]
+    >>> remove_sublists([[1, 2, 3], [1, 2], [1]])
+    [[1, 2, 3]]
+    >>> remove_sublists([[1, 2, 3], [2, 3, 4], [2, 3], [3, 4]])
+    [[1, 2, 3], [2, 3, 4]]
+    """
+    curr_res = []
+    result = []
+    for elem in sorted(map(set, lst), key=len, reverse=True):
+        if not any(elem <= req for req in curr_res):
+            curr_res.append(elem)
+            r = list(elem)
+            result.append(r)
+    return result
+
+
+def evaluate_sentence(sentence: str, mandatory_terms: list, avoid_terms: list):
+    """
+    Evaluate sentence on occurrence of mandatory terms and non occurrence of
+    term to avoid
+
+    Args:
+        sentence: sentence to be assessed
+        mandatory_terms: list of terms that must be in sentence
+        avoid_terms: list of terms that must not be in sentence
+
+    Returns:
+        True is mandatory terms are in sentence and avoid terms are not
+
+    """
+    # if all mandatory words are in the sentence and none of the avoid_terms then signal
+    if (
+        all([sublist_indices(t.split(" "), sentence) != [] for t in mandatory_terms])
+        is True
+    ):
+        if not any(
+            [sublist_indices(t.split(" "), sentence) != [] for t in avoid_terms]
+        ):
+            return True
+    return False
+
+
+def lemmatize(
+    o: Union[str, list, dict], language: str, nlp: dict
+) -> Union[str, list, dict]:
+    """
+    lemmatize text in object
+
+    Args:
+        o: the object with text to be lemmatized (str, list or dict)
+        language: language used for lemmatization
+        nlp: dictionary of nlp processors
+
+    Returns:
+        object with lemmatized text
+
+    """
+    if isinstance(o, list):
+        return [lemmatize(item, language, nlp) for item in o]
+    elif isinstance(o, dict):
+        return {
+            lemmatize(key, language, nlp): lemmatize(o[key], language, nlp) for key in o
+        }
+    elif pd.isna(o):
+        return ""
+    elif isinstance(o, str):
+        return " ".join([word.lemma for word in nlp[language](o).sentences[0].words])
+
+
+def lowercase(o: Union[str, list, dict]) -> Union[str, list, dict]:
+    """
+    Lowercase text in object
+
+    Args:
+        o: the object with text to be lowercased (str, list or dict)
+
+    Returns:
+        object with lowercased text
+
+    """
+    if isinstance(o, list):
+        return [item.lower() for item in o]
+    elif isinstance(o, dict):
+        return {key.lower(): lowercase(o[key]) for key in o}
+    elif isinstance(o, str):
+        return o.lower()
+
+
+def lemmatize_sentence(sentence: dict, terms: dict):
+    """
+    Lemmatize naf sentence
+
+    Args:
+        sentence: dict of sentence (naf)
+        terms: list of terms dict (naf)
+
+    Returns:
+        lemmatized sentences as string
+
+    """
+    return [terms[term["id"]]["lemma"] for term in sentence["terms"]]
+
+  
 def add_hyperlink(paragraph, text, url):
     # This gets access to the document.xml.rels file and gets a new relation id value
     part = paragraph.part
