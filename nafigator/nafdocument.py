@@ -75,9 +75,10 @@ def QName(prefix: str = None, name: str = None):
 
 
 class NafDocument(etree._ElementTree):
-    """ """
+    """The NafDocument class (subclass of an etree.elementtree)"""
 
     def generate(self, params: dict):
+        """Initialize a NafDocument with data from the params dict"""
         self._setroot(etree.Element("NAF", nsmap=namespaces))
         self.set_version(params["naf_version"])
         self.set_language(params["language"])
@@ -85,14 +86,30 @@ class NafDocument(etree._ElementTree):
         self.add_filedesc_element(params["fileDesc"])
         self.add_public_element(params["public"])
 
-    def open(self, input):
-        """ """
+    def open(self, input: str) -> NafDocument:
+        """Function to open a NafDocument
+
+        Args:
+            input: the location of the NafDocument to be opened
+
+        Returns:
+            NafDocument: the NAF document that is opened
+
+        """
         with open(input, "r", encoding="utf-8") as f:
             self._setroot(etree.parse(f).getroot())
         return self
 
-    def write(self, output):
-        """ """
+    def write(self, output: str) -> None:
+        """Function to write a NafDocument
+
+        Args:
+            output: the location of the NafDocument to be stored
+
+        Returns:
+            None
+
+        """
         super().write(output, encoding="utf-8", pretty_print=True, xml_declaration=True)
 
     @property
@@ -336,8 +353,9 @@ class NafDocument(etree._ElementTree):
     @property
     def formats(self):
         """Returns formats layer of the NAF document as list of dicts"""
-        pages = list()
         for child in self.find(FORMATS_LAYER_TAG):
+            pages = list()
+            headers = list()
             if child.tag == "page":
                 pages_data = dict(child.attrib)
                 textboxes = list()
@@ -370,8 +388,18 @@ class NafDocument(etree._ElementTree):
                                 texts.append(text_data)
                         figure_data["texts"] = texts
                         figures.append(textbox_data)
+                    elif child2.tag == "header":
+                        spans = list()
+                        for child3 in child2:
+                            for child4 in child3:
+                                spans.append(child4.attrib)
+                        headers_data = dict(child2.attrib) 
+                        headers_data["spans"] = spans
+                        headers.append(headers_data)
+
                 pages_data["textboxes"] = textboxes
                 pages_data["figures"] = figures
+                pages_data["headers"] = headers
                 pages.append(pages_data)
         return pages
 
@@ -1056,7 +1084,9 @@ class NafDocument(etree._ElementTree):
 
         elif source == "docx":
 
-            WORD_NAMESPACE = "{http://schemas.openxmlformats.org/wordprocessingml/2006/main}"
+            WORD_NAMESPACE = (
+                "{http://schemas.openxmlformats.org/wordprocessingml/2006/main}"
+            )
             PARA = WORD_NAMESPACE + "p"
             RUN = WORD_NAMESPACE + "r"
             TEXT = WORD_NAMESPACE + "t"
@@ -1159,5 +1189,5 @@ class NafDocument(etree._ElementTree):
 
                 page.set("length", str(page_length))
                 page.set("offset", str(offset - page_length))
-                   
+
             # logging.warning("Formats layer for docx not yet implemented.")
