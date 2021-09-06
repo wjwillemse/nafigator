@@ -1,6 +1,6 @@
 """Top-level package for nafigator."""
 
-__version__ = "0.1.32"
+__version__ = "0.1.33"
 
 from .cli import *
 from .const import *

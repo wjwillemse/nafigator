@@ -122,7 +122,7 @@ class TestNafigator_pdf(unittest.TestCase):
                                   'length': '11', 
                                   'offset': '254', 
                                   'text': 'processor).'}]}]}], 
-                          'figures': []
+                          'figures': [], 'headers': []
                         }]
 
         assert actual == expected, "expected: "+str(expected)+", actual: "+str(actual)

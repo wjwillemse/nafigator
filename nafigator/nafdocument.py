@@ -86,7 +86,7 @@ class NafDocument(etree._ElementTree):
         self.add_filedesc_element(params["fileDesc"])
         self.add_public_element(params["public"])
 
-    def open(self, input: str) -> NafDocument:
+    def open(self, input: str):
         """Function to open a NafDocument
 
         Args:
