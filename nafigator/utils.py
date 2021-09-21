@@ -354,13 +354,13 @@ def evaluate_sentence(sentence: str, mandatory_terms: list, avoid_terms: list):
 
 
 def lemmatize(
-    o: Union[str, list, dict], language: str, nlp: dict
-) -> Union[str, list, dict]:
+    o: Union[str, list, dict, pd.Series, pd.DataFrame], language: str, nlp: dict
+) -> Union[str, list, dict, pd.Series, pd.DataFrame]:
     """
     lemmatize text in object
 
     Args:
-        o: the object with text to be lemmatized (str, list or dict)
+        o: the object with text to be lemmatized 
         language: language used for lemmatization
         nlp: dictionary of nlp processors
 
@@ -374,15 +374,14 @@ def lemmatize(
         return {
             lemmatize(key, language, nlp): lemmatize(o[key], language, nlp) for key in o
         }
-    elif pd.isna(o):
-        return ""
     elif isinstance(o, str):
         return " ".join([word.lemma for word in nlp[language](o).sentences[0].words])
     elif isinstance(o, pd.Series):
-        pass
+        return pd.Series(lemmatize(o.to_list(), language, nlp))
     elif isinstance(o, pd.DataFrame):
-        pass
-
+         return pd.DataFrame({col: lemmatize(o[col], language, nlp) for col in o.columns})
+    elif pd.isna(o):
+        return ""
 
 def lowercase(o: Union[str, list, dict, pd.Dataframe, pd.Series]) -> Union[str, list, dict, pd.Dataframe, pd.Series]:
     """
