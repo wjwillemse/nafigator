@@ -378,6 +378,10 @@ def lemmatize(
         return ""
     elif isinstance(o, str):
         return " ".join([word.lemma for word in nlp[language](o).sentences[0].words])
+    elif isinstance(o, pd.Series):
+        pass
+    elif isinstance(o, pd.DataFrame):
+        pass
 
 
 def lowercase(o: Union[str, list, dict, pd.Dataframe, pd.Series]) -> Union[str, list, dict, pd.Dataframe, pd.Series]:
@@ -400,7 +404,7 @@ def lowercase(o: Union[str, list, dict, pd.Dataframe, pd.Series]) -> Union[str, 
     elif isinstance(o, pd.Series):
         return pd.Series(o.astype(str).str.lower())
     elif isinstance(o, pd.DataFrame):
-        return pd.concat([lowercase(o[col]) for col in o.columns], axis=1)
+        return pd.DataFrame({col: lowercase(o[col]) for col in o.columns})
 
 def lemmatize_sentence(sentence: dict, terms: dict):
     """
