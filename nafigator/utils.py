@@ -380,12 +380,12 @@ def lemmatize(
         return " ".join([word.lemma for word in nlp[language](o).sentences[0].words])
 
 
-def lowercase(o: Union[str, list, dict]) -> Union[str, list, dict]:
+def lowercase(o): #: Union[str, list, dict, pd.Dataframe, pd.Series]) -> Union[str, list, dict, pd.Dataframe, pd.Series]:
     """
     Lowercase text in object
 
     Args:
-        o: the object with text to be lowercased (str, list or dict)
+        o: the object with text to be lowercased
 
     Returns:
         object with lowercased text
@@ -397,7 +397,10 @@ def lowercase(o: Union[str, list, dict]) -> Union[str, list, dict]:
         return {key.lower(): lowercase(o[key]) for key in o}
     elif isinstance(o, str):
         return o.lower()
-
+    elif isinstance(o, pd.Series):
+        return o.astype(str).str.lower()
+    elif isinstance(o, pd.DataFrame):
+        return pd.concat([lowercase(o[col]) for col in o.columns], axis=1)
 
 def lemmatize_sentence(sentence: dict, terms: dict):
     """
