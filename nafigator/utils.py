@@ -377,11 +377,12 @@ def lemmatize(
     elif isinstance(o, str):
         return " ".join([word.lemma for word in nlp[language](o).sentences[0].words])
     elif isinstance(o, pd.Series):
-        return pd.Series(lemmatize(o.to_list(), language, nlp))
+        return pd.Series(lemmatize(o.to_list(), language, nlp), index = o.index)
     elif isinstance(o, pd.DataFrame):
-         return pd.DataFrame({col: lemmatize(o[col], language, nlp) for col in o.columns})
+         return pd.DataFrame({col: lemmatize(o[col], language, nlp) for col in o.columns}, index = o.index)
     elif pd.isna(o):
         return ""
+
 
 def lowercase(o: Union[str, list, dict, pd.Dataframe, pd.Series]) -> Union[str, list, dict, pd.Dataframe, pd.Series]:
     """
