@@ -277,7 +277,10 @@ def sublist_indices(sub, full):
 
     >>> sublist_indices(['Felix'], ['De', 'kat', 'genaamd', 'Felix', 'eet', 'geen', 'Felix'])
     [[3], [6]]
-    >>> sublist_indices(['Felix', 'Maximiliaan'], ['De', 'kat', 'genaamd', 'Felix', 'Maximiliaan', 'eet', 'geen', 'Felix'])
+    >>> sublist_indices(
+            ['Felix', 'Maximiliaan'], 
+            ['De', 'kat', 'genaamd', 'Felix', 'Maximiliaan', 'eet', 'geen', 'Felix']
+        )
     [[3, 4]]
     """
     if sub == []:
@@ -354,13 +357,15 @@ def evaluate_sentence(sentence: str, mandatory_terms: list, avoid_terms: list):
 
 
 def lemmatize(
-    o: Union[str, list, dict, pd.Series, pd.DataFrame], language: str, nlp: dict
+    o: Union[str, list, dict, pd.Series, pd.DataFrame],
+    language: Union[str, pd.Series],
+    nlp: dict
 ) -> Union[str, list, dict, pd.Series, pd.DataFrame]:
     """
     lemmatize text in object
 
     Args:
-        o: the object with text to be lemmatized 
+        o: the object with text to be lemmatized
         language: language used for lemmatization
         nlp: dictionary of nlp processors
 
@@ -377,9 +382,14 @@ def lemmatize(
     elif isinstance(o, str):
         return " ".join([word.lemma for word in nlp[language](o).sentences[0].words])
     elif isinstance(o, pd.Series):
-        return pd.Series(lemmatize(o.to_list(), language, nlp), index = o.index)
+        for this_language in set(language):
+            o[language == this_language] = pd.Series(
+                lemmatize(o[language == this_language].to_list(), this_language, nlp),
+                index=o[language == this_language].index
+                )
+        return o
     elif isinstance(o, pd.DataFrame):
-         return pd.DataFrame({col: lemmatize(o[col], language, nlp) for col in o.columns}, index = o.index)
+        return pd.DataFrame({col: lemmatize(o[col], language, nlp) for col in o.columns}, index=o.index)
     elif pd.isna(o):
         return ""
 
@@ -406,6 +416,7 @@ def lowercase(o: Union[str, list, dict, pd.Dataframe, pd.Series]) -> Union[str, 
     elif isinstance(o, pd.DataFrame):
         return pd.DataFrame({col: lowercase(o[col]) for col in o.columns})
 
+
 def lemmatize_sentence(sentence: dict, terms: dict):
     """
     Lemmatize naf sentence
@@ -420,7 +431,7 @@ def lemmatize_sentence(sentence: dict, terms: dict):
     """
     return [terms[term["id"]]["lemma"] for term in sentence["terms"]]
 
-  
+
 def add_hyperlink(paragraph, text, url):
     # This gets access to the document.xml.rels file and gets a new relation id value
     part = paragraph.part
