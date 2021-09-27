@@ -387,7 +387,7 @@ class NafDocument(etree._ElementTree):
                                 texts.append(text_data)
                         figure_data["texts"] = texts
                         figures.append(figure_data)
-                    elif child2.tag == "headers":
+                    elif child2.tag == "header":
                         spans = list()
                         for child3 in child2:
                             for child4 in child3:
