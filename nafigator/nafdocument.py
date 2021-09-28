@@ -377,6 +377,7 @@ class NafDocument(etree._ElementTree):
                                 textlines.append(textline_data)
                         textbox_data["textlines"] = textlines
                         textboxes.append(textbox_data)
+                     # elif child2.tag == "layout":
                     elif child2.tag == "figure":
                         figure_data = dict(child2.attrib)
                         texts = list()
