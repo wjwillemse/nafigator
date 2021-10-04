@@ -70,8 +70,7 @@ def dataframe2naf(
         if dc_source and dc_language and output:
 
             # logging per processed file
-            log_file:
-                str = os.path.splitext(dc_source)[0] + ".log"
+            log_file: str = os.path.splitext(dc_source)[0] + ".log"
             logging.basicConfig(filename=log_file,
                                 level=logging.WARNING, filemode="w")
 
@@ -365,8 +364,7 @@ def evaluate_sentence(
 
     elif isinstance(mandatory_terms, pd.Series):
         mandatory_terms_per_term = mandatory_terms.explode().isin(sentence)
-        all_mandatory_terms = mandatory_terms_per_term.groupby(
-            level=0).all()
+        all_mandatory_terms = mandatory_terms_per_term.groupby(level=0).all()
         avoid_terms_per_term = avoid_terms.explode().isin(sentence)
         any_avoid_terms = avoid_terms_per_term.groupby(level=0).any()
 
