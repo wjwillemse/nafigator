@@ -61,7 +61,7 @@ def dataframe2naf(
             dc_source = None
             df_meta.loc[row, "naf:status"] = "ERROR, no dc:source in DataFrame"
 
-        if "naf:source" in df_meta.columns:
+        if "naf:source" in df_meta.columns and not pd.isna(df_meta.loc[row, "naf:source"]):
             output = df_meta.loc[row, "naf:source"]
         else:
             if dc_source is not None:
