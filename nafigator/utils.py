@@ -412,9 +412,9 @@ def lowercase(o: Union[str, list, dict, pd.Dataframe, pd.Series]) -> Union[str, 
     elif isinstance(o, str):
         return o.lower()
     elif isinstance(o, pd.Series):
-        return pd.Series(o.astype(str).str.lower())
+        return pd.Series(o.astype(str).str.lower(), index=o.index)
     elif isinstance(o, pd.DataFrame):
-        return pd.DataFrame({col: lowercase(o[col]) for col in o.columns})
+        return pd.DataFrame({col: lowercase(o[col]) for col in o.columns}, index=o.index)
 
 
 def lemmatize_sentence(sentence: dict, terms: dict):
