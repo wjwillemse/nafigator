@@ -20,12 +20,12 @@ import datetime
 
 def dataframe2naf(
     df_meta: pd.DataFrame,
-    overwrite_existing_naf: bool = False,
-    rerun_files_with_naf_errors: bool = False,
-    engine: str = None,
-    naf_version: str = None,
-    dtd_validation: bool = False,
-    params: dict = {},
+    overwrite_existing_naf: bool=False,
+    rerun_files_with_naf_errors: bool=False,
+    engine: str=None,
+    naf_version: str=None,
+    dtd_validation: bool=False,
+    params: dict={},
     nlp=None,
 ) -> pd.DataFrame:
     """Batch processor for NAF
@@ -52,7 +52,8 @@ def dataframe2naf(
             dc_language = df_meta.loc[row, "dc:language"].lower()
         else:
             dc_language = None
-            df_meta.loc[row, "naf:status"] = "ERROR, no dc:language in DataFrame"
+            df_meta.loc[
+                row, "naf:status"] = "ERROR, no dc:language in DataFrame"
 
         if "dc:source" in df_meta.columns:
             dc_source = df_meta.loc[row, "dc:source"]
@@ -69,11 +70,14 @@ def dataframe2naf(
         if dc_source and dc_language and output:
 
             # logging per processed file
-            log_file: str = os.path.splitext(dc_source)[0] + ".log"
-            logging.basicConfig(filename=log_file, level=logging.WARNING, filemode="w")
+            log_file:
+                str = os.path.splitext(dc_source)[0] + ".log"
+            logging.basicConfig(filename=log_file,
+                                level=logging.WARNING, filemode="w")
 
             if os.path.exists(output) and not overwrite_existing_naf:
-                # the NAF file exists and we should not overwrite existing naf files -> skip
+                # the NAF file exists and we should not overwrite existing naf
+                # files -> skip
                 df_meta.loc[row, "naf:status"] = "OK"
                 df_meta.loc[row, "naf:source"] = output
                 continue
@@ -81,7 +85,8 @@ def dataframe2naf(
                 "error" in df_meta.loc[row, "naf:status"].lower()
                 and not rerun_files_with_naf_errors
             ):
-                # the status is ERROR and we should not rerun files with errors -> skip
+                # the status is ERROR and we should not rerun files with errors
+                # -> skip
                 continue
             else:
                 # put columns in params
@@ -252,7 +257,8 @@ def remove_control_characters(html: str) -> str:
         return default
 
     # We encode all non-ascii characters to XML char-refs, so for example "💖" becomes: "&#x1F496;"
-    # Otherwise we'd remove emojis by mistake on narrow-unicode builds of Python
+    # Otherwise we'd remove emojis by mistake on narrow-unicode builds of
+    # Python
     html = html.encode("ascii", "xmlcharrefreplace").decode("utf-8")
     html = re.sub(
         r"&#(\d+);?",
@@ -261,7 +267,8 @@ def remove_control_characters(html: str) -> str:
     )
     html = re.sub(
         r"&#[xX]([0-9a-fA-F]+);?",
-        lambda c: strip_illegal_xml_characters(c.group(1), c.group(0), base=16),
+        lambda c: strip_illegal_xml_characters(
+            c.group(1), c.group(0), base=16),
         html,
     )
     html = ILLEGAL_XML_CHARS_RE.sub("", html)
@@ -344,16 +351,23 @@ def evaluate_sentence(sentence: str, mandatory_terms: list, avoid_terms: list):
         True is mandatory terms are in sentence and avoid terms are not
 
     """
-    # if all mandatory words are in the sentence and none of the avoid_terms then signal
-    if (
-        all([sublist_indices(t.split(" "), sentence) != [] for t in mandatory_terms])
-        is True
-    ):
-        if not any(
-            [sublist_indices(t.split(" "), sentence) != [] for t in avoid_terms]
-        ):
-            return True
-    return False
+    # if all mandatory words are in the sentence and none of the avoid_terms
+    # then signal
+
+    if isinstance(mandatory_terms, list):
+        all_mandatory_terms = all(
+            [term in sentence for term in mandatory_terms])
+        any_avoid_terms = any([term in sentence for term in avoid_terms])
+        eval = all_mandatory_terms & (not any_avoid_terms)
+    elif isinstance(mandatory_terms, pd.Series):
+        mandatory_terms_per_term = mandatory_terms.explode().isin(sentence)
+        all_mandatory_terms = mandatory_terms_per_term.groupby(
+            level=0).all()
+        avoid_terms_per_term = avoid_terms.explode().isin(sentence)
+        any_avoid_terms = avoid_terms_per_term.groupby(level=0).any()
+        eval = all_mandatory_terms * ~any_avoid_terms
+
+    return eval
 
 
 def lemmatize(
@@ -373,20 +387,21 @@ def lemmatize(
         object with lemmatized text
 
     """
-    if isinstance(o, list):
+    if isinstance(o, str):
+        return " ".join([word.lemma for word in nlp[language](o).sentences[0].words])
+    elif isinstance(o, list):
         return [lemmatize(item, language, nlp) for item in o]
     elif isinstance(o, dict):
         return {
             lemmatize(key, language, nlp): lemmatize(o[key], language, nlp) for key in o
         }
-    elif isinstance(o, str):
-        return " ".join([word.lemma for word in nlp[language](o).sentences[0].words])
     elif isinstance(o, pd.Series):
         for this_language in set(language):
             o[language == this_language] = pd.Series(
-                lemmatize(o[language == this_language].to_list(), this_language, nlp),
+                lemmatize(o[language == this_language].to_list(),
+                          this_language, nlp),
                 index=o[language == this_language].index
-                )
+            )
         return o
     elif isinstance(o, pd.DataFrame):
         return pd.DataFrame({col: lemmatize(o[col], language, nlp) for col in o.columns}, index=o.index)
@@ -433,7 +448,8 @@ def lemmatize_sentence(sentence: dict, terms: dict):
 
 
 def add_hyperlink(paragraph, text, url):
-    # This gets access to the document.xml.rels file and gets a new relation id value
+    # This gets access to the document.xml.rels file and gets a new relation
+    # id value
     part = paragraph.part
     r_id = part.relate_to(
         url, docx.opc.constants.RELATIONSHIP_TYPE.HYPERLINK, is_external=True
@@ -450,7 +466,8 @@ def add_hyperlink(paragraph, text, url):
     new_run = docx.oxml.shared.OxmlElement("w:r")
     rPr = docx.oxml.shared.OxmlElement("w:rPr")
 
-    # Join all the xml elements together add add the required text to the w:r element
+    # Join all the xml elements together add add the required text to the w:r
+    # element
     new_run.append(rPr)
     new_run.text = text
     hyperlink.append(new_run)
