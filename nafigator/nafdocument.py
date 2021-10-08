@@ -86,7 +86,7 @@ class NafDocument(etree._ElementTree):
         self.add_filedesc_element(params["fileDesc"])
         self.add_public_element(params["public"])
 
-    def open(self, input: str) -> NafDocument:
+    def open(self, input: str):
         """Function to open a NafDocument
 
         Args:
@@ -353,12 +353,12 @@ class NafDocument(etree._ElementTree):
     @property
     def formats(self):
         """Returns formats layer of the NAF document as list of dicts"""
+        pages = list()
         for child in self.find(FORMATS_LAYER_TAG):
-            pages = list()
-            headers = list()
             if child.tag == "page":
                 pages_data = dict(child.attrib)
                 textboxes = list()
+                headers = list()
                 figures = list()
                 for child2 in child:
                     if child2.tag == "textbox":
@@ -377,7 +377,7 @@ class NafDocument(etree._ElementTree):
                                 textlines.append(textline_data)
                         textbox_data["textlines"] = textlines
                         textboxes.append(textbox_data)
-                    # elif child2.tag == "layout":
+                     # elif child2.tag == "layout":
                     elif child2.tag == "figure":
                         figure_data = dict(child2.attrib)
                         texts = list()
@@ -387,20 +387,20 @@ class NafDocument(etree._ElementTree):
                                 text_data["text"] = child3.text
                                 texts.append(text_data)
                         figure_data["texts"] = texts
-                        figures.append(textbox_data)
+                        figures.append(figure_data)
                     elif child2.tag == "header":
                         spans = list()
                         for child3 in child2:
                             for child4 in child3:
                                 spans.append(child4.attrib)
-                        headers_data = dict(child2.attrib) 
+                        headers_data = dict(child2.attrib)
                         headers_data["spans"] = spans
                         headers.append(headers_data)
-
                 pages_data["textboxes"] = textboxes
                 pages_data["figures"] = figures
                 pages_data["headers"] = headers
                 pages.append(pages_data)
+
         return pages
 
     def __getattr__(self, name):

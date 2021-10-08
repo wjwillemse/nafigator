@@ -11,7 +11,7 @@ from pdfminer.pdfpage import PDFPage
 try:
     import pdfplumber
     PDFPLUMBER = True
-except
+except:
     PDFPLUMBER = False
 
 from io import BytesIO

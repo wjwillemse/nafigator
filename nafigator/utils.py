@@ -16,6 +16,7 @@ from nafigator import parse2naf
 import docx
 from docx.enum.dml import MSO_THEME_COLOR_INDEX
 import datetime
+from typing import Union
 
 
 def dataframe2naf(
