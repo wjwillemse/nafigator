@@ -405,7 +405,7 @@ def lemmatize(
         return ""
 
 
-def lowercase(o: Union[str, list, dict, pd.Dataframe, pd.Series]) -> Union[str, list, dict, pd.Dataframe, pd.Series]:
+def lowercase(o: Union[str, list, dict, pd.DataFrame, pd.Series]) -> Union[str, list, dict, pd.DataFrame, pd.Series]:
     """
     Lowercase text in object
 
