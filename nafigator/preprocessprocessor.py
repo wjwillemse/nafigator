@@ -15,7 +15,6 @@ except:
     PDFPLUMBER = False
 
 from io import BytesIO
-from datetime import datetime
 from .const import ProcessorElement
 
 import docx
@@ -47,7 +46,6 @@ def convert_pdf(
         str: the result of the conversion
 
     """
-    start_time = datetime.now()
 
     rsrcmgr = PDFResourceManager()
     retstr = BytesIO()
@@ -83,20 +81,7 @@ def convert_pdf(
     text = retstr.getvalue().decode()
     retstr.close()
 
-    end_time = datetime.now()
     params["fileDesc"]["pages"] = pages
-
-    pp = ProcessorElement(
-        name="pdfminer-pdf2" + format,
-        version=f"pdfminer_version-{pdfminer.__version__}",
-        model=None,
-        timestamp=None,
-        beginTimestamp=start_time,
-        endTimestamp=end_time,
-        hostname=None,
-    )
-
-    params["tree"].add_processor_element("pdfto" + format, pp)
 
     params["pdfto" + format] = text
 
@@ -136,8 +121,6 @@ def convert_docx(
 
     """
 
-    start_time = datetime.now()
-
     if format == "text":
         document = zipfile.ZipFile(path)
         xml_content = document.read("word/document.xml")
@@ -155,20 +138,6 @@ def convert_docx(
             zip = zipfile.ZipFile(f)
             text = zip.read("word/document.xml")
             styles = zip.read("word/styles.xml")  # not used yet
-
-    end_time = datetime.now()
-
-    pp = ProcessorElement(
-        name="python-docx2" + format,
-        version=f"python-docx_version-{docx.__version__}",
-        model=None,
-        timestamp=None,
-        beginTimestamp=start_time,
-        endTimestamp=end_time,
-        hostname=None,
-    )
-
-    params["tree"].add_processor_element("docxto" + format, pp)
 
     params["docxto" + format] = text
 
