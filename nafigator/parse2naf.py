@@ -53,8 +53,8 @@ def generate_naf(
     if engine is None:
         logging.error("no engine specified")
         return None
-    if language is None:
-        logging.error("no language specified")
+    if (language is None) and ("language_detector" not in params.keys()):
+        logging.error("no language or language detector specified")
         return None
     if naf_version is None:
         logging.error("no naf version specified")
@@ -253,7 +253,16 @@ def process_linguistic_steps(params: dict):
     """Perform linguistic steps to generate linguistics layers"""
     engine_name = params["engine_name"]
     nlp = params["nlp"]
-    language = params["language"]
+
+    # determine language for nlp processor
+    if params["language"] is not None:
+        language = params["language"]
+    else:
+        language = params['language_detector'](params["text"])
+        params['tree'].set_language(language)
+        params['language'] = language
+
+    # create nlp processor
     if engine_name.lower() == "stanza":
         # check if installed
         params["engine"] = stanzaProcessor(nlp, language)
@@ -264,10 +273,12 @@ def process_linguistic_steps(params: dict):
         logging.error("unknown engine")
         return None
 
+    # execute nlp processor pipeline
     params["beginTimestamp"] = datetime.now()
     params["doc"] = params["engine"].nlp(params["text"])
     params["endTimestamp"] = datetime.now()
 
+    # derive naf layers from nlp output
     process_linguistic_layers(params)
 
 
