@@ -53,8 +53,8 @@ def generate_naf(
     if engine is None:
         logging.error("no engine specified")
         return None
-    if language is None:
-        logging.error("no language specified")
+    if (language is None) and ("language_detector" not in params.keys()):
+        logging.error("no language or language detector specified")
         return None
     if naf_version is None:
         logging.error("no naf version specified")
@@ -79,9 +79,11 @@ def generate_naf(
     params["tree"] = NafDocument()
     params["tree"].generate(params)
 
-    process_preprocess_steps(params)
+    if params["preprocess_layers"] != []:
+        process_preprocess_steps(params)
 
-    process_linguistic_steps(params)
+    if params["linguistic_layers"] != []:
+        process_linguistic_steps(params)
 
     evaluate_naf(params)
 
@@ -139,6 +141,10 @@ def create_params(
             "deps",
             "raw",
             "multiwords",
+        ]
+    if "preprocess_layers" not in params.keys():
+        params["preprocess_layers"] = [
+            "formats"
         ]
     if params.get("cdata", None) is None:
         params["cdata"] = True
@@ -207,6 +213,7 @@ def norm_spaces(s):
 
 def process_preprocess_steps(params: dict):
     """Perform preprocessor steps to generate text as input for linguistic layers"""
+    params["beginTimestamp_preprocess"] = datetime.now()
     input = params["fileDesc"]["filename"]
     if input[-3:].lower() == "txt":
         with open(input) as f:
@@ -235,12 +242,27 @@ def process_preprocess_steps(params: dict):
 
     params["text"] = text_to_use
 
+    params["endTimestamp_preprocess"] = datetime.now()
+
+    layers = params["preprocess_layers"]
+    if "formats" in layers:
+        add_formats_layer(params)
+
 
 def process_linguistic_steps(params: dict):
     """Perform linguistic steps to generate linguistics layers"""
     engine_name = params["engine_name"]
     nlp = params["nlp"]
-    language = params["language"]
+
+    # determine language for nlp processor
+    if params["language"] is not None:
+        language = params["language"]
+    else:
+        language = params['language_detector'](params["text"])
+        params['tree'].set_language(language)
+        params['language'] = language
+
+    # create nlp processor
     if engine_name.lower() == "stanza":
         # check if installed
         params["engine"] = stanzaProcessor(nlp, language)
@@ -251,16 +273,12 @@ def process_linguistic_steps(params: dict):
         logging.error("unknown engine")
         return None
 
+    # execute nlp processor pipeline
     params["beginTimestamp"] = datetime.now()
     params["doc"] = params["engine"].nlp(params["text"])
     params["endTimestamp"] = datetime.now()
 
-    if "pdftoxml" in params.keys():
-        add_formats_layer("pdf", params)
-
-    if "docxtoxml" in params.keys():
-        add_formats_layer("docx", params)
-
+    # derive naf layers from nlp output
     process_linguistic_layers(params)
 
 
@@ -838,21 +856,20 @@ def add_chunks_layer(params: dict):
         params["tree"].add_chunk_element(chunk_data, params["comments"])
 
 
-def add_formats_layer(source: str, params: dict):
+def add_formats_layer(params: dict):
     """Generate and add all format elements in document to formats layer"""
     lp = ProcessorElement(
         name="formats",
-        version=params["engine"].model_version,
+        version=f"nafigator",
         model=None,
         timestamp=None,
-        beginTimestamp=params["beginTimestamp"],
-        endTimestamp=params["endTimestamp"],
+        beginTimestamp=params["beginTimestamp_preprocess"],
+        endTimestamp=params["endTimestamp_preprocess"],
         hostname=getfqdn(),
     )
-
     params["tree"].add_processor_element("formats", lp)
 
-    if source == "pdf":
-        params["tree"].add_formats_element(source, params["pdftoxml"])
-    elif source == "docx":
-        params["tree"].add_formats_element(source, params["docxtoxml"])
+    if "pdftoxml" in params.keys():
+        params["tree"].add_formats_element("pdf", params["pdftoxml"])
+    elif "docxtoxml" in params.keys():
+        params["tree"].add_formats_element("docx", params["docxtoxml"])
