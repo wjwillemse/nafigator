@@ -81,7 +81,7 @@ class NafDocument(etree._ElementTree):
         """Initialize a NafDocument with data from the params dict"""
         self._setroot(etree.Element("NAF", nsmap=namespaces))
         self.set_version(params["naf_version"])
-        if params['language'] is not None:
+        if params["language"] is not None:
             self.set_language(params["language"])
         self.add_nafHeader()
         self.add_filedesc_element(params["fileDesc"])
@@ -378,7 +378,7 @@ class NafDocument(etree._ElementTree):
                                 textlines.append(textline_data)
                         textbox_data["textlines"] = textlines
                         textboxes.append(textbox_data)
-                     # elif child2.tag == "layout":
+                    # elif child2.tag == "layout":
                     elif child2.tag == "figure":
                         figure_data = dict(child2.attrib)
                         texts = list()
@@ -654,7 +654,11 @@ class NafDocument(etree._ElementTree):
             attributes_to_ignore=["text"],
         )
 
-        wf.text = etree.CDATA(data.text) if cdata else data.text
+        wf.text = (
+            etree.CDATA(data.text if "]]>" not in data.text else " "*len(data.text))
+            if cdata
+            else data.text
+        )
 
     def add_raw_text_element(self, data: RawElement):
         """
@@ -1094,9 +1098,9 @@ class NafDocument(etree._ElementTree):
             FONT = WORD_NAMESPACE + "rFonts"
             RPR = WORD_NAMESPACE + "rPr"
             PPR = WORD_NAMESPACE + "pPr"
-            ASCII = WORD_NAMESPACE + 'ascii'
-            SIZE = WORD_NAMESPACE + 'sz'
-            VAL = WORD_NAMESPACE + 'val'
+            ASCII = WORD_NAMESPACE + "ascii"
+            SIZE = WORD_NAMESPACE + "sz"
+            VAL = WORD_NAMESPACE + "val"
             FOOTNOTEREF = WORD_NAMESPACE + "footnoteReference"
             SECTPR = WORD_NAMESPACE + "sectPr"
             BOLD = WORD_NAMESPACE + "b"
@@ -1149,23 +1153,49 @@ class NafDocument(etree._ElementTree):
                                         for item in text:
                                             if item.tag == FONT:
                                                 if ASCII in item.attrib.keys():
-                                                    font.update({'font': font.get('font', '')+item.attrib.get(ASCII)})
+                                                    font.update(
+                                                        {
+                                                            "font": font.get("font", "")
+                                                            + item.attrib.get(ASCII)
+                                                        }
+                                                    )
                                             elif item.tag == SIZE:
                                                 if VAL in item.attrib.keys():
                                                     # docx xml counts size in halves
-                                                    font.update({'size': str(float(item.attrib.get(VAL))/2)})
+                                                    font.update(
+                                                        {
+                                                            "size": str(
+                                                                float(
+                                                                    item.attrib.get(VAL)
+                                                                )
+                                                                / 2
+                                                            )
+                                                        }
+                                                    )
                                             elif item.tag == BOLD:
                                                 # bold is stored in the font data (like pdfminer)
-                                                font.update({'font': font.get('font', '')+"_bold"})
+                                                font.update(
+                                                    {
+                                                        "font": font.get("font", "")
+                                                        + "_bold"
+                                                    }
+                                                )
                                             elif item.tag == ITALICS:
                                                 # italics is stored in the font data (like pdfminer)
-                                                font.update({'font': font.get('font', '')+"_italics"})
+                                                font.update(
+                                                    {
+                                                        "font": font.get("font", "")
+                                                        + "_italics"
+                                                    }
+                                                )
                                     elif text.tag == TEXT:
-                                        text_el = add_text_element(r, "text", text.text, font, offset)
+                                        text_el = add_text_element(
+                                            r, "text", text.text, font, offset
+                                        )
                                         page_length += len(text.text)
                                         offset += len(text.text)
-                                        page_length += 1
-                                        offset += 1
+                                        # page_length += 1
+                                        # offset += 1
                                     elif text.tag == FOOTNOTEREF:
                                         # not implemented
                                         continue

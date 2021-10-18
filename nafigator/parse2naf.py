@@ -14,6 +14,8 @@ from .nafdocument import NafDocument
 from .linguisticprocessor import stanzaProcessor
 from .linguisticprocessor import spacyProcessor
 from .preprocessprocessor import convert_pdf, convert_docx
+from .ocrprocessor import convert_ocr_pdf
+
 from lxml import etree
 import lxml.html
 
@@ -76,16 +78,16 @@ def generate_naf(
         nlp=nlp,
     )
 
-    params["tree"] = NafDocument()
-    params["tree"].generate(params)
+    if "tree" not in params.keys():
+        params["tree"] = NafDocument()
+        params["tree"].generate(params)
 
     if params["preprocess_layers"] != []:
         process_preprocess_steps(params)
 
     if params["linguistic_layers"] != []:
         process_linguistic_steps(params)
-
-    evaluate_naf(params)
+        evaluate_naf(params)
 
     return params["tree"]
 
@@ -143,9 +145,7 @@ def create_params(
             "multiwords",
         ]
     if "preprocess_layers" not in params.keys():
-        params["preprocess_layers"] = [
-            "formats"
-        ]
+        params["preprocess_layers"] = ["formats"]
     if params.get("cdata", None) is None:
         params["cdata"] = True
     if params.get("map_udpos2olia", None) is None:
@@ -156,6 +156,8 @@ def create_params(
         params["replace_hidden_characters"] = True
     if params.get("comments", None) is None:
         params["comments"] = True
+    if params.get("apply_ocr", None) is None:
+        params["apply_ocr"] = False
 
     return params
 
@@ -174,7 +176,9 @@ def evaluate_naf(params: dict):
             + ")"
         )
     # verify alignment between raw layer and text
-    text_to_use = params["text"]
+    text_to_use = derive_text_from_formats_layer(
+        params
+    ) 
     if len(raw) != len(text_to_use):
         logging.error(
             "raw length ("
@@ -205,12 +209,6 @@ def evaluate_naf(params: dict):
         params["tree"].validate()
 
 
-def norm_spaces(s):
-    """Normalize spaces, splits on all kinds of whitespace and rejoins"""
-    return s
-    # return " ".join((x for x in re.split(r"\s+", s) if x))
-
-
 def process_preprocess_steps(params: dict):
     """Perform preprocessor steps to generate text as input for linguistic layers"""
     params["beginTimestamp_preprocess"] = datetime.now()
@@ -225,28 +223,31 @@ def process_preprocess_steps(params: dict):
     elif input[-4:].lower() == "docx":
         convert_docx(input, format="xml", params=params)
         convert_docx(input, format="text", params=params)
-        params["text"] = params["docxtotext"]
     elif input[-3:].lower() == "pdf":
-        convert_pdf(input, format="xml", params=params)
-        convert_pdf(input, format="text", params=params)
-        params["text"] = params["pdftotext"]
-
-    text = params["text"].rstrip()
-    if params["replace_hidden_characters"]:
-        text_to_use = norm_spaces(text.translate(hidden_table))
-    else:
-        text_to_use = norm_spaces(text)
-
-    # if len(text) != len(text_to_use):
-    #     logging.error("len text != len text.translate")
-
-    params["text"] = text_to_use
+        if not params["apply_ocr"]:
+            convert_pdf(input, format="xml", params=params)
+            convert_pdf(input, format="text", params=params)
+        else:
+            params["text"] = convert_ocr_pdf(input, format="text", params=params)
 
     params["endTimestamp_preprocess"] = datetime.now()
 
+    # derive preprocess layers from nlp output
+    process_preprocess_layers(params)
+
+
+def process_preprocess_layers(params: dict):
+    """Perform preprocess layers"""
     layers = params["preprocess_layers"]
+
     if "formats" in layers:
         add_formats_layer(params)
+
+
+def norm_spaces(s):
+    """Normalize spaces, splits on all kinds of whitespace and rejoins"""
+    return s
+    # return " ".join((x for x in re.split(r"\s+", s) if x))
 
 
 def process_linguistic_steps(params: dict):
@@ -254,13 +255,15 @@ def process_linguistic_steps(params: dict):
     engine_name = params["engine_name"]
     nlp = params["nlp"]
 
+    text = derive_text_from_formats_layer(params)
+
     # determine language for nlp processor
     if params["language"] is not None:
         language = params["language"]
     else:
-        language = params['language_detector'](params["text"])
-        params['tree'].set_language(language)
-        params['language'] = language
+        language = params["language_detector"](text)
+        params["tree"].set_language(language)
+        params["language"] = language
 
     # create nlp processor
     if engine_name.lower() == "stanza":
@@ -275,7 +278,7 @@ def process_linguistic_steps(params: dict):
 
     # execute nlp processor pipeline
     params["beginTimestamp"] = datetime.now()
-    params["doc"] = params["engine"].nlp(params["text"])
+    params["doc"] = params["engine"].nlp(text)
     params["endTimestamp"] = datetime.now()
 
     # derive naf layers from nlp output
@@ -306,6 +309,34 @@ def process_linguistic_layers(params: dict):
 
     if "raw" in layers:
         add_raw_layer(params)
+
+
+def derive_text_from_formats_layer(params):
+    """Derive the text from the xml formats layer"""
+    formats = params["tree"].find(FORMATS_LAYER_TAG)
+    if formats is not None:
+        text = [
+            (text.text, int(text.get("offset")))
+            for page in formats
+            for textbox in page
+            for textline in textbox
+            for text in textline
+        ]
+        text = [
+            line[0] + " " * (text[idx + 1][1] - text[idx][1] - len(line[0]))
+            for idx, line in enumerate(text)
+            if idx < len(text) - 1
+        ] + [text[-1][0]]
+        text = "".join(text).rstrip()
+        if params["replace_hidden_characters"]:
+            text = norm_spaces(text.translate(hidden_table))
+        else:
+            text = norm_spaces(text)
+    else:
+        # html documents
+        text = params["text"]
+
+    return text
 
 
 def entities_generator(doc, params: dict):
@@ -802,36 +833,40 @@ def add_raw_layer(params: dict):
 
     wordforms = params["tree"].text
 
-    delta = int(wordforms[0]["offset"])
-    tokens = [" " * delta + wordforms[0]["text"]]
+    if len(wordforms) > 0:
 
-    for prev_wf, cur_wf in zip(wordforms[:-1], wordforms[1:]):
-        prev_start = int(prev_wf["offset"])
-        prev_end = prev_start + int(prev_wf["length"])
-        cur_start = int(cur_wf["offset"])
-        delta = cur_start - prev_end
-        # no chars between two token (for example with a dot .)
-        if delta == 0:
-            leading_chars = ""
-        elif delta >= 1:
-            # 1 or more characters between tokens -> n spaces added
-            leading_chars = " " * delta
-        elif delta < 0:
-            logging.warning(
-                "please check the offsets of "
-                + str(prev_wf["text"])
-                + " and "
-                + str(cur_wf["text"])
-                + " (delta of "
-                + str(delta)
-                + ")"
-            )
-        tokens.append(leading_chars + cur_wf["text"])
+        delta = int(wordforms[0]["offset"])
+        tokens = [" " * delta + wordforms[0]["text"]]
 
-    if params["cdata"]:
-        raw_text = etree.CDATA("".join(tokens))
+        for prev_wf, cur_wf in zip(wordforms[:-1], wordforms[1:]):
+            prev_start = int(prev_wf["offset"])
+            prev_end = prev_start + int(prev_wf["length"])
+            cur_start = int(cur_wf["offset"])
+            delta = cur_start - prev_end
+            # no chars between two token (for example with a dot .)
+            if delta == 0:
+                leading_chars = ""
+            elif delta >= 1:
+                # 1 or more characters between tokens -> n spaces added
+                leading_chars = " " * delta
+            elif delta < 0:
+                logging.warning(
+                    "please check the offsets of "
+                    + str(prev_wf["text"])
+                    + " and "
+                    + str(cur_wf["text"])
+                    + " (delta of "
+                    + str(delta)
+                    + ")"
+                )
+            tokens.append(leading_chars + cur_wf["text"])
+
+        if params["cdata"]:
+            raw_text = etree.CDATA("".join(tokens))
+        else:
+            raw_text = "".join(tokens)
     else:
-        raw_text = "".join(tokens)
+        raw_data = ""
 
     raw_data = RawElement(text=raw_text)
 
