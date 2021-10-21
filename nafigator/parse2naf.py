@@ -261,7 +261,7 @@ def process_linguistic_steps(params: dict):
     if params["language"] is not None:
         language = params["language"]
     else:
-        language = params["language_detector"](text)
+        language = params["language_detector"].detect(text)
         params["tree"].set_language(language)
         params["language"] = language
 
