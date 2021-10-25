@@ -1,36 +1,62 @@
 <?xml version='1.0' encoding='UTF-8'?>
 <NAF xmlns:dc="http://purl.org/dc/elements/1.1/" version="v3.1" xml:lang="en">
   <nafHeader>
-    <fileDesc creationtime="2021-08-13T10:33:30UTC" filename="tests\tests\example.docx" filetype="application/vnd.openxmlformats-officedocument.wordprocessingml.document"/>
+    <fileDesc creationtime="2021-10-25T11:21:54UTC" filename="tests\tests\example.docx" filetype="application/vnd.openxmlformats-officedocument.wordprocessingml.document"/>
     <public dc:uri="tests\tests\example.docx" dc:format="application/vnd.openxmlformats-officedocument.wordprocessingml.document"/>
-    <linguisticProcessors layer="docxtoxml">
-      <lp name="python-docx2xml" version="python-docx_version-0.8.11" beginTimestamp="2021-08-13T10:33:30UTC" endTimestamp="2021-08-13T10:33:30UTC"/>
-    </linguisticProcessors>
-    <linguisticProcessors layer="docxtotext">
-      <lp name="python-docx2text" version="python-docx_version-0.8.11" beginTimestamp="2021-08-13T10:33:30UTC" endTimestamp="2021-08-13T10:33:30UTC"/>
-    </linguisticProcessors>
     <linguisticProcessors layer="formats">
-      <lp name="formats" version="stanza_version-1.2.2" beginTimestamp="2021-08-13T10:33:32UTC" endTimestamp="2021-08-13T10:33:32UTC" hostname="DESKTOP-NORB4QA.fritz.box"/>
+      <lp name="formats" version="nafigator" beginTimestamp="2021-10-25T11:21:54UTC" endTimestamp="2021-10-25T11:21:54UTC" hostname="DESKTOP-NORB4QA.fritz.box"/>
     </linguisticProcessors>
     <linguisticProcessors layer="entities">
-      <lp name="entities" version="stanza_version-1.2.2" model="C:\Users\Willem Jan Willemse\stanza_resources\en\ner\ontonotes.pt" beginTimestamp="2021-08-13T10:33:32UTC" endTimestamp="2021-08-13T10:33:32UTC" hostname="DESKTOP-NORB4QA.fritz.box"/>
+      <lp name="entities" version="stanza_version-1.2.2" model="C:\Users\Willem Jan Willemse\stanza_resources\en\ner\ontonotes.pt" beginTimestamp="2021-10-25T11:21:56UTC" endTimestamp="2021-10-25T11:21:57UTC" hostname="DESKTOP-NORB4QA.fritz.box"/>
     </linguisticProcessors>
     <linguisticProcessors layer="text">
-      <lp name="text" version="stanza_version-1.2.2" model="C:\Users\Willem Jan Willemse\stanza_resources\en\tokenize\ewt.pt" beginTimestamp="2021-08-13T10:33:32UTC" endTimestamp="2021-08-13T10:33:32UTC" hostname="DESKTOP-NORB4QA.fritz.box"/>
+      <lp name="text" version="stanza_version-1.2.2" model="C:\Users\Willem Jan Willemse\stanza_resources\en\tokenize\ewt.pt" beginTimestamp="2021-10-25T11:21:56UTC" endTimestamp="2021-10-25T11:21:57UTC" hostname="DESKTOP-NORB4QA.fritz.box"/>
     </linguisticProcessors>
     <linguisticProcessors layer="terms">
-      <lp name="terms" version="stanza_version-1.2.2" model="C:\Users\Willem Jan Willemse\stanza_resources\en\pos\ewt.pt" beginTimestamp="2021-08-13T10:33:32UTC" endTimestamp="2021-08-13T10:33:32UTC" hostname="DESKTOP-NORB4QA.fritz.box"/>
+      <lp name="terms" version="stanza_version-1.2.2" model="C:\Users\Willem Jan Willemse\stanza_resources\en\pos\ewt.pt" beginTimestamp="2021-10-25T11:21:56UTC" endTimestamp="2021-10-25T11:21:57UTC" hostname="DESKTOP-NORB4QA.fritz.box"/>
     </linguisticProcessors>
     <linguisticProcessors layer="deps">
-      <lp name="deps" version="stanza_version-1.2.2" model="C:\Users\Willem Jan Willemse\stanza_resources\en\depparse\ewt.pt" beginTimestamp="2021-08-13T10:33:32UTC" endTimestamp="2021-08-13T10:33:32UTC" hostname="DESKTOP-NORB4QA.fritz.box"/>
+      <lp name="deps" version="stanza_version-1.2.2" model="C:\Users\Willem Jan Willemse\stanza_resources\en\depparse\ewt.pt" beginTimestamp="2021-10-25T11:21:56UTC" endTimestamp="2021-10-25T11:21:57UTC" hostname="DESKTOP-NORB4QA.fritz.box"/>
     </linguisticProcessors>
     <linguisticProcessors layer="multiwords">
-      <lp name="multiwords" version="stanza_version-1.2.2" model="C:\Users\Willem Jan Willemse\stanza_resources\en\tokenize\ewt.pt" beginTimestamp="2021-08-13T10:33:32UTC" endTimestamp="2021-08-13T10:33:32UTC" hostname="DESKTOP-NORB4QA.fritz.box"/>
+      <lp name="multiwords" version="stanza_version-1.2.2" model="C:\Users\Willem Jan Willemse\stanza_resources\en\tokenize\ewt.pt" beginTimestamp="2021-10-25T11:21:56UTC" endTimestamp="2021-10-25T11:21:57UTC" hostname="DESKTOP-NORB4QA.fritz.box"/>
     </linguisticProcessors>
     <linguisticProcessors layer="raw">
-      <lp name="raw" version="stanza_version-1.2.2" model="C:\Users\Willem Jan Willemse\stanza_resources\en\tokenize\ewt.pt" beginTimestamp="2021-08-13T10:33:32UTC" endTimestamp="2021-08-13T10:33:32UTC" hostname="DESKTOP-NORB4QA.fritz.box"/>
+      <lp name="raw" version="stanza_version-1.2.2" model="C:\Users\Willem Jan Willemse\stanza_resources\en\tokenize\ewt.pt" beginTimestamp="2021-10-25T11:21:56UTC" endTimestamp="2021-10-25T11:21:57UTC" hostname="DESKTOP-NORB4QA.fritz.box"/>
     </linguisticProcessors>
   </nafHeader>
+  <formats>
+    <page length="264" offset="0">
+      <textbox>
+        <textline>
+          <text length="70" offset="0">The Nafigator package allows you to store NLP output from custom made </text>
+        </textline>
+        <textline>
+          <text length="1" offset="70">S</text>
+        </textline>
+        <textline>
+          <text length="2" offset="71">pa</text>
+        </textline>
+        <textline>
+          <text length="1" offset="73">c</text>
+        </textline>
+        <textline>
+          <text length="90" offset="74">y and stanza pipelines with (intermediate) results and all processing steps in one format.</text>
+        </textline>
+      </textbox>
+      <textbox>
+        <textline/>
+      </textbox>
+      <textbox>
+        <textline>
+          <text length="11" offset="166">Multiwords </text>
+        </textline>
+        <textline>
+          <text length="86" offset="177">like in “we have set that out below” are recognized (depending on your NLP processor).</text>
+        </textline>
+      </textbox>
+    </page>
+  </formats>
   <entities>
     <entity id="e1" type="PRODUCT">
       <span>
@@ -52,56 +78,56 @@
     </entity>
   </entities>
   <text>
-    <wf id="w1" sent="1" para="0" page="0" offset="0" length="3"><![CDATA[The]]></wf>
-    <wf id="w2" sent="1" para="0" page="0" offset="4" length="9"><![CDATA[Nafigator]]></wf>
-    <wf id="w3" sent="1" para="0" page="0" offset="14" length="7"><![CDATA[package]]></wf>
-    <wf id="w4" sent="1" para="0" page="0" offset="22" length="6"><![CDATA[allows]]></wf>
-    <wf id="w5" sent="1" para="0" page="0" offset="29" length="3"><![CDATA[you]]></wf>
-    <wf id="w6" sent="1" para="0" page="0" offset="33" length="2"><![CDATA[to]]></wf>
-    <wf id="w7" sent="1" para="0" page="0" offset="36" length="5"><![CDATA[store]]></wf>
-    <wf id="w8" sent="1" para="0" page="0" offset="42" length="3"><![CDATA[NLP]]></wf>
-    <wf id="w9" sent="1" para="0" page="0" offset="46" length="6"><![CDATA[output]]></wf>
-    <wf id="w10" sent="1" para="0" page="0" offset="53" length="4"><![CDATA[from]]></wf>
-    <wf id="w11" sent="1" para="0" page="0" offset="58" length="6"><![CDATA[custom]]></wf>
-    <wf id="w12" sent="1" para="0" page="0" offset="65" length="4"><![CDATA[made]]></wf>
-    <wf id="w13" sent="1" para="0" page="0" offset="70" length="5"><![CDATA[Spacy]]></wf>
-    <wf id="w14" sent="1" para="0" page="0" offset="76" length="3"><![CDATA[and]]></wf>
-    <wf id="w15" sent="1" para="0" page="0" offset="80" length="6"><![CDATA[stanza]]></wf>
-    <wf id="w16" sent="1" para="0" page="0" offset="87" length="9"><![CDATA[pipelines]]></wf>
-    <wf id="w17" sent="1" para="0" page="0" offset="97" length="4"><![CDATA[with]]></wf>
-    <wf id="w18" sent="1" para="0" page="0" offset="102" length="1"><![CDATA[(]]></wf>
-    <wf id="w19" sent="1" para="0" page="0" offset="103" length="12"><![CDATA[intermediate]]></wf>
-    <wf id="w20" sent="1" para="0" page="0" offset="115" length="1"><![CDATA[)]]></wf>
-    <wf id="w21" sent="1" para="0" page="0" offset="117" length="7"><![CDATA[results]]></wf>
-    <wf id="w22" sent="1" para="0" page="0" offset="125" length="3"><![CDATA[and]]></wf>
-    <wf id="w23" sent="1" para="0" page="0" offset="129" length="3"><![CDATA[all]]></wf>
-    <wf id="w24" sent="1" para="0" page="0" offset="133" length="10"><![CDATA[processing]]></wf>
-    <wf id="w25" sent="1" para="0" page="0" offset="144" length="5"><![CDATA[steps]]></wf>
-    <wf id="w26" sent="1" para="0" page="0" offset="150" length="2"><![CDATA[in]]></wf>
-    <wf id="w27" sent="1" para="0" page="0" offset="153" length="3"><![CDATA[one]]></wf>
-    <wf id="w28" sent="1" para="0" page="0" offset="157" length="6"><![CDATA[format]]></wf>
-    <wf id="w29" sent="1" para="0" page="0" offset="163" length="1"><![CDATA[.]]></wf>
-    <wf id="w30" sent="2" para="0" page="0" offset="166" length="10"><![CDATA[Multiwords]]></wf>
-    <wf id="w31" sent="2" para="0" page="0" offset="177" length="4"><![CDATA[like]]></wf>
-    <wf id="w32" sent="2" para="0" page="0" offset="182" length="2"><![CDATA[in]]></wf>
-    <wf id="w33" sent="2" para="0" page="0" offset="185" length="1"><![CDATA[“]]></wf>
-    <wf id="w34" sent="2" para="0" page="0" offset="186" length="2"><![CDATA[we]]></wf>
-    <wf id="w35" sent="2" para="0" page="0" offset="189" length="4"><![CDATA[have]]></wf>
-    <wf id="w36" sent="2" para="0" page="0" offset="194" length="3"><![CDATA[set]]></wf>
-    <wf id="w37" sent="2" para="0" page="0" offset="198" length="4"><![CDATA[that]]></wf>
-    <wf id="w38" sent="2" para="0" page="0" offset="203" length="3"><![CDATA[out]]></wf>
-    <wf id="w39" sent="2" para="0" page="0" offset="207" length="5"><![CDATA[below]]></wf>
-    <wf id="w40" sent="2" para="0" page="0" offset="212" length="1"><![CDATA[”]]></wf>
-    <wf id="w41" sent="2" para="0" page="0" offset="214" length="3"><![CDATA[are]]></wf>
-    <wf id="w42" sent="2" para="0" page="0" offset="218" length="10"><![CDATA[recognized]]></wf>
-    <wf id="w43" sent="2" para="0" page="0" offset="229" length="1"><![CDATA[(]]></wf>
-    <wf id="w44" sent="2" para="0" page="0" offset="230" length="9"><![CDATA[depending]]></wf>
-    <wf id="w45" sent="2" para="0" page="0" offset="240" length="2"><![CDATA[on]]></wf>
-    <wf id="w46" sent="2" para="0" page="0" offset="243" length="4"><![CDATA[your]]></wf>
-    <wf id="w47" sent="2" para="0" page="0" offset="248" length="3"><![CDATA[NLP]]></wf>
-    <wf id="w48" sent="2" para="0" page="0" offset="252" length="9"><![CDATA[processor]]></wf>
-    <wf id="w49" sent="2" para="0" page="0" offset="261" length="1"><![CDATA[)]]></wf>
-    <wf id="w50" sent="2" para="0" page="0" offset="262" length="1"><![CDATA[.]]></wf>
+    <wf id="w1" sent="1" para="1" page="1" offset="0" length="3"><![CDATA[The]]></wf>
+    <wf id="w2" sent="1" para="1" page="1" offset="4" length="9"><![CDATA[Nafigator]]></wf>
+    <wf id="w3" sent="1" para="1" page="1" offset="14" length="7"><![CDATA[package]]></wf>
+    <wf id="w4" sent="1" para="1" page="1" offset="22" length="6"><![CDATA[allows]]></wf>
+    <wf id="w5" sent="1" para="1" page="1" offset="29" length="3"><![CDATA[you]]></wf>
+    <wf id="w6" sent="1" para="1" page="1" offset="33" length="2"><![CDATA[to]]></wf>
+    <wf id="w7" sent="1" para="1" page="1" offset="36" length="5"><![CDATA[store]]></wf>
+    <wf id="w8" sent="1" para="1" page="1" offset="42" length="3"><![CDATA[NLP]]></wf>
+    <wf id="w9" sent="1" para="1" page="1" offset="46" length="6"><![CDATA[output]]></wf>
+    <wf id="w10" sent="1" para="1" page="1" offset="53" length="4"><![CDATA[from]]></wf>
+    <wf id="w11" sent="1" para="1" page="1" offset="58" length="6"><![CDATA[custom]]></wf>
+    <wf id="w12" sent="1" para="1" page="1" offset="65" length="4"><![CDATA[made]]></wf>
+    <wf id="w13" sent="1" para="1" page="1" offset="70" length="5"><![CDATA[Spacy]]></wf>
+    <wf id="w14" sent="1" para="1" page="1" offset="76" length="3"><![CDATA[and]]></wf>
+    <wf id="w15" sent="1" para="1" page="1" offset="80" length="6"><![CDATA[stanza]]></wf>
+    <wf id="w16" sent="1" para="1" page="1" offset="87" length="9"><![CDATA[pipelines]]></wf>
+    <wf id="w17" sent="1" para="1" page="1" offset="97" length="4"><![CDATA[with]]></wf>
+    <wf id="w18" sent="1" para="1" page="1" offset="102" length="1"><![CDATA[(]]></wf>
+    <wf id="w19" sent="1" para="1" page="1" offset="103" length="12"><![CDATA[intermediate]]></wf>
+    <wf id="w20" sent="1" para="1" page="1" offset="115" length="1"><![CDATA[)]]></wf>
+    <wf id="w21" sent="1" para="1" page="1" offset="117" length="7"><![CDATA[results]]></wf>
+    <wf id="w22" sent="1" para="1" page="1" offset="125" length="3"><![CDATA[and]]></wf>
+    <wf id="w23" sent="1" para="1" page="1" offset="129" length="3"><![CDATA[all]]></wf>
+    <wf id="w24" sent="1" para="1" page="1" offset="133" length="10"><![CDATA[processing]]></wf>
+    <wf id="w25" sent="1" para="1" page="1" offset="144" length="5"><![CDATA[steps]]></wf>
+    <wf id="w26" sent="1" para="1" page="1" offset="150" length="2"><![CDATA[in]]></wf>
+    <wf id="w27" sent="1" para="1" page="1" offset="153" length="3"><![CDATA[one]]></wf>
+    <wf id="w28" sent="1" para="1" page="1" offset="157" length="6"><![CDATA[format]]></wf>
+    <wf id="w29" sent="1" para="1" page="1" offset="163" length="1"><![CDATA[.]]></wf>
+    <wf id="w30" sent="2" para="2" page="1" offset="166" length="10"><![CDATA[Multiwords]]></wf>
+    <wf id="w31" sent="2" para="2" page="1" offset="177" length="4"><![CDATA[like]]></wf>
+    <wf id="w32" sent="2" para="2" page="1" offset="182" length="2"><![CDATA[in]]></wf>
+    <wf id="w33" sent="2" para="2" page="1" offset="185" length="1"><![CDATA[“]]></wf>
+    <wf id="w34" sent="2" para="2" page="1" offset="186" length="2"><![CDATA[we]]></wf>
+    <wf id="w35" sent="2" para="2" page="1" offset="189" length="4"><![CDATA[have]]></wf>
+    <wf id="w36" sent="2" para="2" page="1" offset="194" length="3"><![CDATA[set]]></wf>
+    <wf id="w37" sent="2" para="2" page="1" offset="198" length="4"><![CDATA[that]]></wf>
+    <wf id="w38" sent="2" para="2" page="1" offset="203" length="3"><![CDATA[out]]></wf>
+    <wf id="w39" sent="2" para="2" page="1" offset="207" length="5"><![CDATA[below]]></wf>
+    <wf id="w40" sent="2" para="2" page="1" offset="212" length="1"><![CDATA[”]]></wf>
+    <wf id="w41" sent="2" para="2" page="1" offset="214" length="3"><![CDATA[are]]></wf>
+    <wf id="w42" sent="2" para="2" page="1" offset="218" length="10"><![CDATA[recognized]]></wf>
+    <wf id="w43" sent="2" para="2" page="1" offset="229" length="1"><![CDATA[(]]></wf>
+    <wf id="w44" sent="2" para="2" page="1" offset="230" length="9"><![CDATA[depending]]></wf>
+    <wf id="w45" sent="2" para="2" page="1" offset="240" length="2"><![CDATA[on]]></wf>
+    <wf id="w46" sent="2" para="2" page="1" offset="243" length="4"><![CDATA[your]]></wf>
+    <wf id="w47" sent="2" para="2" page="1" offset="248" length="3"><![CDATA[NLP]]></wf>
+    <wf id="w48" sent="2" para="2" page="1" offset="252" length="9"><![CDATA[processor]]></wf>
+    <wf id="w49" sent="2" para="2" page="1" offset="261" length="1"><![CDATA[)]]></wf>
+    <wf id="w50" sent="2" para="2" page="1" offset="262" length="1"><![CDATA[.]]></wf>
   </text>
   <terms>
     <term id="t1" type="open" lemma="the" pos="DET" morphofeat="Definite=Def|PronType=Art">

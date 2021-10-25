@@ -1,6 +1,6 @@
 """Top-level package for nafigator."""
 
-__version__ = "0.1.35"
+__version__ = "0.1.36"
 
 from .cli import *
 from .const import *
@@ -13,3 +13,5 @@ from .convert2rdf import *
 
 from .linguisticprocessor import *
 from .preprocessprocessor import *
+from .ocrprocessor import *
+from .lexnlp_annotations import *
