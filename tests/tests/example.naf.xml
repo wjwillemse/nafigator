@@ -1,46 +1,46 @@
 <?xml version='1.0' encoding='UTF-8'?>
 <NAF xmlns:dc="http://purl.org/dc/elements/1.1/" version="v3.1" xml:lang="en">
   <nafHeader>
-    <fileDesc creationtime="2021-10-16T15:54:08UTC" filename="tests\tests\example.pdf" filetype="application/pdf"/>
+    <fileDesc creationtime="2021-10-25T11:21:57UTC" filename="tests\tests\example.pdf" filetype="application/pdf"/>
     <public dc:uri="tests\tests\example.pdf" dc:format="application/pdf"/>
     <linguisticProcessors layer="formats">
-      <lp name="formats" version="nafigator" beginTimestamp="2021-10-16T15:54:08UTC" endTimestamp="2021-10-16T15:54:08UTC" hostname="computer-woonkamer"/>
+      <lp name="formats" version="nafigator" beginTimestamp="2021-10-25T11:21:57UTC" endTimestamp="2021-10-25T11:21:57UTC" hostname="DESKTOP-NORB4QA.fritz.box"/>
     </linguisticProcessors>
     <linguisticProcessors layer="entities">
-      <lp name="entities" version="stanza_version-1.2" model="C:\Users\wjwil\stanza_resources\en\ner\ontonotes.pt" beginTimestamp="2021-10-16T15:54:11UTC" endTimestamp="2021-10-16T15:54:11UTC" hostname="computer-woonkamer"/>
+      <lp name="entities" version="stanza_version-1.2.2" model="C:\Users\Willem Jan Willemse\stanza_resources\en\ner\ontonotes.pt" beginTimestamp="2021-10-25T11:21:59UTC" endTimestamp="2021-10-25T11:21:59UTC" hostname="DESKTOP-NORB4QA.fritz.box"/>
     </linguisticProcessors>
     <linguisticProcessors layer="text">
-      <lp name="text" version="stanza_version-1.2" model="C:\Users\wjwil\stanza_resources\en\tokenize\ewt.pt" beginTimestamp="2021-10-16T15:54:11UTC" endTimestamp="2021-10-16T15:54:11UTC" hostname="computer-woonkamer"/>
+      <lp name="text" version="stanza_version-1.2.2" model="C:\Users\Willem Jan Willemse\stanza_resources\en\tokenize\ewt.pt" beginTimestamp="2021-10-25T11:21:59UTC" endTimestamp="2021-10-25T11:21:59UTC" hostname="DESKTOP-NORB4QA.fritz.box"/>
     </linguisticProcessors>
     <linguisticProcessors layer="terms">
-      <lp name="terms" version="stanza_version-1.2" model="C:\Users\wjwil\stanza_resources\en\pos\ewt.pt" beginTimestamp="2021-10-16T15:54:11UTC" endTimestamp="2021-10-16T15:54:11UTC" hostname="computer-woonkamer"/>
+      <lp name="terms" version="stanza_version-1.2.2" model="C:\Users\Willem Jan Willemse\stanza_resources\en\pos\ewt.pt" beginTimestamp="2021-10-25T11:21:59UTC" endTimestamp="2021-10-25T11:21:59UTC" hostname="DESKTOP-NORB4QA.fritz.box"/>
     </linguisticProcessors>
     <linguisticProcessors layer="deps">
-      <lp name="deps" version="stanza_version-1.2" model="C:\Users\wjwil\stanza_resources\en\depparse\ewt.pt" beginTimestamp="2021-10-16T15:54:11UTC" endTimestamp="2021-10-16T15:54:11UTC" hostname="computer-woonkamer"/>
+      <lp name="deps" version="stanza_version-1.2.2" model="C:\Users\Willem Jan Willemse\stanza_resources\en\depparse\ewt.pt" beginTimestamp="2021-10-25T11:21:59UTC" endTimestamp="2021-10-25T11:21:59UTC" hostname="DESKTOP-NORB4QA.fritz.box"/>
     </linguisticProcessors>
     <linguisticProcessors layer="multiwords">
-      <lp name="multiwords" version="stanza_version-1.2" model="C:\Users\wjwil\stanza_resources\en\tokenize\ewt.pt" beginTimestamp="2021-10-16T15:54:11UTC" endTimestamp="2021-10-16T15:54:11UTC" hostname="computer-woonkamer"/>
+      <lp name="multiwords" version="stanza_version-1.2.2" model="C:\Users\Willem Jan Willemse\stanza_resources\en\tokenize\ewt.pt" beginTimestamp="2021-10-25T11:21:59UTC" endTimestamp="2021-10-25T11:21:59UTC" hostname="DESKTOP-NORB4QA.fritz.box"/>
     </linguisticProcessors>
     <linguisticProcessors layer="raw">
-      <lp name="raw" version="stanza_version-1.2" model="C:\Users\wjwil\stanza_resources\en\tokenize\ewt.pt" beginTimestamp="2021-10-16T15:54:11UTC" endTimestamp="2021-10-16T15:54:11UTC" hostname="computer-woonkamer"/>
+      <lp name="raw" version="stanza_version-1.2.2" model="C:\Users\Willem Jan Willemse\stanza_resources\en\tokenize\ewt.pt" beginTimestamp="2021-10-25T11:21:59UTC" endTimestamp="2021-10-25T11:21:59UTC" hostname="DESKTOP-NORB4QA.fritz.box"/>
     </linguisticProcessors>
   </nafHeader>
   <formats>
     <page length="268" offset="0">
       <textbox>
         <textline>
-          <text font="CIDFont+F1" size="13.284" length="87" offset="0">The Nafigator package allows you to store NLP output from custom made spaCy and stanza </text>
+          <text font="CIDFont+F1" size="12.000" length="87" offset="0">The Nafigator package allows you to store NLP output from custom made spaCy and stanza </text>
         </textline>
         <textline>
-          <text font="CIDFont+F1" size="13.284" length="77" offset="88">pipelines with (intermediate) results and all processing steps in one format.</text>
+          <text font="CIDFont+F1" size="12.000" length="77" offset="88">pipelines with (intermediate) results and all processing steps in one format.</text>
         </textline>
       </textbox>
       <textbox>
         <textline>
-          <text font="CIDFont+F1" size="13.284" length="86" offset="167">Multiwords like in “we have set that out below” are recognized (depending on your NLP </text>
+          <text font="CIDFont+F1" size="12.000" length="86" offset="167">Multiwords like in “we have set that out below” are recognized (depending on your NLP </text>
         </textline>
         <textline>
-          <text font="CIDFont+F1" size="13.284" length="11" offset="254">processor).</text>
+          <text font="CIDFont+F1" size="12.000" length="11" offset="254">processor).</text>
         </textline>
       </textbox>
     </page>
