@@ -14,7 +14,7 @@ requirements = ['click>=7.0', 'pdfminer.six', 'lxml', 'python-docx', 'folia', 'p
 
 setup_requirements = ['click>=7.0', 'pdfminer.six', 'lxml', 'python-docx', 'folia', 'pandas']
 
-test_requirements = ['click>=7.0', 'pdfminer.six', 'lxml', 'python-docx', 'folia', 'pandas', 'stanza', 'spacy']
+test_requirements = ['click>=7.0', 'pdfminer.six', 'lxml', 'python-docx', 'folia', 'pandas', 'stanza', 'spacy', "deepdiff"]
 
 setup(
     author="De Nederlandsche Bank",

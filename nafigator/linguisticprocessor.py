@@ -33,14 +33,21 @@ if SPACY_IMPORTED:
                 None
 
             """
+            self.lang = lang
             if nlp is None:
                 if lang == "en":
                     self.nlp = spacy.load("en_core_web_sm")
                 elif lang == "nl":
                     self.nlp = spacy.load("nl_core_web_sm")
             else:
-                self.nlp = nlp
-            self.lang = lang
+                if isinstance(nlp, dict):
+                    if lang in nlp.keys():
+                        self.nlp = nlp[lang]
+                    else:
+                       logging.error("Language not available in nlp dict parameter")
+                       self.nlp = None
+                else:
+                    self.nlp = nlp
             self.model_name = (
                 f'spaCy-model_{self.nlp.meta["lang"]}_{self.nlp.meta["name"]}'
             )

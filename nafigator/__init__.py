@@ -13,3 +13,5 @@ from .convert2rdf import *
 
 from .linguisticprocessor import *
 from .preprocessprocessor import *
+from .ocrprocessor import *
+from .lexnlp_annotations import *
