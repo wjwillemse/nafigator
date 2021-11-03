@@ -1089,6 +1089,9 @@ class NafDocument(etree._ElementTree):
 
         elif source == "docx":
 
+            # it is not possible to derive page numbers from docx because this
+            # is a result of the docx processor (the docx does not contain pages)
+
             WORD_NAMESPACE = (
                 "{http://schemas.openxmlformats.org/wordprocessingml/2006/main}"
             )
@@ -1105,8 +1108,12 @@ class NafDocument(etree._ElementTree):
             SECTPR = WORD_NAMESPACE + "sectPr"
             BOLD = WORD_NAMESPACE + "b"
             ITALICS = WORD_NAMESPACE + "i"
+            PSTYLE = WORD_NAMESPACE + "pStyle"
+            NUMPR = WORD_NAMESPACE + "numPr"
+            NUMID = WORD_NAMESPACE + "numId"
+            ILVL = WORD_NAMESPACE + "ilvl"
 
-            # formats = bytes(bytearray(formats, encoding="utf-8"))
+            # formats = bytes(bytearray(pStyleformats, encoding="utf-8"))
             parser = etree.XMLParser(ns_clean=True, recover=True, encoding="utf-8")
             formats_root = etree.fromstring(formats, parser=parser)
 
@@ -1142,7 +1149,7 @@ class NafDocument(etree._ElementTree):
                         p = add_element(page, "textbox")
                         for run in paragraph:
                             # r
-                            # pPr
+                            # ppr
                             if run.tag == RUN:
                                 r = add_element(p, "textline")
                                 font = {}
@@ -1220,5 +1227,48 @@ class NafDocument(etree._ElementTree):
 
                 page.set("length", str(page_length))
                 page.set("offset", str(offset - page_length))
+
+            # headers
+            offset = 0
+            for body in formats_root:
+                page_length = 0
+                for paragraph in body:
+                    # p
+                    # sectPr
+                    if paragraph.tag == PARA:
+                        header = False
+                        header_style = ""
+                        header_depth = 0
+                        header_number = 0
+                        for run in paragraph:
+                            # r
+                            # Ppr
+                            if run.tag == PPR:
+                                for run_item in run:
+                                    if run_item.tag == PSTYLE:
+                                        header_style = run_item.get(VAL)
+                                    if run_item.tag == NUMPR:
+                                        for level in run_item:
+                                            if level.tag == ILVL:
+                                                # we assume that if there is a level there is a header
+                                                header = True
+                                                header_level = int(level.get(VAL))
+                                            if level.tag == NUMID:
+                                                header_number = int(level.get(VAL))
+                            if run.tag == RUN and header:
+                                for text in run:
+                                    # t
+                                    # rPr
+                                    if text.tag == TEXT:
+                                        h = add_element(layer, "header")
+                                        h.text = text.text
+                                        h.set("length", str(page_length))
+                                        h.set("offset", str(offset))
+                                        h.set("level", str(header_depth))
+                                        h.set("style", str(header_style))
+                                        h.set("number", str(header_number))
+                                        h.set("confidence", "1")
+                                        page_length += len(text.text)
+                                        offset += len(text.text)
 
             # logging.warning("Formats layer for docx not yet implemented.")
