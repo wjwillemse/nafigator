@@ -17,7 +17,7 @@ import docx
 from docx.enum.dml import MSO_THEME_COLOR_INDEX
 import datetime
 from typing import Union
-
+from docx.shared import Pt
 
 def dataframe2naf(
     df_meta: pd.DataFrame,
