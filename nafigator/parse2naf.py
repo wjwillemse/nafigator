@@ -522,14 +522,14 @@ def add_text_layer(params: dict):
     paragraphs_offset = None
     formats = root.find(FORMATS_LAYER_TAG)
     if formats is not None:
-        pages_offset = [int(page.get("offset")) for page in formats if page.tag == "page"]
+        pages_offset = [int(page.get("offset")) for page in formats]
         paragraphs_offset = [0] + [
             int(text.get("offset")) + len(text.text)
             for page in formats
-            for textbox in page
+            for textbox in page if textbox.tag == "textbox"
             for textline in textbox
             for text in textline
-            if (len(text.text.strip()) > 0) and (page.tag == "page") and (text.text.strip()[-1] in [".", "?"])
+            if (len(text.text.strip()) > 0) and (text.text.strip()[-1] in [".", "?"])
         ]
 
     doc = params["doc"]
