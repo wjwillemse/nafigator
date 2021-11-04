@@ -480,7 +480,6 @@ def add_hyperlink(paragraph, text, url):
 
     return hyperlink
 
-
 def get_terms(pattern, doc):
     """
     Get terms from a NafDocument
@@ -497,12 +496,8 @@ def get_terms(pattern, doc):
     doc_words = {word['id']: word for word in doc.text}
 
     for term in doc_terms.keys():
-        doc_terms[term]['text'] = " ".join(
-            [doc_words[s['id']]['text'] for s in doc_terms[term]['span']])
-
+        doc_terms[term]['text'] = " ".join([doc_words[s['id']]['text'] for s in doc_terms[term]['span']])
     doc_pos = [term['pos'] for term in doc.terms]
     doc_text = [term for term in doc_terms.values()]
-
     patterns = sublist_indices(pattern, doc_pos)
-
     return [[doc_text[p]['text'].lower() for p in pattern] for pattern in patterns]
