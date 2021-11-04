@@ -393,9 +393,9 @@ def lemmatize(
         }
     elif isinstance(o, pd.Series):
         for this_language in set(language):
-            o_list = [item for item in o[language == this_language]]
             o[language == this_language] = pd.Series(
-                lemmatize(o_list, this_language, nlp),
+                lemmatize(o[language == this_language].to_list(),
+                          this_language, nlp),
                 index=o[language == this_language].index
             )
         return o
@@ -417,17 +417,15 @@ def lowercase(o: Union[str, list, dict, pd.DataFrame, pd.Series]) -> Union[str, 
 
     """
     if isinstance(o, list):
-        return [lowercase(item) for item in o]
+        return [item.lower() for item in o]
     elif isinstance(o, dict):
         return {key.lower(): lowercase(o[key]) for key in o}
     elif isinstance(o, str):
         return o.lower()
     elif isinstance(o, pd.Series):
-        return pd.Series([lowercase(item) for item in o], index=o.index)
+        return pd.Series(o.astype(str).str.lower(), index=o.index)
     elif isinstance(o, pd.DataFrame):
         return pd.DataFrame({col: lowercase(o[col]) for col in o.columns}, index=o.index)
-    else:
-        return o
 
 
 def lemmatize_sentence(sentence: dict, terms: dict):
