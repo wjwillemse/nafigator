@@ -366,6 +366,7 @@ def evaluate_sentence(sentence: str, mandatory_terms: list, avoid_terms: list):
     return False
 
 
+
 def lemmatize(
     o: Union[str, list, dict, pd.Series, pd.DataFrame],
     language: Union[str, pd.Series],
@@ -373,15 +374,12 @@ def lemmatize(
 ) -> Union[str, list, dict, pd.Series, pd.DataFrame]:
     """
     lemmatize text in object
-
     Args:
         o: the object with text to be lemmatized
         language: language used for lemmatization
         nlp: dictionary of nlp processors
-
     Returns:
         object with lemmatized text
-
     """
     if isinstance(o, str):
         return " ".join([word.lemma for word in nlp[language](o).sentences[0].words])
@@ -393,9 +391,9 @@ def lemmatize(
         }
     elif isinstance(o, pd.Series):
         for this_language in set(language):
+            o_list = [item for item in o[language == this_language]]
             o[language == this_language] = pd.Series(
-                lemmatize(o[language == this_language].to_list(),
-                          this_language, nlp),
+                lemmatize(o_list, this_language, nlp),
                 index=o[language == this_language].index
             )
         return o
@@ -408,24 +406,23 @@ def lemmatize(
 def lowercase(o: Union[str, list, dict, pd.DataFrame, pd.Series]) -> Union[str, list, dict, pd.DataFrame, pd.Series]:
     """
     Lowercase text in object
-
     Args:
         o: the object with text to be lowercased
-
     Returns:
         object with lowercased text
-
     """
     if isinstance(o, list):
-        return [item.lower() for item in o]
+        return [lowercase(item) for item in o]
     elif isinstance(o, dict):
         return {key.lower(): lowercase(o[key]) for key in o}
     elif isinstance(o, str):
         return o.lower()
     elif isinstance(o, pd.Series):
-        return pd.Series(o.astype(str).str.lower(), index=o.index)
+        return pd.Series([lowercase(item) for item in o], index=o.index)
     elif isinstance(o, pd.DataFrame):
         return pd.DataFrame({col: lowercase(o[col]) for col in o.columns}, index=o.index)
+    else:
+        return o
 
 
 def lemmatize_sentence(sentence: dict, terms: dict):
