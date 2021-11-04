@@ -393,9 +393,9 @@ def lemmatize(
         }
     elif isinstance(o, pd.Series):
         for this_language in set(language):
+            o_list = [item for item in o[language == this_language]]
             o[language == this_language] = pd.Series(
-                lemmatize(o[language == this_language].to_list(),
-                          this_language, nlp),
+                lemmatize(o_list, this_language, nlp),
                 index=o[language == this_language].index
             )
         return o
@@ -417,15 +417,17 @@ def lowercase(o: Union[str, list, dict, pd.DataFrame, pd.Series]) -> Union[str, 
 
     """
     if isinstance(o, list):
-        return [item.lower() for item in o]
+        return [lowercase(item) for item in o]
     elif isinstance(o, dict):
         return {key.lower(): lowercase(o[key]) for key in o}
     elif isinstance(o, str):
         return o.lower()
     elif isinstance(o, pd.Series):
-        return pd.Series(o.astype(str).str.lower(), index=o.index)
+        return pd.Series([lowercase(item) for item in o], index=o.index)
     elif isinstance(o, pd.DataFrame):
         return pd.DataFrame({col: lowercase(o[col]) for col in o.columns}, index=o.index)
+    else:
+        return o
 
 
 def lemmatize_sentence(sentence: dict, terms: dict):
@@ -480,6 +482,7 @@ def add_hyperlink(paragraph, text, url):
 
     return hyperlink
 
+
 def get_terms(pattern, doc):
     """
     Get terms from a NafDocument
@@ -496,11 +499,12 @@ def get_terms(pattern, doc):
     doc_words = {word['id']: word for word in doc.text}
 
     for term in doc_terms.keys():
-        doc_terms[term]['text'] = " ".join([doc_words[s['id']]['text'] for s in doc_terms[term]['span']])
-    
+        doc_terms[term]['text'] = " ".join(
+            [doc_words[s['id']]['text'] for s in doc_terms[term]['span']])
+
     doc_pos = [term['pos'] for term in doc.terms]
     doc_text = [term for term in doc_terms.values()]
-    
+
     patterns = sublist_indices(pattern, doc_pos)
-    
+
     return [[doc_text[p]['text'].lower() for p in pattern] for pattern in patterns]
