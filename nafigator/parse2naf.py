@@ -87,7 +87,7 @@ def generate_naf(
     else:
         params["tree"] = NafDocument()
         params["tree"].generate(params)
-    
+
     if params["preprocess_layers"] != []:
         process_preprocess_steps(params)
 
@@ -175,42 +175,22 @@ def evaluate_naf(params: dict):
     doc_text = params["engine"].document_text(params["doc"])
     raw = params["tree"].raw
     if len(raw) != len(doc_text):
-        logging.error(
-            "raw length ("
-            + str(len(raw))
-            + ") != doc length ("
-            + str(len(doc_text))
-            + ")"
-        )
+        logging.error(f"raw length ({len(raw)}) != doc length ({len(doc_text)})")
     # verify alignment between raw layer and text
     text_to_use = derive_text_from_formats_layer(
         params
-    ) 
+    )
     if len(raw) != len(text_to_use):
-        logging.error(
-            "raw length ("
-            + str(len(raw))
-            + ") != text to use ("
-            + str(len(text_to_use))
-            + ")"
-        )
+        logging.error(f"raw length ({len(raw)}) != text to use ({len(text_to_use)})")
     # verify alignment between raw layer and text layer
     for wf in params["tree"].text:
         start = int(wf.get("offset"))
         end = start + int(wf.get("length"))
         token = raw[start:end]
         if wf.get("text", None) != token:
-            logging.error(
-                "mismatch in alignment of wf element ["
-                + str(wf.get("text"))
-                + "] ("
-                + str(wf.get("id"))
-                + ") with raw layer text ["
-                + str(token)
-                + "] (expected length "
-                + str(wf.get("length"))
-                + ")"
-            )
+            logging.error(f"mismatch in alignment of wf element [{wf.get('text')}]"
+                          f"({wf.get('id')}) with raw layer text [{token}]"
+                          f"(expected length {wf.get('length')})")
     # validate naf tree
     if params["dtd_validation"]:
         params["tree"].validate()
