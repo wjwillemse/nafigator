@@ -96,6 +96,8 @@ Ready to contribute? Here's how to set up `nafigator` for local development.
 Pull Request Guidelines
 -----------------------
 
+We work with a main and a dev branch. To add new functionality, make a new branch, add the new functionality and submit a pull request to the dev branch. When needed we will merge the dev branch with the main branch and provide a new version of the package.
+
 Before you submit a pull request, check that it meets these guidelines:
 
 1. The pull request should include tests.
