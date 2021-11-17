@@ -334,37 +334,7 @@ def remove_sublists(lst):
             result.append(r)
     return result
 
-
-def evaluate_sentence(sentence: str, mandatory_terms: list, avoid_terms: list):
-    """
-    Evaluate sentence on occurrence of mandatory terms and non occurrence of
-    term to avoid
-
-    Args:
-        sentence: sentence to be assessed
-        mandatory_terms: list of terms that must be in sentence
-        avoid_terms: list of terms that must not be in sentence
-
-    Returns:
-        True is mandatory terms are in sentence and avoid terms are not
-
-    """
-    # if all mandatory words are in the sentence and none of the avoid_terms
-    # then signal
-    if (
-        all([sublist_indices(t.split(" "), sentence) != []
-             for t in mandatory_terms])
-        is True
-    ):
-        if not any(
-            [sublist_indices(t.split(" "), sentence) != []
-             for t in avoid_terms]
-        ):
-            return True
-    return False
-
-
-
+  
 def lemmatize(
     o: Union[str, list, dict, pd.Series, pd.DataFrame],
     language: Union[str, pd.Series],

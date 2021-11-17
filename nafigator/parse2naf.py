@@ -50,7 +50,7 @@ def generate_naf(
     nlp=None,
 ):
     """Parse input file, generate and return NAF xml tree"""
-    if (input is None):
+    if input is None:
         logging.error("input is none")
         return None
     if isinstance(input, str) and not os.path.isfile(input):
@@ -87,7 +87,7 @@ def generate_naf(
     else:
         params["tree"] = NafDocument()
         params["tree"].generate(params)
-    
+
     if params["preprocess_layers"] != []:
         process_preprocess_steps(params)
 
@@ -175,25 +175,11 @@ def evaluate_naf(params: dict):
     doc_text = params["engine"].document_text(params["doc"])
     raw = params["tree"].raw
     if len(raw) != len(doc_text):
-        logging.error(
-            "raw length ("
-            + str(len(raw))
-            + ") != doc length ("
-            + str(len(doc_text))
-            + ")"
-        )
+        logging.error(f"raw length ({len(raw)}) != doc length ({len(doc_text)})")
     # verify alignment between raw layer and text
-    text_to_use = derive_text_from_formats_layer(
-        params
-    ) 
+    text_to_use = derive_text_from_formats_layer(params)
     if len(raw) != len(text_to_use):
-        logging.error(
-            "raw length ("
-            + str(len(raw))
-            + ") != text to use ("
-            + str(len(text_to_use))
-            + ")"
-        )
+        logging.error(f"raw length ({len(raw)}) != text to use ({len(text_to_use)})")
     # verify alignment between raw layer and text layer
     for wf in params["tree"].text:
         start = int(wf.get("offset"))
@@ -201,15 +187,9 @@ def evaluate_naf(params: dict):
         token = raw[start:end]
         if wf.get("text", None) != token:
             logging.error(
-                "mismatch in alignment of wf element ["
-                + str(wf.get("text"))
-                + "] ("
-                + str(wf.get("id"))
-                + ") with raw layer text ["
-                + str(token)
-                + "] (expected length "
-                + str(wf.get("length"))
-                + ")"
+                f"mismatch in alignment of wf element [{wf.get('text')}]"
+                f"({wf.get('id')}) with raw layer text [{token}]"
+                f"(expected length {wf.get('length')})"
             )
     # validate naf tree
     if params["dtd_validation"]:
@@ -526,7 +506,8 @@ def add_text_layer(params: dict):
         paragraphs_offset = [0] + [
             int(text.get("offset")) + len(text.text)
             for page in formats
-            for textbox in page if textbox.tag == "textbox"
+            for textbox in page
+            if textbox.tag == "textbox"
             for textline in textbox
             for text in textline
             if (len(text.text.strip()) > 0) and (text.text.strip()[-1] in [".", "?"])
@@ -756,7 +737,8 @@ def add_multiwords_layer(params: dict):
     supported_languages = {"nl", "en"}
     if params["language"] not in supported_languages:
         logging.info(
-            f"add_multi_words function only implemented for {supported_languages}, not for supplied {language}"
+            f"add_multi_words function only implemented for "
+            f"{supported_languages}, not for supplied {params['language']}"
         )
 
     tid_to_term = {
@@ -858,13 +840,8 @@ def add_raw_layer(params: dict):
                 leading_chars = " " * delta
             elif delta < 0:
                 logging.warning(
-                    "please check the offsets of "
-                    + str(prev_wf["text"])
-                    + " and "
-                    + str(cur_wf["text"])
-                    + " (delta of "
-                    + str(delta)
-                    + ")"
+                    f"please check the offsets of {prev_wf['text']} and "
+                    f"{cur_wf['text']} (delta of {delta})"
                 )
             tokens.append(leading_chars + cur_wf["text"])
 
