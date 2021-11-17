@@ -837,15 +837,8 @@ def add_raw_layer(params: dict):
                 # 1 or more characters between tokens -> n spaces added
                 leading_chars = " " * delta
             elif delta < 0:
-                logging.warning(
-                    "please check the offsets of "
-                    + str(prev_wf["text"])
-                    + " and "
-                    + str(cur_wf["text"])
-                    + " (delta of "
-                    + str(delta)
-                    + ")"
-                )
+                logging.warning(f"please check the offsets of {prev_wf['text']} and "
+                                f"{cur_wf['text']} (delta of {delta})")
             tokens.append(leading_chars + cur_wf["text"])
 
         if params["cdata"]:
