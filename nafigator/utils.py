@@ -21,12 +21,12 @@ from typing import Union
 
 def dataframe2naf(
     df_meta: pd.DataFrame,
-    overwrite_existing_naf: bool=False,
-    rerun_files_with_naf_errors: bool=False,
-    engine: str=None,
-    naf_version: str=None,
-    dtd_validation: bool=False,
-    params: dict={},
+    overwrite_existing_naf: bool = False,
+    rerun_files_with_naf_errors: bool = False,
+    engine: str = None,
+    naf_version: str = None,
+    dtd_validation: bool = False,
+    params: dict = {},
     nlp=None,
 ) -> pd.DataFrame:
     """Batch processor for NAF
@@ -53,8 +53,7 @@ def dataframe2naf(
             dc_language = df_meta.loc[row, "dc:language"].lower()
         else:
             dc_language = None
-            df_meta.loc[
-                row, "naf:status"] = "ERROR, no dc:language in DataFrame"
+            df_meta.loc[row, "naf:status"] = "ERROR, no dc:language in DataFrame"
 
         if "dc:source" in df_meta.columns:
             dc_source = df_meta.loc[row, "dc:source"]
@@ -72,8 +71,7 @@ def dataframe2naf(
 
             # logging per processed file
             log_file: str = os.path.splitext(dc_source)[0] + ".log"
-            logging.basicConfig(filename=log_file,
-                                level=logging.WARNING, filemode="w")
+            logging.basicConfig(filename=log_file, level=logging.WARNING, filemode="w")
 
             if os.path.exists(output) and not overwrite_existing_naf:
                 # the NAF file exists and we should not overwrite existing naf
@@ -267,8 +265,7 @@ def remove_control_characters(html: str) -> str:
     )
     html = re.sub(
         r"&#[xX]([0-9a-fA-F]+);?",
-        lambda c: strip_illegal_xml_characters(
-            c.group(1), c.group(0), base=16),
+        lambda c: strip_illegal_xml_characters(c.group(1), c.group(0), base=16),
         html,
     )
     html = ILLEGAL_XML_CHARS_RE.sub("", html)
@@ -285,7 +282,7 @@ def sublist_indices(sub, full):
     >>> sublist_indices(['Felix'], ['De', 'kat', 'genaamd', 'Felix', 'eet', 'geen', 'Felix'])
     [[3], [6]]
     >>> sublist_indices(
-            ['Felix', 'Maximiliaan'], 
+            ['Felix', 'Maximiliaan'],
             ['De', 'kat', 'genaamd', 'Felix', 'Maximiliaan', 'eet', 'geen', 'Felix']
         )
     [[3, 4]]
@@ -354,13 +351,11 @@ def evaluate_sentence(sentence: str, mandatory_terms: list, avoid_terms: list):
     # if all mandatory words are in the sentence and none of the avoid_terms
     # then signal
     if (
-        all([sublist_indices(t.split(" "), sentence) != []
-             for t in mandatory_terms])
+        all([sublist_indices(t.split(" "), sentence) != [] for t in mandatory_terms])
         is True
     ):
         if not any(
-            [sublist_indices(t.split(" "), sentence) != []
-             for t in avoid_terms]
+            [sublist_indices(t.split(" "), sentence) != [] for t in avoid_terms]
         ):
             return True
     return False
@@ -369,7 +364,7 @@ def evaluate_sentence(sentence: str, mandatory_terms: list, avoid_terms: list):
 def lemmatize(
     o: Union[str, list, dict, pd.Series, pd.DataFrame],
     language: Union[str, pd.Series],
-    nlp: dict
+    nlp: dict,
 ) -> Union[str, list, dict, pd.Series, pd.DataFrame]:
     """
     lemmatize text in object
@@ -394,18 +389,21 @@ def lemmatize(
     elif isinstance(o, pd.Series):
         for this_language in set(language):
             o[language == this_language] = pd.Series(
-                lemmatize(o[language == this_language].to_list(),
-                          this_language, nlp),
-                index=o[language == this_language].index
+                lemmatize(o[language == this_language].to_list(), this_language, nlp),
+                index=o[language == this_language].index,
             )
         return o
     elif isinstance(o, pd.DataFrame):
-        return pd.DataFrame({col: lemmatize(o[col], language, nlp) for col in o.columns}, index=o.index)
+        return pd.DataFrame(
+            {col: lemmatize(o[col], language, nlp) for col in o.columns}, index=o.index
+        )
     elif pd.isna(o):
         return ""
 
 
-def lowercase(o: Union[str, list, dict, pd.DataFrame, pd.Series]) -> Union[str, list, dict, pd.DataFrame, pd.Series]:
+def lowercase(
+    o: Union[str, list, dict, pd.DataFrame, pd.Series]
+) -> Union[str, list, dict, pd.DataFrame, pd.Series]:
     """
     Lowercase text in object
 
@@ -425,7 +423,9 @@ def lowercase(o: Union[str, list, dict, pd.DataFrame, pd.Series]) -> Union[str, 
     elif isinstance(o, pd.Series):
         return pd.Series(o.astype(str).str.lower(), index=o.index)
     elif isinstance(o, pd.DataFrame):
-        return pd.DataFrame({col: lowercase(o[col]) for col in o.columns}, index=o.index)
+        return pd.DataFrame(
+            {col: lowercase(o[col]) for col in o.columns}, index=o.index
+        )
 
 
 def lemmatize_sentence(sentence: dict, terms: dict):
@@ -480,6 +480,7 @@ def add_hyperlink(paragraph, text, url):
 
     return hyperlink
 
+
 def get_terms(pattern, doc):
     """
     Get terms from a NafDocument
@@ -492,15 +493,100 @@ def get_terms(pattern, doc):
         list of term satisfying the pattern
 
     """
-    doc_terms = {term['id']: term for term in doc.terms}
-    doc_words = {word['id']: word for word in doc.text}
+    doc_terms = {term["id"]: term for term in doc.terms}
+    doc_words = {word["id"]: word for word in doc.text}
 
     for term in doc_terms.keys():
-        doc_terms[term]['text'] = " ".join([doc_words[s['id']]['text'] for s in doc_terms[term]['span']])
-    
-    doc_pos = [term['pos'] for term in doc.terms]
+        doc_terms[term]["text"] = " ".join(
+            [doc_words[s["id"]]["text"] for s in doc_terms[term]["span"]]
+        )
+
+    doc_pos = [term["pos"] for term in doc.terms]
     doc_text = [term for term in doc_terms.values()]
-    
+
     patterns = sublist_indices(pattern, doc_pos)
-    
-    return [[doc_text[p]['text'].lower() for p in pattern] for pattern in patterns]
+
+    return [[doc_text[p]["text"].lower() for p in pattern] for pattern in patterns]
+
+
+def glue_terms_separated_by_soft_hyphens(
+    doc: nafigator.NafDocument, language: str, nlp: dict
+) -> nafigator.NafDocument:
+    """
+    Glue terms that are separated by soft hyphens
+
+    Args:
+        doc: the NafDocument
+        language: language used for lemmatization
+        nlp: dictionary of nlp processors
+    Returns:
+        NafDocument where terms are glued
+    """
+
+    SOFT_HYPHEN = "\xad"
+
+    doc_words = {word["id"]: word for word in doc.text}
+    terms = doc.terms
+    terms_to_skip = []
+    new_terms = []
+    for idx, term in enumerate(terms):
+
+        term_text = "".join([doc_words[s["id"]]["text"] for s in term["span"]])
+        term_lemma = term["lemma"]
+        term_pos = term["pos"]
+        term_morphofeat = term.get("morphofeat", None)
+        term_span = term["span"]
+
+        if SOFT_HYPHEN in term_text:
+
+            if term_text == SOFT_HYPHEN:
+                # term equals a soft hyphen
+                # so we glue terms[idx-1], terms[idx] and terms[idx+1]
+                term_span = (
+                    terms[idx - 1]["span"] + term["span"] + terms[idx + 1]["span"]
+                )
+                terms_to_skip.append(terms[idx - 1]["id"])
+                terms_to_skip.append(terms[idx + 1]["id"])
+            elif term_text[-1] == SOFT_HYPHEN:
+                # term ends with a soft hyphen
+                # so we glue terms[idx] and terms[idx+1]
+                term_span = term["span"] + terms[idx + 1]["span"]
+                terms_to_skip.append(terms[idx + 1]["id"])
+
+            # the new term text is derived from the new span where soft hyphens are deleted
+            term_text = "".join(
+                [doc_words[s["id"]]["text"] for s in term_span]
+            ).replace(SOFT_HYPHEN, "")
+
+            # we need to determine again the linguistical properties of the resulting term
+            data = nlp["nl"](term_text).sentences[0].words[0]
+            term_lemma = data.lemma
+            term_pos = data.pos
+            term_morphofeat = data.feats
+
+        term_data = TermElement(
+            id=term["id"],
+            type="open",
+            lemma=term_lemma,
+            pos=term_pos,
+            morphofeat=term_morphofeat,
+            netype=None,
+            case=None,
+            head=None,
+            component_of=None,
+            compound_type=None,
+            span=[s["id"] for s in term_span],
+            ext_refs=list(),
+            comment=[term_text],
+        )
+        new_terms.append(term_data)
+
+    # reset the terms layer with the new terms
+    doc.remove_layer_elements("terms")
+    for term_data in new_terms:
+        if term_data.id not in terms_to_skip:
+            doc.add_term_element(
+                term_data, layer_to_attributes_to_ignore={"terms": {}}, comments=True
+            )
+
+    return doc
