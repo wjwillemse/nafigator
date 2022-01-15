@@ -13,6 +13,7 @@ from lxml import etree
 import pandas as pd
 import logging
 from nafigator import parse2naf
+from .const import TermElement
 import docx
 from docx.enum.dml import MSO_THEME_COLOR_INDEX
 import datetime
@@ -510,8 +511,8 @@ def get_terms(pattern, doc):
 
 
 def glue_terms_separated_by_soft_hyphens(
-    doc: nafigator.NafDocument, language: str, nlp: dict
-) -> nafigator.NafDocument:
+    doc, language: str, nlp: dict
+):
     """
     Glue terms that are separated by soft hyphens
 
@@ -590,3 +591,95 @@ def glue_terms_separated_by_soft_hyphens(
             )
 
     return doc
+
+def glue_terms_separated_by_hard_hyphens(
+    doc, language: str, nlp: dict
+):
+    """
+    Glue terms that are separated by hard hyphens
+
+    Args:
+        doc: the NafDocument
+        language: language used for lemmatization
+        nlp: dictionary of nlp processors
+    Returns:
+        NafDocument where terms are glued
+    """
+
+    formats = doc.find("formats")
+    hyphen_offsets = [
+            int(text.get("offset"))+len(text.text.strip())-1
+            for page in formats
+            for textbox in page
+            for textline in textbox
+            for text in textline if text.text.strip()[-1]=="-"
+        ]
+    
+    HARD_HYPHEN = "-"
+
+    doc_words = {word["id"]: word for word in doc.text}
+    terms = doc.terms
+    terms_to_skip = []
+    new_terms = []
+    for idx, term in enumerate(terms):
+
+        term_text = "".join([doc_words[s["id"]]["text"] for s in term["span"]])
+        term_lemma = term["lemma"]
+        term_pos = term["pos"]
+        term_morphofeat = term.get("morphofeat", None)
+        term_span = term["span"]
+
+        if term_text[-1] == HARD_HYPHEN and not term_text==HARD_HYPHEN:
+            # term ends with a hard hyphen
+            word = doc_words[term_span[-1]['id']]
+            word_hyphen_offset = int(word['offset'])+len(word['text'].strip())-1
+
+            next_term_text = "".join([doc_words[s["id"]]["text"] for s in terms[idx+1]["span"]])
+            if word_hyphen_offset in hyphen_offsets and next_term_text not in ["en", "of", ",", "en/of"]:
+
+                if next_term_text[-1] != HARD_HYPHEN:
+                    term_span = term["span"] + terms[idx + 1]["span"]
+                    terms_to_skip.append(terms[idx + 1]["id"])
+                else:
+                    term_span = term["span"] + terms[idx + 1]["span"] + terms[idx + 2]['span']
+                    terms_to_skip.append(terms[idx + 1]["id"])
+                    terms_to_skip.append(terms[idx + 2]["id"])
+
+                # the new term text is derived from the new span where soft hyphens are deleted
+                term_text = "".join(
+                    [doc_words[s["id"]]["text"] for s in term_span]
+                )
+
+                # we need to determine again the linguistical properties of the resulting term
+                data = nlp["nl"](term_text).sentences[0].words[0]
+                term_lemma = data.lemma
+                term_pos = data.pos
+                term_morphofeat = data.feats
+
+        term_data = TermElement(
+            id=term["id"],
+            type="open",
+            lemma=term_lemma,
+            pos=term_pos,
+            morphofeat=term_morphofeat,
+            netype=None,
+            case=None,
+            head=None,
+            component_of=None,
+            compound_type=None,
+            span=[s["id"] for s in term_span],
+            ext_refs=list(),
+            comment=[term_text],
+        )
+        new_terms.append(term_data)
+
+    # reset the terms layer with the new terms
+    doc.remove_layer_elements("terms")
+    for term_data in new_terms:
+        if term_data.id not in terms_to_skip:
+            doc.add_term_element(
+                term_data, layer_to_attributes_to_ignore={"terms": {}}, comments=True
+            )
+
+    return doc
+

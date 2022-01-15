@@ -5,6 +5,7 @@ __version__ = "0.1.34"
 from .cli import *
 from .const import *
 from .utils import *
+from .nafdocument import *
 
 from .parse2naf import *
 from .parse2folia import *
