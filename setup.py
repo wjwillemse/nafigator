@@ -14,7 +14,7 @@ requirements = ['click>=7.0', 'pdfminer.six', 'lxml', 'python-docx', 'folia', 'p
 
 setup_requirements = ['click>=7.0', 'pdfminer.six', 'lxml', 'python-docx', 'folia', 'pandas']
 
-test_requirements = ['click>=7.0', 'pdfminer.six', 'lxml', 'python-docx', 'folia', 'pandas', 'stanza', 'spacy']
+test_requirements = ['click>=7.0', 'pdfminer.six', 'lxml', 'python-docx', 'folia', 'pandas', 'stanza', 'spacy', "deepdiff"]
 
 setup(
     author="De Nederlandsche Bank",
@@ -47,6 +47,6 @@ setup(
     test_suite='tests',
     tests_require=test_requirements,
     url='https://github.com/denederlandschebank/nafigator',
-    version='0.1.34',
+    version='0.1.37',
     zip_safe=False,
 )

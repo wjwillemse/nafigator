@@ -18,6 +18,7 @@ from .ocrprocessor import convert_ocr_pdf
 
 from lxml import etree
 import lxml.html
+from typing import Union
 
 from .const import ProcessorElement
 from .const import Entity
@@ -40,7 +41,7 @@ FORMATS_LAYER_TAG = "formats"
 
 
 def generate_naf(
-    input: str = None,
+    input: Union[str, NafDocument] = None,
     engine: str = None,
     language: str = None,
     naf_version: str = None,
@@ -49,7 +50,10 @@ def generate_naf(
     nlp=None,
 ):
     """Parse input file, generate and return NAF xml tree"""
-    if (input is None) or not (os.path.isfile(input)):
+    if (input is None):
+        logging.error("input is none")
+        return None
+    if isinstance(input, str) and not os.path.isfile(input):
         logging.error("no or non-existing input specified")
         return None
     if engine is None:
@@ -78,10 +82,12 @@ def generate_naf(
         nlp=nlp,
     )
 
-    if "tree" not in params.keys():
+    if isinstance(input, NafDocument):
+        params["tree"] = input
+    else:
         params["tree"] = NafDocument()
         params["tree"].generate(params)
-
+    
     if params["preprocess_layers"] != []:
         process_preprocess_steps(params)
 
@@ -108,31 +114,32 @@ def create_params(
     params["engine_name"] = engine
     params["nlp"] = nlp
 
-    if "fileDesc" not in params.keys():
-        params["fileDesc"] = dict()
-    params["fileDesc"]["creationtime"] = datetime.now()
-    params["fileDesc"]["filename"] = input
+    if isinstance(input, str):
+        if "fileDesc" not in params.keys():
+            params["fileDesc"] = dict()
+        params["fileDesc"]["creationtime"] = datetime.now()
+        params["fileDesc"]["filename"] = input
 
-    if "public" not in params.keys():
-        params["public"] = dict()
-    params["public"]["uri"] = input
+        if "public" not in params.keys():
+            params["public"] = dict()
+        params["public"]["uri"] = input
 
-    if os.path.splitext(input)[1].lower() == ".txt":
-        params["fileDesc"]["filetype"] = "text/plain"
-        params["public"]["format"] = "text/plain"
-    elif os.path.splitext(input)[1].lower() == ".html":
-        params["fileDesc"]["filetype"] = "text/html"
-        params["public"]["format"] = "text/html"
-    elif os.path.splitext(input)[1].lower() == ".pdf":
-        params["fileDesc"]["filetype"] = "application/pdf"
-        params["public"]["format"] = "application/pdf"
-    elif os.path.splitext(input)[1].lower() == ".docx":
-        params["fileDesc"][
-            "filetype"
-        ] = "application/vnd.openxmlformats-officedocument.wordprocessingml.document"
-        params["public"][
-            "format"
-        ] = "application/vnd.openxmlformats-officedocument.wordprocessingml.document"
+        if os.path.splitext(input)[1].lower() == ".txt":
+            params["fileDesc"]["filetype"] = "text/plain"
+            params["public"]["format"] = "text/plain"
+        elif os.path.splitext(input)[1].lower() == ".html":
+            params["fileDesc"]["filetype"] = "text/html"
+            params["public"]["format"] = "text/html"
+        elif os.path.splitext(input)[1].lower() == ".pdf":
+            params["fileDesc"]["filetype"] = "application/pdf"
+            params["public"]["format"] = "application/pdf"
+        elif os.path.splitext(input)[1].lower() == ".docx":
+            params["fileDesc"][
+                "filetype"
+            ] = "application/vnd.openxmlformats-officedocument.wordprocessingml.document"
+            params["public"][
+                "format"
+            ] = "application/vnd.openxmlformats-officedocument.wordprocessingml.document"
 
     # set default linguistic parameters
     if "linguistic_layers" not in params.keys():
@@ -261,7 +268,7 @@ def process_linguistic_steps(params: dict):
     if params["language"] is not None:
         language = params["language"]
     else:
-        language = params["language_detector"](text)
+        language = params["language_detector"].detect(text)
         params["tree"].set_language(language)
         params["language"] = language
 
@@ -519,10 +526,10 @@ def add_text_layer(params: dict):
         paragraphs_offset = [0] + [
             int(text.get("offset")) + len(text.text)
             for page in formats
-            for textbox in page
+            for textbox in page if textbox.tag == "textbox"
             for textline in textbox
             for text in textline
-            if len(text.text.strip()) > 0 and text.text.strip()[-1] in [".", "?"]
+            if (len(text.text.strip()) > 0) and (text.text.strip()[-1] in [".", "?"])
         ]
 
     doc = params["doc"]

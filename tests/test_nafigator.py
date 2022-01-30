@@ -29,6 +29,34 @@ class TestNafigator_pdf(unittest.TestCase):
         )
         assert tree.write(join("tests", "tests", "example.naf.xml")) == None
 
+    def test_1_split_pre_linguistic(self):
+        """ """
+        # only save the preprocess steps
+        tree = parse2naf.generate_naf(
+            input=join("tests", "tests", "example.pdf"),
+            engine="stanza",
+            language="en",
+            naf_version="v3.1",
+            dtd_validation=False,
+            params={'linguistic_layers': []},
+            nlp=None,
+        )
+        tree.write(join("tests", "tests", "example_preprocess.naf.xml")) == None
+
+        # start with saved document and process linguistic steps
+        naf = NafDocument().open(join("tests", "tests", "example_preprocess.naf.xml"))
+        tree = parse2naf.generate_naf(
+                        input=naf,
+                        engine="stanza",
+                        language="en",
+                        naf_version="v3.1", 
+                        params = {'preprocess_layers': []}
+                        )
+
+        doc = NafDocument().open(join("tests", "tests", "example.naf.xml"))
+
+        assert tree.raw == doc.raw
+
     def test_2_pdf_header_filedesc(self):
         """ """
         naf = NafDocument().open(join("tests", "tests", "example.naf.xml"))
@@ -117,7 +145,7 @@ class TestNafigator_pdf(unittest.TestCase):
                                 "texts": [
                                     {
                                         "font": "CIDFont+F1",
-                                        "size": "13.284",
+                                        "size": "12.000",
                                         "length": "87",
                                         "offset": "0",
                                         "text": "The Nafigator package allows you to store NLP output from custom made spaCy and stanza ",
@@ -128,7 +156,7 @@ class TestNafigator_pdf(unittest.TestCase):
                                 "texts": [
                                     {
                                         "font": "CIDFont+F1",
-                                        "size": "13.284",
+                                        "size": "12.000",
                                         "length": "77",
                                         "offset": "88",
                                         "text": "pipelines with (intermediate) results and all processing steps in one format.",
@@ -143,7 +171,7 @@ class TestNafigator_pdf(unittest.TestCase):
                                 "texts": [
                                     {
                                         "font": "CIDFont+F1",
-                                        "size": "13.284",
+                                        "size": "12.000",
                                         "length": "86",
                                         "offset": "167",
                                         "text": "Multiwords like in “we have set that out below” are recognized (depending on your NLP ",
@@ -154,7 +182,7 @@ class TestNafigator_pdf(unittest.TestCase):
                                 "texts": [
                                     {
                                         "font": "CIDFont+F1",
-                                        "size": "13.284",
+                                        "size": "12.000",
                                         "length": "11",
                                         "offset": "254",
                                         "text": "processor).",
