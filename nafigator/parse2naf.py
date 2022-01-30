@@ -201,11 +201,12 @@ def process_preprocess_steps(params: dict):
     params["beginTimestamp_preprocess"] = datetime.now()
     input = params["fileDesc"]["filename"]
     if input[-3:].lower() == "txt":
-        with open(input) as f:
+        with open(input, encoding='utf8') as f:
             params["text"] = f.read()
     elif input[-4:].lower() == "html":
-        with open(input) as f:
-            doc = lxml.html.document_fromstring(f.read())
+        with open(input, encoding='utf8') as f:
+            utf8_parser = lxml.html.HTMLParser(encoding='utf-8')
+            doc = lxml.html.document_fromstring(f.read(), parser=utf8_parser)
             params["text"] = doc.text_content()
     elif input[-4:].lower() == "docx":
         convert_docx(input, format="xml", params=params)
