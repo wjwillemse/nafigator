@@ -165,6 +165,8 @@ def create_params(
         params["comments"] = True
     if params.get("apply_ocr", None) is None:
         params["apply_ocr"] = False
+    if params.get("textline_separator") is None:
+        params['textline_separator'] = " "
 
     return params
 
@@ -321,6 +323,7 @@ def process_linguistic_layers(params: dict):
 def derive_text_from_formats_layer(params):
     """Derive the text from the xml formats layer"""
     formats = params["tree"].find(FORMATS_LAYER_TAG)
+    textline_separator = params['textline_separator']
     if formats is not None:
         text = [
             (text.text, int(text.get("offset")))
@@ -330,7 +333,7 @@ def derive_text_from_formats_layer(params):
             for text in textline
         ]
         text = [
-            line[0] + " " * (text[idx + 1][1] - text[idx][1] - len(line[0]))
+            line[0] + textline_separator * (text[idx + 1][1] - text[idx][1] - len(line[0]))
             for idx, line in enumerate(text)
             if idx < len(text) - 1
         ] + [text[-1][0]]
