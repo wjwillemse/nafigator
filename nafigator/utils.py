@@ -468,7 +468,6 @@ def get_terms(pattern, doc):
 
     return [[doc_text[p]["text"].lower() for p in pattern] for pattern in patterns]
 
-<<<<<<< HEAD
 
 ILLEGAL_TERM_CHARACTERS = ["„", "”", ">", "<", ",", "α", "β", "σ", "ð", "þ", "%", "δ"]
 
