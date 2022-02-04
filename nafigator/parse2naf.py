@@ -50,7 +50,7 @@ def generate_naf(
     nlp=None,
 ):
     """Parse input file, generate and return NAF xml tree"""
-    if (input is None):
+    if input is None:
         logging.error("input is none")
         return None
     if isinstance(input, str) and not os.path.isfile(input):
@@ -87,7 +87,7 @@ def generate_naf(
     else:
         params["tree"] = NafDocument()
         params["tree"].generate(params)
-    
+
     if params["preprocess_layers"] != []:
         process_preprocess_steps(params)
 
@@ -122,7 +122,10 @@ def create_params(
 
         if "public" not in params.keys():
             params["public"] = dict()
-        params["public"]["uri"] = input
+            params["public"]["uri"] = input
+        else:
+            if "uri" not in params["public"].keys():
+                params["public"]["uri"] = input
 
         if os.path.splitext(input)[1].lower() == ".txt":
             params["fileDesc"]["filetype"] = "text/plain"
@@ -166,7 +169,7 @@ def create_params(
     if params.get("apply_ocr", None) is None:
         params["apply_ocr"] = False
     if params.get("textline_separator") is None:
-        params['textline_separator'] = " "
+        params["textline_separator"] = " "
 
     return params
 
@@ -185,9 +188,7 @@ def evaluate_naf(params: dict):
             + ")"
         )
     # verify alignment between raw layer and text
-    text_to_use = derive_text_from_formats_layer(
-        params
-    ) 
+    text_to_use = derive_text_from_formats_layer(params)
     if len(raw) != len(text_to_use):
         logging.error(
             "raw length ("
@@ -223,10 +224,10 @@ def process_preprocess_steps(params: dict):
     params["beginTimestamp_preprocess"] = datetime.now()
     input = params["fileDesc"]["filename"]
     if input[-3:].lower() == "txt":
-        with open(input) as f:
+        with open(input, encoding="utf-8") as f:
             params["text"] = f.read()
     elif input[-4:].lower() == "html":
-        with open(input) as f:
+        with open(input, encoding="utf-8") as f:
             doc = lxml.html.document_fromstring(f.read())
             params["text"] = doc.text_content()
     elif input[-4:].lower() == "docx":
@@ -323,7 +324,7 @@ def process_linguistic_layers(params: dict):
 def derive_text_from_formats_layer(params):
     """Derive the text from the xml formats layer"""
     formats = params["tree"].find(FORMATS_LAYER_TAG)
-    textline_separator = params['textline_separator']
+    textline_separator = params["textline_separator"]
     if formats is not None:
         text = [
             (text.text, int(text.get("offset")))
@@ -333,7 +334,8 @@ def derive_text_from_formats_layer(params):
             for text in textline
         ]
         text = [
-            line[0] + textline_separator * (text[idx + 1][1] - text[idx][1] - len(line[0]))
+            line[0]
+            + textline_separator * (text[idx + 1][1] - text[idx][1] - len(line[0]))
             for idx, line in enumerate(text)
             if idx < len(text) - 1
         ] + [text[-1][0]]
@@ -529,7 +531,8 @@ def add_text_layer(params: dict):
         paragraphs_offset = [0] + [
             int(text.get("offset")) + len(text.text)
             for page in formats
-            for textbox in page if textbox.tag == "textbox"
+            for textbox in page
+            if textbox.tag == "textbox"
             for textline in textbox
             for text in textline
             if (len(text.text.strip()) > 0) and (text.text.strip()[-1] in [".", "?"])

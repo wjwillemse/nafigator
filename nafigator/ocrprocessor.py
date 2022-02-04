@@ -4,32 +4,32 @@
 
 try:
     import pdf2image
+
     PDF2IMAGE = True
 except:
     PDF2IMAGE = False
 try:
     from PIL import Image
+
     IMAGE = True
 except ImportError:
     try:
         import Image
+
         IMAGE = True
     except:
         IMAGE = False
 try:
     import pytesseract
+
     PYTESSERACT = True
 except:
     PYTESSERACT = False
 
 
-def convert_ocr_pdf(
-    path: str = None,
-    format: str = "text",
-    params: dict = None
-) -> str:
+def convert_ocr_pdf(path: str = None, format: str = "text", params: dict = None) -> str:
     """Function to process ocr on pdf to generate text
-       
+
        Source: https://stackoverflow.com/questions/29657237/tesseract-ocr-pdf-as-input
 
     Args:

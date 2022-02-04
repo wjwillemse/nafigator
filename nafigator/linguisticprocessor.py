@@ -44,8 +44,8 @@ if SPACY_IMPORTED:
                     if lang in nlp.keys():
                         self.nlp = nlp[lang]
                     else:
-                       logging.error("Language not available in nlp dict parameter")
-                       self.nlp = None
+                        logging.error("Language not available in nlp dict parameter")
+                        self.nlp = None
                 else:
                     self.nlp = nlp
             self.model_name = (

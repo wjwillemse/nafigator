@@ -655,7 +655,7 @@ class NafDocument(etree._ElementTree):
         )
 
         wf.text = (
-            etree.CDATA(data.text if "]]>" not in data.text else " "*len(data.text))
+            etree.CDATA(data.text if "]]>" not in data.text else " " * len(data.text))
             if cdata
             else data.text
         )
@@ -1153,7 +1153,7 @@ class NafDocument(etree._ElementTree):
                     header_number = 0
                     header_text = ""
                     header_cor = 0
-                    
+
                     if paragraph.tag == PARA:
                         p = add_element(page, "textbox")
 
@@ -1226,14 +1226,14 @@ class NafDocument(etree._ElementTree):
                                         offset += len(text.text)
                                         # page_length += 1
                                         # offset += 1
-    
+
                                         if header:
                                             header_text += text.text
 
                                     elif text.tag == FOOTNOTEREF:
                                         # not implemented
                                         continue
-    
+
                         page_length += 1
                         offset += 1
                         header_cor += 1
@@ -1254,10 +1254,10 @@ class NafDocument(etree._ElementTree):
                     if header:
                         h = add_element(page, "header")
                         h.text = header_text
-                        h.set("id", "h"+str(header_id))
+                        h.set("id", "h" + str(header_id))
                         h.set("page", "1")
                         h.set("length", str(len(header_text)))
-                        h.set("offset", str(offset-len(header_text)-header_cor))
+                        h.set("offset", str(offset - len(header_text) - header_cor))
                         h.set("level", str(header_depth))
                         h.set("style", str(header_style))
                         h.set("number", str(header_number))

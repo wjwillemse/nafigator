@@ -62,7 +62,9 @@ def dataframe2naf(
             dc_source = None
             df_meta.loc[row, "naf:status"] = "ERROR, no dc:source in DataFrame"
 
-        if "naf:source" in df_meta.columns and not pd.isna(df_meta.loc[row, "naf:source"]):
+        if "naf:source" in df_meta.columns and not pd.isna(
+            df_meta.loc[row, "naf:source"]
+        ):
             output = df_meta.loc[row, "naf:source"]
         else:
             if dc_source is not None:
@@ -362,7 +364,6 @@ def evaluate_sentence(sentence: str, mandatory_terms: list, avoid_terms: list):
     return False
 
 
-
 def lemmatize(
     o: Union[str, list, dict, pd.Series, pd.DataFrame],
     language: Union[str, pd.Series],
@@ -390,8 +391,8 @@ def lemmatize(
             o_list = [item for item in o[language == this_language]]
             o[language == this_language] = pd.Series(
                 lemmatize(o_list, this_language, nlp),
-                index=o[language == this_language].index
-           )
+                index=o[language == this_language].index,
+            )
         return o
     elif isinstance(o, pd.DataFrame):
         return pd.DataFrame(
@@ -424,6 +425,7 @@ def lowercase(
             {col: lowercase(o[col]) for col in o.columns}, index=o.index
         )
 
+
 def lemmatize_sentence(sentence: dict, terms: dict):
     """
     Lemmatize naf sentence
@@ -437,44 +439,6 @@ def lemmatize_sentence(sentence: dict, terms: dict):
 
     """
     return [terms[term["id"]]["lemma"] for term in sentence["terms"]]
-
-
-def add_hyperlink(paragraph, text, url):
-    # This gets access to the document.xml.rels file and gets a new relation
-    # id value
-    part = paragraph.part
-    r_id = part.relate_to(
-        url, docx.opc.constants.RELATIONSHIP_TYPE.HYPERLINK, is_external=True
-    )
-
-    # Create the w:hyperlink tag and add needed values
-    hyperlink = docx.oxml.shared.OxmlElement("w:hyperlink")
-    hyperlink.set(
-        docx.oxml.shared.qn("r:id"),
-        r_id,
-    )
-
-    # Create a w:r element and a new w:rPr element
-    new_run = docx.oxml.shared.OxmlElement("w:r")
-    rPr = docx.oxml.shared.OxmlElement("w:rPr")
-
-    # Join all the xml elements together add add the required text to the w:r
-    # element
-    new_run.append(rPr)
-    new_run.text = text
-    hyperlink.append(new_run)
-
-    # Create a new Run object and add the hyperlink into it
-    r = paragraph.add_run()
-    r._r.append(hyperlink)
-
-    # A workaround for the lack of a hyperlink style (doesn't go purple after using the link)
-    # Delete this if using a template that has the hyperlink style in it
-    r.font.color.theme_color = MSO_THEME_COLOR_INDEX.HYPERLINK
-    r.font.size = Pt(8)
-    r.font.underline = True
-
-    return hyperlink
 
 
 def get_terms(pattern, doc):
@@ -504,9 +468,58 @@ def get_terms(pattern, doc):
 
     return [[doc_text[p]["text"].lower() for p in pattern] for pattern in patterns]
 
-def glue_terms_separated_by_soft_hyphens(
-    doc, language: str, nlp: dict
-):
+
+ILLEGAL_TERM_CHARACTERS = ["„", "”", ">", "<", ",", "α", "β", "σ", "ð", "þ", "%", "δ"]
+
+
+def extract_terms(doc=None, patterns: list() = None):
+    """Function to extract terms from a NafDocument and add the terms to TbxDocument
+
+    Args:
+        output:
+
+    Returns:
+        None
+
+    """
+    if patterns is None:
+        patterns = [
+            ["NOUN"],
+            ["ADJ", "NOUN"],
+            ["ADJ", "NOUN", "NOUN"],
+            ["ADJ", "ADJ", "NOUN"],
+        ]
+    if doc is not None:
+        d = {}
+        for pattern in patterns:
+            terms = get_terms(pattern, doc)
+            for term in terms:
+                if (
+                    not any(
+                        [
+                            ((s in component) or (s == component))
+                            for component in term
+                            for s in ILLEGAL_TERM_CHARACTERS
+                        ]
+                    )
+                    and "\xad" != term[-1][-1]
+                    and "-" != term[-1][-1]
+                    and "-" != term[0][0]
+                    and not any([len(component) == 1 for component in term])
+                ):
+                    concept_text = " ".join(term)
+                    concept_text = concept_text.replace(" \xad ", "")
+                    concept_text = concept_text.replace("\xad ", "")
+                    concept_text = concept_text.replace(" \xad", "")
+                    concept_text = concept_text.replace("\xad", "")
+                    if concept_text in d.keys():
+                        d[concept_text]["count"] += 1
+                    else:
+                        d[concept_text] = {"count": 1, "partOfSpeech": pattern}
+    return d
+
+
+def glue_terms_separated_by_soft_hyphens(doc, language: str, nlp: dict):
     """
     Glue terms that are separated by soft hyphens
 
@@ -586,9 +599,8 @@ def glue_terms_separated_by_soft_hyphens(
 
     return doc
 
-def glue_terms_separated_by_hard_hyphens(
-    doc, language: str, nlp: dict
-):
+
+def glue_terms_separated_by_hard_hyphens(doc, language: str, nlp: dict):
     """
     Glue terms that are separated by hard hyphens
 
@@ -602,13 +614,14 @@ def glue_terms_separated_by_hard_hyphens(
 
     formats = doc.find("formats")
     hyphen_offsets = [
-            int(text.get("offset"))+len(text.text.strip())-1
-            for page in formats
-            for textbox in page
-            for textline in textbox
-            for text in textline if text.text.strip()[-1]=="-"
-        ]
-    
+        int(text.get("offset")) + len(text.text.strip()) - 1
+        for page in formats
+        for textbox in page
+        for textline in textbox
+        for text in textline
+        if text.text.strip()[-1] == "-"
+    ]
+
     HARD_HYPHEN = "-"
 
     doc_words = {word["id"]: word for word in doc.text}
@@ -623,26 +636,33 @@ def glue_terms_separated_by_hard_hyphens(
         term_morphofeat = term.get("morphofeat", None)
         term_span = term["span"]
 
-        if term_text[-1] == HARD_HYPHEN and not term_text==HARD_HYPHEN:
+        if term_text[-1] == HARD_HYPHEN and not term_text == HARD_HYPHEN:
             # term ends with a hard hyphen
-            word = doc_words[term_span[-1]['id']]
-            word_hyphen_offset = int(word['offset'])+len(word['text'].strip())-1
+            word = doc_words[term_span[-1]["id"]]
+            word_hyphen_offset = int(word["offset"]) + len(word["text"].strip()) - 1
 
-            next_term_text = "".join([doc_words[s["id"]]["text"] for s in terms[idx+1]["span"]])
-            if word_hyphen_offset in hyphen_offsets and next_term_text not in ["en", "of", ",", "en/of"]:
+            next_term_text = "".join(
+                [doc_words[s["id"]]["text"] for s in terms[idx + 1]["span"]]
+            )
+            if word_hyphen_offset in hyphen_offsets and next_term_text not in [
+                "en",
+                "of",
+                ",",
+                "en/of",
+            ]:
 
                 if next_term_text[-1] != HARD_HYPHEN:
                     term_span = term["span"] + terms[idx + 1]["span"]
                     terms_to_skip.append(terms[idx + 1]["id"])
                 else:
-                    term_span = term["span"] + terms[idx + 1]["span"] + terms[idx + 2]['span']
+                    term_span = (
+                        term["span"] + terms[idx + 1]["span"] + terms[idx + 2]["span"]
+                    )
                     terms_to_skip.append(terms[idx + 1]["id"])
                     terms_to_skip.append(terms[idx + 2]["id"])
 
                 # the new term text is derived from the new span where soft hyphens are deleted
-                term_text = "".join(
-                    [doc_words[s["id"]]["text"] for s in term_span]
-                )
+                term_text = "".join([doc_words[s["id"]]["text"] for s in term_span])
 
                 # we need to determine again the linguistical properties of the resulting term
                 data = nlp["nl"](term_text).sentences[0].words[0]
@@ -677,9 +697,8 @@ def glue_terms_separated_by_hard_hyphens(
 
     return doc
 
-def glue_sentences_separated_by_colons(
-    doc, language: str, nlp: dict
-):
+
+def glue_sentences_separated_by_colons(doc, language: str, nlp: dict):
     """
     Glue sentences that are separated by colons
 
@@ -697,9 +716,9 @@ def glue_sentences_separated_by_colons(
 
     for idx, sentence in enumerate(doc.sentences):
 
-        if sentence['text'][-1]==COLON:
-            print(sentence['text'])
-            print(doc.sentences[idx+1]['text'])
+        if sentence["text"][-1] == COLON:
+            print(sentence["text"])
+            print(doc.sentences[idx + 1]["text"])
             print("--")
 
     #     term_text = "".join([doc_words[s["id"]]["text"] for s in term["span"]])
