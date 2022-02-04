@@ -180,23 +180,11 @@ def evaluate_naf(params: dict):
     doc_text = params["engine"].document_text(params["doc"])
     raw = params["tree"].raw
     if len(raw) != len(doc_text):
-        logging.error(
-            "raw length ("
-            + str(len(raw))
-            + ") != doc length ("
-            + str(len(doc_text))
-            + ")"
-        )
+        logging.error(f"raw length ({len(raw)}) != doc length ({len(doc_text)})")
     # verify alignment between raw layer and text
     text_to_use = derive_text_from_formats_layer(params)
     if len(raw) != len(text_to_use):
-        logging.error(
-            "raw length ("
-            + str(len(raw))
-            + ") != text to use ("
-            + str(len(text_to_use))
-            + ")"
-        )
+        logging.error(f"raw length ({len(raw)}) != text to use ({len(text_to_use)})")
     # verify alignment between raw layer and text layer
     for wf in params["tree"].text:
         start = int(wf.get("offset"))
@@ -204,15 +192,9 @@ def evaluate_naf(params: dict):
         token = raw[start:end]
         if wf.get("text", None) != token:
             logging.error(
-                "mismatch in alignment of wf element ["
-                + str(wf.get("text"))
-                + "] ("
-                + str(wf.get("id"))
-                + ") with raw layer text ["
-                + str(token)
-                + "] (expected length "
-                + str(wf.get("length"))
-                + ")"
+                f"mismatch in alignment of wf element [{wf.get('text')}]"
+                f"({wf.get('id')}) with raw layer text [{token}]"
+                f"(expected length {wf.get('length')})"
             )
     # validate naf tree
     if params["dtd_validation"]:
@@ -224,11 +206,12 @@ def process_preprocess_steps(params: dict):
     params["beginTimestamp_preprocess"] = datetime.now()
     input = params["fileDesc"]["filename"]
     if input[-3:].lower() == "txt":
-        with open(input, encoding="utf-8") as f:
+        with open(input, encoding='utf8') as f:
             params["text"] = f.read()
     elif input[-4:].lower() == "html":
-        with open(input, encoding="utf-8") as f:
-            doc = lxml.html.document_fromstring(f.read())
+        with open(input, encoding='utf8') as f:
+            utf8_parser = lxml.html.HTMLParser(encoding='utf-8')
+            doc = lxml.html.document_fromstring(f.read(), parser=utf8_parser)
             params["text"] = doc.text_content()
     elif input[-4:].lower() == "docx":
         convert_docx(input, format="xml", params=params)
@@ -762,7 +745,8 @@ def add_multiwords_layer(params: dict):
     supported_languages = {"nl", "en"}
     if params["language"] not in supported_languages:
         logging.info(
-            f"add_multi_words function only implemented for {supported_languages}, not for supplied {language}"
+            f"add_multi_words function only implemented for "
+            f"{supported_languages}, not for supplied {params['language']}"
         )
 
     tid_to_term = {
@@ -864,13 +848,8 @@ def add_raw_layer(params: dict):
                 leading_chars = " " * delta
             elif delta < 0:
                 logging.warning(
-                    "please check the offsets of "
-                    + str(prev_wf["text"])
-                    + " and "
-                    + str(cur_wf["text"])
-                    + " (delta of "
-                    + str(delta)
-                    + ")"
+                    f"please check the offsets of {prev_wf['text']} and "
+                    f"{cur_wf['text']} (delta of {delta})"
                 )
             tokens.append(leading_chars + cur_wf["text"])
 

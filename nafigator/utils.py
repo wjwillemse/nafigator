@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 
-"""Utils module.
+"""
+Utils module.
 
 This module contains utility functions for nafigator package
 
@@ -18,7 +19,6 @@ import docx
 from docx.enum.dml import MSO_THEME_COLOR_INDEX
 import datetime
 from typing import Union
-
 
 def dataframe2naf(
     df_meta: pd.DataFrame,
@@ -468,6 +468,7 @@ def get_terms(pattern, doc):
 
     return [[doc_text[p]["text"].lower() for p in pattern] for pattern in patterns]
 
+<<<<<<< HEAD
 
 ILLEGAL_TERM_CHARACTERS = ["„", "”", ">", "<", ",", "α", "β", "σ", "ð", "þ", "%", "δ"]
 
@@ -598,7 +599,6 @@ def glue_terms_separated_by_soft_hyphens(doc, language: str, nlp: dict):
             )
 
     return doc
-
 
 def glue_terms_separated_by_hard_hyphens(doc, language: str, nlp: dict):
     """

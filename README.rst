@@ -234,6 +234,22 @@ Output of doc.formats::
           {'font': 'CIDFont+F1', 'size': '12.000', 'length': '77', 'offset': '88', 'text': 'pipelines with (intermediate) results and all processing steps in one format.'
   ...
 
+Get all sentences in the document via::
+
+  doc.sentences
+
+Output of doc.sentences::
+
+  [
+    {'text': 'The Nafigator package allows you to store NLP output from custom made Spacy and stanza pipelines with ( intermediate ) results and all processing steps in one format .', 
+    'para': ['1'], 
+    'page': ['1'], 
+    'span': [{'id': 'w1'}, {'id': 'w2'}, {'id': 'w3'}, {'id': 'w4'}, {'id': 'w5'}, {'id': 'w6'}, {'id': 'w7'}, {'id': 'w8'}, {'id': 'w9'}, {'id': 'w10'}, {'id': 'w11'}, {'id': 'w12'}, {'id': 'w13'}, {'id': 'w14'}, {'id': 'w15'}, {'id': 'w16'}, {'id': 'w17'}, {'id': 'w18'}, {'id': 'w19'}, {'id': 'w20'}, {'id': 'w21'}, {'id': 'w22'}, {'id': 'w23'}, {'id': 'w24'}, {'id': 'w25'}, {'id': 'w26'}, {'id': 'w27'}, {'id': 'w28'}, {'id': 'w29'}], 
+    'terms': [{'id': 't1'}, {'id': 't2'}, {'id': 't3'}, {'id': 't4'}, {'id': 't5'}, {'id': 't6'}, {'id': 't7'}, {'id': 't8'}, {'id': 't9'}, {'id': 't10'}, {'id': 't11'}, {'id': 't12'}, {'id': 't13'}, {'id': 't14'}, {'id': 't15'}, {'id': 't16'}, {'id': 't17'}, {'id': 't18'}, {'id': 't19'}, {'id': 't20'}, {'id': 't21'}, {'id': 't22'}, {'id': 't23'}, {'id': 't24'}, {'id': 't25'}, {'id': 't26'}, {'id': 't27'}, {'id': 't28'}, {'id': 't29'}]}, 
+  ...
+
+Note that you get the word ids (the span) as well as the terms ids in the sentence.
+
 
 Adding new annotation layers
 ----------------------------
