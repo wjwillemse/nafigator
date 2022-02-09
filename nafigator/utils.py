@@ -216,7 +216,10 @@ def remove_illegal_chars(text: str) -> str:
         str: string with removed illegal characters
 
     """
-    return re.sub(ILLEGAL_XML_CHARS_RE, "", text)
+    if text is not None:
+        return re.sub(ILLEGAL_XML_CHARS_RE, "", text)
+    else:
+        return None
 
 
 def remove_control_characters(html: str) -> str:
@@ -439,84 +442,6 @@ def lemmatize_sentence(sentence: dict, terms: dict):
 
     """
     return [terms[term["id"]]["lemma"] for term in sentence["terms"]]
-
-
-def get_terms(pattern, doc):
-    """
-    Get terms from a NafDocument
-
-    Args:
-        pattern: list of pos, for example ["ADJ", "NOUN", "NOUN"]
-        doc: nafDocument
-
-    Returns:
-        list of term satisfying the pattern
-
-    """
-    doc_terms = {term["id"]: term for term in doc.terms}
-    doc_words = {word["id"]: word for word in doc.text}
-
-    for term in doc_terms.keys():
-        doc_terms[term]["text"] = " ".join(
-            [doc_words[s["id"]]["text"] for s in doc_terms[term]["span"]]
-        )
-
-    doc_pos = [term["pos"] for term in doc.terms]
-    doc_text = [term for term in doc_terms.values()]
-
-    patterns = sublist_indices(pattern, doc_pos)
-
-    return [[doc_text[p]["text"].lower() for p in pattern] for pattern in patterns]
-
-
-ILLEGAL_TERM_CHARACTERS = ["„", "”", ">", "<", ",", "α", "β", "σ", "ð", "þ", "%", "δ"]
-
-
-def extract_terms(doc=None, patterns: list() = None):
-    """Function to extract terms from a NafDocument and add the terms to TbxDocument
-
-    Args:
-        output:
-
-    Returns:
-        None
-
-    """
-    if patterns is None:
-        patterns = [
-            ["NOUN"],
-            ["ADJ", "NOUN"],
-            ["ADJ", "NOUN", "NOUN"],
-            ["ADJ", "ADJ", "NOUN"],
-        ]
-    if doc is not None:
-        d = {}
-        for pattern in patterns:
-            terms = get_terms(pattern, doc)
-            for term in terms:
-                if (
-                    not any(
-                        [
-                            ((s in component) or (s == component))
-                            for component in term
-                            for s in ILLEGAL_TERM_CHARACTERS
-                        ]
-                    )
-                    and "\xad" != term[-1][-1]
-                    and "-" != term[-1][-1]
-                    and "-" != term[0][0]
-                    and not any([len(component) == 1 for component in term])
-                ):
-                    concept_text = " ".join(term)
-                    concept_text = concept_text.replace(" \xad ", "")
-                    concept_text = concept_text.replace("\xad ", "")
-                    concept_text = concept_text.replace(" \xad", "")
-                    concept_text = concept_text.replace("\xad", "")
-                    if concept_text in d.keys():
-                        d[concept_text]["count"] += 1
-                    else:
-                        d[concept_text] = {"count": 1, "partOfSpeech": pattern}
-    return d
 
 
 def glue_terms_separated_by_soft_hyphens(doc, language: str, nlp: dict):

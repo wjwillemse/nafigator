@@ -720,6 +720,8 @@ def create_separable_verb_lemma(verb, particle, language):
         lemma = particle + verb
     if language == "en":
         lemma = f"{verb}_{particle}"
+    else:
+        lemma = f"{verb}_{particle}"
     return lemma
 
 
