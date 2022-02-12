@@ -206,11 +206,11 @@ def process_preprocess_steps(params: dict):
     params["beginTimestamp_preprocess"] = datetime.now()
     input = params["fileDesc"]["filename"]
     if input[-3:].lower() == "txt":
-        with open(input, encoding='utf8') as f:
+        with open(input, encoding="utf8") as f:
             params["text"] = f.read()
     elif input[-4:].lower() == "html":
-        with open(input, encoding='utf8') as f:
-            utf8_parser = lxml.html.HTMLParser(encoding='utf-8')
+        with open(input, encoding="utf8") as f:
+            utf8_parser = lxml.html.HTMLParser(encoding="utf-8")
             doc = lxml.html.document_fromstring(f.read(), parser=utf8_parser)
             params["text"] = doc.text_content()
     elif input[-4:].lower() == "docx":
@@ -309,20 +309,31 @@ def derive_text_from_formats_layer(params):
     formats = params["tree"].find(FORMATS_LAYER_TAG)
     textline_separator = params["textline_separator"]
     if formats is not None:
-        text = [
-            (text.text, int(text.get("offset")))
-            for page in formats
-            for textbox in page
-            for textline in textbox
-            for text in textline
-        ]
-        text = [
+        text = []
+        for page in formats:
+            for textbox in page:
+                if textbox.tag == "textbox":
+                    for textline in textbox:
+                        for text_element in textline:
+                            text.append(
+                                (text_element.text, int(text_element.get("offset")))
+                            )
+                elif textbox.tag == "figure":
+                    for text_element in textbox:
+                        text.append(
+                            (text_element.text, int(text_element.get("offset")))
+                        )
+
+        text_spaces_added = [
             line[0]
             + textline_separator * (text[idx + 1][1] - text[idx][1] - len(line[0]))
             for idx, line in enumerate(text)
             if idx < len(text) - 1
-        ] + [text[-1][0]]
-        text = "".join(text).rstrip()
+        ]
+        if len(text) > 0:
+            text_spaces_added.append(text[-1][0])
+
+        text = "".join(text_spaces_added).rstrip()
         if params["replace_hidden_characters"]:
             text = norm_spaces(text.translate(hidden_table))
         else:
@@ -860,7 +871,7 @@ def add_raw_layer(params: dict):
         else:
             raw_text = "".join(tokens)
     else:
-        raw_data = ""
+        raw_text = ""
 
     raw_data = RawElement(text=raw_text)
 
