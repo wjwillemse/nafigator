@@ -7,7 +7,7 @@ History
 
 * First release on PyPI.
 
-0.1.1 to 0.1.38 (2022-1-30)
+0.1.1 to 0.1.39 (2022-2-12)
 ---------------------------
 
 * A lot of small changes
