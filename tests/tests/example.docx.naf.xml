@@ -1,28 +1,28 @@
 <?xml version='1.0' encoding='UTF-8'?>
 <NAF xmlns:dc="http://purl.org/dc/elements/1.1/" version="v3.1" xml:lang="en">
   <nafHeader>
-    <fileDesc creationtime="2021-10-25T11:21:54UTC" filename="tests\tests\example.docx" filetype="application/vnd.openxmlformats-officedocument.wordprocessingml.document"/>
+    <fileDesc creationtime="2022-02-12T10:03:46UTC" filename="tests\tests\example.docx" filetype="application/vnd.openxmlformats-officedocument.wordprocessingml.document"/>
     <public dc:uri="tests\tests\example.docx" dc:format="application/vnd.openxmlformats-officedocument.wordprocessingml.document"/>
     <linguisticProcessors layer="formats">
-      <lp name="formats" version="nafigator" beginTimestamp="2021-10-25T11:21:54UTC" endTimestamp="2021-10-25T11:21:54UTC" hostname="DESKTOP-NORB4QA.fritz.box"/>
+      <lp name="formats" version="nafigator" beginTimestamp="2022-02-12T10:03:46UTC" endTimestamp="2022-02-12T10:03:46UTC" hostname="computer-woonkamer"/>
     </linguisticProcessors>
     <linguisticProcessors layer="entities">
-      <lp name="entities" version="stanza_version-1.2.2" model="C:\Users\Willem Jan Willemse\stanza_resources\en\ner\ontonotes.pt" beginTimestamp="2021-10-25T11:21:56UTC" endTimestamp="2021-10-25T11:21:57UTC" hostname="DESKTOP-NORB4QA.fritz.box"/>
+      <lp name="entities" version="stanza_version-1.2.3" model="C:\Users\wjwil\stanza_resources\en\ner\ontonotes.pt" beginTimestamp="2022-02-12T10:03:49UTC" endTimestamp="2022-02-12T10:03:50UTC" hostname="computer-woonkamer"/>
     </linguisticProcessors>
     <linguisticProcessors layer="text">
-      <lp name="text" version="stanza_version-1.2.2" model="C:\Users\Willem Jan Willemse\stanza_resources\en\tokenize\ewt.pt" beginTimestamp="2021-10-25T11:21:56UTC" endTimestamp="2021-10-25T11:21:57UTC" hostname="DESKTOP-NORB4QA.fritz.box"/>
+      <lp name="text" version="stanza_version-1.2.3" model="C:\Users\wjwil\stanza_resources\en\tokenize\combined.pt" beginTimestamp="2022-02-12T10:03:49UTC" endTimestamp="2022-02-12T10:03:50UTC" hostname="computer-woonkamer"/>
     </linguisticProcessors>
     <linguisticProcessors layer="terms">
-      <lp name="terms" version="stanza_version-1.2.2" model="C:\Users\Willem Jan Willemse\stanza_resources\en\pos\ewt.pt" beginTimestamp="2021-10-25T11:21:56UTC" endTimestamp="2021-10-25T11:21:57UTC" hostname="DESKTOP-NORB4QA.fritz.box"/>
+      <lp name="terms" version="stanza_version-1.2.3" model="C:\Users\wjwil\stanza_resources\en\pos\combined.pt" beginTimestamp="2022-02-12T10:03:49UTC" endTimestamp="2022-02-12T10:03:50UTC" hostname="computer-woonkamer"/>
     </linguisticProcessors>
     <linguisticProcessors layer="deps">
-      <lp name="deps" version="stanza_version-1.2.2" model="C:\Users\Willem Jan Willemse\stanza_resources\en\depparse\ewt.pt" beginTimestamp="2021-10-25T11:21:56UTC" endTimestamp="2021-10-25T11:21:57UTC" hostname="DESKTOP-NORB4QA.fritz.box"/>
+      <lp name="deps" version="stanza_version-1.2.3" model="C:\Users\wjwil\stanza_resources\en\depparse\combined.pt" beginTimestamp="2022-02-12T10:03:49UTC" endTimestamp="2022-02-12T10:03:50UTC" hostname="computer-woonkamer"/>
     </linguisticProcessors>
     <linguisticProcessors layer="multiwords">
-      <lp name="multiwords" version="stanza_version-1.2.2" model="C:\Users\Willem Jan Willemse\stanza_resources\en\tokenize\ewt.pt" beginTimestamp="2021-10-25T11:21:56UTC" endTimestamp="2021-10-25T11:21:57UTC" hostname="DESKTOP-NORB4QA.fritz.box"/>
+      <lp name="multiwords" version="stanza_version-1.2.3" model="C:\Users\wjwil\stanza_resources\en\tokenize\combined.pt" beginTimestamp="2022-02-12T10:03:49UTC" endTimestamp="2022-02-12T10:03:50UTC" hostname="computer-woonkamer"/>
     </linguisticProcessors>
     <linguisticProcessors layer="raw">
-      <lp name="raw" version="stanza_version-1.2.2" model="C:\Users\Willem Jan Willemse\stanza_resources\en\tokenize\ewt.pt" beginTimestamp="2021-10-25T11:21:56UTC" endTimestamp="2021-10-25T11:21:57UTC" hostname="DESKTOP-NORB4QA.fritz.box"/>
+      <lp name="raw" version="stanza_version-1.2.3" model="C:\Users\wjwil\stanza_resources\en\tokenize\combined.pt" beginTimestamp="2022-02-12T10:03:49UTC" endTimestamp="2022-02-12T10:03:50UTC" hostname="computer-woonkamer"/>
     </linguisticProcessors>
   </nafHeader>
   <formats>
@@ -190,7 +190,7 @@
         <target id="w10"/>
       </span>
     </term>
-    <term id="t11" type="open" lemma="custom" pos="NOUN" morphofeat="Number=Sing">
+    <term id="t11" type="open" lemma="custom" pos="ADJ" morphofeat="Degree=Pos">
       <span>
         <!--custom-->
         <target id="w11"/>
@@ -202,7 +202,7 @@
         <target id="w12"/>
       </span>
     </term>
-    <term id="t13" type="open" lemma="spacy" pos="NOUN" morphofeat="Number=Sing">
+    <term id="t13" type="open" lemma="Spacy" pos="PROPN" morphofeat="Number=Sing">
       <span>
         <!--Spacy-->
         <target id="w13"/>
@@ -322,7 +322,7 @@
         <target id="w32"/>
       </span>
     </term>
-    <term id="t33" type="open" lemma="&quot;" pos="PUNCT">
+    <term id="t33" type="open" lemma="''" pos="PUNCT">
       <span>
         <!--&#8220;-->
         <target id="w33"/>
@@ -346,7 +346,7 @@
         <target id="w36"/>
       </span>
     </term>
-    <term id="t37" type="open" lemma="that" pos="SCONJ">
+    <term id="t37" type="open" lemma="that" pos="PRON" morphofeat="Number=Sing|PronType=Dem">
       <span>
         <!--that-->
         <target id="w37"/>
@@ -364,7 +364,7 @@
         <target id="w39"/>
       </span>
     </term>
-    <term id="t40" type="open" lemma="&quot;" pos="PUNCT">
+    <term id="t40" type="open" lemma="''" pos="PUNCT">
       <span>
         <!--&#8221;-->
         <target id="w40"/>
@@ -448,34 +448,34 @@
     <dep from_term="t9" to_term="t8" rfunc="compound"/>
     <!--obj(store,output)-->
     <dep from_term="t7" to_term="t9" rfunc="obj"/>
-    <!--case(Spacy,from)-->
-    <dep from_term="t13" to_term="t10" rfunc="case"/>
-    <!--nmod(output,Spacy)-->
-    <dep from_term="t9" to_term="t13" rfunc="nmod"/>
-    <!--compound(made,custom)-->
-    <dep from_term="t12" to_term="t11" rfunc="compound"/>
-    <!--amod(Spacy,made)-->
-    <dep from_term="t13" to_term="t12" rfunc="amod"/>
-    <!--cc(pipelines,and)-->
-    <dep from_term="t16" to_term="t14" rfunc="cc"/>
-    <!--conj(Spacy,pipelines)-->
-    <dep from_term="t13" to_term="t16" rfunc="conj"/>
-    <!--compound(pipelines,stanza)-->
-    <dep from_term="t16" to_term="t15" rfunc="compound"/>
+    <!--case(pipelines,from)-->
+    <dep from_term="t16" to_term="t10" rfunc="case"/>
+    <!--obl(store,pipelines)-->
+    <dep from_term="t7" to_term="t16" rfunc="obl"/>
+    <!--amod(pipelines,custom)-->
+    <dep from_term="t16" to_term="t11" rfunc="amod"/>
+    <!--amod(pipelines,made)-->
+    <dep from_term="t16" to_term="t12" rfunc="amod"/>
+    <!--compound(pipelines,Spacy)-->
+    <dep from_term="t16" to_term="t13" rfunc="compound"/>
+    <!--cc(stanza,and)-->
+    <dep from_term="t15" to_term="t14" rfunc="cc"/>
+    <!--conj(Spacy,stanza)-->
+    <dep from_term="t13" to_term="t15" rfunc="conj"/>
     <!--case(results,with)-->
     <dep from_term="t21" to_term="t17" rfunc="case"/>
     <!--obl(store,results)-->
     <dep from_term="t7" to_term="t21" rfunc="obl"/>
-    <!--punct(results,()-->
-    <dep from_term="t21" to_term="t18" rfunc="punct"/>
+    <!--punct(intermediate,()-->
+    <dep from_term="t19" to_term="t18" rfunc="punct"/>
     <!--amod(results,intermediate)-->
     <dep from_term="t21" to_term="t19" rfunc="amod"/>
-    <!--punct(results,))-->
-    <dep from_term="t21" to_term="t20" rfunc="punct"/>
+    <!--punct(intermediate,))-->
+    <dep from_term="t19" to_term="t20" rfunc="punct"/>
     <!--cc(steps,and)-->
     <dep from_term="t25" to_term="t22" rfunc="cc"/>
-    <!--conj(Spacy,steps)-->
-    <dep from_term="t13" to_term="t25" rfunc="conj"/>
+    <!--conj(results,steps)-->
+    <dep from_term="t21" to_term="t25" rfunc="conj"/>
     <!--det(steps,all)-->
     <dep from_term="t25" to_term="t23" rfunc="det"/>
     <!--compound(steps,processing)-->
@@ -488,10 +488,12 @@
     <dep from_term="t28" to_term="t27" rfunc="nummod"/>
     <!--punct(allows,.)-->
     <dep from_term="t4" to_term="t29" rfunc="punct"/>
+    <!--nsubj:pass(recognized,Multiwords)-->
+    <dep from_term="t42" to_term="t30" rfunc="nsubj:pass"/>
     <!--mark(set,like)-->
     <dep from_term="t36" to_term="t31" rfunc="mark"/>
-    <!--acl(Multiwords,set)-->
-    <dep from_term="t30" to_term="t36" rfunc="acl"/>
+    <!--advcl(recognized,set)-->
+    <dep from_term="t42" to_term="t36" rfunc="advcl"/>
     <!--mark(set,in)-->
     <dep from_term="t36" to_term="t32" rfunc="mark"/>
     <!--punct(set,“)-->
@@ -500,10 +502,8 @@
     <dep from_term="t36" to_term="t34" rfunc="nsubj"/>
     <!--aux(set,have)-->
     <dep from_term="t36" to_term="t35" rfunc="aux"/>
-    <!--mark(recognized,that)-->
-    <dep from_term="t42" to_term="t37" rfunc="mark"/>
-    <!--ccomp(set,recognized)-->
-    <dep from_term="t36" to_term="t42" rfunc="ccomp"/>
+    <!--obj(set,that)-->
+    <dep from_term="t36" to_term="t37" rfunc="obj"/>
     <!--compound:prt(set,out)-->
     <dep from_term="t36" to_term="t38" rfunc="compound:prt"/>
     <!--advmod(set,below)-->
@@ -518,8 +518,8 @@
     <dep from_term="t42" to_term="t48" rfunc="obl"/>
     <!--case(processor,depending)-->
     <dep from_term="t48" to_term="t44" rfunc="case"/>
-    <!--case(processor,on)-->
-    <dep from_term="t48" to_term="t45" rfunc="case"/>
+    <!--fixed(depending,on)-->
+    <dep from_term="t44" to_term="t45" rfunc="fixed"/>
     <!--nmod:poss(processor,your)-->
     <dep from_term="t48" to_term="t46" rfunc="nmod:poss"/>
     <!--compound(processor,NLP)-->

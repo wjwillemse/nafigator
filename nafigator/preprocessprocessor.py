@@ -10,6 +10,7 @@ from pdfminer.pdfpage import PDFPage
 
 try:
     import pdfplumber
+
     PDFPLUMBER = True
 except:
     PDFPLUMBER = False
@@ -89,8 +90,10 @@ def convert_pdf(
         tables = []
         fp = pdfplumber.open(path)
         for page in fp.pages:
-            tables.append(page.extract_tables(params.get('pdfplumber_table_extraction', {})))
-        params['pdftotables'] = tables
+            tables.append(
+                page.extract_tables(params.get("pdfplumber_table_extraction", {}))
+            )
+        params["pdftotables"] = tables
 
     return None
 

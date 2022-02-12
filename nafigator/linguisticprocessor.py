@@ -44,8 +44,8 @@ if SPACY_IMPORTED:
                     if lang in nlp.keys():
                         self.nlp = nlp[lang]
                     else:
-                       logging.error("Language not available in nlp dict parameter")
-                       self.nlp = None
+                        logging.error("Language not available in nlp dict parameter")
+                        self.nlp = None
                 else:
                     self.nlp = nlp
             self.model_name = (
@@ -244,14 +244,23 @@ if STANZA_IMPORTED:
             return token.start_char
 
         def token_pos(self, token):
-            return token.words[0].pos
+            if len(token.words) > 0:
+                return token.words[0].pos
+            else:
+                return ""
 
         def token_lemma(self, token):
-            return token.words[0].lemma
+            if len(token.words) > 0:
+                return token.words[0].lemma
+            else:
+                return ""
 
         def token_tag(self, token):
-            return token.words[0].feats
-
+            if len(token.words) > 0:
+                return token.words[0].feats
+            else:
+                return ""
+                
         def entity_token_start(self, entity):
             return entity.tokens[0]
 
