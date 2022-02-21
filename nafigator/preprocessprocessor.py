@@ -2,19 +2,12 @@
 
 """Preprocessor module."""
 
+from pathlib import Path
 import pdfminer
 from pdfminer.pdfinterp import PDFResourceManager, PDFPageInterpreter
 from pdfminer.converter import TextConverter, XMLConverter, HTMLConverter
 from pdfminer.layout import LAParams
 from pdfminer.pdfpage import PDFPage
-
-try:
-    import pdfplumber
-
-    PDFPLUMBER = True
-except:
-    PDFPLUMBER = False
-
 from io import BytesIO
 from .const import ProcessorElement
 
@@ -25,6 +18,8 @@ try:
     from xml.etree.cElementTree import XML
 except ImportError:
     from xml.etree.ElementTree import XML
+
+import camelot as cm
 
 
 def convert_pdf(
@@ -86,14 +81,11 @@ def convert_pdf(
 
     params["pdfto" + format] = text
 
-    if PDFPLUMBER:
-        tables = []
-        fp = pdfplumber.open(path)
-        for page in fp.pages:
-            tables.append(
-                page.extract_tables(params.get("pdfplumber_table_extraction", {}))
-            )
-        params["pdftotables"] = tables
+    tables = cm.read_pdf(path,
+                         backend="poppler",
+                         pages='1-end',
+                         flavor='lattice')
+    params["pdftotables"] = tables
 
     return None
 
