@@ -20,6 +20,7 @@ except ImportError:
     from xml.etree.ElementTree import XML
 
 import camelot as cm
+import pdftopng
 
 
 def convert_pdf(
