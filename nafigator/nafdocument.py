@@ -941,6 +941,8 @@ class NafDocument(etree._ElementTree):
             parser = etree.XMLParser(ns_clean=True, recover=True, encoding="utf-8")
             formats_root = etree.fromstring(formats, parser=parser)
 
+            pdf_tables = params.get("pdftotables", None)
+
             layer = self.find(FORMATS_LAYER_TAG)
             if layer is None:
                 layer = etree.SubElement(
@@ -971,7 +973,7 @@ class NafDocument(etree._ElementTree):
                 }
 
             offset = 0
-            for page in formats_root:
+            for page_number, page in enumerate(formats_root):
                 page_element = add_element(layer, "page")
                 page_length = 0
                 for page_item in page:
@@ -1084,6 +1086,18 @@ class NafDocument(etree._ElementTree):
                                             else:
                                                 previous_text = char.text
                                                 previous_attrib = char_attrib
+
+                # now we add possible tables to the page
+                # we have 
+                # - the camelot object in pdf_tables
+                # - the page_number to access the camelot object
+                # - the page_element (the xml element) to add the data to
+                # 
+                # a better solution is to add the tables at the right location
+                # so at the right offset
+
+                # ADD CODE HERE
+
                 page_element.set("length", str(page_length))
                 page_element.set("offset", str(offset - page_length))
 
