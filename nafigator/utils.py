@@ -705,15 +705,16 @@ def glue_sentences_separated_by_colons(doc, language: str, nlp: dict):
 
     return doc
 
-def get_text_rows(sent: dict, doc_words: dict, doc_formats) -> str:
+def get_text_rows(sent: dict, doc_words: dict, doc_formats, context_range: int) -> str:
     """
     Retrieves the line where word has been found.
     Args:
         sentence: sentence 
         doc_words: dictionary contaning each word
         doc_formats: formats layer of Naf.Document
+        context_range: amount of context lines around result 
     Returns:
-        result: str containing defined context before and after found sentence og format
+        result: result with surrounding context lines in order (ascending)
     """
     offsets = [doc_words[item['id']]['offset'] for item in sent['span']]
     lengths = [doc_words[item['id']]['length'] for item in sent['span']]
@@ -761,17 +762,20 @@ def get_text_rows(sent: dict, doc_words: dict, doc_formats) -> str:
                     # the texline is around the sentence end
                     elif textline[0] <= sent_end and textline[1] > sent_end:
                         sent_lines.append(textline_idx)
+
+                        
                 sent_lines_added = sent_lines.copy()
+                context_range = context_range + 1
+                sent_lines_added = []
                 
                 if len(sent_lines)>0:
-                    if sent_lines[0]-2 >= 0:
-                        sent_lines_added.insert(0,sent_lines[0]-2)
-                    if sent_lines[0]-1 >= 0:
-                        sent_lines_added.insert(1,sent_lines[0]-1)
-                    if sent_lines[-1]+1 < len(textlines):
-                        sent_lines_added.append(sent_lines[-1]+1)
-                    if sent_lines[-1]+2 < len(textlines):
-                        sent_lines_added.append(sent_lines[-1]+2)
+                    for i in range(context_range):
+                        if sent_lines[0]-i >= 0:
+                            sent_lines_added.append(sent_lines[0]-i)
+                        if sent_lines[0]+i < len(textlines):
+                            sent_lines_added.append(sent_lines[0]+i)
+                
+                sent_lines_added = sorted(list(set(sent_lines_added)))
                 result = "\n".join([textlines[line][2] for line in sent_lines_added])
                 found = True
 
