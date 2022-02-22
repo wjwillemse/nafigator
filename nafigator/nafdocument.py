@@ -17,6 +17,7 @@ from .utils import load_dtd
 from .utils import prepare_comment_text
 import datetime
 import logging
+import camelot
 
 NAF_VERSION_TO_DTD = {
     "v3": "data/naf_v3.dtd",
@@ -931,7 +932,7 @@ class NafDocument(etree._ElementTree):
             )
             self.add_span_element(element=com, data=component)
 
-    def add_formats_element(self, source: str, formats: str):
+    def add_formats_element(self, source: str, formats: str, pdf_tables: camelot.core.TableList = None):
 
         """ """
 
@@ -940,8 +941,6 @@ class NafDocument(etree._ElementTree):
             formats = bytes(bytearray(formats, encoding="utf-8"))
             parser = etree.XMLParser(ns_clean=True, recover=True, encoding="utf-8")
             formats_root = etree.fromstring(formats, parser=parser)
-
-            pdf_tables = params.get("pdftotables", None)
 
             layer = self.find(FORMATS_LAYER_TAG)
             if layer is None:

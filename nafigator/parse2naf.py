@@ -910,6 +910,6 @@ def add_formats_layer(params: dict):
     params["tree"].add_processor_element("formats", lp)
 
     if "pdftoxml" in params.keys():
-        params["tree"].add_formats_element("pdf", params["pdftoxml"])
+        params["tree"].add_formats_element("pdf", params["pdftoxml"], params.get("pdftotables", None))
     elif "docxtoxml" in params.keys():
         params["tree"].add_formats_element("docx", params["docxtoxml"])
