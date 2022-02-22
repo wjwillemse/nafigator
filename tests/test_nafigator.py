@@ -11,7 +11,7 @@ from deepdiff import DeepDiff
 from click.testing import CliRunner
 from nafigator import NafDocument, parse2naf
 from os.path import join
-
+import os
 
 class TestNafigator_pdf(unittest.TestCase):
     """Tests for `nafigator` package."""
@@ -19,7 +19,7 @@ class TestNafigator_pdf(unittest.TestCase):
     def test_1_pdf_generate_naf(self):
         """ """
         tree = parse2naf.generate_naf(
-            input=join("tests", "tests", "example.pdf"),
+            input="tests" + os.sep + "tests" + os.sep + "example.pdf"),
             engine="stanza",
             language="en",
             naf_version="v3.1",
@@ -27,7 +27,7 @@ class TestNafigator_pdf(unittest.TestCase):
             params={},
             nlp=None,
         )
-        assert tree.write(join("tests", "tests", "example.naf.xml")) == None
+        assert tree.write("tests" + os.sep + "tests" + os.sep + "example.naf.xml")) == None
 
     def test_1_split_pre_linguistic(self):
         """ """
@@ -59,10 +59,10 @@ class TestNafigator_pdf(unittest.TestCase):
 
     def test_2_pdf_header_filedesc(self):
         """ """
-        naf = NafDocument().open(join("tests", "tests", "example.naf.xml"))
+        naf = NafDocument().open("tests" + os.sep + "tests" + os.sep + "example.naf.xml")
         actual = naf.header["fileDesc"]
         expected = {
-            "filename": "tests\\tests\\example.pdf",
+            "filename": "tests" + os.sep + "tests" + os.sep + "example.pdf",
             "filetype": "application/pdf",
         }
         assert actual["filename"] == expected["filename"]
@@ -70,10 +70,10 @@ class TestNafigator_pdf(unittest.TestCase):
 
     def test_3_pdf_header_public(self):
         """ """
-        naf = NafDocument().open(join("tests", "tests", "example.naf.xml"))
+        naf = NafDocument().open("tests" + os.sep + "tests" + os.sep + "example.naf.xml")
         actual = naf.header["public"]
         expected = {
-            "{http://purl.org/dc/elements/1.1/}uri": "tests\\tests\\example.pdf",
+            "{http://purl.org/dc/elements/1.1/}uri": "tests" + os.sep + "tests" + os.sep + "example.pdf",
             "{http://purl.org/dc/elements/1.1/}format": "application/pdf",
         }
         assert actual == expected, (
@@ -1182,10 +1182,10 @@ class TestNafigator_docx(unittest.TestCase):
 
     def test_2_docx_header_filedesc(self):
         """ """
-        naf = NafDocument().open(join("tests", "tests", "example.docx.naf.xml"))
+        naf = NafDocument().open("tests" + os.sep + "tests" + os.sep + "example.docx.naf.xml")
         actual = naf.header["fileDesc"]
         expected = {
-            "filename": "tests\\tests\\example.docx",
+            "filename": "tests" + os.sep + "tests" + os.sep + "example.docx",
             "filetype": "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
         }
         assert actual["filename"] == expected["filename"]
@@ -1193,10 +1193,10 @@ class TestNafigator_docx(unittest.TestCase):
 
     def test_3_docx_header_public(self):
         """ """
-        naf = NafDocument().open(join("tests", "tests", "example.docx.naf.xml"))
+        naf = NafDocument().open("tests" + os.sep + "tests" + os.sep + "example.docx.naf.xml")
         actual = naf.header["public"]
         expected = {
-            "{http://purl.org/dc/elements/1.1/}uri": "tests\\tests\\example.docx",
+            "{http://purl.org/dc/elements/1.1/}uri": "tests" + os.sep + "tests" + os.sep + "example.docx",
             "{http://purl.org/dc/elements/1.1/}format": "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
         }
         assert actual == expected, (
