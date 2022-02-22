@@ -704,3 +704,79 @@ def glue_sentences_separated_by_colons(doc, language: str, nlp: dict):
     #         )
 
     return doc
+
+def get_text_rows(sent: dict, doc_words: dict, doc_formats, context_range: int) -> str:
+    """
+    Retrieves the line where word has been found.
+    Args:
+        sentence: sentence 
+        doc_words: dictionary contaning each word
+        doc_formats: formats layer of Naf.Document
+        context_range: amount of context lines around result 
+    Returns:
+        result: result with surrounding context lines in order (ascending)
+    """
+    offsets = [doc_words[item['id']]['offset'] for item in sent['span']]
+    lengths = [doc_words[item['id']]['length'] for item in sent['span']]
+    sent_start = int(offsets[0])
+    sent_end = int(offsets[-1])+int(lengths[-1])
+    found = False
+    result = ""
+    for idx, page in enumerate(doc_formats):
+        if not found:
+            page_start = int(page['offset'])
+            page_end = page_start + int(page['length'])
+            if idx+1 < len(doc_formats):
+                next_page_start = int(doc_formats[idx+1]['offset'])
+                next_page_end = next_page_start + int(doc_formats[idx+1]['length'])
+            else:
+                next_page_start = 0
+                next_page_end = 0
+                
+            search_area = None
+            if page_start <= sent_start and page_end >= sent_end:
+                search_area = page['textboxes']
+            elif page_start <= sent_start and next_page_start > sent_start and next_page_end >= sent_end:
+                search_area = page['textboxes'] + doc_formats[idx+1]['textboxes']
+
+            if search_area is not None:
+                textlines = []
+                for textbox in search_area:
+                    for textline in textbox['textlines']:
+                        textline_text = ""
+                        for text in textline['texts']:
+                            textline_text += text['text'] 
+                        if textline_text != "":
+                            textlines.append((int(textline['texts'][0]['offset']), 
+                                              int(textline['texts'][-1]['offset'])+int(textline['texts'][-1]['length']), 
+                                              textline_text))
+
+                sent_lines = []
+                for textline_idx, textline in enumerate(textlines):
+                    # the textline is around the sentence start
+                    if textline[0] <= sent_start and textline[1] > sent_start:
+                        sent_lines.append(textline_idx)
+                    # the textline is within the sentence
+                    elif textline[0] >= sent_start and textline[1] <= sent_end:
+                        sent_lines.append(textline_idx)
+                    # the texline is around the sentence end
+                    elif textline[0] <= sent_end and textline[1] > sent_end:
+                        sent_lines.append(textline_idx)
+
+                        
+                sent_lines_added = sent_lines.copy()
+                context_range = context_range + 1
+                sent_lines_added = []
+                
+                if len(sent_lines)>0:
+                    for i in range(context_range):
+                        if sent_lines[0]-i >= 0:
+                            sent_lines_added.append(sent_lines[0]-i)
+                        if sent_lines[0]+i < len(textlines):
+                            sent_lines_added.append(sent_lines[0]+i)
+                
+                sent_lines_added = sorted(list(set(sent_lines_added)))
+                result = "\n".join([textlines[line][2] for line in sent_lines_added])
+                found = True
+
+    return result
