@@ -19,7 +19,7 @@ class TestNafigator_pdf(unittest.TestCase):
     def test_1_pdf_generate_naf(self):
         """ """
         tree = parse2naf.generate_naf(
-            input="tests" + os.sep + "tests" + os.sep + "example.pdf"),
+            input="tests" + os.sep + "tests" + os.sep + "example.pdf",
             engine="stanza",
             language="en",
             naf_version="v3.1",
@@ -27,7 +27,7 @@ class TestNafigator_pdf(unittest.TestCase):
             params={},
             nlp=None,
         )
-        assert tree.write("tests" + os.sep + "tests" + os.sep + "example.naf.xml")) == None
+        assert tree.write("tests" + os.sep + "tests" + os.sep + "example.naf.xml") == None
 
     def test_1_split_pre_linguistic(self):
         """ """
