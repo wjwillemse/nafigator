@@ -17,6 +17,8 @@ from .utils import load_dtd
 from .utils import prepare_comment_text
 import datetime
 import logging
+import camelot
+import re
 
 NAF_VERSION_TO_DTD = {
     "v3": "data/naf_v3.dtd",
@@ -361,6 +363,7 @@ class NafDocument(etree._ElementTree):
                 textboxes = list()
                 headers = list()
                 figures = list()
+                tables = list()
                 for child2 in child:
                     if child2.tag == "textbox":
                         textbox_data = dict(child2.attrib)
@@ -397,9 +400,35 @@ class NafDocument(etree._ElementTree):
                         headers_data = dict(child2.attrib)
                         headers_data["spans"] = spans
                         headers.append(headers_data)
+                    # elif child2.tag == "table":
+                    #     #print('child2 table')
+                    #     print(child2.tag)
+                    #     for child5 in child2:  #table_on_page
+                    #         table_data = dict(child5.attrib)
+                    #         for child6 in child5:  #data
+                    #             for child7 in child6:  #row
+                                    
+                    #                 for child8 in child7:  #index & columns
+                    #                     if child8.tag == "index":
+                    #                         table_data["index"] = child8.text
+                    #                         print('table_data printed')
+                    #                         print(table_data)
+                    #                         tables.append(table_data)
+                                            
+                    #                     else:
+                    #                         table_data["column"] = child8.text
+                    #                         tables.append(table_data)
+
+
+
+
+
+                            #tables.append(table_data)
+                    
                 pages_data["textboxes"] = textboxes
                 pages_data["figures"] = figures
                 pages_data["headers"] = headers
+                # pages_data["tables"] = tables
                 pages.append(pages_data)
 
         return pages
@@ -931,7 +960,7 @@ class NafDocument(etree._ElementTree):
             )
             self.add_span_element(element=com, data=component)
 
-    def add_formats_element(self, source: str, formats: str):
+    def add_formats_element(self, source: str, formats: str, pdf_tables: camelot.core.TableList = None):
 
         """ """
 
@@ -971,7 +1000,7 @@ class NafDocument(etree._ElementTree):
                 }
 
             offset = 0
-            for page in formats_root:
+            for page_number, page in enumerate(formats_root):
                 page_element = add_element(layer, "page")
                 page_length = 0
                 for page_item in page:
@@ -1084,8 +1113,58 @@ class NafDocument(etree._ElementTree):
                                             else:
                                                 previous_text = char.text
                                                 previous_attrib = char_attrib
+
+                # now we add possible tables to the page
+                # we have 
+                # - the camelot object in pdf_tables
+                # - the page_number to access the camelot object
+                # - the page_element (the xml element) to add the data to
+                # 
+                # a better solution is to add the tables at the right location
+                # so at the right offset
+
+                # ADD CODE HERE
+                # table = etree.SubElement(page_element, "table", attrib={})
+                # for table_nr in range(0, len(pdf_tables), 1):
+                #     if pdf_tables[table_nr].__dict__['page'] == page_number + 1:
+                #         #print(table)
+                #         #print(type(table))
+                #         table_on_page = etree.SubElement(table, "table_on_page", attrib={})
+                #         table_df = pdf_tables[table_nr].__dict__['df']
+                #         number_columns = table_df.shape[1]
+                #         table_df.columns = ["column" + str(i+1) for i in range(0, number_columns, 1)]
+                #         #print(table_df)
+                #         table_xml_str = table_df.to_xml() # class 'str'
+                #         #print(table_xml_str)
+                #         table_xml_str = table_xml_str.split('<data>', 1)[1]
+                #         table_xml_str = '<data>' + re.sub('\n\s*', '', table_xml_str)
+                #         #print(table_xml_str)
+                #         table_xml = (etree.fromstring(table_xml_str))
+                #         table_on_page.append(table_xml[0])
+                #         #print(etree.tostring(table_on_page))
+
                 page_element.set("length", str(page_length))
                 page_element.set("offset", str(offset - page_length))
+
+                # doc.formats vervangen
+                # for page_nr in range(0, len(doc.formats),1):
+                #     new_page_dict = doc.formats[page_nr]
+                #     doc.formats[page_nr] = new_page_dict.setdefault('tables', [])  # does not update the formats lists
+
+                # for table_nr in range(0, len(tables), 1):
+                #     # convert table from df to xml
+                #     table_df = tables[table_number].__dict__['df']
+                #     number_columns = table_df.shape[1]
+                #     table_df.columns = ["column" + str(i+1) for i in range(0, number_columns, 1)]
+                #     table_xml = table_df.to_xml()
+                #     # add table element to formats layer with list of tables per page
+                #     page_nr = tables[table_nr].__dict__["page"]
+                #     print(page_nr)
+                #      = doc.formats[page_nr-1]
+                #     doc_dict.setdefault('tables', []).append(table_xml)
+                # doc.formats[0]
+                # doc.formats[1]
+
 
         elif source == "docx":
 

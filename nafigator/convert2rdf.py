@@ -13,33 +13,60 @@ from io import StringIO, BytesIO
 from .nafdocument import NafDocument
 from lxml import etree
 import rdflib
-
+import logging
+import os
 
 @click.command()
 @click.option(
     "--input", default="data/example.naf", prompt="input file", help="The input file"
 )
 @click.option(
-    "--output", default="data/example.ttl", prompt="output file", help="The output file"
+    "--prefix", default="_", prompt="triple prefix", help="the prefix of the triples"
 )
-def convert2rdf(input: str, output: str) -> None:
+@click.option(
+    "--format", default="turtle", prompt="output format (turtle/xml/json-ld/ntriples/n3/trig)", help="The format of the output"
+)
+def convert2rdf_cli(input: str, prefix: str, format: str) -> None:
+    
+    doc = NafDocument().open(input)
+
+    graph = parse2rdf(doc = doc, params = {"handlerPrefix": prefix})
+
+    if graph is not None:
+        output, _ = os.path.splitext(input)
+        if format == "turtle":
+            extension = ".ttl"
+        if format == "xml":
+            extensopm = ".rdf.xml"
+        fh = open(output+extension, "w", encoding="utf-8")
+        fh.write(g.serialize(format=format))
+        fh.close()
+
+    return None
+
+
+def parse2graph(doc: NafDocument, params: dict = {}) -> None:
     """Main function to convert NAF to RDF
 
     Args:
-        input: location of the NAF file
-        output: location of the RDF file
+        doc: the naf document
 
     Returns:
-        pd.DataFrame: the dataframe with (updated) metadata
 
     """
-    naf = NafDocument().open(input)
+    create_params(doc, params)
 
-    params: dict = dict()
-    params["namespaces"]: dict = dict()
-    params["provenanceNumber"]: int = 0
-    params["depNumber"]: int = 0
-    params["provenance"]: str = input
+    processNaf(doc, params)
+
+    return generate_graph(params)
+
+
+def create_params(doc: NafDocument, params: dict = {}):
+
+    params["namespaces"] = dict()
+    params["provenanceNumber"] = 0
+    params["depNumber"] = 0
+    params["provenance"] = doc.header['fileDesc']['filename'].replace('\\', "\\\\")
 
     addNamespace("dc", "http://purl.org/dc/elements/1.1/", params)
     addNamespace("xl", "http://www.xbrl.org/2003/XLink/", params)
@@ -52,18 +79,19 @@ def convert2rdf(input: str, output: str) -> None:
     addNamespace("naf-rfunc", "https://dnb.nl/naf-rfunc/", params)
     addNamespace("rdf", "http://www.w3.org/1999/02/22-rdf-syntax-ns/", params)
     addNamespace("rdfs", "http://www.w3.org/2000/01/rdf-schema/", params)
+    
+    if params.get("handlerPrefix", "_") != "_":
+        addNamespace(params['handlerPrefix'], "http://dnb.nl/naf-data/"+params['handlerPrefix']+"/", params)
 
-    params["out"]: StringIO = StringIO()
-
+    params["out"] = StringIO()
     params["prefix"] = printNamespaces(params)
+    params["doc"] = doc
 
-    params["naf"] = NafDocument().open(input)
-
-    processNaf(naf, params)
+def generate_graph(params: dict = {}):
 
     file_content: StringIO = StringIO()
     file_content.write("# RDF triples (turtle syntax)\n\n")
-    file_content.write("# NAF URI  '" + input + "'\n")
+    file_content.write("# NAF URI  '" + params["provenance"] + "'\n")
     file_content.write("\n")
     file_content.write(params["prefix"])
     file_content.write("\n\n")
@@ -71,19 +99,17 @@ def convert2rdf(input: str, output: str) -> None:
 
     content = file_content.getvalue()
 
-    if output:
-        fh = open(output, "w", encoding="utf-8")
-        fh.write(content)
-        fh.close()
+    graph = rdflib.Graph()
 
-    g = rdflib.Graph()
-    g.parse(data=content, format="turtle")
-    content = BytesIO()
-    content.write(g.serialize(format="xml"))
-    fh = open("".join(output.split(".")[0:-1]) + ".rdf", "wb")
-    fh.write(content.getvalue())
-    fh.close()
+    try:
+        graph.parse(data=content, format="turtle")
+    except:
+        logging.error("Parsing error")
+        with open("doc.log", "w", encoding="utf-8") as fh:
+            fh.write(content)
+        graph = None
 
+    return graph
 
 def isHttpUrl(url: str) -> bool:
     """Check is url is http url
@@ -154,7 +180,7 @@ def processNaf(naf: etree.Element, params: dict = {}) -> None:
 
     """
     provenance = genProvenanceName(params)
-    for child in params["naf"].getroot():
+    for child in params["doc"].getroot():
         child_name: str = etree.QName(child).localname
         if child_name == "nafHeader":
             processHeader(child, params)
@@ -200,7 +226,8 @@ def processHeader(element: etree.Element, params: dict = {}) -> None:
 
     """
     output = params["out"]
-    output.write("_:nafHeader\n")
+    prefix = params.get("handlerPrefix", "_")
+    output.write(prefix+":nafHeader\n")
     for item in element:
         if item.tag == "fileDesc":
             output.write("    naf-base:hasFileDesc [\n")
@@ -209,9 +236,9 @@ def processHeader(element: etree.Element, params: dict = {}) -> None:
                     output.write(
                         "        naf-fileDesc:"
                         + attrib2pred(key)
-                        + ' "'
-                        + item.attrib[key]
-                        + '"^^rdf:XMLLiteral ;\n'
+                        + ' """'
+                        + item.attrib[key].replace('\\', "\\\\")
+                        + '"""^^rdf:XMLLiteral ;\n'
                     )
                 elif key == "creationtime":
                     output.write(
@@ -237,9 +264,9 @@ def processHeader(element: etree.Element, params: dict = {}) -> None:
                 output.write(
                     "        dc:"
                     + pred
-                    + ' "'
-                    + item.attrib[key]
-                    + '"^^rdf:XMLLiteral ;\n'
+                    + ' """'
+                    + item.attrib[key].replace('\\', "\\\\")
+                    + '"""^^rdf:XMLLiteral ;\n'
                 )
             output.write("    ]")
         elif item.tag == "linguisticProcessors":
@@ -295,12 +322,13 @@ def processSpan(element: etree.Element, params: dict = {}) -> None:
 
     """
     output = params["out"]
+    prefix = params.get("handlerPrefix", "_")
     for span in element:
-        output.write("    naf-base:hasSpan [\n")
+        output.write("    naf-base:hasSpan (\n")
         for target in span:
             if target.tag == "target":
-                output.write("        naf-base:ref _:" + target.attrib["id"] + "\n")
-        output.write("    ] .\n")
+                output.write("        "+prefix+":" + target.attrib["id"] + "\n")
+        output.write("    ) .\n")
     return None
 
 
@@ -315,9 +343,10 @@ def processEntities(element: etree.Element, params: dict = {}) -> None:
 
     """
     output = params["out"]
+    prefix = params.get("handlerPrefix", "_")
     for entity in element:
         eid = entity.attrib.get("id", None)
-        output.write("_:" + eid + "\n")
+        output.write(prefix+":" + eid + "\n")
         output.write("    xl:type naf-base:entity ;\n")
         for key in entity.attrib.keys():
             if key != "id":
@@ -345,9 +374,11 @@ def processRaw(element: etree.Element, params: dict = {}) -> None:
 
     """
     output = params["out"]
-    output.write("_:raw\n")
+    prefix = params.get("handlerPrefix", "_")
+    output.write(prefix+":raw\n")
     output.write("    xl:type naf-base:raw ;\n")
-    output.write('    naf-base:hasRaw """' + element.text + '"""^^rdf:XMLLiteral ;\n')
+    element_text = str(element.text).replace("\\", "\\\\")
+    output.write('    naf-base:hasRaw """' + element_text + '"""^^rdf:XMLLiteral ;\n')
     output.write(" .\n")
     return None
 
@@ -364,9 +395,10 @@ def processTerms(element: etree.Element, params: dict = {}) -> None:
 
     """
     output = params["out"]
+    prefix = params.get("handlerPrefix", "_")
     for term in element:
         tid = term.attrib.get("id", None)
-        output.write("_:" + tid + "\n")
+        output.write(prefix+":" + tid + "\n")
         output.write("    xl:type naf-base:term ;\n")
         for key in term.attrib.keys():
             if key != "id":
@@ -374,9 +406,9 @@ def processTerms(element: etree.Element, params: dict = {}) -> None:
                     output.write(
                         "    naf-base:"
                         + attrib2pred(key)
-                        + ' "'
+                        + ' """'
                         + term.attrib[key]
-                        + '" ;\n'
+                        + '"""^^rdf:XMLLiteral ;\n'
                     )
                 elif key == "morphofeat":
                     # output.write("    naf-base:"+attrib2pred(key)+'s [\n')
@@ -421,7 +453,7 @@ def processTerms(element: etree.Element, params: dict = {}) -> None:
                         "    naf-base:is"
                         + key[0].upper()
                         + key[1:]
-                        + " _:"
+                        + " "+prefix+":"
                         + term.attrib[key]
                         + " ;\n"
                     )
@@ -450,11 +482,13 @@ def processText(element: etree.Element, params: dict = {}) -> None:
 
     """
     output = params["out"]
+    prefix = params.get("handlerPrefix", "_")
     for wf in element:
         wid = wf.attrib.get("id", None)
-        output.write("_:" + wid + "\n")
+        output.write(prefix+":" + wid + "\n")
         output.write("    xl:type naf-base:wordform ;\n")
-        output.write('    naf-base:hasText """' + wf.text + '"""^^rdf:XMLLiteral ;\n')
+        wf_text = wf.text.replace("\\", "\\\\")
+        output.write('    naf-base:hasText """' + wf_text + '"""^^rdf:XMLLiteral ;\n')
         for key in wf.attrib.keys():
             if key != "id":
                 output.write(
@@ -484,15 +518,19 @@ def processDeps(element: etree.Element, params: dict = {}) -> None:
 
     """
     output = params["out"]
+    prefix = params.get("handlerPrefix", "_")
     for dep in element:
         if dep.tag == "dep":
             # depname = genDepName(params)
             # output.write("    xl:type naf-base:dep ;\n")
             rfunc = dep.attrib["rfunc"]
+            rfunc = rfunc.replace("<PAD>", "pad")
+
             to_term = dep.attrib["to_term"]
             from_term = dep.attrib["from_term"]
+
             output.write(
-                "_:" + from_term + " " + "naf-rfunc:" + rfunc + " _:" + to_term + "\n"
+                prefix+":" + from_term + " " + "naf-rfunc:" + rfunc + " "+prefix+":" + to_term + " .\n"
             )
             # for key in dep.attrib.keys():
             #     if (key != "id"):
@@ -500,7 +538,7 @@ def processDeps(element: etree.Element, params: dict = {}) -> None:
             #             output.write("    naf-base:"+attrib2pred(key)+' naf-base:'+dep.attrib[key]+' ;\n')
             #         else:
             #             output.write("    naf-base:"+attrib2pred(key)+' _:'+dep.attrib[key]+' ;\n')
-            output.write(" .\n")
+            output.write("\n")
     return None
 
 
@@ -517,10 +555,11 @@ def genProvenanceName(params: dict) -> str:
     """
     output = params["out"]
     params["provenanceNumber"] += 1
-    name: str = "_:provenance" + str(params["provenanceNumber"])
+    prefix = params.get("handlerPrefix", "_")
+    name: str = prefix+":provenance" + str(params["provenanceNumber"])
     output.write("# provenance for data from same naf-file\n")
     output.write(name + " \n")
-    output.write('    xl:instance "' + params["provenance"] + '".\n\n')
+    output.write('    xl:instance """' + params["provenance"] + '"""^^rdf:XMLLiteral.\n\n')
     return name
 
 
@@ -535,8 +574,9 @@ def genDepName(params: dict) -> str:
 
     """
     output = params["out"]
+    prefix = params.get("handlerPrefix", "_")
     params["depNumber"] += 1
-    name: str = "_:dep" + str(params["depNumber"])
+    name: str = prefix+":dep" + str(params["depNumber"])
     output.write(name + " \n")
     return name
 

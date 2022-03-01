@@ -55,7 +55,7 @@ def get_terms(pattern, doc):
 ILLEGAL_TERM_CHARACTERS = ["„", "”", ">", "<", ",", "α", "β", "σ", "ð", "þ", "%", "δ"]
 
 
-def extract_terms(doc=None, patterns: list() = None):
+def extract_terms(doc=None, patterns: list() = None, termNotes: dict() = None):
     """Function to extract terms from a NafDocument and add the terms to TbxDocument
 
     Args:
@@ -67,37 +67,7 @@ def extract_terms(doc=None, patterns: list() = None):
     """
     if patterns is None:
 
-        if doc.language == "en":
-            patterns = [
-                ["NOUN"],
-                ["ADJ", "NOUN"],
-                ["NOUN", "NOUN"],
-                ["NOUN", "PUNCT", "NOUN"],
-                ["NOUN", "NOUN", "NOUN"],
-                ["ADJ", "NOUN", "NOUN"],
-                ["ADJ", "ADJ", "NOUN"]]
-        if doc.language == "et":
-            patterns = [
-                ["NOUN"],
-                ["ADJ", "NOUN"],
-                ["NOUN", "NOUN"],
-                ["NOUN", "PUNCT", "NOUN"],
-                ["NOUN", "NOUN", "NOUN"],
-                ["ADJ", "NOUN", "NOUN"],
-                ["ADJ", "ADJ", "NOUN"]]
-        elif doc.language == "de" or doc.language == "nl" or doc.language == "da" or doc.language == "sv":
-            patterns = [
-                ["NOUN"],
-                ["ADJ", "NOUN"],
-                ["NOUN", "NOUN"],
-                ["NOUN", "PUNCT", "NOUN"],
-                ["NOUN", "DET", "NOUN"],
-                ["NOUN", "NOUN", "NOUN"],
-                ["ADJ", "NOUN", "NOUN"],
-                ["ADJ", "ADJ", "NOUN"],
-                ["ADJ", "DET", "NOUN", "ADJ", "NOUN"], # für die Gruppenaufsicht zuständige Behörde
-        ]
-        elif doc.language == "fr" or doc.language == "es":
+        if doc.language in ["fr", "es"]:
             patterns = [
                 ["ADJ", "NOUN"],
                 ["ADJ", "NOUN", "NOUN"],
@@ -116,6 +86,21 @@ def extract_terms(doc=None, patterns: list() = None):
                 ["NOUN", "NOUN", "NOUN"],
                 ["NOUN", "NOUN", "ADJ"],
                 ["NOUN", "PUNCT", "NOUN"],
+        ]
+        else: #if doc.language in ["en", "de", "nl", "da", "sv"]:
+            patterns = [
+                ["NOUN"],
+                ["ADJ", "NOUN"],
+                ["NOUN", "NOUN"],
+                ["NOUN", "PUNCT", "NOUN"],
+                # ["NOUN", "DET", "NOUN"],
+                ["NOUN", "ADJ", "NOUN"],
+                ["NOUN", "ADJ", "DET", "NOUN"],
+                ["NOUN", "ADP", "ADJ", "NOUN"],
+                ["NOUN", "NOUN", "NOUN"],
+                ["ADJ", "NOUN", "NOUN"],
+                ["ADJ", "ADJ", "NOUN"],
+                ["ADJ", "DET", "NOUN", "ADJ", "NOUN"], # für die Gruppenaufsicht zuständige Behörde
         ]
 
     if doc is not None:
@@ -146,10 +131,11 @@ def extract_terms(doc=None, patterns: list() = None):
                     if len(concept_text.split(" ")) == len(pattern): 
                         concept_text = concept_text.replace(" - ", "-")
                         if concept_text in d.keys():
-                            d[concept_text]["count"] += 1
+                            d[concept_text]["frequency"] += 1
                         else:
                             d[concept_text] = {"dc:source": doc.header['public'],
                                                "dc:language": doc.language, 
-                                               "count": 1, 
-                                               "partOfSpeech": pattern}
+                                               "frequency": 1, 
+                                               "partOfSpeech": ", ".join(pattern).lower()}
+                        d[concept_text] = {**d[concept_text], **termNotes}
     return d

@@ -10,11 +10,11 @@ with open('README.rst') as readme_file:
 with open('HISTORY.rst') as history_file:
     history = history_file.read()
 
-requirements = ['click>=7.0', 'pdfminer.six', 'lxml', 'python-docx', 'folia', 'pandas']
+requirements = ['click>=7.0', 'pdfminer.six>=20200726', 'lxml', 'python-docx', 'folia', 'pandas', 'camelot-py>=0.10.1', 'opencv-python>=4.5.5.62', 'pdftopng>=0.2.3']
 
-setup_requirements = ['click>=7.0', 'pdfminer.six', 'lxml', 'python-docx', 'folia', 'pandas']
+setup_requirements = ['click>=7.0', 'pdfminer.six>=20200726', 'lxml', 'python-docx', 'folia', 'pandas', 'camelot-py>=0.10.1', 'opencv-python>=4.5.5.62', 'pdftopng>=0.2.3']
 
-test_requirements = ['click>=7.0', 'pdfminer.six', 'lxml', 'python-docx', 'folia', 'pandas', 'stanza', 'spacy', "deepdiff"]
+test_requirements = ['click>=7.0', 'pdfminer.six>=20200726', 'lxml', 'python-docx', 'folia', 'pandas', 'stanza', 'spacy', 'deepdiff', 'camelot-py>=0.10.1', 'opencv-python>=4.5.5.62', 'pdftopng>=0.2.3']
 
 setup(
     author="De Nederlandsche Bank",
@@ -47,6 +47,6 @@ setup(
     test_suite='tests',
     tests_require=test_requirements,
     url='https://github.com/denederlandschebank/nafigator',
-    version='0.1.39',
+    version='0.1.40',
     zip_safe=False,
 )
