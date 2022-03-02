@@ -400,35 +400,37 @@ class NafDocument(etree._ElementTree):
                         headers_data = dict(child2.attrib)
                         headers_data["spans"] = spans
                         headers.append(headers_data)
-                    # elif child2.tag == "table":
-                    #     #print('child2 table')
-                    #     print(child2.tag)
-                    #     for child5 in child2:  #table_on_page
-                    #         table_data = dict(child5.attrib)
-                    #         for child6 in child5:  #data
-                    #             for child7 in child6:  #row
-                                    
-                    #                 for child8 in child7:  #index & columns
-                    #                     if child8.tag == "index":
-                    #                         table_data["index"] = child8.text
-                    #                         print('table_data printed')
-                    #                         print(table_data)
-                    #                         tables.append(table_data)
-                                            
-                    #                     else:
-                    #                         table_data["column"] = child8.text
-                    #                         tables.append(table_data)
-
-
-
-
-
-                            #tables.append(table_data)
+                    elif child2.tag == "table":
+                        #print('child2 table')
+                        #print(child2.tag)
+                        for child5 in child2:  #table_on_page
+                            #print(etree.tostring(child5))
+                            #print(child5.tag) # table_on_page (used to be tag 'data')
+                            for child6 in child5: # data
+                                table_data = dict(child5.attrib)
+                                rows = list()
+                                for child7 in child6:  #child6 are the rows
+                                    row_data = dict(child7.attrib)
+                                    cells = list()
+                                    #print(child6.tag)
+                                    for child8 in child7: #index & columns
+                                        #print(child7.tag)
+                                        cell_data = dict(child8.attrib)
+                                        if child8.tag == "index":
+                                            cell_data["index"] = child8.text
+                                        else:
+                                            cell_data["cell"] = child8.text
+                                        cells.append(cell_data)
+                                    row_data["row"] = cells
+                                    print(row_data)
+                                    rows.append(row_data)
+                                table_data["table"] = rows
+                            tables.append(table_data)
                     
                 pages_data["textboxes"] = textboxes
                 pages_data["figures"] = figures
                 pages_data["headers"] = headers
-                # pages_data["tables"] = tables
+                pages_data["tables"] = tables
                 pages.append(pages_data)
 
         return pages
@@ -1124,47 +1126,28 @@ class NafDocument(etree._ElementTree):
                 # so at the right offset
 
                 # ADD CODE HERE
-                # table = etree.SubElement(page_element, "table", attrib={})
-                # for table_nr in range(0, len(pdf_tables), 1):
-                #     if pdf_tables[table_nr].__dict__['page'] == page_number + 1:
-                #         #print(table)
-                #         #print(type(table))
-                #         table_on_page = etree.SubElement(table, "table_on_page", attrib={})
-                #         table_df = pdf_tables[table_nr].__dict__['df']
-                #         number_columns = table_df.shape[1]
-                #         table_df.columns = ["column" + str(i+1) for i in range(0, number_columns, 1)]
-                #         #print(table_df)
-                #         table_xml_str = table_df.to_xml() # class 'str'
-                #         #print(table_xml_str)
-                #         table_xml_str = table_xml_str.split('<data>', 1)[1]
-                #         table_xml_str = '<data>' + re.sub('\n\s*', '', table_xml_str)
-                #         #print(table_xml_str)
-                #         table_xml = (etree.fromstring(table_xml_str))
-                #         table_on_page.append(table_xml[0])
-                #         #print(etree.tostring(table_on_page))
+                table = etree.SubElement(page_element, "table", attrib={})
+                for table_nr in range(0, len(pdf_tables), 1):
+                    if pdf_tables[table_nr].__dict__['page'] == page_number + 1:
+                        #print(table)
+                        #print(type(table))
+                        table_on_page = etree.SubElement(table, "table_on_page", attrib={})
+                        table_df = pdf_tables[table_nr].__dict__['df']
+                        number_columns = table_df.shape[1]
+                        table_df.columns = ["column" + str(i+1) for i in range(0, number_columns, 1)]
+                        #print(table_df)
+                        table_xml_str = table_df.to_xml() # class 'str'
+                        #print(table_xml_str)
+                        table_xml_str = table_xml_str.split('<data>', 1)[1]
+                        table_xml_str = '<data>' + re.sub('\n\s*', '', table_xml_str)
+                        #print(table_xml_str)
+                        table_xml = (etree.fromstring(table_xml_str))
+                        table_on_page.append(table_xml)
+                        print(etree.tostring(table_on_page))
+                #print(etree.tostring(table))
 
                 page_element.set("length", str(page_length))
                 page_element.set("offset", str(offset - page_length))
-
-                # doc.formats vervangen
-                # for page_nr in range(0, len(doc.formats),1):
-                #     new_page_dict = doc.formats[page_nr]
-                #     doc.formats[page_nr] = new_page_dict.setdefault('tables', [])  # does not update the formats lists
-
-                # for table_nr in range(0, len(tables), 1):
-                #     # convert table from df to xml
-                #     table_df = tables[table_number].__dict__['df']
-                #     number_columns = table_df.shape[1]
-                #     table_df.columns = ["column" + str(i+1) for i in range(0, number_columns, 1)]
-                #     table_xml = table_df.to_xml()
-                #     # add table element to formats layer with list of tables per page
-                #     page_nr = tables[table_nr].__dict__["page"]
-                #     print(page_nr)
-                #      = doc.formats[page_nr-1]
-                #     doc_dict.setdefault('tables', []).append(table_xml)
-                # doc.formats[0]
-                # doc.formats[1]
-
 
         elif source == "docx":
 
