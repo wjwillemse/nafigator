@@ -401,20 +401,14 @@ class NafDocument(etree._ElementTree):
                         headers_data["spans"] = spans
                         headers.append(headers_data)
                     elif child2.tag == "table":
-                        #print('child2 table')
-                        #print(child2.tag)
                         for child5 in child2:  #table_on_page
-                            #print(etree.tostring(child5))
-                            #print(child5.tag) # table_on_page (used to be tag 'data')
                             for child6 in child5: # data
                                 table_data = dict(child5.attrib)
                                 rows = list()
                                 for child7 in child6:  #child6 are the rows
                                     row_data = dict(child7.attrib)
                                     cells = list()
-                                    #print(child6.tag)
                                     for child8 in child7: #index & columns
-                                        #print(child7.tag)
                                         cell_data = dict(child8.attrib)
                                         if child8.tag == "index":
                                             cell_data["index"] = child8.text
@@ -422,7 +416,6 @@ class NafDocument(etree._ElementTree):
                                             cell_data["cell"] = child8.text
                                         cells.append(cell_data)
                                     row_data["row"] = cells
-                                    print(row_data)
                                     rows.append(row_data)
                                 table_data["table"] = rows
                             tables.append(table_data)
@@ -1116,35 +1109,18 @@ class NafDocument(etree._ElementTree):
                                                 previous_text = char.text
                                                 previous_attrib = char_attrib
 
-                # now we add possible tables to the page
-                # we have 
-                # - the camelot object in pdf_tables
-                # - the page_number to access the camelot object
-                # - the page_element (the xml element) to add the data to
-                # 
-                # a better solution is to add the tables at the right location
-                # so at the right offset
-
-                # ADD CODE HERE
                 table = etree.SubElement(page_element, "table", attrib={})
                 for table_nr in range(0, len(pdf_tables), 1):
                     if pdf_tables[table_nr].__dict__['page'] == page_number + 1:
-                        #print(table)
-                        #print(type(table))
                         table_on_page = etree.SubElement(table, "table_on_page", attrib={})
                         table_df = pdf_tables[table_nr].__dict__['df']
                         number_columns = table_df.shape[1]
                         table_df.columns = ["column" + str(i+1) for i in range(0, number_columns, 1)]
-                        #print(table_df)
                         table_xml_str = table_df.to_xml() # class 'str'
-                        #print(table_xml_str)
                         table_xml_str = table_xml_str.split('<data>', 1)[1]
                         table_xml_str = '<data>' + re.sub('\n\s*', '', table_xml_str)
-                        #print(table_xml_str)
                         table_xml = (etree.fromstring(table_xml_str))
                         table_on_page.append(table_xml)
-                        print(etree.tostring(table_on_page))
-                #print(etree.tostring(table))
 
                 page_element.set("length", str(page_length))
                 page_element.set("offset", str(offset - page_length))
