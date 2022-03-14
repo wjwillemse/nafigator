@@ -1010,6 +1010,7 @@ class NafDocument(etree._ElementTree):
                 return cm_x_left, cm_y_bottom, cm_x_right, cm_y_top
 
             offset = 0
+            table_nr = 0
             for page_number, page in enumerate(formats_root):
                 page_element = add_element(layer, "page")
                 first_char_on_page = True
@@ -1038,6 +1039,7 @@ class NafDocument(etree._ElementTree):
                                               or char_coor[1] > cm_y_top[i] \
                                               or char_coor[3] > cm_y_top[i] \
                                               or char_coor[3] < cm_y_bottom[i] for i in range(0, len(cm_x_left), 1)]
+                                    
 
                                     if all(outside):
                                         char_attrib = copy_dict(char)
@@ -1082,8 +1084,9 @@ class NafDocument(etree._ElementTree):
                                                     offset += len(previous_text)
                                         previous_outside = all(outside)
                                     else:
-                                        table_nr = 0
+                                        
                                         if previous_outside or (first_char_on_page and previous_outside is False):
+                                            print(table_nr)
                                             table_df_text = pdf_tables[table_nr].__dict__['df']
                                             table_str = table_df_text.apply(lambda x: x.str.cat(sep=' | '), axis=1)
                                             for table_textline in table_str:
@@ -1096,7 +1099,7 @@ class NafDocument(etree._ElementTree):
                                                 )
                                                 offset += len(table_textline)
                                                 page_length += len(table_textline)
-                                                table_nr += 1
+                                            table_nr += 1
                                         previous_outside = False
                                         page_length += len(previous_text)
                                         offset += len(previous_text)
