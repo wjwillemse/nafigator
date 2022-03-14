@@ -994,9 +994,25 @@ class NafDocument(etree._ElementTree):
                     if item not in ["bbox", "colourspace", "ncolour"]
                 }
 
+            def extract_bbox_lists(pdf_tables: camelot.core.TableList = None, page_nr: int = 1):
+
+                cm_x_left = list()
+                cm_y_bottom = list()
+                cm_x_right = list()
+                cm_y_top = list()
+                for pdf_table in pdf_tables:
+                    if pdf_table.__dict__["page"] == page_nr:
+                        cm_x_left.append(pdf_table.__dict__["_bbox"][0])
+                        cm_y_bottom.append(pdf_table.__dict__["_bbox"][1])
+                        cm_x_right.append(pdf_table.__dict__["_bbox"][2])
+                        cm_y_top.append(pdf_table.__dict__["_bbox"][3])
+                        
+                return cm_x_left, cm_y_bottom, cm_x_right, cm_y_top
+
             offset = 0
             for page_number, page in enumerate(formats_root):
                 page_element = add_element(layer, "page")
+                first_char_on_page = True
                 page_length = 0
                 for page_item in page:
                     if page_item.tag == "textbox":
@@ -1009,35 +1025,38 @@ class NafDocument(etree._ElementTree):
                                 previous_text = textline[0].text
                                 previous_attrib = copy_dict(textline[0])
                                 for idx, char in enumerate(textline[1:]):
-                                    char_attrib = copy_dict(char)
-                                    if previous_attrib == char_attrib:
-                                        if char.text is not None:
-                                            previous_text += char.text
-                                        if idx == len(textline) - 1:
-                                            add_text_element(
-                                                textline_element,
-                                                char.tag,
-                                                previous_text,
-                                                previous_attrib,
-                                                offset,
-                                            )
-                                            page_length += len(previous_text)
-                                            offset += len(previous_text)
-                                    else:  # -> previous_attrib != char_attrib
+                                    page_nr = page_number + 1
+                                    cm_x_left, cm_y_bottom, cm_x_right, cm_y_top = extract_bbox_lists(pdf_tables, page_nr)
+                                    bbox_str = char.attrib.get("bbox", None)
+                                    if isinstance(bbox_str, str):
+                                        char_coor = [float(i) for i in bbox_str.split(',')]
+                                    outside =[char_coor[0] < cm_x_left[i] \
+                                              or char_coor[0] > cm_x_right[i] \
+                                              or char_coor[2] > cm_x_right[i] \
+                                              or char_coor[2] < cm_x_left[i] \
+                                              or char_coor[1] < cm_y_bottom[i] \
+                                              or char_coor[1] > cm_y_top[i] \
+                                              or char_coor[3] > cm_y_top[i] \
+                                              or char_coor[3] < cm_y_bottom[i] for i in range(0, len(cm_x_left), 1)]
 
-                                        add_text_element(
-                                            textline_element,
-                                            char.tag,
-                                            previous_text,
-                                            previous_attrib,
-                                            offset,
-                                        )
-                                        if previous_text is not None:
-                                            page_length += len(previous_text)
-                                            offset += len(previous_text)
-                                        previous_text = char.text
-                                        previous_attrib = char_attrib
-                                        if idx == len(textline) - 1:
+                                    if all(outside):
+                                        char_attrib = copy_dict(char)
+                                        if previous_attrib == char_attrib:
+                                            if char.text is not None:
+                                                previous_text += char.text
+                                            if idx == len(textline) - 1:
+                                                add_text_element(
+                                                    textline_element,
+                                                    char.tag,
+                                                    previous_text,
+                                                    previous_attrib,
+                                                    offset,
+                                                )
+                                                page_length += len(previous_text)
+                                                offset += len(previous_text)
+
+                                        else:  # -> previous_attrib != char_attrib
+
                                             add_text_element(
                                                 textline_element,
                                                 char.tag,
@@ -1048,6 +1067,42 @@ class NafDocument(etree._ElementTree):
                                             if previous_text is not None:
                                                 page_length += len(previous_text)
                                                 offset += len(previous_text)
+                                            previous_text = char.text
+                                            previous_attrib = char_attrib
+                                            if idx == len(textline) - 1:
+                                                add_text_element(
+                                                    textline_element,
+                                                    char.tag,
+                                                    previous_text,
+                                                    previous_attrib,
+                                                    offset,
+                                                )
+                                                if previous_text is not None:
+                                                    page_length += len(previous_text)
+                                                    offset += len(previous_text)
+                                        previous_outside = all(outside)
+                                    else:
+                                        table_nr = 0
+                                        if previous_outside or (first_char_on_page and previous_outside is False):
+                                            table_df_text = pdf_tables[table_nr].__dict__['df']
+                                            table_str = table_df_text.apply(lambda x: x.str.cat(sep=' | '), axis=1)
+                                            for table_textline in table_str:
+                                                add_text_element(
+                                                    textline_element,
+                                                    'text',
+                                                    table_textline,
+                                                    attrib={},
+                                                    offset=offset
+                                                )
+                                                offset += len(table_textline)
+                                                page_length += len(table_textline)
+                                                table_nr += 1
+                                        previous_outside = False
+                                        page_length += len(previous_text)
+                                        offset += len(previous_text)
+
+                                    first_char_on_page = False
+
                             page_length += 1
                             offset += 1
 
