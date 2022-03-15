@@ -307,7 +307,7 @@ class NafDocument(etree._ElementTree):
         }
         paragraphs = list()
         paragraph_list = list()
-        para_num = 1
+        para_num = 0
         pages = set()
         para = set()
         span = list()
@@ -341,7 +341,7 @@ class NafDocument(etree._ElementTree):
                 pages.add(item.get("page", "0"))
                 para.add(item.get("para", "0"))
                 para_num += 1
-        if para_num > 1:
+        if para_num > 1 or para_num==0:
             paragraphs.append(
                 {
                     "text": " ".join(paragraph_list),

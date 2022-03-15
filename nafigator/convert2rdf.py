@@ -71,15 +71,16 @@ def create_params(doc: NafDocument, params: dict = {}):
     addNamespace("dc", "http://purl.org/dc/elements/1.1/", params)
     addNamespace("xl", "http://www.xbrl.org/2003/XLink/", params)
     addNamespace("xsd", "http://www.w3.org/2001/XMLSchema/", params)
-    addNamespace("naf-base", "https://dnb.nl/naf-base/", params)
-    addNamespace("naf-entity", "https://dnb.nl/naf-entity/", params)
+    addNamespace("naf-base", "https://dnb.nl/naf-base#", params)
+    addNamespace("naf-entity", "https://dnb.nl/naf-entity#", params)
     addNamespace("naf-fileDesc", "https://dnb.nl/naf-fileDesc/", params)
-    addNamespace("naf-morphofeat", "https://dnb.nl/naf-morphofeat/", params)
-    addNamespace("naf-pos", "https://dnb.nl/naf-pos/", params)
-    addNamespace("naf-rfunc", "https://dnb.nl/naf-rfunc/", params)
-    addNamespace("rdf", "http://www.w3.org/1999/02/22-rdf-syntax-ns/", params)
+    addNamespace("naf-pos", "https://dnb.nl/naf-pos#", params)
+    addNamespace("naf-morphofeat", "https://dnb.nl/naf-morphofeat#", params)
+    addNamespace("naf-rfunc", "https://dnb.nl/naf-rfunc#", params)
+    addNamespace("rdf", "http://www.w3.org/1999/02/22-rdf-syntax-ns#", params)
     addNamespace("rdfs", "http://www.w3.org/2000/01/rdf-schema/", params)
-    
+    addNamespace("olia", "http://purl.org/olia/olia.owl#", params)
+
     if params.get("handlerPrefix", "_") != "_":
         addNamespace(params['handlerPrefix'], "http://dnb.nl/naf-data/"+params['handlerPrefix']+"/", params)
 
@@ -180,6 +181,7 @@ def processNaf(naf: etree.Element, params: dict = {}) -> None:
 
     """
     provenance = genProvenanceName(params)
+    processDocument(params['doc'], params)
     for child in params["doc"].getroot():
         child_name: str = etree.QName(child).localname
         if child_name == "nafHeader":
@@ -188,6 +190,9 @@ def processNaf(naf: etree.Element, params: dict = {}) -> None:
             processRaw(child, params)
         if child_name == "text":
             processText(child, params)
+            processSentences(params["doc"].sentences, params)
+            processPages(params["doc"], params)
+            processParagraphs(params["doc"].paragraphs, params)
         # if child_name == "formats":
         #   processFormats(child, params)
         if child_name == "entities":
@@ -200,6 +205,126 @@ def processNaf(naf: etree.Element, params: dict = {}) -> None:
         #   processMultiwords(child, params)
     return None
 
+# Definite: Com     Cons    Def     Ind     Spec
+# PronType: pronominal type:    Art     Dem     Emp     Exc     Ind     Int     Neg     Prs     Rcp     Rel     Tot
+# Number: Coll  Count   Dual    Grpa    Grpl    Inv     Pauc    Plur    Ptan    Sing    Tri
+# Mood: Adm     Cnd     Des     Imp     Ind     Irr     Jus     Nec     Opt     Pot     Prp     Qot     Sub
+# Person: 0  1   2   3   4
+# Tense
+# VerbForm
+# Case
+# Degree
+# NumType
+# Voice
+# Poss
+
+mappings = {
+    'Definite': {
+        # 'Com': None,
+        # 'Cons': None,
+        'Def': "olia:Definite",
+        'Ind': "olia:Indefinite",
+        # 'Spec': None,
+    },
+    'PronType': {
+        'Art': "olia:Article",
+        'Dem': "olia:DemonstrativePronoun",
+        'Prs': "olia:PossessivePronoun",
+        'Rel': "olia:RelativePronoun",
+        'Int': "olia:InterrogativePronoun",
+        'Ind': "olia:IndefinitePronoun",
+        'Rcp': "olia:ReciprocalPronoun",
+    },
+    'Number': {
+        'Sing': 'olia:Singular',
+        'Plur': 'olia:Plural'
+    },
+    'Person': {
+        "1": "olia:First",
+        "2": "olia:Second",
+        "3": "olia:Third",
+    },
+    'Mood': {
+        "Ind": "olia:IndicativeMood",
+        "Opt": "olia:OptativeMood",
+        "Sub": "olia:SubjunctiveMood",
+        "Imp": "olia:ImperativeMood"
+    },
+    'Tense': {
+        'Pres': "olia:Present",
+        'Past': "olia:Past",
+
+    },
+    'VerbForm': {
+        "Inf": "olia:Infinitive",
+        "Fin": "olia:FiniteVerb",
+        "Part": "olia:Participle",
+        "Past": "olia:Past",
+        "Ger": "olia:Gerund",
+    },
+    'Case': {
+        "Nom": "olia:Nominative",
+        "Dat": "olia:DativeCase",
+        "Acc": "olia:Accusative",
+    },
+    'Degree': {
+        'Pos': "olia:Positive",
+        'Sup': "olia:Superlative",
+        'Cmp': "olia:Comparative",
+    },
+    'NumType': {
+        "Card": "olia:CardinalNumber",
+        "Ord": "olia:OrdinalNumber",
+        "Mult": "olia:MultiplicativeNumeral",
+    },
+    'NumForm': {
+        'Word': "olia:LetterNumeral",
+        'Digit': 'olia:DigitNumeral',
+        'Roman': 'olia:RomanNumeral'
+    },
+    'Voice': {
+        "Pass": "olia:PassiveVoice",
+    },
+    'Gender': {
+        "Com": "olia:CommonGender",
+        "Neut": "olia:Neuter",
+        "Com,Neut": "olia:CommonGender", # correct?
+        "Fem": "olia:Feminine",
+        "Masc": "olia:Masculine"
+
+    },
+    'pos': {
+        "adj": "olia:Adjective",
+        "adp": "olia:Adposition",
+        "adv": "olia:Adverb",
+        "aux": "olia:AuxiliaryVerb",
+        "conj": "olia:CoordinatingConjunction",
+        "cconj": "olia:CoordinatingConjunction", # ??
+        "det": "olia:Determiner",
+        "intj": "olia:Interjection",
+        "noun": "olia:CommonNoun",
+        "num": "olia:Quantifier",
+        "part": "olia:Particle",
+        "pron": "olia:Pronoun",
+        "propn": "olia:ProperNoun",
+        "punct": "olia:Punctuation",
+        "sconj": "olia:SubordinatingConjunction",
+        "sym": "olia:Symbol",
+        "verb": "olia:Verb",
+        "x": "olia:X" # &olia-top;Word"  # not correct
+    },
+    'Polarity': {
+        'Neg': 'olia:Negation',
+    }
+}
+
+def mapobject(p: str = "", o: str = ""):
+    if p not in mappings.keys():
+        print("UD Not found: " + p)
+    else:
+        if o not in mappings[p].keys():
+            print("UD Not found: " + p+" , "+o)
+    return mappings.get(p, {}).get(o, "naf-morphofeat:"+o)
 
 def attrib2pred(s: str) -> str:
     """Function to convert attribute to RDF predicate
@@ -229,6 +354,7 @@ def processHeader(element: etree.Element, params: dict = {}) -> None:
     prefix = params.get("handlerPrefix", "_")
     output.write(prefix+":nafHeader\n")
     for item in element:
+        output.write("    a naf-base:header ;\n")
         if item.tag == "fileDesc":
             output.write("    naf-base:hasFileDesc [\n")
             for key in item.attrib.keys():
@@ -347,7 +473,7 @@ def processEntities(element: etree.Element, params: dict = {}) -> None:
     for entity in element:
         eid = entity.attrib.get("id", None)
         output.write(prefix+":" + eid + "\n")
-        output.write("    xl:type naf-base:entity ;\n")
+        output.write("    a naf-base:entity ;\n")
         for key in entity.attrib.keys():
             if key != "id":
                 output.write(
@@ -376,7 +502,7 @@ def processRaw(element: etree.Element, params: dict = {}) -> None:
     output = params["out"]
     prefix = params.get("handlerPrefix", "_")
     output.write(prefix+":raw\n")
-    output.write("    xl:type naf-base:raw ;\n")
+    output.write("    a naf-base:raw ;\n")
     element_text = str(element.text).replace("\\", "\\\\")
     output.write('    naf-base:hasRaw """' + element_text + '"""^^rdf:XMLLiteral ;\n')
     output.write(" .\n")
@@ -399,7 +525,7 @@ def processTerms(element: etree.Element, params: dict = {}) -> None:
     for term in element:
         tid = term.attrib.get("id", None)
         output.write(prefix+":" + tid + "\n")
-        output.write("    xl:type naf-base:term ;\n")
+        output.write("    a naf-base:term ;\n")
         for key in term.attrib.keys():
             if key != "id":
                 if key == "lemma":
@@ -407,20 +533,27 @@ def processTerms(element: etree.Element, params: dict = {}) -> None:
                         "    naf-base:"
                         + attrib2pred(key)
                         + ' """'
-                        + term.attrib[key]
+                        + term.attrib[key].replace("\\", "\\\\")
                         + '"""^^rdf:XMLLiteral ;\n'
                     )
                 elif key == "morphofeat":
-                    # output.write("    naf-base:"+attrib2pred(key)+'s [\n')
                     for feat in term.attrib[key].split("|"):
-                        output.write(
-                            "    naf-morphofeat:"
-                            + attrib2pred(feat.split("=")[0])
-                            + ' "'
-                            + feat.split("=")[1]
-                            + '" ;\n'
-                        )
-                    # output.write("        ] ;\n")
+                        if feat.split("=")[0] in ["Foreign", "Reflex", "Poss", "Abbr"] and feat.split("=")[1] == "Yes":
+                            output.write(
+                                "    naf-base:"
+                                "is" + feat.split("=")[0][0].upper() + feat.split("=")[0][1:]
+                                + ' '
+                                + ' "True"^^xsd:boolean'
+                                + ' ;\n'
+                            )
+                        else:
+                            output.write(
+                                "    naf-base:"
+                                + attrib2pred(feat.split("=")[0])
+                                + ' '
+                                + mapobject(feat.split("=")[0], feat.split("=")[1])
+                                + ' ;\n'
+                            )
                 elif key == "pos":
                     if isHttpUrl(term.attrib[key]):
                         output.write(
@@ -443,9 +576,8 @@ def processTerms(element: etree.Element, params: dict = {}) -> None:
                     else:
                         output.write(
                             "    naf-base:"
-                            + attrib2pred(key)
-                            + " naf-pos:"
-                            + term.attrib[key]
+                            + attrib2pred(key) + " "
+                            + mapobject(key, term.attrib[key].lower())
                             + " ;\n"
                         )
                 elif key == "component_of":
@@ -486,24 +618,99 @@ def processText(element: etree.Element, params: dict = {}) -> None:
     for wf in element:
         wid = wf.attrib.get("id", None)
         output.write(prefix+":" + wid + "\n")
-        output.write("    xl:type naf-base:wordform ;\n")
+        output.write("    a naf-base:wordform ;\n")
         wf_text = wf.text.replace("\\", "\\\\")
         output.write('    naf-base:hasText """' + wf_text + '"""^^rdf:XMLLiteral ;\n')
         for key in wf.attrib.keys():
             if key != "id":
-                output.write(
-                    "    naf-base:"
-                    + attrib2pred(key)
-                    + ' "'
-                    + wf.attrib[key]
-                    + '"^^xsd:integer'
-                )
+                if key in ["sent", "para", "page"]:
+                    output.write(
+                        "    naf-base:"
+                        + "isPartOf"
+                        + ' '+prefix+":"+key+str(wf.attrib[key])
+                    )
+                else:                    
+                    output.write(
+                        "    naf-base:"
+                        + attrib2pred(key)
+                        + ' "'
+                        + wf.attrib[key]
+                        + '"^^xsd:integer'
+                    )
                 if key == list(wf.attrib.keys())[-1]:
                     output.write(" .\n")
                 else:
                     output.write(" ;\n")
         output.write("\n")
     return None
+
+
+def processSentences(sentences: list = [], params: dict = {}):
+    output = params["out"]
+    prefix = params.get("handlerPrefix", "_")
+    for idx, sentence in enumerate(sentences):
+        sent_id = "sent"+str(idx+1)
+        output.write(prefix+":" + sent_id + "\n")
+        output.write("    a naf-base:sentence ;\n")
+        text = sentence['text'].replace("\\", "\\\\")
+        output.write('    naf-base:hasText """' + text + '"""^^rdf:XMLLiteral ;\n')
+        for p in sentence['para']:
+            output.write('    naf-base:isPartOf ' + prefix + ':para'+p+' ;\n')
+        for p in sentence['page']:
+            output.write('    naf-base:isPartOf ' + prefix + ':page'+p+' ;\n')
+        output.write("    naf-base:hasSpan (\n")
+        for target in sentence['span']:
+            output.write("        "+prefix+":" + target['id'] + "\n")
+        output.write("    )")
+        output.write(".\n")
+    return None
+
+
+def processParagraphs(paragraphs: list = [], params: dict = {}):
+    output = params["out"]
+    prefix = params.get("handlerPrefix", "_")
+    for idx, paragraph in enumerate(paragraphs):
+        sent_id = "para"+str(idx)
+        output.write(prefix+":" + sent_id + "\n")
+        output.write("    a naf-base:paragraph ;\n")
+        for p in paragraph['page']:
+            output.write('    naf-base:isPartOf ' + prefix + ':page'+p+' ;\n')
+        output.write("    naf-base:hasSpan (\n")
+        for target in paragraph['span']:
+            output.write("        "+prefix+":" + target['id'] + "\n")
+        output.write("    )")
+        output.write(".\n")
+    return None
+
+
+def processDocument(doc: NafDocument = None, params: dict = {}):
+    output = params["out"]
+    prefix = params.get("handlerPrefix", "_")
+    output.write(prefix+":doc\n")
+    output.write("    a naf-base:document ;\n")
+    output.write("    naf-base:hasHeader "+prefix+":nafHeader ;\n")
+    output.write("    naf-base:hasPages (\n")
+    page_numbers = list(set([int(wf['page']) for wf in doc.text]))
+    page_numbers.sort()
+    for page_number in page_numbers:
+        output.write("        "+prefix+":page" + str(page_number) + "\n")
+    output.write("    )")
+    output.write(".\n")
+
+def processPages(doc: NafDocument = None, params: dict = {}):
+    output = params["out"]
+    prefix = params.get("handlerPrefix", "_")
+    page_numbers = list(set([int(wf['page']) for wf in doc.text]))
+    page_numbers.sort()
+    for page_number in page_numbers:
+        output.write(prefix+":page"+str(page_number)+"\n")
+        output.write("    a naf-base:page ;\n")
+        span = [wf["id"] for wf in doc.text if int(wf["page"])==page_number]
+        output.write("    naf-base:hasSpan (\n")
+        for target in span:
+            output.write("        "+prefix+":" + target + "\n")
+        output.write("    )")
+        output.write(".\n")
 
 
 def processDeps(element: etree.Element, params: dict = {}) -> None:
@@ -522,9 +729,11 @@ def processDeps(element: etree.Element, params: dict = {}) -> None:
     for dep in element:
         if dep.tag == "dep":
             # depname = genDepName(params)
-            # output.write("    xl:type naf-base:dep ;\n")
+            # output.write("    a naf-base:dep ;\n")
             rfunc = dep.attrib["rfunc"]
             rfunc = rfunc.replace("<PAD>", "pad")
+            rfunc = rfunc.replace("<UNK>", "unknown")
+            rfunc = rfunc.replace("<ROOT>", "root")
 
             to_term = dep.attrib["to_term"]
             from_term = dep.attrib["from_term"]
