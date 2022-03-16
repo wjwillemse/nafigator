@@ -1,28 +1,28 @@
 <?xml version='1.0' encoding='UTF-8'?>
 <NAF xmlns:dc="http://purl.org/dc/elements/1.1/" version="v3.1" xml:lang="en">
   <nafHeader>
-    <fileDesc creationtime="2022-02-12T10:03:46UTC" filename="tests\tests\example.docx" filetype="application/vnd.openxmlformats-officedocument.wordprocessingml.document"/>
+    <fileDesc creationtime="2022-03-16T12:29:27UTC" filename="tests\tests\example.docx" filetype="application/vnd.openxmlformats-officedocument.wordprocessingml.document"/>
     <public dc:uri="tests\tests\example.docx" dc:format="application/vnd.openxmlformats-officedocument.wordprocessingml.document"/>
     <linguisticProcessors layer="formats">
-      <lp name="formats" version="nafigator" beginTimestamp="2022-02-12T10:03:46UTC" endTimestamp="2022-02-12T10:03:46UTC" hostname="computer-woonkamer"/>
+      <lp name="formats" version="nafigator" beginTimestamp="2022-03-16T12:29:27UTC" endTimestamp="2022-03-16T12:29:27UTC" hostname="DESKTOP-NORB4QA.fritz.box"/>
     </linguisticProcessors>
     <linguisticProcessors layer="entities">
-      <lp name="entities" version="stanza_version-1.2.3" model="C:\Users\wjwil\stanza_resources\en\ner\ontonotes.pt" beginTimestamp="2022-02-12T10:03:49UTC" endTimestamp="2022-02-12T10:03:50UTC" hostname="computer-woonkamer"/>
+      <lp name="entities" version="stanza_version-1.3.0" model="C:\Users\Willem Jan Willemse\stanza_resources\en\ner\ontonotes.pt" beginTimestamp="2022-03-16T12:29:28UTC" endTimestamp="2022-03-16T12:29:29UTC" hostname="DESKTOP-NORB4QA.fritz.box"/>
     </linguisticProcessors>
     <linguisticProcessors layer="text">
-      <lp name="text" version="stanza_version-1.2.3" model="C:\Users\wjwil\stanza_resources\en\tokenize\combined.pt" beginTimestamp="2022-02-12T10:03:49UTC" endTimestamp="2022-02-12T10:03:50UTC" hostname="computer-woonkamer"/>
+      <lp name="text" version="stanza_version-1.3.0" model="C:\Users\Willem Jan Willemse\stanza_resources\en\tokenize\combined.pt" beginTimestamp="2022-03-16T12:29:28UTC" endTimestamp="2022-03-16T12:29:29UTC" hostname="DESKTOP-NORB4QA.fritz.box"/>
     </linguisticProcessors>
     <linguisticProcessors layer="terms">
-      <lp name="terms" version="stanza_version-1.2.3" model="C:\Users\wjwil\stanza_resources\en\pos\combined.pt" beginTimestamp="2022-02-12T10:03:49UTC" endTimestamp="2022-02-12T10:03:50UTC" hostname="computer-woonkamer"/>
+      <lp name="terms" version="stanza_version-1.3.0" model="C:\Users\Willem Jan Willemse\stanza_resources\en\pos\combined.pt" beginTimestamp="2022-03-16T12:29:28UTC" endTimestamp="2022-03-16T12:29:29UTC" hostname="DESKTOP-NORB4QA.fritz.box"/>
     </linguisticProcessors>
     <linguisticProcessors layer="deps">
-      <lp name="deps" version="stanza_version-1.2.3" model="C:\Users\wjwil\stanza_resources\en\depparse\combined.pt" beginTimestamp="2022-02-12T10:03:49UTC" endTimestamp="2022-02-12T10:03:50UTC" hostname="computer-woonkamer"/>
+      <lp name="deps" version="stanza_version-1.3.0" model="C:\Users\Willem Jan Willemse\stanza_resources\en\depparse\combined.pt" beginTimestamp="2022-03-16T12:29:28UTC" endTimestamp="2022-03-16T12:29:29UTC" hostname="DESKTOP-NORB4QA.fritz.box"/>
     </linguisticProcessors>
     <linguisticProcessors layer="multiwords">
-      <lp name="multiwords" version="stanza_version-1.2.3" model="C:\Users\wjwil\stanza_resources\en\tokenize\combined.pt" beginTimestamp="2022-02-12T10:03:49UTC" endTimestamp="2022-02-12T10:03:50UTC" hostname="computer-woonkamer"/>
+      <lp name="multiwords" version="stanza_version-1.3.0" model="C:\Users\Willem Jan Willemse\stanza_resources\en\tokenize\combined.pt" beginTimestamp="2022-03-16T12:29:28UTC" endTimestamp="2022-03-16T12:29:29UTC" hostname="DESKTOP-NORB4QA.fritz.box"/>
     </linguisticProcessors>
     <linguisticProcessors layer="raw">
-      <lp name="raw" version="stanza_version-1.2.3" model="C:\Users\wjwil\stanza_resources\en\tokenize\combined.pt" beginTimestamp="2022-02-12T10:03:49UTC" endTimestamp="2022-02-12T10:03:50UTC" hostname="computer-woonkamer"/>
+      <lp name="raw" version="stanza_version-1.3.0" model="C:\Users\Willem Jan Willemse\stanza_resources\en\tokenize\combined.pt" beginTimestamp="2022-03-16T12:29:28UTC" endTimestamp="2022-03-16T12:29:29UTC" hostname="DESKTOP-NORB4QA.fritz.box"/>
     </linguisticProcessors>
   </nafHeader>
   <formats>
