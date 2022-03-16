@@ -82,11 +82,13 @@ def convert_pdf(
 
     params["pdfto" + format] = text
 
-    tables = cm.read_pdf(path,
-                         backend="poppler",
-                         pages='1-end',
-                         flavor='lattice')
-    params["pdftotables"] = tables
+    if params.get('parse_tables_with_camelot', False):
+        camelot_params = params.get('camelot_params', {})
+        tables = cm.read_pdf(path,
+                             backend=camelot_params.get("backend", "poppler"),
+                             pages=camelot_params.get("pages", "1-end"),
+                             flavor=camelot_params.get("flavor", "lattice"))
+        params["pdftotables"] = tables
 
     return None
 
