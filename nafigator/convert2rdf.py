@@ -340,7 +340,7 @@ def attrib2pred(s: str) -> str:
 
 
 def processHeader(element: etree.Element, params: dict = {}) -> None:
-    """Function to NAF header layer to RDF
+    """Function to convert NAF header layer to RDF
 
     Args:
         element: element containing the header layer
@@ -437,7 +437,7 @@ def processHeader(element: etree.Element, params: dict = {}) -> None:
 
 
 def processSpan(element: etree.Element, params: dict = {}) -> None:
-    """Function to NAF span to RDF
+    """Function to convert NAF span to RDF
 
     Args:
         element: element containing the span
@@ -450,16 +450,18 @@ def processSpan(element: etree.Element, params: dict = {}) -> None:
     output = params["out"]
     prefix = params.get("handlerPrefix", "_")
     for span in element:
-        output.write("    naf-base:hasSpan (\n")
+        output.write("    naf-base:hasSpan [\n")
+        idx = 0        
         for target in span:
             if target.tag == "target":
-                output.write("        "+prefix+":" + target.attrib["id"] + "\n")
-        output.write("    ) .\n")
+                output.write("        rdf:_"+str(idx+1)+" "+prefix+":" + target.attrib["id"] + " ;\n")
+                idx += 1
+        output.write("    ] .\n")
     return None
 
 
 def processEntities(element: etree.Element, params: dict = {}) -> None:
-    """Function to NAF entities layer to RDF
+    """Function to convert NAF entities layer to RDF
 
     Args:
         element: element containing the entities layer
@@ -489,7 +491,7 @@ def processEntities(element: etree.Element, params: dict = {}) -> None:
 
 
 def processRaw(element: etree.Element, params: dict = {}) -> None:
-    """Function to NAF raw layer to RDF
+    """Function to convert NAF raw layer to RDF
 
     Args:
         element: element containing the raw layer
@@ -510,7 +512,7 @@ def processRaw(element: etree.Element, params: dict = {}) -> None:
 
 
 def processTerms(element: etree.Element, params: dict = {}) -> None:
-    """Function to NAF terms layer to RDF
+    """Function to convert NAF terms layer to RDF
 
     Args:
         element: element containing the terms layer
@@ -603,7 +605,7 @@ def processTerms(element: etree.Element, params: dict = {}) -> None:
 
 
 def processText(element: etree.Element, params: dict = {}) -> None:
-    """Function to NAF text layer to RDF
+    """Function to convert NAF text layer to RDF
 
     Args:
         element: element containing the text layer
@@ -658,10 +660,10 @@ def processSentences(sentences: list = [], params: dict = {}):
             output.write('    naf-base:isPartOf ' + prefix + ':para'+p+' ;\n')
         for p in sentence['page']:
             output.write('    naf-base:isPartOf ' + prefix + ':page'+p+' ;\n')
-        output.write("    naf-base:hasSpan (\n")
-        for target in sentence['span']:
-            output.write("        "+prefix+":" + target['id'] + "\n")
-        output.write("    )")
+        output.write("    naf-base:hasSpan [\n")
+        for idx, target in enumerate(sentence['span']):
+            output.write("        rdf:_"+str(idx+1)+" "+prefix+":" + target['id'] + " ;\n")
+        output.write("    ]")
         output.write(".\n")
     return None
 
@@ -675,10 +677,10 @@ def processParagraphs(paragraphs: list = [], params: dict = {}):
         output.write("    a naf-base:paragraph ;\n")
         for p in paragraph['page']:
             output.write('    naf-base:isPartOf ' + prefix + ':page'+p+' ;\n')
-        output.write("    naf-base:hasSpan (\n")
-        for target in paragraph['span']:
-            output.write("        "+prefix+":" + target['id'] + "\n")
-        output.write("    )")
+        output.write("    naf-base:hasSpan [\n")
+        for idx, target in enumerate(paragraph['span']):
+            output.write("        rdf:_"+str(idx+1)+" "+prefix+":" + target['id'] + " ;\n")
+        output.write("    ]")
         output.write(".\n")
     return None
 
@@ -689,12 +691,12 @@ def processDocument(doc: NafDocument = None, params: dict = {}):
     output.write(prefix+":doc\n")
     output.write("    a naf-base:document ;\n")
     output.write("    naf-base:hasHeader "+prefix+":nafHeader ;\n")
-    output.write("    naf-base:hasPages (\n")
+    output.write("    naf-base:hasPages [\n")
     page_numbers = list(set([int(wf['page']) for wf in doc.text]))
     page_numbers.sort()
-    for page_number in page_numbers:
-        output.write("        "+prefix+":page" + str(page_number) + "\n")
-    output.write("    )")
+    for idx, page_number in enumerate(page_numbers):
+        output.write("        rdf:_"+str(idx+1)+" "+prefix+":page" + str(page_number) + " ;\n")
+    output.write("    ]")
     output.write(".\n")
 
 def processPages(doc: NafDocument = None, params: dict = {}):
@@ -706,15 +708,15 @@ def processPages(doc: NafDocument = None, params: dict = {}):
         output.write(prefix+":page"+str(page_number)+"\n")
         output.write("    a naf-base:page ;\n")
         span = [wf["id"] for wf in doc.text if int(wf["page"])==page_number]
-        output.write("    naf-base:hasSpan (\n")
-        for target in span:
-            output.write("        "+prefix+":" + target + "\n")
-        output.write("    )")
+        output.write("    naf-base:hasSpan [\n")
+        for idx, target in enumerate(span):
+            output.write("        rdf:_"+str(idx+1)+" "+prefix+":" + target + " ;\n")
+        output.write("    ]")
         output.write(".\n")
 
 
 def processDeps(element: etree.Element, params: dict = {}) -> None:
-    """Function to NAF deps layer to RDF
+    """Function to convert NAF deps layer to RDF
 
     Args:
         element: element containing the deps layer
