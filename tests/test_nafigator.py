@@ -13,6 +13,7 @@ from nafigator import NafDocument, parse2naf
 from os.path import join
 import os
 
+
 class TestNafigator_pdf(unittest.TestCase):
     """Tests for `nafigator` package."""
 
@@ -27,7 +28,9 @@ class TestNafigator_pdf(unittest.TestCase):
             params={},
             nlp=None,
         )
-        assert tree.write("tests" + os.sep + "tests" + os.sep + "example.naf.xml") == None
+        assert (
+            tree.write("tests" + os.sep + "tests" + os.sep + "example.naf.xml") == None
+        )
 
     def test_1_split_pre_linguistic(self):
         """ """
@@ -59,7 +62,9 @@ class TestNafigator_pdf(unittest.TestCase):
 
     def test_2_pdf_header_filedesc(self):
         """ """
-        naf = NafDocument().open("tests" + os.sep + "tests" + os.sep + "example.naf.xml")
+        naf = NafDocument().open(
+            "tests" + os.sep + "tests" + os.sep + "example.naf.xml"
+        )
         actual = naf.header["fileDesc"]
         expected = {
             "filename": "tests" + os.sep + "tests" + os.sep + "example.pdf",
@@ -70,10 +75,16 @@ class TestNafigator_pdf(unittest.TestCase):
 
     def test_3_pdf_header_public(self):
         """ """
-        naf = NafDocument().open("tests" + os.sep + "tests" + os.sep + "example.naf.xml")
+        naf = NafDocument().open(
+            "tests" + os.sep + "tests" + os.sep + "example.naf.xml"
+        )
         actual = naf.header["public"]
         expected = {
-            "{http://purl.org/dc/elements/1.1/}uri": "tests" + os.sep + "tests" + os.sep + "example.pdf",
+            "{http://purl.org/dc/elements/1.1/}uri": "tests"
+            + os.sep
+            + "tests"
+            + os.sep
+            + "example.pdf",
             "{http://purl.org/dc/elements/1.1/}format": "application/pdf",
         }
         assert actual == expected, (
@@ -194,6 +205,7 @@ class TestNafigator_pdf(unittest.TestCase):
                 ],
                 "figures": [],
                 "headers": [],
+                "tables": [],
             }
         ]
 
@@ -1155,6 +1167,125 @@ class TestNafigator_pdf(unittest.TestCase):
             "expected: " + str(expected) + ", actual: " + str(actual)
         )
 
+    def test_12_tables(self):
+        doc = parse2naf.generate_naf(
+            input="tests" + os.sep + "tests" + os.sep + "example_tables.pdf",
+            engine="stanza",
+            language="en",
+            naf_version="v3.1",
+            dtd_validation=False,
+            params={"parse_tables_with_camelot": True},
+            nlp=None,
+        )
+        doc.write(
+            "tests" + os.sep + "tests" + os.sep + "example_tables.naf.xml"
+        ) == None
+        assert doc.raw[109 : 109 + 44] == "2020/08/20 | Lorem ipsum test text | HM | Q2"
+        assert (
+            doc.raw[154 : 154 + 49]
+            == "2020/05/27 | Test text lorem ipsum | JR | Ongoing"
+        )
+        assert doc.formats[0]["tables"] == [
+            {
+                "table": [
+                    {
+                        "row": [
+                            {"index": "0"},
+                            {"cell": "Datum"},
+                            {"cell": "Openstaande actiepunten"},
+                            {"cell": "Actiehouder"},
+                            {"cell": "Gereed"},
+                        ]
+                    },
+                    {
+                        "row": [
+                            {"index": "1"},
+                            {"cell": "2020/08/20"},
+                            {"cell": "Lorem ipsum test text"},
+                            {"cell": "HM"},
+                            {"cell": "Q2"},
+                        ]
+                    },
+                    {
+                        "row": [
+                            {"index": "2"},
+                            {"cell": "2020/05/27"},
+                            {"cell": "Test text lorem ipsum"},
+                            {"cell": "JR"},
+                            {"cell": "Ongoing"},
+                        ]
+                    },
+                    {
+                        "row": [
+                            {"index": "3"},
+                            {"cell": "2021/02/29"},
+                            {"cell": "Ipsum Lorem Test Text"},
+                            {"cell": "WR"},
+                            {"cell": "Ongoing"},
+                        ]
+                    },
+                    {
+                        "row": [
+                            {"index": "4"},
+                            {"cell": "2021/04/28"},
+                            {"cell": "Kirn Ipsyum Test test test"},
+                            {"cell": "WJ"},
+                            {"cell": "10-08-2022"},
+                        ]
+                    },
+                ]
+            },
+            {
+                "table": [
+                    {
+                        "row": [
+                            {"index": "0"},
+                            {"cell": "atum"},
+                            {"cell": "Gesloten actiepunten"},
+                            {"cell": "Actiehouder"},
+                            {"cell": "Gereed"},
+                        ]
+                    },
+                    {
+                        "row": [
+                            {"index": "1"},
+                            {"cell": "2022/01/10"},
+                            {"cell": "Lorem ipsum test text"},
+                            {"cell": "HM"},
+                            {"cell": "Q2"},
+                        ]
+                    },
+                    {
+                        "row": [
+                            {"index": "2"},
+                            {"cell": "2022/02/11"},
+                            {"cell": "Test text lorem ipsum"},
+                            {"cell": "JR"},
+                            {"cell": "Ongoing"},
+                        ]
+                    },
+                    {
+                        "row": [
+                            {"index": "3"},
+                            {"cell": "2022/03/12"},
+                            {"cell": "Ipsum Lorem Test Text"},
+                            {"cell": "WR"},
+                            {"cell": "Ongoing"},
+                        ]
+                    },
+                    {
+                        "row": [
+                            {"index": "4"},
+                            {"cell": "2022/04/13"},
+                            {"cell": "Kirn Ipsyum Test test test"},
+                            {"cell": "WJ"},
+                            {"cell": "10-08-2022"},
+                        ]
+                    },
+                ]
+            },
+        ]
+
     # def test_command_line_interface(self):
     #     """Test the CLI."""
     #     runner = CliRunner()
@@ -1182,7 +1313,9 @@ class TestNafigator_docx(unittest.TestCase):
 
     def test_2_docx_header_filedesc(self):
         """ """
-        naf = NafDocument().open("tests" + os.sep + "tests" + os.sep + "example.docx.naf.xml")
+        naf = NafDocument().open(
+            "tests" + os.sep + "tests" + os.sep + "example.docx.naf.xml"
+        )
         actual = naf.header["fileDesc"]
         expected = {
             "filename": "tests" + os.sep + "tests" + os.sep + "example.docx",
@@ -1193,10 +1326,16 @@ class TestNafigator_docx(unittest.TestCase):
 
     def test_3_docx_header_public(self):
         """ """
-        naf = NafDocument().open("tests" + os.sep + "tests" + os.sep + "example.docx.naf.xml")
+        naf = NafDocument().open(
+            "tests" + os.sep + "tests" + os.sep + "example.docx.naf.xml"
+        )
         actual = naf.header["public"]
         expected = {
-            "{http://purl.org/dc/elements/1.1/}uri": "tests" + os.sep + "tests" + os.sep + "example.docx",
+            "{http://purl.org/dc/elements/1.1/}uri": "tests"
+            + os.sep
+            + "tests"
+            + os.sep
+            + "example.docx",
             "{http://purl.org/dc/elements/1.1/}format": "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
         }
         assert actual == expected, (

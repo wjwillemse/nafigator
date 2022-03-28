@@ -307,7 +307,7 @@ class NafDocument(etree._ElementTree):
         }
         paragraphs = list()
         paragraph_list = list()
-        para_num = 1
+        para_num = 0
         pages = set()
         para = set()
         span = list()
@@ -341,7 +341,7 @@ class NafDocument(etree._ElementTree):
                 pages.add(item.get("page", "0"))
                 para.add(item.get("para", "0"))
                 para_num += 1
-        if para_num > 1:
+        if para_num > 1 or para_num==0:
             paragraphs.append(
                 {
                     "text": " ".join(paragraph_list),
@@ -400,35 +400,30 @@ class NafDocument(etree._ElementTree):
                         headers_data = dict(child2.attrib)
                         headers_data["spans"] = spans
                         headers.append(headers_data)
-                    # elif child2.tag == "table":
-                    #     #print('child2 table')
-                    #     print(child2.tag)
-                    #     for child5 in child2:  #table_on_page
-                    #         table_data = dict(child5.attrib)
-                    #         for child6 in child5:  #data
-                    #             for child7 in child6:  #row
-                                    
-                    #                 for child8 in child7:  #index & columns
-                    #                     if child8.tag == "index":
-                    #                         table_data["index"] = child8.text
-                    #                         print('table_data printed')
-                    #                         print(table_data)
-                    #                         tables.append(table_data)
-                                            
-                    #                     else:
-                    #                         table_data["column"] = child8.text
-                    #                         tables.append(table_data)
-
-
-
-
-
-                            #tables.append(table_data)
+                    elif child2.tag == "tables":
+                        tables = list()
+                        for table in child2:
+                            table_data = dict(table.attrib)
+                            rows = list()
+                            for row in table: 
+                                row_data = dict(row.attrib)
+                                cells = list()
+                                for cell in row: 
+                                    cell_data = dict(cell.attrib)
+                                    if cell.tag == "index":
+                                        cell_data["index"] = cell.text
+                                    else:
+                                        cell_data["cell"] = cell.text
+                                    cells.append(cell_data)
+                                row_data["row"] = cells
+                                rows.append(row_data)
+                            table_data["table"] = rows
+                            tables.append(table_data)
                     
                 pages_data["textboxes"] = textboxes
                 pages_data["figures"] = figures
                 pages_data["headers"] = headers
-                # pages_data["tables"] = tables
+                pages_data["tables"] = tables
                 pages.append(pages_data)
 
         return pages
@@ -999,9 +994,36 @@ class NafDocument(etree._ElementTree):
                     if item not in ["bbox", "colourspace", "ncolour"]
                 }
 
+            def check_outside_table(char_coor, pdf_tables, page_nr: int = 1):
+                if char_coor is not None and pdf_tables is not None:
+                    cm_x_left = list()
+                    cm_y_bottom = list()
+                    cm_x_right = list()
+                    cm_y_top = list()
+                    for pdf_table in pdf_tables:
+                        if pdf_table.__dict__["page"] == page_nr:
+                            cm_x_left.append(pdf_table.__dict__["_bbox"][0])
+                            cm_y_bottom.append(pdf_table.__dict__["_bbox"][1])
+                            cm_x_right.append(pdf_table.__dict__["_bbox"][2])
+                            cm_y_top.append(pdf_table.__dict__["_bbox"][3])
+                    outside = [char_coor[0] < cm_x_left[i] \
+                               or char_coor[0] > cm_x_right[i] \
+                               or char_coor[2] > cm_x_right[i] \
+                               or char_coor[2] < cm_x_left[i] \
+                               or char_coor[1] < cm_y_bottom[i] \
+                               or char_coor[1] > cm_y_top[i] \
+                               or char_coor[3] > cm_y_top[i] \
+                               or char_coor[3] < cm_y_bottom[i] for i in range(0, len(cm_x_left), 1)]
+                    return all(outside)
+                else:
+                    return True
+
             offset = 0
+            table_nr = 0
             for page_number, page in enumerate(formats_root):
                 page_element = add_element(layer, "page")
+                first_char_on_page = True
+                previous_char_coor = None
                 page_length = 0
                 for page_item in page:
                     if page_item.tag == "textbox":
@@ -1014,35 +1036,31 @@ class NafDocument(etree._ElementTree):
                                 previous_text = textline[0].text
                                 previous_attrib = copy_dict(textline[0])
                                 for idx, char in enumerate(textline[1:]):
-                                    char_attrib = copy_dict(char)
-                                    if previous_attrib == char_attrib:
-                                        if char.text is not None:
-                                            previous_text += char.text
-                                        if idx == len(textline) - 1:
-                                            add_text_element(
-                                                textline_element,
-                                                char.tag,
-                                                previous_text,
-                                                previous_attrib,
-                                                offset,
-                                            )
-                                            page_length += len(previous_text)
-                                            offset += len(previous_text)
-                                    else:  # -> previous_attrib != char_attrib
+                                    bbox = char.attrib.get("bbox", None)
+                                    if bbox is not None:
+                                        char_coor = [float(i) for i in bbox.split(',')]
+                                        previous_char_coor = char_coor
+                                    else:
+                                        char_coor = previous_char_coor
+                                    outside = check_outside_table(char_coor, pdf_tables, page_number + 1)
+                                    if outside:
+                                        char_attrib = copy_dict(char)
+                                        if previous_attrib == char_attrib:
+                                            if char.text is not None:
+                                                previous_text += char.text
+                                            if idx == len(textline) - 1:
+                                                add_text_element(
+                                                    textline_element,
+                                                    char.tag,
+                                                    previous_text,
+                                                    previous_attrib,
+                                                    offset,
+                                                )
+                                                page_length += len(previous_text)
+                                                offset += len(previous_text)
 
-                                        add_text_element(
-                                            textline_element,
-                                            char.tag,
-                                            previous_text,
-                                            previous_attrib,
-                                            offset,
-                                        )
-                                        if previous_text is not None:
-                                            page_length += len(previous_text)
-                                            offset += len(previous_text)
-                                        previous_text = char.text
-                                        previous_attrib = char_attrib
-                                        if idx == len(textline) - 1:
+                                        else:  # -> previous_attrib != char_attrib
+
                                             add_text_element(
                                                 textline_element,
                                                 char.tag,
@@ -1053,16 +1071,80 @@ class NafDocument(etree._ElementTree):
                                             if previous_text is not None:
                                                 page_length += len(previous_text)
                                                 offset += len(previous_text)
+                                            previous_text = char.text
+                                            previous_attrib = char_attrib
+                                            if idx == len(textline) - 1:
+                                                add_text_element(
+                                                    textline_element,
+                                                    char.tag,
+                                                    previous_text,
+                                                    previous_attrib,
+                                                    offset,
+                                                )
+                                                if previous_text is not None:
+                                                    page_length += len(previous_text)
+                                                    offset += len(previous_text)
+
+                                        previous_outside = True
+
+                                    else:
+                                        # put text of table in text
+                                        if table_nr < len(pdf_tables):
+
+                                            if previous_outside or (first_char_on_page and not previous_outside):
+
+                                                textline_element.getparent().remove(textline_element)
+
+                                                table_df_text = pdf_tables[table_nr].__dict__['df']
+                                                table_rows = table_df_text.apply(lambda x: x.str.cat(sep=' | '), axis=1)
+                                                for table_textline in table_rows:
+                                                    textline_element = add_element(
+                                                        page_item_element, textline.tag
+                                                    )
+                                                    table_textline_text = table_textline.replace("\n", "")
+                                                    add_text_element(
+                                                        textline_element,
+                                                        'text',
+                                                        table_textline_text,
+                                                        attrib={},
+                                                        offset=offset
+                                                    )
+                                                    offset += len(table_textline_text)
+                                                    page_length += len(table_textline_text)
+
+                                                    offset += 1
+                                                    page_length += 1
+
+                                                table_nr += 1
+
+                                        previous_outside = False
+
+                                        page_length += len(previous_text)
+                                        offset += len(previous_text)
+
+                                    # first_char_on_page = False
+
+                            # if nothing has been added to the textline_element we remove is
+                            if len(textline_element)==0:
+                                textline_element.getparent().remove(textline_element)
+                            else:
+                                page_length += 1
+                                offset += 1
+
+                        # if nothing has been added to the page_item_element we remove is
+                        if len(page_item_element)==0:
+                            page_item_element.getparent().remove(page_item_element)
+                        else:
                             page_length += 1
                             offset += 1
 
-                        page_length += 1
-                        offset += 1
-
                     elif page_item.tag == "layout":
+
                         page_length += 1
                         offset += 1
+                    
                     elif page_item.tag == "figure":
+
                         page_item_element = add_element(page_element, page_item.tag)
                         if len(page_item) > 0:
                             previous_text = None
@@ -1114,57 +1196,31 @@ class NafDocument(etree._ElementTree):
                                                 previous_text = char.text
                                                 previous_attrib = char_attrib
 
-                # now we add possible tables to the page
-                # we have 
-                # - the camelot object in pdf_tables
-                # - the page_number to access the camelot object
-                # - the page_element (the xml element) to add the data to
-                # 
-                # a better solution is to add the tables at the right location
-                # so at the right offset
+                # tables are stored separately in the formats layer
+                if pdf_tables is not None:
+                    table = etree.SubElement(page_element, "tables")
+                    for pdf_table in pdf_tables:
+                        if pdf_table.__dict__['page'] == page_number + 1:
+                            table_on_page = etree.SubElement(table, "table", attrib={})
+                            table_df = pdf_table.__dict__['df']
+                            for idx in table_df.index:
+                                table_row = etree.SubElement(table_on_page, "row", attrib={})
+                                table_index = etree.SubElement(table_row, "index", attrib={})
+                                table_index.text = str(idx).replace("\n", "")
+                                for col in table_df.columns:
+                                    table_cell = etree.SubElement(table_row, "cell", attrib={})
+                                    table_cell.text = str(table_df.loc[idx, col]).replace("\n", "")
 
-                # ADD CODE HERE
-                # table = etree.SubElement(page_element, "table", attrib={})
-                # for table_nr in range(0, len(pdf_tables), 1):
-                #     if pdf_tables[table_nr].__dict__['page'] == page_number + 1:
-                #         #print(table)
-                #         #print(type(table))
-                #         table_on_page = etree.SubElement(table, "table_on_page", attrib={})
-                #         table_df = pdf_tables[table_nr].__dict__['df']
-                #         number_columns = table_df.shape[1]
-                #         table_df.columns = ["column" + str(i+1) for i in range(0, number_columns, 1)]
-                #         #print(table_df)
-                #         table_xml_str = table_df.to_xml() # class 'str'
-                #         #print(table_xml_str)
-                #         table_xml_str = table_xml_str.split('<data>', 1)[1]
-                #         table_xml_str = '<data>' + re.sub('\n\s*', '', table_xml_str)
-                #         #print(table_xml_str)
-                #         table_xml = (etree.fromstring(table_xml_str))
-                #         table_on_page.append(table_xml[0])
-                #         #print(etree.tostring(table_on_page))
+                        # number_columns = table_df.shape[1]
+                        # table_df.columns = ["column" + str(i+1) for i in range(0, number_columns, 1)]
+                        # table_xml_str = table_df.to_xml() # class 'str'
+                        # table_xml_str = table_xml_str.split('<data>', 1)[1]
+                        # table_xml_str = '<data>' + re.sub('\n\s*', '', table_xml_str)
+                        # table_xml = (etree.fromstring(table_xml_str))
+                        # table_on_page.append(table_xml)
 
                 page_element.set("length", str(page_length))
                 page_element.set("offset", str(offset - page_length))
-
-                # doc.formats vervangen
-                # for page_nr in range(0, len(doc.formats),1):
-                #     new_page_dict = doc.formats[page_nr]
-                #     doc.formats[page_nr] = new_page_dict.setdefault('tables', [])  # does not update the formats lists
-
-                # for table_nr in range(0, len(tables), 1):
-                #     # convert table from df to xml
-                #     table_df = tables[table_number].__dict__['df']
-                #     number_columns = table_df.shape[1]
-                #     table_df.columns = ["column" + str(i+1) for i in range(0, number_columns, 1)]
-                #     table_xml = table_df.to_xml()
-                #     # add table element to formats layer with list of tables per page
-                #     page_nr = tables[table_nr].__dict__["page"]
-                #     print(page_nr)
-                #      = doc.formats[page_nr-1]
-                #     doc_dict.setdefault('tables', []).append(table_xml)
-                # doc.formats[0]
-                # doc.formats[1]
-
 
         elif source == "docx":
 

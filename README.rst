@@ -314,18 +314,18 @@ A term::
 	    naf-base:hasPos <http://purl.org/olia/olia.owl#Determiner> ;
 	    naf-morphofeat:hasDefinite "Def" ;
 	    naf-morphofeat:hasPronType "Art" ;
-	    naf-base:hasSpan [
+	    naf-base:hasSpan (
         	naf-base:ref _:w1
-    	] .
+    	) .
 
 An entity::
 
 	_:e1
 	    xl:type naf-base:entity ;
 	    naf-base:hasType naf-entity:PRODUCT ;
-	    naf-base:hasSpan [
+	    naf-base:hasSpan (
         	naf-base:ref _:t2
-    	] .
+    	) .
 
 A dependency::
 
