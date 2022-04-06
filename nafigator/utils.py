@@ -536,28 +536,36 @@ def glue_terms_separated_by_hard_hyphens(doc, language: str, nlp: dict):
         NafDocument where terms are glued
     """
 
-    formats = doc.find("formats")
-    hyphen_offsets = [
-        int(text.get("offset")) + len(text.text.strip()) - 1
-        for page in formats
-        for textbox in page
-        for textline in textbox
-        for text in textline
-        if text.text.strip()[-1] == "-"
-    ]
-
     HARD_HYPHEN = "-"
+
+    hyphen_offsets = []
+    formats = doc.find("formats")
+    if formats is not None:
+        for page in formats:
+            for textbox in page:
+                if textbox.tag == "textbox":
+                    for textline in textbox:
+                        for text_element in textline:
+                            if text_element.text.strip()[-1] == HARD_HYPHEN:
+                                text.append(
+                                    int(text_element.get("offset")) + len(text_element.text.strip()) - 1
+                                )
+                elif textbox.tag == "figure":
+                    for text_element in textbox:
+                        if text_element.text.strip()[-1] == HARD_HYPHEN:
+                            text.append(
+                                int(text_element.get("offset")) + len(text_element.text.strip()) - 1
+                            )
 
     doc_words = {word["id"]: word for word in doc.text}
     terms = doc.terms
     terms_to_skip = []
     new_terms = []
     for idx, term in enumerate(terms):
-
         term_text = "".join([doc_words[s["id"]]["text"] for s in term["span"]])
-        term_lemma = term["lemma"]
-        term_pos = term["pos"]
-        term_morphofeat = term.get("morphofeat", None)
+        term_lemma = term.get("lemma", "")
+        term_pos = term.get("pos", "")
+        term_morphofeat = term.get("morphofeat", "")
         term_span = term["span"]
 
         if term_text[-1] == HARD_HYPHEN and not term_text == HARD_HYPHEN:
