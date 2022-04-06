@@ -7,7 +7,12 @@ History
 
 * First release on PyPI.
 
-0.1.1 to 0.1.40 (2022-3-1)
+0.1.1 to 0.1.41 (2022-3-1)
 --------------------------
 
 * A lot of small changes
+
+0.1.42 (2022-4-6)
+--------------------------
+
+* Added first version of termbase processor
