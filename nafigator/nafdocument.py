@@ -227,6 +227,8 @@ class NafDocument(etree._ElementTree):
         entities = list()
         for child in self.findall(ENTITIES_LAYER_TAG + "/" + ENTITY_OCCURRENCE_TAG):
             entity_data = dict(child.attrib)
+            spans = list()
+            ext_refs = list()
             for child2 in child:
                 if child2.tag == SPAN_OCCURRENCE_TAG:
                     span = list()
@@ -235,13 +237,20 @@ class NafDocument(etree._ElementTree):
                             entity_data["text"] = child3.text
                         elif child3.tag == TARGET_OCCURRENCE_TAG:
                             span.append(child3.attrib)
-                    entity_data["span"] = span
+                    spans.append(span)
                 if child2.tag == EXT_REFS_OCCURRENCE_TAG:
-                    ext_refs = list()
+                    ext_ref = list
                     for child3 in child2:
                         if child3.tag == EXT_REF_OCCURRENCE_TAG:
-                            ext_refs.append(child3.attrib)
-                    entity_data["ext_refs"] = ext_refs
+                            ext_ref.append(child3.attrib)
+                    ext_refs.append(ext_ref)
+            if ext_refs != []:
+                entity_data["ext_refs"] = ext_refs
+            if spans != []:
+                if len(spans)==1:
+                    entity_data["span"] = spans[0]
+                else:
+                    entity_data["spans"] = spans
             entities.append(entity_data)
         return entities
 
