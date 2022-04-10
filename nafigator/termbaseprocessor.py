@@ -30,9 +30,10 @@ def process_termbase(doc: NafDocument = None,
                      termbase: etree._ElementTree = None, 
                      remove_all_existing_terms: bool = True,
                      params: dict = {}):
+    """
+    General function to add terms from a termbase to a NafDocument
 
-    # delete existing term entities?
-
+    """
     if doc is None:
         logging.info("No naf document to process termbase.")
         return None
@@ -80,7 +81,7 @@ def process_termbase(doc: NafDocument = None,
                                 sub = term_text.lower().split(" ")
                                 full = [term['text'].lower() for term in doc_terms]
                             spans = [[term_ids[i] for i in item] for item in sublist_indices(sub, full)]
-                            ext_refs = [{"reference": concept_id+":"+term_type}]
+                            ext_refs = [{"reference": concept_id}]
                             comment = [term_text]
                             for span in spans:
                                 entity_data = EntityElement(
