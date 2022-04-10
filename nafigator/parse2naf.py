@@ -211,7 +211,7 @@ def process_preprocess_steps(params: dict):
     elif input[-4:].lower() == "html":
         with open(input, encoding="utf8") as f:
             utf8_parser = lxml.html.HTMLParser(encoding="utf-8")
-            doc = lxml.html.document_fromstring(f.read(), parser=utf8_parser)
+            doc = lxml.html.document_fromstring(bytes(f.read(), encoding='utf8'), parser=utf8_parser)
             params["text"] = doc.text_content()
     elif input[-4:].lower() == "docx":
         convert_docx(input, format="xml", params=params)
