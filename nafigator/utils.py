@@ -547,13 +547,13 @@ def glue_terms_separated_by_hard_hyphens(doc, language: str, nlp: dict):
                     for textline in textbox:
                         for text_element in textline:
                             if text_element.text.strip()[-1] == HARD_HYPHEN:
-                                text.append(
+                                hyphen_offsets.append(
                                     int(text_element.get("offset")) + len(text_element.text.strip()) - 1
                                 )
                 elif textbox.tag == "figure":
                     for text_element in textbox:
                         if text_element.text.strip()[-1] == HARD_HYPHEN:
-                            text.append(
+                            hyphen_offsets.append(
                                 int(text_element.get("offset")) + len(text_element.text.strip()) - 1
                             )
 
