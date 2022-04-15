@@ -26,6 +26,10 @@ def QName(prefix: str = None, name: str = None):
     return qname
 
 
+def normalize_term_text(str: term_text):
+    return term_text.lower().replace("’", "'").replace("‘", "'").replace("”", '"').replace("“", '"')
+
+
 def process_termbase(doc: NafDocument = None, 
                      termbase: etree._ElementTree = None, 
                      remove_all_existing_terms: bool = True,
@@ -59,7 +63,7 @@ def process_termbase(doc: NafDocument = None,
         for langSec in concept:
             if langSec.tag == QName(name="langSec"):
                 language = langSec.attrib[XML_LANG]
-                if language == doc.language:
+                if language.lower() in [doc.language.lower(), "en"]:
                     for termSec in langSec:
                         term_text = ""
                         term_type = ""
@@ -71,15 +75,15 @@ def process_termbase(doc: NafDocument = None,
                                 term_type = item.text
                             if item.tag == QName(name="termNote") and item.attrib['type']=='termLemma':
                                 term_lemma = item.text
-                        if term_text != "" and term_type != "":
+                        if term_text != "":
                             if term_lemma != "":
                                 # if the lowercase lemma is available then it is used
-                                sub = term_lemma.lower().split(" ")
-                                full = [term['lemma'].lower() for term in doc_terms]
+                                sub = normalize_term_text(term_lemma).split(" ")
+                                full = [normalize_term_text(term_lemma) for term in doc_terms]
                             else:
                                 # otherwise the lowercase plain text is used
-                                sub = term_text.lower().split(" ")
-                                full = [term['text'].lower() for term in doc_terms]
+                                sub = normalize_term_text(term_text).split(" ")
+                                full = [normalize_term_text(term_text) for term in doc_terms]
                             spans = [[term_ids[i] for i in item] for item in sublist_indices(sub, full)]
                             ext_refs = [{"reference": concept_id}]
                             comment = [term_text]

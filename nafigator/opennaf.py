@@ -39,14 +39,14 @@ def opennaf(input: str):
     #     comment=["comment"],
     # )
     # naf.add_entity_element(data=entity_data, naf_version="v3.1", comments=True)
-    # print(naf.entities)
+    print(naf.entities)
 
     # print(naf.deps)
     # print(naf.formats)
     # print(naf.multiwords)
     # naf.remove_layer_elements("multiwords")
     # print(naf.multiwords)
-    print(naf.paragraphs)
+    # print(naf.paragraphs)
 
     # lp = ProcessorElement(
     #     name="processorname",
