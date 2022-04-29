@@ -26,7 +26,7 @@ def QName(prefix: str = None, name: str = None):
     return qname
 
 
-def normalize_term_text(str: term_text):
+def normalize_term_text(term_text: str = ""):
     return term_text.lower().replace("’", "'").replace("‘", "'").replace("”", '"').replace("“", '"')
 
 
