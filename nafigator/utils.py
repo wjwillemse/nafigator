@@ -19,6 +19,7 @@ import docx
 from docx.enum.dml import MSO_THEME_COLOR_INDEX
 import datetime
 from typing import Union
+import nafigator
 
 def dataframe2naf(
     df_meta: pd.DataFrame,
@@ -713,78 +714,36 @@ def glue_sentences_separated_by_colons(doc, language: str, nlp: dict):
 
     return doc
 
-def get_text_rows(sent: dict, doc_words: dict, doc_formats, context_range: int) -> str:
+
+def get_context_rows(ref_text: dict, naf_layer, context_range: int) -> str:
     """
-    Retrieves the line where word has been found.
+    Retrieves the line where word has been found with option to also retreive sentences/paragraphs before and after
     Args:
-        sentence: sentence 
-        doc_words: dictionary contaning each word
-        doc_formats: formats layer of Naf.Document
-        context_range: amount of context lines around result 
+        ref_text: a sentence or paragraph from the sentences or paragraphs layer as a dictionary to retrieve extra
+        context for
+        naf: a NafDocument.sentences or NafDocument.paragaphs (can be rewritten with search_level as extra input)
+        context_range: amount of context lines around ref_text
     Returns:
-        result: result with surrounding context lines in order (ascending)
+        result: the sentence/paragraph with surrounding context lines
     """
-    offsets = [doc_words[item['id']]['offset'] for item in sent['span']]
-    lengths = [doc_words[item['id']]['length'] for item in sent['span']]
-    sent_start = int(offsets[0])
-    sent_end = int(offsets[-1])+int(lengths[-1])
-    found = False
-    result = ""
-    for idx, page in enumerate(doc_formats):
-        if not found:
-            page_start = int(page['offset'])
-            page_end = page_start + int(page['length'])
-            if idx+1 < len(doc_formats):
-                next_page_start = int(doc_formats[idx+1]['offset'])
-                next_page_end = next_page_start + int(doc_formats[idx+1]['length'])
-            else:
-                next_page_start = 0
-                next_page_end = 0
-                
-            search_area = None
-            if page_start <= sent_start and page_end >= sent_end:
-                search_area = page['textboxes']
-            elif page_start <= sent_start and next_page_start > sent_start and next_page_end >= sent_end:
-                search_area = page['textboxes'] + doc_formats[idx+1]['textboxes']
+    for idx, text in enumerate(naf_layer):
+        if ref_text == text:
+            text_idx = idx
 
-            if search_area is not None:
-                textlines = []
-                for textbox in search_area:
-                    for textline in textbox['textlines']:
-                        textline_text = ""
-                        for text in textline['texts']:
-                            textline_text += text['text'] 
-                        if textline_text != "":
-                            textlines.append((int(textline['texts'][0]['offset']), 
-                                              int(textline['texts'][-1]['offset'])+int(textline['texts'][-1]['length']), 
-                                              textline_text))
+    if text_idx - context_range >= 0:
+        idx_min = text_idx - context_range
+    else:
+        idx_min = 0
 
-                sent_lines = []
-                for textline_idx, textline in enumerate(textlines):
-                    # the textline is around the sentence start
-                    if textline[0] <= sent_start and textline[1] > sent_start:
-                        sent_lines.append(textline_idx)
-                    # the textline is within the sentence
-                    elif textline[0] >= sent_start and textline[1] <= sent_end:
-                        sent_lines.append(textline_idx)
-                    # the texline is around the sentence end
-                    elif textline[0] <= sent_end and textline[1] > sent_end:
-                        sent_lines.append(textline_idx)
+    if text_idx + context_range < len(naf_layer):
+        idx_max = text_idx + context_range
+    else:
+        idx_max = len(naf_layer) - 1
 
-                        
-                sent_lines_added = sent_lines.copy()
-                context_range = context_range + 1
-                sent_lines_added = []
-                
-                if len(sent_lines)>0:
-                    for i in range(context_range):
-                        if sent_lines[0]-i >= 0:
-                            sent_lines_added.append(sent_lines[0]-i)
-                        if sent_lines[0]+i < len(textlines):
-                            sent_lines_added.append(sent_lines[0]+i)
-                
-                sent_lines_added = sorted(list(set(sent_lines_added)))
-                result = "\n".join([textlines[line][2] for line in sent_lines_added])
-                found = True
+    context_idxs = [idx for idx in range(idx_min, idx_max+1, 1)]
 
-    return result
+    result_w_context = ''
+    for idx in context_idxs:
+        result_w_context = result_w_context + naf_layer[idx]['text']
+
+    return result_w_context
