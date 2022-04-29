@@ -13,6 +13,11 @@ History
 * A lot of small changes
 
 0.1.42 (2022-4-6)
---------------------------
+-----------------
 
 * Added first version of termbase processor
+
+0.1.43 (2022-4-29)
+------------------
+
+* Fix for get_context_rows
