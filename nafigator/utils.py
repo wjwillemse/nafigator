@@ -706,6 +706,7 @@ def glue_sentences_separated_by_colons(doc, language: str, nlp: dict):
 
     return doc
 
+
 def get_context_rows(ref_text: dict, naf_layer, context_range: int) -> str:
     """
     Retrieves the line where word has been found with option to also retreive sentences/paragraphs before and after
