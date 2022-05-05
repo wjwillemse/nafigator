@@ -21,6 +21,7 @@ import datetime
 from typing import Union
 import nafigator
 
+
 def dataframe2naf(
     df_meta: pd.DataFrame,
     overwrite_existing_naf: bool = False,
@@ -706,6 +707,7 @@ def glue_sentences_separated_by_colons(doc, language: str, nlp: dict):
 
     return doc
 
+
 def get_context_rows(ref_text: dict, naf_layer, context_range: int) -> str:
     """
     Retrieves the line where word has been found with option to also retreive sentences/paragraphs before and after
@@ -735,6 +737,6 @@ def get_context_rows(ref_text: dict, naf_layer, context_range: int) -> str:
 
     result_w_context = ''
     for idx in context_idxs:
-        result_w_context = result_w_context + naf_layer[idx]['text']
+        result_w_context = result_w_context + ' ' + naf_layer[idx]['text']
 
     return result_w_context
