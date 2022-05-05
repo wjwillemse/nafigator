@@ -10,3 +10,6 @@ nafigator
 stanza
 spacy
 pandas
+camelot-py[cv]==0.10.1
+camelot-py[base]==0.10.1
+pdftopng==0.2.3

@@ -17,6 +17,8 @@ from .utils import load_dtd
 from .utils import prepare_comment_text
 import datetime
 import logging
+import camelot
+import re
 
 NAF_VERSION_TO_DTD = {
     "v3": "data/naf_v3.dtd",
@@ -75,24 +77,42 @@ def QName(prefix: str = None, name: str = None):
 
 
 class NafDocument(etree._ElementTree):
-    """ """
+    """The NafDocument class (subclass of an etree.elementtree)"""
 
     def generate(self, params: dict):
+        """Initialize a NafDocument with data from the params dict"""
         self._setroot(etree.Element("NAF", nsmap=namespaces))
         self.set_version(params["naf_version"])
-        self.set_language(params["language"])
+        if params["language"] is not None:
+            self.set_language(params["language"])
         self.add_nafHeader()
         self.add_filedesc_element(params["fileDesc"])
         self.add_public_element(params["public"])
 
-    def open(self, input):
-        """ """
+    def open(self, input: str):
+        """Function to open a NafDocument
+
+        Args:
+            input: the location of the NafDocument to be opened
+
+        Returns:
+            NafDocument: the NAF document that is opened
+
+        """
         with open(input, "r", encoding="utf-8") as f:
             self._setroot(etree.parse(f).getroot())
         return self
 
-    def write(self, output):
-        """ """
+    def write(self, output: str) -> None:
+        """Function to write a NafDocument
+
+        Args:
+            output: the location of the NafDocument to be stored
+
+        Returns:
+            None
+
+        """
         super().write(output, encoding="utf-8", pretty_print=True, xml_declaration=True)
 
     @property
@@ -287,7 +307,7 @@ class NafDocument(etree._ElementTree):
         }
         paragraphs = list()
         paragraph_list = list()
-        para_num = 1
+        para_num = 0
         pages = set()
         para = set()
         span = list()
@@ -321,7 +341,7 @@ class NafDocument(etree._ElementTree):
                 pages.add(item.get("page", "0"))
                 para.add(item.get("para", "0"))
                 para_num += 1
-        if para_num > 1:
+        if para_num > 1 or para_num==0:
             paragraphs.append(
                 {
                     "text": " ".join(paragraph_list),
@@ -341,7 +361,9 @@ class NafDocument(etree._ElementTree):
             if child.tag == "page":
                 pages_data = dict(child.attrib)
                 textboxes = list()
+                headers = list()
                 figures = list()
+                tables = list()
                 for child2 in child:
                     if child2.tag == "textbox":
                         textbox_data = dict(child2.attrib)
@@ -369,10 +391,41 @@ class NafDocument(etree._ElementTree):
                                 text_data["text"] = child3.text
                                 texts.append(text_data)
                         figure_data["texts"] = texts
-                        figures.append(textbox_data)
+                        figures.append(figure_data)
+                    elif child2.tag == "header":
+                        spans = list()
+                        for child3 in child2:
+                            for child4 in child3:
+                                spans.append(child4.attrib)
+                        headers_data = dict(child2.attrib)
+                        headers_data["spans"] = spans
+                        headers.append(headers_data)
+                    elif child2.tag == "tables":
+                        tables = list()
+                        for table in child2:
+                            table_data = dict(table.attrib)
+                            rows = list()
+                            for row in table: 
+                                row_data = dict(row.attrib)
+                                cells = list()
+                                for cell in row: 
+                                    cell_data = dict(cell.attrib)
+                                    if cell.tag == "index":
+                                        cell_data["index"] = cell.text
+                                    else:
+                                        cell_data["cell"] = cell.text
+                                    cells.append(cell_data)
+                                row_data["row"] = cells
+                                rows.append(row_data)
+                            table_data["table"] = rows
+                            tables.append(table_data)
+                    
                 pages_data["textboxes"] = textboxes
                 pages_data["figures"] = figures
+                pages_data["headers"] = headers
+                pages_data["tables"] = tables
                 pages.append(pages_data)
+
         return pages
 
     def __getattr__(self, name):
@@ -625,7 +678,11 @@ class NafDocument(etree._ElementTree):
             attributes_to_ignore=["text"],
         )
 
-        wf.text = etree.CDATA(data.text) if cdata else data.text
+        wf.text = (
+            etree.CDATA(data.text if "]]>" not in data.text else " " * len(data.text))
+            if cdata
+            else data.text
+        )
 
     def add_raw_text_element(self, data: RawElement):
         """
@@ -898,7 +955,7 @@ class NafDocument(etree._ElementTree):
             )
             self.add_span_element(element=com, data=component)
 
-    def add_formats_element(self, source: str, formats: str):
+    def add_formats_element(self, source: str, formats: str, pdf_tables: camelot.core.TableList = None):
 
         """ """
 
@@ -937,9 +994,36 @@ class NafDocument(etree._ElementTree):
                     if item not in ["bbox", "colourspace", "ncolour"]
                 }
 
+            def check_outside_table(char_coor, pdf_tables, page_nr: int = 1):
+                if char_coor is not None and pdf_tables is not None:
+                    cm_x_left = list()
+                    cm_y_bottom = list()
+                    cm_x_right = list()
+                    cm_y_top = list()
+                    for pdf_table in pdf_tables:
+                        if pdf_table.__dict__["page"] == page_nr:
+                            cm_x_left.append(pdf_table.__dict__["_bbox"][0])
+                            cm_y_bottom.append(pdf_table.__dict__["_bbox"][1])
+                            cm_x_right.append(pdf_table.__dict__["_bbox"][2])
+                            cm_y_top.append(pdf_table.__dict__["_bbox"][3])
+                    outside = [char_coor[0] < cm_x_left[i] \
+                               or char_coor[0] > cm_x_right[i] \
+                               or char_coor[2] > cm_x_right[i] \
+                               or char_coor[2] < cm_x_left[i] \
+                               or char_coor[1] < cm_y_bottom[i] \
+                               or char_coor[1] > cm_y_top[i] \
+                               or char_coor[3] > cm_y_top[i] \
+                               or char_coor[3] < cm_y_bottom[i] for i in range(0, len(cm_x_left), 1)]
+                    return all(outside)
+                else:
+                    return True
+
             offset = 0
-            for page in formats_root:
+            table_nr = 0
+            for page_number, page in enumerate(formats_root):
                 page_element = add_element(layer, "page")
+                first_char_on_page = True
+                previous_char_coor = None
                 page_length = 0
                 for page_item in page:
                     if page_item.tag == "textbox":
@@ -952,35 +1036,31 @@ class NafDocument(etree._ElementTree):
                                 previous_text = textline[0].text
                                 previous_attrib = copy_dict(textline[0])
                                 for idx, char in enumerate(textline[1:]):
-                                    char_attrib = copy_dict(char)
-                                    if previous_attrib == char_attrib:
-                                        if char.text is not None:
-                                            previous_text += char.text
-                                        if idx == len(textline) - 1:
-                                            add_text_element(
-                                                textline_element,
-                                                char.tag,
-                                                previous_text,
-                                                previous_attrib,
-                                                offset,
-                                            )
-                                            page_length += len(previous_text)
-                                            offset += len(previous_text)
-                                    else:  # -> previous_attrib != char_attrib
+                                    bbox = char.attrib.get("bbox", None)
+                                    if bbox is not None:
+                                        char_coor = [float(i) for i in bbox.split(',')]
+                                        previous_char_coor = char_coor
+                                    else:
+                                        char_coor = previous_char_coor
+                                    outside = check_outside_table(char_coor, pdf_tables, page_number + 1)
+                                    if outside:
+                                        char_attrib = copy_dict(char)
+                                        if previous_attrib == char_attrib:
+                                            if char.text is not None:
+                                                previous_text += char.text
+                                            if idx == len(textline) - 1:
+                                                add_text_element(
+                                                    textline_element,
+                                                    char.tag,
+                                                    previous_text,
+                                                    previous_attrib,
+                                                    offset,
+                                                )
+                                                page_length += len(previous_text)
+                                                offset += len(previous_text)
 
-                                        add_text_element(
-                                            textline_element,
-                                            char.tag,
-                                            previous_text,
-                                            previous_attrib,
-                                            offset,
-                                        )
-                                        if previous_text is not None:
-                                            page_length += len(previous_text)
-                                            offset += len(previous_text)
-                                        previous_text = char.text
-                                        previous_attrib = char_attrib
-                                        if idx == len(textline) - 1:
+                                        else:  # -> previous_attrib != char_attrib
+
                                             add_text_element(
                                                 textline_element,
                                                 char.tag,
@@ -991,16 +1071,80 @@ class NafDocument(etree._ElementTree):
                                             if previous_text is not None:
                                                 page_length += len(previous_text)
                                                 offset += len(previous_text)
+                                            previous_text = char.text
+                                            previous_attrib = char_attrib
+                                            if idx == len(textline) - 1:
+                                                add_text_element(
+                                                    textline_element,
+                                                    char.tag,
+                                                    previous_text,
+                                                    previous_attrib,
+                                                    offset,
+                                                )
+                                                if previous_text is not None:
+                                                    page_length += len(previous_text)
+                                                    offset += len(previous_text)
+
+                                        previous_outside = True
+
+                                    else:
+                                        # put text of table in text
+                                        if table_nr < len(pdf_tables):
+
+                                            if previous_outside or (first_char_on_page and not previous_outside):
+
+                                                textline_element.getparent().remove(textline_element)
+
+                                                table_df_text = pdf_tables[table_nr].__dict__['df']
+                                                table_rows = table_df_text.apply(lambda x: x.str.cat(sep=' | '), axis=1)
+                                                for table_textline in table_rows:
+                                                    textline_element = add_element(
+                                                        page_item_element, textline.tag
+                                                    )
+                                                    table_textline_text = table_textline.replace("\n", "")
+                                                    add_text_element(
+                                                        textline_element,
+                                                        'text',
+                                                        table_textline_text,
+                                                        attrib={},
+                                                        offset=offset
+                                                    )
+                                                    offset += len(table_textline_text)
+                                                    page_length += len(table_textline_text)
+
+                                                    offset += 1
+                                                    page_length += 1
+
+                                                table_nr += 1
+
+                                        previous_outside = False
+
+                                        page_length += len(previous_text)
+                                        offset += len(previous_text)
+
+                                    # first_char_on_page = False
+
+                            # if nothing has been added to the textline_element we remove is
+                            if len(textline_element)==0:
+                                textline_element.getparent().remove(textline_element)
+                            else:
+                                page_length += 1
+                                offset += 1
+
+                        # if nothing has been added to the page_item_element we remove is
+                        if len(page_item_element)==0:
+                            page_item_element.getparent().remove(page_item_element)
+                        else:
                             page_length += 1
                             offset += 1
 
-                        page_length += 1
-                        offset += 1
-
                     elif page_item.tag == "layout":
+
                         page_length += 1
                         offset += 1
+                    
                     elif page_item.tag == "figure":
+
                         page_item_element = add_element(page_element, page_item.tag)
                         if len(page_item) > 0:
                             previous_text = None
@@ -1051,17 +1195,60 @@ class NafDocument(etree._ElementTree):
                                             else:
                                                 previous_text = char.text
                                                 previous_attrib = char_attrib
+
+                # tables are stored separately in the formats layer
+                if pdf_tables is not None:
+                    table = etree.SubElement(page_element, "tables")
+                    for pdf_table in pdf_tables:
+                        if pdf_table.__dict__['page'] == page_number + 1:
+                            table_on_page = etree.SubElement(table, "table", attrib={})
+                            table_df = pdf_table.__dict__['df']
+                            for idx in table_df.index:
+                                table_row = etree.SubElement(table_on_page, "row", attrib={})
+                                table_index = etree.SubElement(table_row, "index", attrib={})
+                                table_index.text = str(idx).replace("\n", "")
+                                for col in table_df.columns:
+                                    table_cell = etree.SubElement(table_row, "cell", attrib={})
+                                    table_cell.text = str(table_df.loc[idx, col]).replace("\n", "")
+
+                        # number_columns = table_df.shape[1]
+                        # table_df.columns = ["column" + str(i+1) for i in range(0, number_columns, 1)]
+                        # table_xml_str = table_df.to_xml() # class 'str'
+                        # table_xml_str = table_xml_str.split('<data>', 1)[1]
+                        # table_xml_str = '<data>' + re.sub('\n\s*', '', table_xml_str)
+                        # table_xml = (etree.fromstring(table_xml_str))
+                        # table_on_page.append(table_xml)
+
                 page_element.set("length", str(page_length))
                 page_element.set("offset", str(offset - page_length))
 
         elif source == "docx":
 
-            WORD_NAMESPACE = "{http://schemas.openxmlformats.org/wordprocessingml/2006/main}"
+            # it is not possible to derive page numbers from docx because this
+            # is a result of the docx processor (the docx does not contain pages)
+
+            WORD_NAMESPACE = (
+                "{http://schemas.openxmlformats.org/wordprocessingml/2006/main}"
+            )
             PARA = WORD_NAMESPACE + "p"
             RUN = WORD_NAMESPACE + "r"
             TEXT = WORD_NAMESPACE + "t"
+            FONT = WORD_NAMESPACE + "rFonts"
+            RPR = WORD_NAMESPACE + "rPr"
+            PPR = WORD_NAMESPACE + "pPr"
+            ASCII = WORD_NAMESPACE + "ascii"
+            SIZE = WORD_NAMESPACE + "sz"
+            VAL = WORD_NAMESPACE + "val"
+            FOOTNOTEREF = WORD_NAMESPACE + "footnoteReference"
+            SECTPR = WORD_NAMESPACE + "sectPr"
+            BOLD = WORD_NAMESPACE + "b"
+            ITALICS = WORD_NAMESPACE + "i"
+            PSTYLE = WORD_NAMESPACE + "pStyle"
+            NUMPR = WORD_NAMESPACE + "numPr"
+            NUMID = WORD_NAMESPACE + "numId"
+            ILVL = WORD_NAMESPACE + "ilvl"
 
-            # formats = bytes(bytearray(formats, encoding="utf-8"))
+            # formats = bytes(bytearray(pStyleformats, encoding="utf-8"))
             parser = etree.XMLParser(ns_clean=True, recover=True, encoding="utf-8")
             formats_root = etree.fromstring(formats, parser=parser)
 
@@ -1087,47 +1274,106 @@ class NafDocument(etree._ElementTree):
                     text_element.set("offset", str(offset))
 
             offset = 0
+            header_id = 1
             for body in formats_root:
                 page = add_element(layer, "page")
                 page_length = 0
                 for paragraph in body:
                     # p
                     # sectPr
+
+                    header = False
+                    header_style = ""
+                    header_depth = 0
+                    header_number = 0
+                    header_text = ""
+                    header_cor = 0
+
                     if paragraph.tag == PARA:
                         p = add_element(page, "textbox")
+
                         for run in paragraph:
                             # r
-                            # pPr
+
+                            if run.tag == PPR:
+                                for run_item in run:
+                                    if run_item.tag == PSTYLE:
+                                        header_style = run_item.get(VAL)
+                                    if run_item.tag == NUMPR:
+                                        for level in run_item:
+                                            if level.tag == ILVL:
+                                                # we assume that if there is a level there is a header
+                                                header = True
+                                                header_level = int(level.get(VAL))
+                                            if level.tag == NUMID:
+                                                header_number = int(level.get(VAL))
+
                             if run.tag == RUN:
                                 r = add_element(p, "textline")
+                                font = {}
                                 for text in run:
                                     # t
                                     # rPr
-                                    if text.tag == TEXT:
-                                        text_el = add_text_element(r, "text", text.text, text.attrib, offset)
+                                    if text.tag == RPR:
+                                        for item in text:
+                                            if item.tag == FONT:
+                                                if ASCII in item.attrib.keys():
+                                                    font.update(
+                                                        {
+                                                            "font": font.get("font", "")
+                                                            + item.attrib.get(ASCII)
+                                                        }
+                                                    )
+                                            elif item.tag == SIZE:
+                                                if VAL in item.attrib.keys():
+                                                    # docx xml counts size in halves
+                                                    font.update(
+                                                        {
+                                                            "size": str(
+                                                                float(
+                                                                    item.attrib.get(VAL)
+                                                                )
+                                                                / 2
+                                                            )
+                                                        }
+                                                    )
+                                            elif item.tag == BOLD:
+                                                # bold is stored in the font data (like pdfminer)
+                                                font.update(
+                                                    {
+                                                        "font": font.get("font", "")
+                                                        + "_bold"
+                                                    }
+                                                )
+                                            elif item.tag == ITALICS:
+                                                # italics is stored in the font data (like pdfminer)
+                                                font.update(
+                                                    {
+                                                        "font": font.get("font", "")
+                                                        + "_italics"
+                                                    }
+                                                )
+                                    elif text.tag == TEXT:
+                                        text_el = add_text_element(
+                                            r, "text", text.text, font, offset
+                                        )
                                         page_length += len(text.text)
                                         offset += len(text.text)
-                                        
-                                        page_length += 1
-                                        offset += 1
-                                    
-                                    elif text.tag == "{http://schemas.openxmlformats.org/wordprocessingml/2006/main}rPr":
+                                        # page_length += 1
+                                        # offset += 1
 
+                                        if header:
+                                            header_text += text.text
+
+                                    elif text.tag == FOOTNOTEREF:
+                                        # not implemented
                                         continue
-
-                                    elif text.tag == "{http://schemas.openxmlformats.org/wordprocessingml/2006/main}footnoteReference":
-
-                                        continue
-
-                            elif run.tag == "{http://schemas.openxmlformats.org/wordprocessingml/2006/main}pPr":
-
-                                continue
-
 
                         page_length += 1
                         offset += 1
+                        header_cor += 1
 
-                    elif paragraph.tag == "{http://schemas.openxmlformats.org/wordprocessingml/2006/main}sectPr":
+                    elif paragraph.tag == SECTPR:
 
                         # type
                         # pgSz
@@ -1137,9 +1383,23 @@ class NafDocument(etree._ElementTree):
                         # textDirection
                         # docGrid
 
+                        # not implemented
                         continue
+
+                    if header:
+                        h = add_element(page, "header")
+                        h.text = header_text
+                        h.set("id", "h" + str(header_id))
+                        h.set("page", "1")
+                        h.set("length", str(len(header_text)))
+                        h.set("offset", str(offset - len(header_text) - header_cor))
+                        h.set("level", str(header_depth))
+                        h.set("style", str(header_style))
+                        h.set("number", str(header_number))
+                        h.set("confidence", "1")
+                        header_id += 1
 
                 page.set("length", str(page_length))
                 page.set("offset", str(offset - page_length))
-                   
+
             # logging.warning("Formats layer for docx not yet implemented.")

@@ -15,7 +15,7 @@ Types of Contributions
 Report Bugs
 ~~~~~~~~~~~
 
-Report bugs at https://github.com/wjwillemse/nafigator/issues.
+Report bugs at https://github.com/denederlandschebank/nafigator/issues.
 
 If you are reporting a bug, please include:
 
@@ -45,7 +45,7 @@ articles, and such.
 Submit Feedback
 ~~~~~~~~~~~~~~~
 
-The best way to send feedback is to file an issue at https://github.com/wjwillemse/nafigator/issues.
+The best way to send feedback is to file an issue at https://github.com/denederlandschebank/nafigator/issues.
 
 If you are proposing a feature:
 
@@ -96,15 +96,16 @@ Ready to contribute? Here's how to set up `nafigator` for local development.
 Pull Request Guidelines
 -----------------------
 
+We work with a main and a dev branch. To add new functionality, make a new branch, add the new functionality and submit a pull request to the dev branch. When needed we will merge the dev branch with the main branch and provide a new version of the package.
+
 Before you submit a pull request, check that it meets these guidelines:
 
 1. The pull request should include tests.
 2. If the pull request adds functionality, the docs should be updated. Put
    your new functionality into a function with a docstring, and add the
    feature to the list in README.rst.
-3. The pull request should work for Python 3.5, 3.6, 3.7 and 3.8, and for PyPy. Check
-   https://travis-ci.com/wjwillemse/nafigator/pull_requests
-   and make sure that the tests pass for all supported Python versions.
+3. The pull request should work for Python 3.6, 3.7 and 3.8, and for PyPy. 
+   Make sure that the tests pass for all supported Python versions.
 
 Tips
 ----
