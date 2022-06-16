@@ -1,28 +1,28 @@
 <?xml version='1.0' encoding='UTF-8'?>
 <NAF xmlns:dc="http://purl.org/dc/elements/1.1/" version="v3.1" xml:lang="en">
   <nafHeader>
-    <fileDesc creationtime="2022-03-16T12:29:27UTC" filename="tests\tests\example.docx" filetype="application/vnd.openxmlformats-officedocument.wordprocessingml.document"/>
-    <public dc:uri="tests\tests\example.docx" dc:format="application/vnd.openxmlformats-officedocument.wordprocessingml.document"/>
+    <fileDesc creationtime="2022-06-13T10:45:20UTC" filename="tests/tests/example.docx" filetype="application/vnd.openxmlformats-officedocument.wordprocessingml.document"/>
+    <public dc:uri="tests/tests/example.docx" dc:format="application/vnd.openxmlformats-officedocument.wordprocessingml.document"/>
     <linguisticProcessors layer="formats">
-      <lp name="formats" version="nafigator" beginTimestamp="2022-03-16T12:29:27UTC" endTimestamp="2022-03-16T12:29:27UTC" hostname="DESKTOP-NORB4QA.fritz.box"/>
+      <lp name="formats" version="nafigator" beginTimestamp="2022-06-13T10:45:20UTC" endTimestamp="2022-06-13T10:45:20UTC" hostname="hduerinck001.localdomain"/>
     </linguisticProcessors>
     <linguisticProcessors layer="entities">
-      <lp name="entities" version="stanza_version-1.3.0" model="C:\Users\Willem Jan Willemse\stanza_resources\en\ner\ontonotes.pt" beginTimestamp="2022-03-16T12:29:28UTC" endTimestamp="2022-03-16T12:29:29UTC" hostname="DESKTOP-NORB4QA.fritz.box"/>
+      <lp name="entities" version="stanza_version-1.4.0" beginTimestamp="2022-06-13T10:45:24UTC" endTimestamp="2022-06-13T10:45:27UTC" hostname="hduerinck001.localdomain"/>
     </linguisticProcessors>
     <linguisticProcessors layer="text">
-      <lp name="text" version="stanza_version-1.3.0" model="C:\Users\Willem Jan Willemse\stanza_resources\en\tokenize\combined.pt" beginTimestamp="2022-03-16T12:29:28UTC" endTimestamp="2022-03-16T12:29:29UTC" hostname="DESKTOP-NORB4QA.fritz.box"/>
+      <lp name="text" version="stanza_version-1.4.0" model="/home/hmduerinck/stanza_resources/en/tokenize/combined.pt" beginTimestamp="2022-06-13T10:45:24UTC" endTimestamp="2022-06-13T10:45:27UTC" hostname="hduerinck001.localdomain"/>
     </linguisticProcessors>
     <linguisticProcessors layer="terms">
-      <lp name="terms" version="stanza_version-1.3.0" model="C:\Users\Willem Jan Willemse\stanza_resources\en\pos\combined.pt" beginTimestamp="2022-03-16T12:29:28UTC" endTimestamp="2022-03-16T12:29:29UTC" hostname="DESKTOP-NORB4QA.fritz.box"/>
+      <lp name="terms" version="stanza_version-1.4.0" model="/home/hmduerinck/stanza_resources/en/pos/combined.pt" beginTimestamp="2022-06-13T10:45:24UTC" endTimestamp="2022-06-13T10:45:27UTC" hostname="hduerinck001.localdomain"/>
     </linguisticProcessors>
     <linguisticProcessors layer="deps">
-      <lp name="deps" version="stanza_version-1.3.0" model="C:\Users\Willem Jan Willemse\stanza_resources\en\depparse\combined.pt" beginTimestamp="2022-03-16T12:29:28UTC" endTimestamp="2022-03-16T12:29:29UTC" hostname="DESKTOP-NORB4QA.fritz.box"/>
+      <lp name="deps" version="stanza_version-1.4.0" model="/home/hmduerinck/stanza_resources/en/depparse/combined.pt" beginTimestamp="2022-06-13T10:45:24UTC" endTimestamp="2022-06-13T10:45:27UTC" hostname="hduerinck001.localdomain"/>
     </linguisticProcessors>
     <linguisticProcessors layer="multiwords">
-      <lp name="multiwords" version="stanza_version-1.3.0" model="C:\Users\Willem Jan Willemse\stanza_resources\en\tokenize\combined.pt" beginTimestamp="2022-03-16T12:29:28UTC" endTimestamp="2022-03-16T12:29:29UTC" hostname="DESKTOP-NORB4QA.fritz.box"/>
+      <lp name="multiwords" version="stanza_version-1.4.0" model="/home/hmduerinck/stanza_resources/en/tokenize/combined.pt" beginTimestamp="2022-06-13T10:45:24UTC" endTimestamp="2022-06-13T10:45:27UTC" hostname="hduerinck001.localdomain"/>
     </linguisticProcessors>
     <linguisticProcessors layer="raw">
-      <lp name="raw" version="stanza_version-1.3.0" model="C:\Users\Willem Jan Willemse\stanza_resources\en\tokenize\combined.pt" beginTimestamp="2022-03-16T12:29:28UTC" endTimestamp="2022-03-16T12:29:29UTC" hostname="DESKTOP-NORB4QA.fritz.box"/>
+      <lp name="raw" version="stanza_version-1.4.0" model="/home/hmduerinck/stanza_resources/en/tokenize/combined.pt" beginTimestamp="2022-06-13T10:45:24UTC" endTimestamp="2022-06-13T10:45:27UTC" hostname="hduerinck001.localdomain"/>
     </linguisticProcessors>
   </nafHeader>
   <formats>
@@ -172,7 +172,7 @@
         <target id="w7"/>
       </span>
     </term>
-    <term id="t8" type="open" lemma="nlp" pos="NOUN" morphofeat="Number=Sing">
+    <term id="t8" type="open" lemma="NLP" pos="PROPN" morphofeat="Number=Sing">
       <span>
         <!--NLP-->
         <target id="w8"/>
@@ -310,7 +310,7 @@
         <target id="w30"/>
       </span>
     </term>
-    <term id="t31" type="open" lemma="like" pos="ADP">
+    <term id="t31" type="open" lemma="like" pos="VERB" morphofeat="Mood=Ind|Number=Plur|Person=3|Tense=Pres|VerbForm=Fin">
       <span>
         <!--like-->
         <target id="w31"/>
@@ -334,7 +334,7 @@
         <target id="w34"/>
       </span>
     </term>
-    <term id="t35" type="open" lemma="have" pos="AUX" morphofeat="Mood=Ind|Tense=Pres|VerbForm=Fin">
+    <term id="t35" type="open" lemma="have" pos="AUX" morphofeat="Mood=Ind|Number=Plur|Person=1|Tense=Pres|VerbForm=Fin">
       <span>
         <!--have-->
         <target id="w35"/>
@@ -370,7 +370,7 @@
         <target id="w40"/>
       </span>
     </term>
-    <term id="t41" type="open" lemma="be" pos="AUX" morphofeat="Mood=Ind|Tense=Pres|VerbForm=Fin">
+    <term id="t41" type="open" lemma="be" pos="AUX" morphofeat="Mood=Ind|Number=Plur|Person=3|Tense=Pres|VerbForm=Fin">
       <span>
         <!--are-->
         <target id="w41"/>
@@ -448,20 +448,20 @@
     <dep from_term="t9" to_term="t8" rfunc="compound"/>
     <!--obj(store,output)-->
     <dep from_term="t7" to_term="t9" rfunc="obj"/>
-    <!--case(pipelines,from)-->
-    <dep from_term="t16" to_term="t10" rfunc="case"/>
-    <!--obl(store,pipelines)-->
-    <dep from_term="t7" to_term="t16" rfunc="obl"/>
-    <!--amod(pipelines,custom)-->
-    <dep from_term="t16" to_term="t11" rfunc="amod"/>
-    <!--amod(pipelines,made)-->
-    <dep from_term="t16" to_term="t12" rfunc="amod"/>
-    <!--compound(pipelines,Spacy)-->
-    <dep from_term="t16" to_term="t13" rfunc="compound"/>
-    <!--cc(stanza,and)-->
-    <dep from_term="t15" to_term="t14" rfunc="cc"/>
-    <!--conj(Spacy,stanza)-->
-    <dep from_term="t13" to_term="t15" rfunc="conj"/>
+    <!--case(Spacy,from)-->
+    <dep from_term="t13" to_term="t10" rfunc="case"/>
+    <!--nmod(output,Spacy)-->
+    <dep from_term="t9" to_term="t13" rfunc="nmod"/>
+    <!--amod(Spacy,custom)-->
+    <dep from_term="t13" to_term="t11" rfunc="amod"/>
+    <!--amod(Spacy,made)-->
+    <dep from_term="t13" to_term="t12" rfunc="amod"/>
+    <!--cc(pipelines,and)-->
+    <dep from_term="t16" to_term="t14" rfunc="cc"/>
+    <!--conj(Spacy,pipelines)-->
+    <dep from_term="t13" to_term="t16" rfunc="conj"/>
+    <!--compound(pipelines,stanza)-->
+    <dep from_term="t16" to_term="t15" rfunc="compound"/>
     <!--case(results,with)-->
     <dep from_term="t21" to_term="t17" rfunc="case"/>
     <!--obl(store,results)-->
@@ -488,14 +488,14 @@
     <dep from_term="t28" to_term="t27" rfunc="nummod"/>
     <!--punct(allows,.)-->
     <dep from_term="t4" to_term="t29" rfunc="punct"/>
-    <!--nsubj:pass(recognized,Multiwords)-->
-    <dep from_term="t42" to_term="t30" rfunc="nsubj:pass"/>
-    <!--mark(set,like)-->
-    <dep from_term="t36" to_term="t31" rfunc="mark"/>
-    <!--advcl(recognized,set)-->
-    <dep from_term="t42" to_term="t36" rfunc="advcl"/>
+    <!--nsubj(like,Multiwords)-->
+    <dep from_term="t31" to_term="t30" rfunc="nsubj"/>
     <!--mark(set,in)-->
     <dep from_term="t36" to_term="t32" rfunc="mark"/>
+    <!--advcl(recognized,set)-->
+    <dep from_term="t42" to_term="t36" rfunc="advcl"/>
+    <!--ccomp(like,recognized)-->
+    <dep from_term="t31" to_term="t42" rfunc="ccomp"/>
     <!--punct(set,“)-->
     <dep from_term="t36" to_term="t33" rfunc="punct"/>
     <!--nsubj(set,we)-->
