@@ -1,6 +1,10 @@
 # coding: utf-8
 
-"""Const module."""
+"""Const module.
+
+This module contains constants for nafigator package
+
+"""
 
 from collections import namedtuple
 
@@ -78,7 +82,7 @@ udpos2olia = {
     "DET": {"class": "close", "olia": "http://purl.org/olia/olia.owl#Determiner"},
     "INTJ": {"class": "open", "olia": "http://purl.org/olia/olia.owl#Interjection"},
     "NOUN": {"class": "open", "olia": "http://purl.org/olia/olia.owl#CommonNoun"},
-    "NUM": {"class": "close", "olia": "&olia;Quantifier"},
+    "NUM": {"class": "close", "olia": "http://purl.org/olia/olia.owl#Quantifier"},
     "PART": {"class": "close", "olia": "http://purl.org/olia/olia.owl#Particle"},
     "PRON": {"class": "close", "olia": "http://purl.org/olia/olia.owl#Pronoun"},
     "PROPN": {"class": "open", "olia": "http://purl.org/olia/olia.owl#ProperNoun"},

@@ -10,15 +10,15 @@ with open('README.rst') as readme_file:
 with open('HISTORY.rst') as history_file:
     history = history_file.read()
 
-requirements = ['click>=7.0', 'pdfminer.six', 'lxml', 'python-docx', 'folia', 'pandas']
+requirements = ['click>=7.0', 'pdfminer.six>=20200726', 'lxml', 'python-docx', 'folia', 'pandas', 'camelot-py>=0.10.1', 'opencv-python>=4.5.5.62', 'pdftopng>=0.2.3']
 
-setup_requirements = ['click>=7.0', 'pdfminer.six', 'lxml', 'python-docx', 'folia', 'pandas']
+setup_requirements = ['click>=7.0', 'pdfminer.six>=20200726', 'lxml', 'python-docx', 'folia', 'pandas', 'camelot-py>=0.10.1', 'opencv-python>=4.5.5.62', 'pdftopng>=0.2.3']
 
-test_requirements = ['click>=7.0', 'pdfminer.six', 'lxml', 'python-docx', 'folia', 'pandas', 'stanza', 'spacy']
+test_requirements = ['click>=7.0', 'pdfminer.six>=20200726', 'lxml', 'python-docx', 'folia', 'pandas', 'stanza', 'spacy', 'deepdiff', 'camelot-py>=0.10.1', 'opencv-python>=4.5.5.62', 'pdftopng>=0.2.3']
 
 setup(
-    author="Willem Jan Willemse",
-    author_email='w.j.willemse@xs4all.nl',
+    author="De Nederlandsche Bank",
+    author_email='w.j.willemse@dnb.nl',
     python_requires='>=3.6',
     classifiers=[
         'Development Status :: 2 - Pre-Alpha',
@@ -46,7 +46,7 @@ setup(
     setup_requires=setup_requirements,
     test_suite='tests',
     tests_require=test_requirements,
-    url='https://github.com/wjwillemse/nafigator',
-    version='0.1.31',
+    url='https://github.com/denederlandschebank/nafigator',
+    version='0.1.41',
     zip_safe=False,
 )
