@@ -105,14 +105,11 @@ def create_params(doc: NafDocument, params: dict = {}):
     addNamespace("rdf", "http://www.w3.org/1999/02/22-rdf-syntax-ns#", params)
     addNamespace("rdfs", "http://www.w3.org/2000/01/rdf-schema/", params)
     addNamespace("olia", "http://purl.org/olia/olia.owl#", params)
-
-    if params.get("handlerPrefix", "_") != "_":
-        addNamespace(
-            params["handlerPrefix"],
-            "http://dnb.nl/naf-data/" + params["handlerPrefix"] + "/",
-            params,
-        )
-
+    addNamespace(
+        params.get("handlerPrefix", "naf-data"),
+        params.get("handlerNamespace", "http://dnb.nl/"+params.get("handlerPrefix", "naf-data") + "/"),
+        params,
+    )
     params["out"] = StringIO()
     params["prefix"] = printNamespaces(params)
     params["doc"] = doc
@@ -270,7 +267,7 @@ UD2OLIA_mappings = {
     "PronType": {
         "Art": "olia:Article",
         "Dem": "olia:DemonstrativePronoun",
-        "Emp": None,
+        "Emp": "olia:EmphaticPronoun",
         "Exc": None,
         "Ind": "olia:IndefinitePronoun",
         "Int": "olia:InterrogativePronoun",
@@ -328,6 +325,7 @@ UD2OLIA_mappings = {
     },
     "Case": {
         "Nom": "olia:Nominative",
+        "Gen": "olia:Genitive",
         "Dat": "olia:DativeCase",
         "Acc": "olia:Accusative",
     },
@@ -340,6 +338,7 @@ UD2OLIA_mappings = {
         "Card": "olia:CardinalNumber",
         "Ord": "olia:OrdinalNumber",
         "Mult": "olia:MultiplicativeNumeral",
+        "Frac": "olia:Fraction",
     },
     "NumForm": {
         "Word": "olia:LetterNumeral",
@@ -379,6 +378,27 @@ UD2OLIA_mappings = {
     "Polarity": {
         "Neg": "olia:Negation",
     },
+    "ExtPos": {
+        "ADP": "olia:Adposition",
+        "ADV": "olia:Adverb",
+        "CCONJ": "olia:CoordinatingConjunction",  # ??
+        "PRON": "olia:Pronoun",
+        "SCONJ": "olia:SubordinatingConjunction",
+    },
+    "Typo": {
+        "Yes": "olia:Typo",
+    
+    },
+    "Style": {
+        "Arch": None,
+        "Coll": None,
+        "Expr": None,
+        "Form": "olia:FormalRegister",
+        "Rare": None,
+        "Slng": "olia:SlangRegister",
+        "Vrnc": None,
+        "Vulg": "olia:VulgarRegister",
+    }
 }
 
 
