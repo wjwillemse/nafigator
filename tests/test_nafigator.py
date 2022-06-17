@@ -3,15 +3,14 @@
 """Tests for `nafigator` package."""
 
 
+import os
+from os.path import join
+from nafigator import NafDocument, parse2naf
+from click.testing import CliRunner
+from deepdiff import DeepDiff
 import unittest
 
 unittest.TestLoader.sortTestMethodsUsing = None
-from deepdiff import DeepDiff
-
-from click.testing import CliRunner
-from nafigator import NafDocument, parse2naf
-from os.path import join
-import os
 
 
 class TestNafigator_pdf(unittest.TestCase):
@@ -749,12 +748,12 @@ class TestNafigator_pdf(unittest.TestCase):
                 "span": [{"id": "w7"}],
             },
             {
-                "id": "t8",
-                "type": "open",
-                "lemma": "nlp",
-                "pos": "NOUN",
-                "morphofeat": "Number=Sing",
-                "span": [{"id": "w8"}],
+                'id': 't8',
+                'type': 'open',
+                'lemma': 'NLP',
+                'pos': 'PROPN',
+                'morphofeat': 'Number=Sing',
+                'span': [{'id': 'w8'}],
             },
             {
                 "id": "t9",
@@ -772,12 +771,12 @@ class TestNafigator_pdf(unittest.TestCase):
                 "span": [{"id": "w10"}],
             },
             {
-                "id": "t11",
-                "type": "open",
-                "lemma": "custom",
-                "pos": "ADJ",
-                "morphofeat": "Degree=Pos",
-                "span": [{"id": "w11"}],
+                'id': 't11',
+                'type': 'open',
+                'lemma': 'custom',
+                'pos': 'NOUN',
+                'morphofeat': 'Number=Sing',
+                'span': [{'id': 'w11'}],
             },
             {
                 "id": "t12",
@@ -787,14 +786,13 @@ class TestNafigator_pdf(unittest.TestCase):
                 "morphofeat": "Tense=Past|VerbForm=Part",
                 "span": [{"id": "w12"}],
             },
-            {
-                "id": "t13",
-                "type": "open",
-                "lemma": "spacy",
-                "pos": "NOUN",
-                "morphofeat": "Number=Sing",
-                "span": [{"id": "w13"}],
-            },
+            {'id': 't13',
+             'type': 'open',
+             'lemma': 'spacy',
+             'pos': 'ADJ',
+             'morphofeat': 'Degree=Pos',
+             'span': [{'id': 'w13'}],
+             },
             {
                 "id": "t14",
                 "type": "open",
@@ -924,11 +922,12 @@ class TestNafigator_pdf(unittest.TestCase):
                 "span": [{"id": "w30"}],
             },
             {
-                "id": "t31",
-                "type": "open",
-                "lemma": "like",
-                "pos": "ADP",
-                "span": [{"id": "w31"}],
+                'id': 't31',
+                'type': 'open',
+                'lemma': 'like',
+                'pos': 'VERB',
+                'morphofeat': 'Mood=Ind|Number=Plur|Person=3|Tense=Pres|VerbForm=Fin',
+                'span': [{'id': 'w31'}],
             },
             {
                 "id": "t32",
@@ -953,12 +952,12 @@ class TestNafigator_pdf(unittest.TestCase):
                 "span": [{"id": "w34"}],
             },
             {
-                "id": "t35",
-                "type": "open",
-                "lemma": "have",
-                "pos": "AUX",
-                "morphofeat": "Mood=Ind|Tense=Pres|VerbForm=Fin",
-                "span": [{"id": "w35"}],
+                'id': 't35',
+                'type': 'open',
+                'lemma': 'have',
+                'pos': 'AUX',
+                'morphofeat': 'Mood=Ind|Number=Plur|Person=1|Tense=Pres|VerbForm=Fin',
+                'span': [{'id': 'w35'}],
             },
             {
                 "id": "t36",
@@ -1000,12 +999,12 @@ class TestNafigator_pdf(unittest.TestCase):
                 "span": [{"id": "w40"}],
             },
             {
-                "id": "t41",
-                "type": "open",
-                "lemma": "be",
-                "pos": "AUX",
-                "morphofeat": "Mood=Ind|Tense=Pres|VerbForm=Fin",
-                "span": [{"id": "w41"}],
+                'id': 't41',
+                'type': 'open',
+                'lemma': 'be',
+                'pos': 'AUX',
+                'morphofeat': 'Mood=Ind|Number=Plur|Person=3|Tense=Pres|VerbForm=Fin',
+                'span': [{'id': 'w41'}],
             },
             {
                 "id": "t42",
@@ -1094,15 +1093,15 @@ class TestNafigator_pdf(unittest.TestCase):
             {"from_term": "t4", "to_term": "t7", "rfunc": "xcomp"},
             {"from_term": "t9", "to_term": "t8", "rfunc": "compound"},
             {"from_term": "t7", "to_term": "t9", "rfunc": "obj"},
-            {"from_term": "t13", "to_term": "t10", "rfunc": "case"},
-            {"from_term": "t7", "to_term": "t13", "rfunc": "obl"},
-            {"from_term": "t13", "to_term": "t11", "rfunc": "amod"},
-            {"from_term": "t13", "to_term": "t12", "rfunc": "amod"},
-            {"from_term": "t16", "to_term": "t14", "rfunc": "cc"},
-            {"from_term": "t13", "to_term": "t16", "rfunc": "conj"},
-            {"from_term": "t16", "to_term": "t15", "rfunc": "compound"},
+            {'from_term': 't11', 'to_term': 't10', 'rfunc': 'case'},
+            {'from_term': 't7', 'to_term': 't11', 'rfunc': 'obl'},
+            {'from_term': 't11', 'to_term': 't12', 'rfunc': 'acl'},
+            {'from_term': 't16', 'to_term': 't13', 'rfunc': 'amod'},
+            {'from_term': 't12', 'to_term': 't16', 'rfunc': 'obj'},
+            {'from_term': 't15', 'to_term': 't14', 'rfunc': 'cc'},
+            {'from_term': 't13', 'to_term': 't15', 'rfunc': 'conj'},
             {"from_term": "t21", "to_term": "t17", "rfunc": "case"},
-            {"from_term": "t7", "to_term": "t21", "rfunc": "obl"},
+            {'from_term': 't16', 'to_term': 't21', 'rfunc': 'nmod'},
             {"from_term": "t19", "to_term": "t18", "rfunc": "punct"},
             {"from_term": "t21", "to_term": "t19", "rfunc": "amod"},
             {"from_term": "t19", "to_term": "t20", "rfunc": "punct"},
@@ -1114,10 +1113,10 @@ class TestNafigator_pdf(unittest.TestCase):
             {"from_term": "t25", "to_term": "t28", "rfunc": "nmod"},
             {"from_term": "t28", "to_term": "t27", "rfunc": "nummod"},
             {"from_term": "t4", "to_term": "t29", "rfunc": "punct"},
-            {"from_term": "t42", "to_term": "t30", "rfunc": "nsubj:pass"},
-            {"from_term": "t36", "to_term": "t31", "rfunc": "mark"},
+            {'from_term': 't31', 'to_term': 't30', 'rfunc': 'nsubj'},
+            {'from_term': 't36', 'to_term': 't32', 'rfunc': 'mark'},
             {"from_term": "t42", "to_term": "t36", "rfunc": "advcl"},
-            {"from_term": "t36", "to_term": "t32", "rfunc": "mark"},
+            {'from_term': 't31', 'to_term': 't42', 'rfunc': 'ccomp'},
             {"from_term": "t36", "to_term": "t33", "rfunc": "punct"},
             {"from_term": "t36", "to_term": "t34", "rfunc": "nsubj"},
             {"from_term": "t36", "to_term": "t35", "rfunc": "aux"},
@@ -1180,13 +1179,16 @@ class TestNafigator_pdf(unittest.TestCase):
         doc.write(
             "tests" + os.sep + "tests" + os.sep + "example_tables.naf.xml"
         ) == None
-        assert doc.raw[109 : 109 + 44] == "2020/08/20 | Lorem ipsum test text | HM | Q2"
+        assert doc.raw[109: 109 + 44] == "2020/08/20 | Lorem ipsum test text | HM | Q2"
         assert (
-            doc.raw[154 : 154 + 49]
+            doc.raw[154: 154 + 49]
             == "2020/05/27 | Test text lorem ipsum | JR | Ongoing"
         )
         assert doc.formats[0]["tables"] == [
             {
+                "page": "1",
+                "order": "1",
+                "shape": "(5, 4)",
                 "table": [
                     {
                         "row": [
@@ -1236,6 +1238,9 @@ class TestNafigator_pdf(unittest.TestCase):
                 ]
             },
             {
+                "page": "1",
+                "order": "2",
+                "shape": "(5, 4)",
                 "table": [
                     {
                         "row": [
