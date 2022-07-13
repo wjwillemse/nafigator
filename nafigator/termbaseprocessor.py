@@ -58,6 +58,7 @@ def process_termbase(doc: NafDocument = None,
 
     num_entities = len(doc.entities)
     
+    entities_data = dict()
     for concept in termbase.findall("text/body/conceptEntry", namespaces=NAMESPACES):
         concept_id = concept.attrib["id"]
         for langSec in concept:
@@ -79,27 +80,33 @@ def process_termbase(doc: NafDocument = None,
                             if term_lemma != "":
                                 # if the lowercase lemma is available then it is used
                                 sub = normalize_term_text(term_lemma).split(" ")
-                                full = [normalize_term_text(term_lemma) for term in doc_terms]
+                                full = [normalize_term_text(term['lemma']) for term in doc_terms]
                             else:
                                 # otherwise the lowercase plain text is used
                                 sub = normalize_term_text(term_text).split(" ")
-                                full = [normalize_term_text(term_text) for term in doc_terms]
+                                full = [normalize_term_text(term['text']) for term in doc_terms]
                             spans = [[term_ids[i] for i in item] for item in sublist_indices(sub, full)]
-                            ext_refs = [{"reference": concept_id}]
-                            comment = [term_text]
+                            # spans contains all occurrences of the term in the document
                             for span in spans:
-                                entity_data = EntityElement(
-                                    id="e"+str(num_entities+1),
-                                    type="Term", # for now we introduce a new type
-                                    status=None,
-                                    source=None,
-                                    span=span,
-                                    ext_refs=ext_refs,
-                                    comment=comment,
-                                )
-                                num_entities += 1
-                                doc.add_entity_element(data = entity_data,
-                                                       naf_version = doc.version,
-                                                       comments = term_text)
+                                ext_refs = [{"reference": concept_id}]
+                                if str(span) in entities_data.keys():
+                                    entities_data[str(span)] = entities_data[str(span)]._replace(ext_refs=entities_data[str(span)].ext_refs+ext_refs)
+                                else:
+                                    entity_data = EntityElement(
+                                        id="e"+str(num_entities+1),
+                                        type="Term", # for now we introduce a new type
+                                        status=None,
+                                        source=None,
+                                        span=span,
+                                        ext_refs=ext_refs,
+                                        comment=[term_text],
+                                    )
+                                    num_entities += 1
+                                    entities_data[str(span)] = entity_data
+
+    for entity_data in entities_data.values():                                
+        doc.add_entity_element(data = entity_data,
+                               naf_version = doc.version,
+                               comments = term_text)
 
     return None

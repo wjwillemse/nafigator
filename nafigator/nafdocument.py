@@ -239,7 +239,7 @@ class NafDocument(etree._ElementTree):
                             span.append(child3.attrib)
                     spans.append(span)
                 if child2.tag == EXT_REFS_OCCURRENCE_TAG:
-                    ext_ref = list
+                    ext_ref = list()
                     for child3 in child2:
                         if child3.tag == EXT_REF_OCCURRENCE_TAG:
                             ext_ref.append(child3.attrib)
