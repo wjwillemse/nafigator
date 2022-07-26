@@ -21,3 +21,8 @@ History
 ------------------
 
 * Fix for get_context_rows
+
+0.1.45 (2022-4-29)
+------------------
+
+* Added sent ids to doc.sentences and doc.paragraphs
