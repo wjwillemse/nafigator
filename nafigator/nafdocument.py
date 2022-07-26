@@ -251,6 +251,7 @@ class NafDocument(etree._ElementTree):
         word2term = {
             item["id"]: term["id"] for term in self.terms for item in term["span"]
         }
+        last_sentence = list()
         sentences = list()
         sentence_list = list()
         sent_num = 1
@@ -266,6 +267,7 @@ class NafDocument(etree._ElementTree):
                     terms.append({"id": word2term.get(item["id"])})
                 pages.add(item.get("page", "0"))
                 para.add(item.get("para", "0"))
+                last_sentence = [item["sent"]]
             else:
                 sentences.append(
                     {
@@ -274,6 +276,7 @@ class NafDocument(etree._ElementTree):
                         "page": list(pages),
                         "span": span,
                         "terms": terms,
+                        "sent": last_sentence
                     }
                 )
                 sentence_list = list([item["text"]])
@@ -286,6 +289,7 @@ class NafDocument(etree._ElementTree):
                     terms.append({"id": word2term.get(item["id"])})
                 pages.add(item.get("page", "0"))
                 para.add(item.get("para", "0"))
+                last_sentence = [item["sent"]]
                 sent_num += 1
         if sent_num > 1:
             sentences.append(
@@ -295,6 +299,7 @@ class NafDocument(etree._ElementTree):
                     "page": list(pages),
                     "span": span,
                     "terms": terms,
+                    "sent": last_sentence
                 }
             )
         return sentences
@@ -307,6 +312,7 @@ class NafDocument(etree._ElementTree):
         }
         paragraphs = list()
         paragraph_list = list()
+        sentence_list = list()
         para_num = 0
         pages = set()
         para = set()
@@ -320,6 +326,8 @@ class NafDocument(etree._ElementTree):
                     terms.append({"id": word2term.get(item["id"])})
                 pages.add(item.get("page", "0"))
                 para.add(item.get("para", "0"))
+                if item.get("sent", "0") not in sentence_list:
+                    sentence_list.append(item.get("sent", "0"))
             else:
                 paragraphs.append(
                     {
@@ -328,9 +336,11 @@ class NafDocument(etree._ElementTree):
                         "page": list(pages),
                         "span": span,
                         "terms": terms,
+                        "sent": sentence_list
                     }
                 )
                 paragraph_list = list([item["text"]])
+                sentence_list = list()
                 pages = set()
                 para = set()
                 span = list()
@@ -340,6 +350,8 @@ class NafDocument(etree._ElementTree):
                     terms.append({"id": word2term.get(item["id"])})
                 pages.add(item.get("page", "0"))
                 para.add(item.get("para", "0"))
+                if item.get("sent", "0") not in sentence_list:
+                    sentence_list.append(item.get("sent", "0"))
                 para_num += 1
         if para_num > 1 or para_num==0:
             paragraphs.append(
@@ -349,6 +361,7 @@ class NafDocument(etree._ElementTree):
                     "page": list(pages),
                     "span": span,
                     "terms": terms,
+                    "sent": sentence_list
                 }
             )
         return paragraphs
