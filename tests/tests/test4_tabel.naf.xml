@@ -1,0 +1,79 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<NAF xmlns:dc="http://purl.org/dc/elements/1.1/" version="v3.1" xml:lang="nl">
+  <nafHeader>
+    <fileDesc creationtime="2022-08-23T14:08:15UTC" filename="tests/tests/test4_tabel.pdf" filetype="application/pdf"/>
+    <public dc:uri="tests/tests/test4_tabel.pdf" dc:format="application/pdf"/>
+    <linguisticProcessors layer="formats">
+      <lp name="formats" version="nafigator" beginTimestamp="2022-08-23T14:08:15UTC" endTimestamp="2022-08-23T14:08:17UTC" hostname="hduerinck001.localdomain"/>
+    </linguisticProcessors>
+    <linguisticProcessors layer="entities">
+      <lp name="entities" version="stanza_version-1.4.0" beginTimestamp="2022-08-23T14:08:21UTC" endTimestamp="2022-08-23T14:08:21UTC" hostname="hduerinck001.localdomain"/>
+    </linguisticProcessors>
+    <linguisticProcessors layer="text">
+      <lp name="text" version="stanza_version-1.4.0" model="/home/hmduerinck/stanza_resources/nl/tokenize/alpino.pt" beginTimestamp="2022-08-23T14:08:21UTC" endTimestamp="2022-08-23T14:08:21UTC" hostname="hduerinck001.localdomain"/>
+    </linguisticProcessors>
+    <linguisticProcessors layer="terms">
+      <lp name="terms" version="stanza_version-1.4.0" model="/home/hmduerinck/stanza_resources/nl/pos/alpino.pt" beginTimestamp="2022-08-23T14:08:21UTC" endTimestamp="2022-08-23T14:08:21UTC" hostname="hduerinck001.localdomain"/>
+    </linguisticProcessors>
+    <linguisticProcessors layer="deps">
+      <lp name="deps" version="stanza_version-1.4.0" model="/home/hmduerinck/stanza_resources/nl/depparse/alpino.pt" beginTimestamp="2022-08-23T14:08:21UTC" endTimestamp="2022-08-23T14:08:21UTC" hostname="hduerinck001.localdomain"/>
+    </linguisticProcessors>
+    <linguisticProcessors layer="multiwords">
+      <lp name="multiwords" version="stanza_version-1.4.0" model="/home/hmduerinck/stanza_resources/nl/tokenize/alpino.pt" beginTimestamp="2022-08-23T14:08:21UTC" endTimestamp="2022-08-23T14:08:21UTC" hostname="hduerinck001.localdomain"/>
+    </linguisticProcessors>
+    <linguisticProcessors layer="raw">
+      <lp name="raw" version="stanza_version-1.4.0" model="/home/hmduerinck/stanza_resources/nl/tokenize/alpino.pt" beginTimestamp="2022-08-23T14:08:21UTC" endTimestamp="2022-08-23T14:08:21UTC" hostname="hduerinck001.localdomain"/>
+    </linguisticProcessors>
+  </nafHeader>
+  <formats>
+    <page length="25" offset="0">
+      <textbox>
+        <textline>
+          <text font="BCDEEE+Verdana" size="8.520" length="21" offset="1">Doc met alleen tekst </text>
+        </textline>
+      </textbox>
+      <tables/>
+    </page>
+  </formats>
+  <text>
+    <wf id="w1" sent="1" para="1" page="1" offset="0" length="3"><![CDATA[Doc]]></wf>
+    <wf id="w2" sent="1" para="1" page="1" offset="4" length="3"><![CDATA[met]]></wf>
+    <wf id="w3" sent="1" para="1" page="1" offset="8" length="6"><![CDATA[alleen]]></wf>
+    <wf id="w4" sent="1" para="1" page="1" offset="15" length="5"><![CDATA[tekst]]></wf>
+  </text>
+  <terms>
+    <term id="t1" type="open" lemma="doc" pos="NOUN" morphofeat="Gender=Com|Number=Sing">
+      <span>
+        <!--Doc-->
+        <target id="w1"/>
+      </span>
+    </term>
+    <term id="t2" type="open" lemma="met" pos="ADP">
+      <span>
+        <!--met-->
+        <target id="w2"/>
+      </span>
+    </term>
+    <term id="t3" type="open" lemma="alleen" pos="ADV">
+      <span>
+        <!--alleen-->
+        <target id="w3"/>
+      </span>
+    </term>
+    <term id="t4" type="open" lemma="tekst" pos="NOUN" morphofeat="Gender=Com|Number=Sing">
+      <span>
+        <!--tekst-->
+        <target id="w4"/>
+      </span>
+    </term>
+  </terms>
+  <deps>
+    <!--case(tekst,met)-->
+    <dep from_term="t4" to_term="t2" rfunc="case"/>
+    <!--nmod(Doc,tekst)-->
+    <dep from_term="t1" to_term="t4" rfunc="nmod"/>
+    <!--amod(tekst,alleen)-->
+    <dep from_term="t4" to_term="t3" rfunc="amod"/>
+  </deps>
+  <raw><![CDATA[Doc met alleen tekst]]></raw>
+</NAF>
