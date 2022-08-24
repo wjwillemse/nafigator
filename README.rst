@@ -284,50 +284,57 @@ Just run::
 
 No ontology or vocabulary of NAF exists yet. For now, we map xml tags and attributes to RDF predicates using provisional prefixes and namespaces, for example base attributes are mapped to the prefix naf-base.
 
-Below are some excerpts.
+Below are some excerpts with blank nodes.
+
+Definition of a document::
+
+  _:doc a naf-base:document ;
+      naf-base:hasHeader _:nafHeader ;
+      naf-base:hasPages ( _:page1 ) .
 
 From the nafHeader::
 
-	_:nafHeader
-	    naf-base:hasFileDesc [
-        	naf-fileDesc:hasCreationtime "2021-05-24T11:29:44UTC"^^xsd:dateTime ;
-        	naf-fileDesc:hasFilename "data/example.pdf"^^rdf:XMLLiteral ;
-        	naf-fileDesc:hasFiletype "application/pdf"^^rdf:XMLLiteral ;
-    	] ;
+  _:nafHeader a naf-base:header ;
+      _:nafHeader a naf-base:header ;
+      ...
+      naf-base:hasPublic [ 
+          dc:format "application/pdf"^^rdf:XMLLiteral ;
+          dc:uri "data/example.pdf"^^rdf:XMLLiteral 
+      ] .
+
+A sentence::
+
+  _:sent1 a naf-base:sentence ;
+      naf-base:isPartOf _:para1, _:page1 ;
+      naf-base:hasSpan ( _:wf1 _:wf2 ...  _:wf29 ) .
 
 A word::
 
-	_:w1
-	    xl:type naf-base:wordform ;
-	    naf-base:hasText """The"""^^rdf:XMLLiteral ;
-	    naf-base:hasSent "1"^^xsd:integer ;
-	    naf-base:hasPage "1"^^xsd:integer ;
-	    naf-base:hasOffset "0"^^xsd:integer ;
-	    naf-base:hasLength "3"^^xsd:integer .
+  _:wf2 a naf-base:wordform ;
+      naf-base:hasText "Nafigator"^^rdf:XMLLiteral ;
+      naf-base:hasLength "9"^^xsd:integer ;
+      naf-base:hasOffset "4"^^xsd:integer ;
+      naf-base:isPartOf _:page1, 
+         _:para1, 
+         _:sent1.
 
 A term::
 
-	_:t1
-	    xl:type naf-base:term ;
-	    naf-base:hasType naf-base:close ;
-	    naf-base:hasLemma "the" ;
-	    naf-base:hasPos <http://purl.org/olia/olia.owl#Determiner> ;
-	    naf-morphofeat:hasDefinite "Def" ;
-	    naf-morphofeat:hasPronType "Art" ;
-	    naf-base:hasSpan (
-        	naf-base:ref _:w1
-    	) .
+  _:term2 a naf-base:term ;
+      naf-base:hasLemma "Nafigator"^^rdf:XMLLiteral ;
+      naf-base:hasNumber olia:Singular ;
+      naf-base:hasPos olia:ProperNoun ;
+      naf-base:hasSpan ( _:wf2 ) .
+      	
 
 An entity::
 
-	_:e1
-	    xl:type naf-base:entity ;
-	    naf-base:hasType naf-entity:PRODUCT ;
-	    naf-base:hasSpan (
-        	naf-base:ref _:t2
-    	) .
+  _:entity1 a naf-base:entity ;
+      naf-base:hasType naf-entity:product ;
+      naf-base:hasSpan ( _:term2 ) .
 
 A dependency::
 
-	_:t3 naf-rfunc:det _:t1
-
+  _:term3 a naf-base:term ;
+      naf-rfunc:compound _:term2 ;
+      naf-rfunc:det _:term1 .

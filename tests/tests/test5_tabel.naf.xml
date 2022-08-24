@@ -1,0 +1,618 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<NAF xmlns:dc="http://purl.org/dc/elements/1.1/" version="v3.1" xml:lang="nl">
+  <nafHeader>
+    <fileDesc creationtime="2022-08-23T15:28:11UTC" filename="tests/tests/test5_tabel.pdf" filetype="application/pdf"/>
+    <public dc:uri="tests/tests/test5_tabel.pdf" dc:format="application/pdf"/>
+    <linguisticProcessors layer="formats">
+      <lp name="formats" version="nafigator" beginTimestamp="2022-08-23T15:28:11UTC" endTimestamp="2022-08-23T15:28:16UTC" hostname="hduerinck001.localdomain"/>
+    </linguisticProcessors>
+    <linguisticProcessors layer="entities">
+      <lp name="entities" version="stanza_version-1.4.0" beginTimestamp="2022-08-23T15:28:23UTC" endTimestamp="2022-08-23T15:28:24UTC" hostname="hduerinck001.localdomain"/>
+    </linguisticProcessors>
+    <linguisticProcessors layer="text">
+      <lp name="text" version="stanza_version-1.4.0" model="/home/hmduerinck/stanza_resources/nl/tokenize/alpino.pt" beginTimestamp="2022-08-23T15:28:23UTC" endTimestamp="2022-08-23T15:28:24UTC" hostname="hduerinck001.localdomain"/>
+    </linguisticProcessors>
+    <linguisticProcessors layer="terms">
+      <lp name="terms" version="stanza_version-1.4.0" model="/home/hmduerinck/stanza_resources/nl/pos/alpino.pt" beginTimestamp="2022-08-23T15:28:23UTC" endTimestamp="2022-08-23T15:28:24UTC" hostname="hduerinck001.localdomain"/>
+    </linguisticProcessors>
+    <linguisticProcessors layer="deps">
+      <lp name="deps" version="stanza_version-1.4.0" model="/home/hmduerinck/stanza_resources/nl/depparse/alpino.pt" beginTimestamp="2022-08-23T15:28:23UTC" endTimestamp="2022-08-23T15:28:24UTC" hostname="hduerinck001.localdomain"/>
+    </linguisticProcessors>
+    <linguisticProcessors layer="multiwords">
+      <lp name="multiwords" version="stanza_version-1.4.0" model="/home/hmduerinck/stanza_resources/nl/tokenize/alpino.pt" beginTimestamp="2022-08-23T15:28:23UTC" endTimestamp="2022-08-23T15:28:24UTC" hostname="hduerinck001.localdomain"/>
+    </linguisticProcessors>
+    <linguisticProcessors layer="raw">
+      <lp name="raw" version="stanza_version-1.4.0" model="/home/hmduerinck/stanza_resources/nl/tokenize/alpino.pt" beginTimestamp="2022-08-23T15:28:23UTC" endTimestamp="2022-08-23T15:28:24UTC" hostname="hduerinck001.localdomain"/>
+    </linguisticProcessors>
+  </nafHeader>
+  <formats>
+    <page length="428" offset="0">
+      <textbox>
+        <textline>
+          <text length="51" offset="15">T       1 Rij 1 | T1 cell 1 | T1 cell 1 | T1 cell 1</text>
+        </textline>
+        <textline>
+          <text length="61" offset="67">T                 1 Rij 2 | T1 cell 1 | T1 cell 1 | T1 cell 1</text>
+        </textline>
+        <textline>
+          <text length="42" offset="184">T       2 Rij 1 | T2 Cell 1 | T2 Cell 2 | </text>
+        </textline>
+        <textline>
+          <text length="54" offset="227">T                   2 Rij 2 | T2 Cell 3 | T2 Cell 4 | </text>
+        </textline>
+      </textbox>
+      <tables>
+        <table page="1" order="1" shape="(3, 4)" _bbox="(71.98548972188634, 72.96, 523.3345102781137, 545.04)" cols="[(72.21044437726724, 185.0027085852479), (185.0027085852479, 297.5400241837969), (297.5400241837969, 410.31729141475216), (410.31729141475216, 523.2145344619105)]">
+          <row>
+            <index>0</index>
+            <cell>T       1 Rij 1</cell>
+            <cell>T1 cell 1</cell>
+            <cell>T1 cell 1</cell>
+            <cell>T1 cell 1</cell>
+          </row>
+          <row>
+            <index>1</index>
+            <cell>T                 1 Rij 2</cell>
+            <cell>T1 cell 1</cell>
+            <cell>T1 cell 1</cell>
+            <cell>T1 cell 1</cell>
+          </row>
+          <row>
+            <index>2</index>
+            <cell>T         1 Rij 3</cell>
+            <cell>T1 cell 1</cell>
+            <cell>T1 cell 1</cell>
+            <cell>T1 cell 1</cell>
+          </row>
+        </table>
+      </tables>
+    </page>
+    <page length="86" offset="428">
+      <tables>
+        <table page="2" order="1" shape="(2, 4)" _bbox="(71.98548972188634, 423.59999999999997, 523.3345102781137, 747.36)" cols="[(72.19544740024185, 135.8126239419589), (135.8126239419589, 297.5400241837969), (297.5400241837969, 490.22118500604597), (490.22118500604597, 523.2145344619105)]">
+          <row>
+            <index>0</index>
+            <cell>T       2 Rij 1</cell>
+            <cell>T2 Cell 1</cell>
+            <cell>T2 Cell 2</cell>
+            <cell></cell>
+          </row>
+          <row>
+            <index>1</index>
+            <cell>T                   2 Rij 2</cell>
+            <cell>T2 Cell 3</cell>
+            <cell>T2 Cell 4</cell>
+            <cell></cell>
+          </row>
+        </table>
+      </tables>
+    </page>
+  </formats>
+  <text>
+    <wf id="w1" sent="1" para="1" page="1" offset="0" length="1"><![CDATA[T]]></wf>
+    <wf id="w2" sent="1" para="1" page="1" offset="8" length="1"><![CDATA[1]]></wf>
+    <wf id="w3" sent="1" para="1" page="1" offset="10" length="3"><![CDATA[Rij]]></wf>
+    <wf id="w4" sent="1" para="1" page="1" offset="14" length="1"><![CDATA[1]]></wf>
+    <wf id="w5" sent="1" para="1" page="1" offset="16" length="1"><![CDATA[|]]></wf>
+    <wf id="w6" sent="1" para="1" page="1" offset="18" length="2"><![CDATA[T1]]></wf>
+    <wf id="w7" sent="1" para="1" page="1" offset="21" length="4"><![CDATA[cell]]></wf>
+    <wf id="w8" sent="1" para="1" page="1" offset="26" length="1"><![CDATA[1]]></wf>
+    <wf id="w9" sent="1" para="1" page="1" offset="28" length="1"><![CDATA[|]]></wf>
+    <wf id="w10" sent="1" para="1" page="1" offset="30" length="2"><![CDATA[T1]]></wf>
+    <wf id="w11" sent="1" para="1" page="1" offset="33" length="4"><![CDATA[cell]]></wf>
+    <wf id="w12" sent="1" para="1" page="1" offset="38" length="1"><![CDATA[1]]></wf>
+    <wf id="w13" sent="1" para="1" page="1" offset="40" length="1"><![CDATA[|]]></wf>
+    <wf id="w14" sent="1" para="1" page="1" offset="42" length="2"><![CDATA[T1]]></wf>
+    <wf id="w15" sent="1" para="1" page="1" offset="45" length="4"><![CDATA[cell]]></wf>
+    <wf id="w16" sent="1" para="1" page="1" offset="50" length="1"><![CDATA[1]]></wf>
+    <wf id="w17" sent="1" para="1" page="1" offset="52" length="1"><![CDATA[T]]></wf>
+    <wf id="w18" sent="1" para="1" page="1" offset="70" length="1"><![CDATA[1]]></wf>
+    <wf id="w19" sent="1" para="1" page="1" offset="72" length="3"><![CDATA[Rij]]></wf>
+    <wf id="w20" sent="1" para="1" page="1" offset="76" length="1"><![CDATA[2]]></wf>
+    <wf id="w21" sent="1" para="1" page="1" offset="78" length="1"><![CDATA[|]]></wf>
+    <wf id="w22" sent="1" para="1" page="1" offset="80" length="2"><![CDATA[T1]]></wf>
+    <wf id="w23" sent="1" para="1" page="1" offset="83" length="4"><![CDATA[cell]]></wf>
+    <wf id="w24" sent="1" para="1" page="1" offset="88" length="1"><![CDATA[1]]></wf>
+    <wf id="w25" sent="1" para="1" page="1" offset="90" length="1"><![CDATA[|]]></wf>
+    <wf id="w26" sent="1" para="1" page="1" offset="92" length="2"><![CDATA[T1]]></wf>
+    <wf id="w27" sent="1" para="1" page="1" offset="95" length="4"><![CDATA[cell]]></wf>
+    <wf id="w28" sent="1" para="1" page="1" offset="100" length="1"><![CDATA[1]]></wf>
+    <wf id="w29" sent="1" para="1" page="1" offset="102" length="1"><![CDATA[|]]></wf>
+    <wf id="w30" sent="1" para="1" page="1" offset="104" length="2"><![CDATA[T1]]></wf>
+    <wf id="w31" sent="1" para="1" page="1" offset="107" length="4"><![CDATA[cell]]></wf>
+    <wf id="w32" sent="1" para="1" page="1" offset="112" length="1"><![CDATA[1]]></wf>
+    <wf id="w33" sent="1" para="1" page="1" offset="169" length="1"><![CDATA[T]]></wf>
+    <wf id="w34" sent="1" para="1" page="1" offset="177" length="1"><![CDATA[2]]></wf>
+    <wf id="w35" sent="1" para="1" page="1" offset="179" length="3"><![CDATA[Rij]]></wf>
+    <wf id="w36" sent="1" para="1" page="1" offset="183" length="1"><![CDATA[1]]></wf>
+    <wf id="w37" sent="1" para="1" page="1" offset="185" length="1"><![CDATA[|]]></wf>
+    <wf id="w38" sent="1" para="1" page="1" offset="187" length="2"><![CDATA[T2]]></wf>
+    <wf id="w39" sent="1" para="1" page="1" offset="190" length="4"><![CDATA[Cell]]></wf>
+    <wf id="w40" sent="1" para="1" page="1" offset="195" length="1"><![CDATA[1]]></wf>
+    <wf id="w41" sent="1" para="1" page="1" offset="197" length="1"><![CDATA[|]]></wf>
+    <wf id="w42" sent="1" para="1" page="1" offset="199" length="2"><![CDATA[T2]]></wf>
+    <wf id="w43" sent="1" para="1" page="1" offset="202" length="4"><![CDATA[Cell]]></wf>
+    <wf id="w44" sent="1" para="1" page="1" offset="207" length="1"><![CDATA[2]]></wf>
+    <wf id="w45" sent="1" para="1" page="1" offset="209" length="1"><![CDATA[|]]></wf>
+    <wf id="w46" sent="1" para="1" page="1" offset="212" length="1"><![CDATA[T]]></wf>
+    <wf id="w47" sent="1" para="1" page="1" offset="232" length="1"><![CDATA[2]]></wf>
+    <wf id="w48" sent="1" para="1" page="1" offset="234" length="3"><![CDATA[Rij]]></wf>
+    <wf id="w49" sent="1" para="1" page="1" offset="238" length="1"><![CDATA[2]]></wf>
+    <wf id="w50" sent="1" para="1" page="1" offset="240" length="1"><![CDATA[|]]></wf>
+    <wf id="w51" sent="1" para="1" page="1" offset="242" length="2"><![CDATA[T2]]></wf>
+    <wf id="w52" sent="1" para="1" page="1" offset="245" length="4"><![CDATA[Cell]]></wf>
+    <wf id="w53" sent="1" para="1" page="1" offset="250" length="1"><![CDATA[3]]></wf>
+    <wf id="w54" sent="1" para="1" page="1" offset="252" length="1"><![CDATA[|]]></wf>
+    <wf id="w55" sent="1" para="1" page="1" offset="254" length="2"><![CDATA[T2]]></wf>
+    <wf id="w56" sent="1" para="1" page="1" offset="257" length="4"><![CDATA[Cell]]></wf>
+    <wf id="w57" sent="1" para="1" page="1" offset="262" length="1"><![CDATA[4]]></wf>
+    <wf id="w58" sent="1" para="1" page="1" offset="264" length="1"><![CDATA[|]]></wf>
+  </text>
+  <terms>
+    <term id="t1" type="open" lemma="T" pos="PROPN">
+      <span>
+        <!--T-->
+        <target id="w1"/>
+      </span>
+    </term>
+    <term id="t2" type="open" lemma="1" pos="NUM">
+      <span>
+        <!--1-->
+        <target id="w2"/>
+      </span>
+    </term>
+    <term id="t3" type="open" lemma="door_rijden" pos="NOUN" morphofeat="Gender=Com|Number=Sing">
+      <span>
+        <!--Rij-->
+        <target id="w3"/>
+      </span>
+    </term>
+    <term id="t4" type="open" lemma="1" pos="NUM">
+      <span>
+        <!--1-->
+        <target id="w4"/>
+      </span>
+    </term>
+    <term id="t5" type="open" lemma="|" pos="PUNCT">
+      <span>
+        <!--|-->
+        <target id="w5"/>
+      </span>
+    </term>
+    <term id="t6" type="open" lemma="T1" pos="SYM">
+      <span>
+        <!--T1-->
+        <target id="w6"/>
+      </span>
+    </term>
+    <term id="t7" type="open" lemma="cell" pos="SYM">
+      <span>
+        <!--cell-->
+        <target id="w7"/>
+      </span>
+    </term>
+    <term id="t8" type="open" lemma="1" pos="NUM">
+      <span>
+        <!--1-->
+        <target id="w8"/>
+      </span>
+    </term>
+    <term id="t9" type="open" lemma="|" pos="PUNCT">
+      <span>
+        <!--|-->
+        <target id="w9"/>
+      </span>
+    </term>
+    <term id="t10" type="open" lemma="T1" pos="SYM">
+      <span>
+        <!--T1-->
+        <target id="w10"/>
+      </span>
+    </term>
+    <term id="t11" type="open" lemma="cell" pos="SYM">
+      <span>
+        <!--cell-->
+        <target id="w11"/>
+      </span>
+    </term>
+    <term id="t12" type="open" lemma="1" pos="NUM">
+      <span>
+        <!--1-->
+        <target id="w12"/>
+      </span>
+    </term>
+    <term id="t13" type="open" lemma="|" pos="PUNCT">
+      <span>
+        <!--|-->
+        <target id="w13"/>
+      </span>
+    </term>
+    <term id="t14" type="open" lemma="T1" pos="SYM">
+      <span>
+        <!--T1-->
+        <target id="w14"/>
+      </span>
+    </term>
+    <term id="t15" type="open" lemma="cell" pos="SYM">
+      <span>
+        <!--cell-->
+        <target id="w15"/>
+      </span>
+    </term>
+    <term id="t16" type="open" lemma="1" pos="NUM">
+      <span>
+        <!--1-->
+        <target id="w16"/>
+      </span>
+    </term>
+    <term id="t17" type="open" lemma="T" pos="SYM">
+      <span>
+        <!--T-->
+        <target id="w17"/>
+      </span>
+    </term>
+    <term id="t18" type="open" lemma="1" pos="NUM">
+      <span>
+        <!--1-->
+        <target id="w18"/>
+      </span>
+    </term>
+    <term id="t19" type="open" lemma="door_rijden" pos="NOUN" morphofeat="Gender=Com|Number=Sing">
+      <span>
+        <!--Rij-->
+        <target id="w19"/>
+      </span>
+    </term>
+    <term id="t20" type="open" lemma="2" pos="NUM">
+      <span>
+        <!--2-->
+        <target id="w20"/>
+      </span>
+    </term>
+    <term id="t21" type="open" lemma="|" pos="PUNCT">
+      <span>
+        <!--|-->
+        <target id="w21"/>
+      </span>
+    </term>
+    <term id="t22" type="open" lemma="T1" pos="SYM">
+      <span>
+        <!--T1-->
+        <target id="w22"/>
+      </span>
+    </term>
+    <term id="t23" type="open" lemma="cell" pos="SYM">
+      <span>
+        <!--cell-->
+        <target id="w23"/>
+      </span>
+    </term>
+    <term id="t24" type="open" lemma="1" pos="NUM">
+      <span>
+        <!--1-->
+        <target id="w24"/>
+      </span>
+    </term>
+    <term id="t25" type="open" lemma="|" pos="PUNCT">
+      <span>
+        <!--|-->
+        <target id="w25"/>
+      </span>
+    </term>
+    <term id="t26" type="open" lemma="T1" pos="SYM">
+      <span>
+        <!--T1-->
+        <target id="w26"/>
+      </span>
+    </term>
+    <term id="t27" type="open" lemma="cell" pos="SYM">
+      <span>
+        <!--cell-->
+        <target id="w27"/>
+      </span>
+    </term>
+    <term id="t28" type="open" lemma="1" pos="NUM">
+      <span>
+        <!--1-->
+        <target id="w28"/>
+      </span>
+    </term>
+    <term id="t29" type="open" lemma="|" pos="PUNCT">
+      <span>
+        <!--|-->
+        <target id="w29"/>
+      </span>
+    </term>
+    <term id="t30" type="open" lemma="T1" pos="SYM">
+      <span>
+        <!--T1-->
+        <target id="w30"/>
+      </span>
+    </term>
+    <term id="t31" type="open" lemma="cell" pos="SYM">
+      <span>
+        <!--cell-->
+        <target id="w31"/>
+      </span>
+    </term>
+    <term id="t32" type="open" lemma="1" pos="NUM">
+      <span>
+        <!--1-->
+        <target id="w32"/>
+      </span>
+    </term>
+    <term id="t33" type="open" lemma="T" pos="SYM">
+      <span>
+        <!--T-->
+        <target id="w33"/>
+      </span>
+    </term>
+    <term id="t34" type="open" lemma="2" pos="NUM">
+      <span>
+        <!--2-->
+        <target id="w34"/>
+      </span>
+    </term>
+    <term id="t35" type="open" lemma="door_rijden" pos="NOUN" morphofeat="Gender=Com|Number=Sing">
+      <span>
+        <!--Rij-->
+        <target id="w35"/>
+      </span>
+    </term>
+    <term id="t36" type="open" lemma="1" pos="NUM">
+      <span>
+        <!--1-->
+        <target id="w36"/>
+      </span>
+    </term>
+    <term id="t37" type="open" lemma="|" pos="PUNCT">
+      <span>
+        <!--|-->
+        <target id="w37"/>
+      </span>
+    </term>
+    <term id="t38" type="open" lemma="T2" pos="PROPN">
+      <span>
+        <!--T2-->
+        <target id="w38"/>
+      </span>
+    </term>
+    <term id="t39" type="open" lemma="Cell" pos="PROPN">
+      <span>
+        <!--Cell-->
+        <target id="w39"/>
+      </span>
+    </term>
+    <term id="t40" type="open" lemma="1" pos="NUM">
+      <span>
+        <!--1-->
+        <target id="w40"/>
+      </span>
+    </term>
+    <term id="t41" type="open" lemma="|" pos="PUNCT">
+      <span>
+        <!--|-->
+        <target id="w41"/>
+      </span>
+    </term>
+    <term id="t42" type="open" lemma="T2" pos="PROPN">
+      <span>
+        <!--T2-->
+        <target id="w42"/>
+      </span>
+    </term>
+    <term id="t43" type="open" lemma="Cell" pos="PROPN">
+      <span>
+        <!--Cell-->
+        <target id="w43"/>
+      </span>
+    </term>
+    <term id="t44" type="open" lemma="2" pos="NUM">
+      <span>
+        <!--2-->
+        <target id="w44"/>
+      </span>
+    </term>
+    <term id="t45" type="open" lemma="|" pos="PUNCT">
+      <span>
+        <!--|-->
+        <target id="w45"/>
+      </span>
+    </term>
+    <term id="t46" type="open" lemma="T" pos="SYM">
+      <span>
+        <!--T-->
+        <target id="w46"/>
+      </span>
+    </term>
+    <term id="t47" type="open" lemma="2" pos="NUM">
+      <span>
+        <!--2-->
+        <target id="w47"/>
+      </span>
+    </term>
+    <term id="t48" type="open" lemma="door_rijden" pos="NOUN" morphofeat="Gender=Com|Number=Sing">
+      <span>
+        <!--Rij-->
+        <target id="w48"/>
+      </span>
+    </term>
+    <term id="t49" type="open" lemma="2" pos="NUM">
+      <span>
+        <!--2-->
+        <target id="w49"/>
+      </span>
+    </term>
+    <term id="t50" type="open" lemma="|" pos="PUNCT">
+      <span>
+        <!--|-->
+        <target id="w50"/>
+      </span>
+    </term>
+    <term id="t51" type="open" lemma="T2" pos="PROPN">
+      <span>
+        <!--T2-->
+        <target id="w51"/>
+      </span>
+    </term>
+    <term id="t52" type="open" lemma="Cell" pos="PROPN">
+      <span>
+        <!--Cell-->
+        <target id="w52"/>
+      </span>
+    </term>
+    <term id="t53" type="open" lemma="3" pos="NUM">
+      <span>
+        <!--3-->
+        <target id="w53"/>
+      </span>
+    </term>
+    <term id="t54" type="open" lemma="|" pos="PUNCT">
+      <span>
+        <!--|-->
+        <target id="w54"/>
+      </span>
+    </term>
+    <term id="t55" type="open" lemma="T2" pos="PROPN">
+      <span>
+        <!--T2-->
+        <target id="w55"/>
+      </span>
+    </term>
+    <term id="t56" type="open" lemma="Cell" pos="PROPN">
+      <span>
+        <!--Cell-->
+        <target id="w56"/>
+      </span>
+    </term>
+    <term id="t57" type="open" lemma="4" pos="NUM">
+      <span>
+        <!--4-->
+        <target id="w57"/>
+      </span>
+    </term>
+    <term id="t58" type="open" lemma="|" pos="PUNCT">
+      <span>
+        <!--|-->
+        <target id="w58"/>
+      </span>
+    </term>
+  </terms>
+  <deps>
+    <!--fixed(T,1)-->
+    <dep from_term="t1" to_term="t2" rfunc="fixed"/>
+    <!--fixed(T,Rij)-->
+    <dep from_term="t1" to_term="t3" rfunc="fixed"/>
+    <!--fixed(T,1)-->
+    <dep from_term="t1" to_term="t4" rfunc="fixed"/>
+    <!--punct(T1,|)-->
+    <dep from_term="t6" to_term="t5" rfunc="punct"/>
+    <!--conj(T,T1)-->
+    <dep from_term="t1" to_term="t6" rfunc="conj"/>
+    <!--fixed(T1,cell)-->
+    <dep from_term="t6" to_term="t7" rfunc="fixed"/>
+    <!--fixed(T1,1)-->
+    <dep from_term="t6" to_term="t8" rfunc="fixed"/>
+    <!--punct(T1,|)-->
+    <dep from_term="t10" to_term="t9" rfunc="punct"/>
+    <!--conj(T,T1)-->
+    <dep from_term="t1" to_term="t10" rfunc="conj"/>
+    <!--fixed(T1,cell)-->
+    <dep from_term="t10" to_term="t11" rfunc="fixed"/>
+    <!--fixed(T1,1)-->
+    <dep from_term="t10" to_term="t12" rfunc="fixed"/>
+    <!--punct(T1,|)-->
+    <dep from_term="t14" to_term="t13" rfunc="punct"/>
+    <!--conj(T,T1)-->
+    <dep from_term="t1" to_term="t14" rfunc="conj"/>
+    <!--fixed(T1,cell)-->
+    <dep from_term="t14" to_term="t15" rfunc="fixed"/>
+    <!--fixed(T1,1)-->
+    <dep from_term="t14" to_term="t16" rfunc="fixed"/>
+    <!--fixed(T1,T)-->
+    <dep from_term="t14" to_term="t17" rfunc="fixed"/>
+    <!--fixed(T1,1)-->
+    <dep from_term="t14" to_term="t18" rfunc="fixed"/>
+    <!--fixed(T1,Rij)-->
+    <dep from_term="t14" to_term="t19" rfunc="fixed"/>
+    <!--fixed(T1,2)-->
+    <dep from_term="t14" to_term="t20" rfunc="fixed"/>
+    <!--punct(T1,|)-->
+    <dep from_term="t22" to_term="t21" rfunc="punct"/>
+    <!--conj(T,T1)-->
+    <dep from_term="t1" to_term="t22" rfunc="conj"/>
+    <!--fixed(T1,cell)-->
+    <dep from_term="t22" to_term="t23" rfunc="fixed"/>
+    <!--fixed(T1,1)-->
+    <dep from_term="t22" to_term="t24" rfunc="fixed"/>
+    <!--punct(T1,|)-->
+    <dep from_term="t26" to_term="t25" rfunc="punct"/>
+    <!--conj(T,T1)-->
+    <dep from_term="t1" to_term="t26" rfunc="conj"/>
+    <!--fixed(T1,cell)-->
+    <dep from_term="t26" to_term="t27" rfunc="fixed"/>
+    <!--fixed(T1,1)-->
+    <dep from_term="t26" to_term="t28" rfunc="fixed"/>
+    <!--punct(T1,|)-->
+    <dep from_term="t30" to_term="t29" rfunc="punct"/>
+    <!--parataxis(T1,T1)-->
+    <dep from_term="t22" to_term="t30" rfunc="parataxis"/>
+    <!--fixed(T1,cell)-->
+    <dep from_term="t30" to_term="t31" rfunc="fixed"/>
+    <!--fixed(T1,1)-->
+    <dep from_term="t30" to_term="t32" rfunc="fixed"/>
+    <!--fixed(T1,T)-->
+    <dep from_term="t30" to_term="t33" rfunc="fixed"/>
+    <!--fixed(T1,2)-->
+    <dep from_term="t30" to_term="t34" rfunc="fixed"/>
+    <!--fixed(T1,Rij)-->
+    <dep from_term="t30" to_term="t35" rfunc="fixed"/>
+    <!--appos(Rij,1)-->
+    <dep from_term="t35" to_term="t36" rfunc="appos"/>
+    <!--punct(T2,|)-->
+    <dep from_term="t38" to_term="t37" rfunc="punct"/>
+    <!--conj(T,T2)-->
+    <dep from_term="t1" to_term="t38" rfunc="conj"/>
+    <!--flat(T2,Cell)-->
+    <dep from_term="t38" to_term="t39" rfunc="flat"/>
+    <!--fixed(T2,1)-->
+    <dep from_term="t38" to_term="t40" rfunc="fixed"/>
+    <!--punct(T2,|)-->
+    <dep from_term="t42" to_term="t41" rfunc="punct"/>
+    <!--parataxis(T2,T2)-->
+    <dep from_term="t38" to_term="t42" rfunc="parataxis"/>
+    <!--flat(T2,Cell)-->
+    <dep from_term="t42" to_term="t43" rfunc="flat"/>
+    <!--fixed(T2,2)-->
+    <dep from_term="t42" to_term="t44" rfunc="fixed"/>
+    <!--punct(T,|)-->
+    <dep from_term="t46" to_term="t45" rfunc="punct"/>
+    <!--parataxis(T2,T)-->
+    <dep from_term="t42" to_term="t46" rfunc="parataxis"/>
+    <!--fixed(T,2)-->
+    <dep from_term="t46" to_term="t47" rfunc="fixed"/>
+    <!--fixed(T,Rij)-->
+    <dep from_term="t46" to_term="t48" rfunc="fixed"/>
+    <!--parataxis(T,2)-->
+    <dep from_term="t46" to_term="t49" rfunc="parataxis"/>
+    <!--punct(T2,|)-->
+    <dep from_term="t51" to_term="t50" rfunc="punct"/>
+    <!--parataxis(T,T2)-->
+    <dep from_term="t46" to_term="t51" rfunc="parataxis"/>
+    <!--flat(T2,Cell)-->
+    <dep from_term="t51" to_term="t52" rfunc="flat"/>
+    <!--parataxis(T2,3)-->
+    <dep from_term="t51" to_term="t53" rfunc="parataxis"/>
+    <!--punct(T2,|)-->
+    <dep from_term="t55" to_term="t54" rfunc="punct"/>
+    <!--parataxis(T2,T2)-->
+    <dep from_term="t51" to_term="t55" rfunc="parataxis"/>
+    <!--flat(T2,Cell)-->
+    <dep from_term="t55" to_term="t56" rfunc="flat"/>
+    <!--flat(T2,4)-->
+    <dep from_term="t55" to_term="t57" rfunc="flat"/>
+    <!--punct(T,|)-->
+    <dep from_term="t1" to_term="t58" rfunc="punct"/>
+  </deps>
+  <raw><![CDATA[T       1 Rij 1 | T1 cell 1 | T1 cell 1 | T1 cell 1 T                 1 Rij 2 | T1 cell 1 | T1 cell 1 | T1 cell 1                                                        T       2 Rij 1 | T2 Cell 1 | T2 Cell 2 |  T                   2 Rij 2 | T2 Cell 3 | T2 Cell 4 |]]></raw>
+</NAF>

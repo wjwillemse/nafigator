@@ -131,11 +131,12 @@ def extract_terms(doc=None, patterns: list() = None, termNotes: dict() = None):
                     if len(concept_text.split(" ")) == len(pattern): 
                         concept_text = concept_text.replace(" - ", "-")
                         if concept_text in d.keys():
-                            d[concept_text]["frequency"] += 1
+                            d[concept_text]["frequency"][0] += 1
                         else:
-                            d[concept_text] = {"dc:source": doc.header['public'],
+                            d[concept_text] = {"dc:uri": [doc.header['public']['{http://purl.org/dc/elements/1.1/}uri']],
+                                               "dc:format": doc.header['public']['{http://purl.org/dc/elements/1.1/}format'],
                                                "dc:language": doc.language, 
-                                               "frequency": 1, 
+                                               "frequency": [1], 
                                                "partOfSpeech": ", ".join(pattern).lower()}
                         d[concept_text] = {**d[concept_text], **termNotes}
     return d

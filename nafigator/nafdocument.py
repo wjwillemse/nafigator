@@ -227,6 +227,8 @@ class NafDocument(etree._ElementTree):
         entities = list()
         for child in self.findall(ENTITIES_LAYER_TAG + "/" + ENTITY_OCCURRENCE_TAG):
             entity_data = dict(child.attrib)
+            spans = list()
+            ext_refs = list()
             for child2 in child:
                 if child2.tag == SPAN_OCCURRENCE_TAG:
                     span = list()
@@ -235,13 +237,20 @@ class NafDocument(etree._ElementTree):
                             entity_data["text"] = child3.text
                         elif child3.tag == TARGET_OCCURRENCE_TAG:
                             span.append(child3.attrib)
-                    entity_data["span"] = span
+                    spans.append(span)
                 if child2.tag == EXT_REFS_OCCURRENCE_TAG:
-                    ext_refs = list()
+                    ext_ref = list()
                     for child3 in child2:
                         if child3.tag == EXT_REF_OCCURRENCE_TAG:
-                            ext_refs.append(child3.attrib)
-                    entity_data["ext_refs"] = ext_refs
+                            ext_ref.append(child3.attrib)
+                    ext_refs.append(ext_ref)
+            if ext_refs != []:
+                entity_data["ext_refs"] = ext_refs
+            if spans != []:
+                if len(spans) == 1:
+                    entity_data["span"] = spans[0]
+                else:
+                    entity_data["spans"] = spans
             entities.append(entity_data)
         return entities
 
@@ -353,7 +362,7 @@ class NafDocument(etree._ElementTree):
                 if item.get("sent", "0") not in sentence_list:
                     sentence_list.append(item.get("sent", "0"))
                 para_num += 1
-        if para_num > 1 or para_num==0:
+        if para_num > 1 or para_num == 0:
             paragraphs.append(
                 {
                     "text": " ".join(paragraph_list),
@@ -418,10 +427,10 @@ class NafDocument(etree._ElementTree):
                         for table in child2:
                             table_data = dict(table.attrib)
                             rows = list()
-                            for row in table: 
+                            for row in table:
                                 row_data = dict(row.attrib)
                                 cells = list()
-                                for cell in row: 
+                                for cell in row:
                                     cell_data = dict(cell.attrib)
                                     if cell.tag == "index":
                                         cell_data["index"] = cell.text
@@ -432,7 +441,7 @@ class NafDocument(etree._ElementTree):
                                 rows.append(row_data)
                             table_data["table"] = rows
                             tables.append(table_data)
-                    
+
                 pages_data["textboxes"] = textboxes
                 pages_data["figures"] = figures
                 pages_data["headers"] = headers
@@ -466,7 +475,8 @@ class NafDocument(etree._ElementTree):
 
     def set_language(self, language: str):
         """Set language of the NAF document"""
-        self.getroot().set("{http://www.w3.org/XML/1998/namespace}lang", language)
+        self.getroot().set(
+            "{http://www.w3.org/XML/1998/namespace}lang", language)
 
     def set_version(self, version):
         """Set version of the NAF document"""
@@ -528,7 +538,8 @@ class NafDocument(etree._ElementTree):
         """ """
         layer = self.find(layer_tag)
         if layer is None:
-            layer = etree.SubElement(self.getroot(), QName(PREFIX_NAF_BASE, layer_tag))
+            layer = etree.SubElement(
+                self.getroot(), QName(PREFIX_NAF_BASE, layer_tag))
         return layer
 
     def subelement(
@@ -658,7 +669,8 @@ class NafDocument(etree._ElementTree):
             tag=LINGUISTIC_LAYER_TAG,
             data={"layer": layer},
         )
-        lp = self.subelement(element=proc, tag=LINGUISTIC_OCCURRENCE_TAG, data=data)
+        lp = self.subelement(
+            element=proc, tag=LINGUISTIC_OCCURRENCE_TAG, data=data)
 
     def add_wf_element(self, data: WordformElement, cdata: bool):
         """
@@ -692,7 +704,8 @@ class NafDocument(etree._ElementTree):
         )
 
         wf.text = (
-            etree.CDATA(data.text if "]]>" not in data.text else " " * len(data.text))
+            etree.CDATA(
+                data.text if "]]>" not in data.text else " " * len(data.text))
             if cdata
             else data.text
         )
@@ -770,7 +783,8 @@ class NafDocument(etree._ElementTree):
             )
 
         if data.ext_refs != []:
-            self.add_external_reference_element(element=element, ext_refs=data.ext_refs)
+            self.add_external_reference_element(
+                element=element, ext_refs=data.ext_refs)
 
     def add_term_element(
         self, data: TermElement, layer_to_attributes_to_ignore: dict, comments: bool
@@ -811,14 +825,17 @@ class NafDocument(etree._ElementTree):
             element=self.layer(TERMS_LAYER_TAG),
             tag=TERM_OCCURRENCE_TAG,
             data=data,
-            attributes_to_ignore=layer_to_attributes_to_ignore.get("terms", list()),
+            attributes_to_ignore=layer_to_attributes_to_ignore.get(
+                "terms", list()),
         )
 
         if data.span != []:
-            self.add_span_element(element=element, data=data, comments=comments)
+            self.add_span_element(
+                element=element, data=data, comments=comments)
 
         if data.ext_refs != []:
-            self.add_external_reference_element(element=element, ext_refs=data.ext_refs)
+            self.add_external_reference_element(
+                element=element, ext_refs=data.ext_refs)
 
     def add_chunk_element(self, data: ChunkElement, comments: bool):
         """
@@ -846,7 +863,8 @@ class NafDocument(etree._ElementTree):
         )
 
         if data.span != []:
-            self.add_span_element(element=element, data=data, comments=comments)
+            self.add_span_element(
+                element=element, data=data, comments=comments)
 
     def add_span_element(self, element, data, comments=False, naf_version: str = None):
         """
@@ -887,7 +905,8 @@ class NafDocument(etree._ElementTree):
         ELEMENT externalReferences (externalRef)+
 
         EXTERNALREF ELEMENT
-            <externalRef> elements have the following attributes:- resource: indicates the identifier of the resource referred to.
+            <externalRef> elements have the following attributes:- resource: indicates the identifier of the resource
+            referred to.
             - reference: code of the referred element. If the element is a
             synset of some version of WordNet, it follows the pattern:
             [a-z]{3}-[0-9]{2}-[0-9]+-[nvars]
@@ -917,9 +936,11 @@ class NafDocument(etree._ElementTree):
             timestamp CDATA #IMPLIED
         """
         if not isinstance(ext_refs, list):
-            logging.info("ext_refs should be a list of dictionaries (can be empty)")
+            logging.info(
+                "ext_refs should be a list of dictionaries (can be empty)")
 
-        ext_refs_el = self.subelement(element=element, tag="externalReferences")
+        ext_refs_el = self.subelement(
+            element=element, tag="externalReferences")
         for ext_ref in ext_refs:
             ext_ref_el = self.subelement(
                 element=ext_refs_el,
@@ -969,13 +990,13 @@ class NafDocument(etree._ElementTree):
             self.add_span_element(element=com, data=component)
 
     def add_formats_element(self, source: str, formats: str, pdf_tables: camelot.core.TableList = None):
-
         """ """
 
         if source == "pdf":
 
             formats = bytes(bytearray(formats, encoding="utf-8"))
-            parser = etree.XMLParser(ns_clean=True, recover=True, encoding="utf-8")
+            parser = etree.XMLParser(
+                ns_clean=True, recover=True, encoding="utf-8")
             formats_root = etree.fromstring(formats, parser=parser)
 
             layer = self.find(FORMATS_LAYER_TAG)
@@ -1019,13 +1040,13 @@ class NafDocument(etree._ElementTree):
                             cm_y_bottom.append(pdf_table.__dict__["_bbox"][1])
                             cm_x_right.append(pdf_table.__dict__["_bbox"][2])
                             cm_y_top.append(pdf_table.__dict__["_bbox"][3])
-                    outside = [char_coor[0] < cm_x_left[i] \
-                               or char_coor[0] > cm_x_right[i] \
-                               or char_coor[2] > cm_x_right[i] \
-                               or char_coor[2] < cm_x_left[i] \
-                               or char_coor[1] < cm_y_bottom[i] \
-                               or char_coor[1] > cm_y_top[i] \
-                               or char_coor[3] > cm_y_top[i] \
+                    outside = [char_coor[0] < cm_x_left[i]
+                               or char_coor[0] > cm_x_right[i]
+                               or char_coor[2] > cm_x_right[i]
+                               or char_coor[2] < cm_x_left[i]
+                               or char_coor[1] < cm_y_bottom[i]
+                               or char_coor[1] > cm_y_top[i]
+                               or char_coor[3] > cm_y_top[i]
                                or char_coor[3] < cm_y_bottom[i] for i in range(0, len(cm_x_left), 1)]
                     return all(outside)
                 else:
@@ -1040,7 +1061,8 @@ class NafDocument(etree._ElementTree):
                 page_length = 0
                 for page_item in page:
                     if page_item.tag == "textbox":
-                        page_item_element = add_element(page_element, page_item.tag)
+                        page_item_element = add_element(
+                            page_element, page_item.tag)
                         for textline in page_item:
                             textline_element = add_element(
                                 page_item_element, textline.tag
@@ -1051,11 +1073,13 @@ class NafDocument(etree._ElementTree):
                                 for idx, char in enumerate(textline[1:]):
                                     bbox = char.attrib.get("bbox", None)
                                     if bbox is not None:
-                                        char_coor = [float(i) for i in bbox.split(',')]
+                                        char_coor = [float(i)
+                                                     for i in bbox.split(',')]
                                         previous_char_coor = char_coor
                                     else:
                                         char_coor = previous_char_coor
-                                    outside = check_outside_table(char_coor, pdf_tables, page_number + 1)
+                                    outside = check_outside_table(
+                                        char_coor, pdf_tables, page_number + 1)
                                     if outside:
                                         char_attrib = copy_dict(char)
                                         if previous_attrib == char_attrib:
@@ -1108,13 +1132,16 @@ class NafDocument(etree._ElementTree):
 
                                                 textline_element.getparent().remove(textline_element)
 
-                                                table_df_text = pdf_tables[table_nr].__dict__['df']
-                                                table_rows = table_df_text.apply(lambda x: x.str.cat(sep=' | '), axis=1)
+                                                table_df_text = pdf_tables[table_nr].__dict__[
+                                                    'df']
+                                                table_rows = table_df_text.apply(
+                                                    lambda x: x.str.cat(sep=' | '), axis=1)
                                                 for table_textline in table_rows:
                                                     textline_element = add_element(
                                                         page_item_element, textline.tag
                                                     )
-                                                    table_textline_text = table_textline.replace("\n", "")
+                                                    table_textline_text = table_textline.replace(
+                                                        "\n", "")
                                                     add_text_element(
                                                         textline_element,
                                                         'text',
@@ -1123,7 +1150,8 @@ class NafDocument(etree._ElementTree):
                                                         offset=offset
                                                     )
                                                     offset += len(table_textline_text)
-                                                    page_length += len(table_textline_text)
+                                                    page_length += len(
+                                                        table_textline_text)
 
                                                     offset += 1
                                                     page_length += 1
@@ -1135,17 +1163,15 @@ class NafDocument(etree._ElementTree):
                                         page_length += len(previous_text)
                                         offset += len(previous_text)
 
-                                    # first_char_on_page = False
-
                             # if nothing has been added to the textline_element we remove is
-                            if len(textline_element)==0:
+                            if len(textline_element) == 0:
                                 textline_element.getparent().remove(textline_element)
                             else:
                                 page_length += 1
                                 offset += 1
 
                         # if nothing has been added to the page_item_element we remove is
-                        if len(page_item_element)==0:
+                        if len(page_item_element) == 0:
                             page_item_element.getparent().remove(page_item_element)
                         else:
                             page_length += 1
@@ -1155,10 +1181,11 @@ class NafDocument(etree._ElementTree):
 
                         page_length += 1
                         offset += 1
-                    
+
                     elif page_item.tag == "figure":
 
-                        page_item_element = add_element(page_element, page_item.tag)
+                        page_item_element = add_element(
+                            page_element, page_item.tag)
                         if len(page_item) > 0:
                             previous_text = None
                             previous_attrib = None
@@ -1214,23 +1241,27 @@ class NafDocument(etree._ElementTree):
                     table = etree.SubElement(page_element, "tables")
                     for pdf_table in pdf_tables:
                         if pdf_table.__dict__['page'] == page_number + 1:
-                            table_on_page = etree.SubElement(table, "table", attrib={})
+                            table_on_page = etree.SubElement(
+                                table, "table", attrib={
+                                    "page": str(page_number+1),
+                                    "order": str(pdf_table.__dict__["order"]),
+                                    "shape": str(pdf_table.__dict__["shape"]),
+                                    "_bbox": str(pdf_table.__dict__["_bbox"]),
+                                    "cols": str(pdf_table.__dict__["cols"])
+                                }
+                            )
                             table_df = pdf_table.__dict__['df']
                             for idx in table_df.index:
-                                table_row = etree.SubElement(table_on_page, "row", attrib={})
-                                table_index = etree.SubElement(table_row, "index", attrib={})
+                                table_row = etree.SubElement(
+                                    table_on_page, "row", attrib={})
+                                table_index = etree.SubElement(
+                                    table_row, "index", attrib={})
                                 table_index.text = str(idx).replace("\n", "")
                                 for col in table_df.columns:
-                                    table_cell = etree.SubElement(table_row, "cell", attrib={})
-                                    table_cell.text = str(table_df.loc[idx, col]).replace("\n", "")
-
-                        # number_columns = table_df.shape[1]
-                        # table_df.columns = ["column" + str(i+1) for i in range(0, number_columns, 1)]
-                        # table_xml_str = table_df.to_xml() # class 'str'
-                        # table_xml_str = table_xml_str.split('<data>', 1)[1]
-                        # table_xml_str = '<data>' + re.sub('\n\s*', '', table_xml_str)
-                        # table_xml = (etree.fromstring(table_xml_str))
-                        # table_on_page.append(table_xml)
+                                    table_cell = etree.SubElement(
+                                        table_row, "cell", attrib={})
+                                    table_cell.text = str(
+                                        table_df.loc[idx, col]).replace("\n", "")
 
                 page_element.set("length", str(page_length))
                 page_element.set("offset", str(offset - page_length))
@@ -1262,7 +1293,8 @@ class NafDocument(etree._ElementTree):
             ILVL = WORD_NAMESPACE + "ilvl"
 
             # formats = bytes(bytearray(pStyleformats, encoding="utf-8"))
-            parser = etree.XMLParser(ns_clean=True, recover=True, encoding="utf-8")
+            parser = etree.XMLParser(
+                ns_clean=True, recover=True, encoding="utf-8")
             formats_root = etree.fromstring(formats, parser=parser)
 
             layer = self.find(FORMATS_LAYER_TAG)
@@ -1317,9 +1349,11 @@ class NafDocument(etree._ElementTree):
                                             if level.tag == ILVL:
                                                 # we assume that if there is a level there is a header
                                                 header = True
-                                                header_level = int(level.get(VAL))
+                                                header_level = int(
+                                                    level.get(VAL))
                                             if level.tag == NUMID:
-                                                header_number = int(level.get(VAL))
+                                                header_number = int(
+                                                    level.get(VAL))
 
                             if run.tag == RUN:
                                 r = add_element(p, "textline")
@@ -1344,7 +1378,8 @@ class NafDocument(etree._ElementTree):
                                                         {
                                                             "size": str(
                                                                 float(
-                                                                    item.attrib.get(VAL)
+                                                                    item.attrib.get(
+                                                                        VAL)
                                                                 )
                                                                 / 2
                                                             )
