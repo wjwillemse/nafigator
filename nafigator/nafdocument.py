@@ -247,7 +247,7 @@ class NafDocument(etree._ElementTree):
             if ext_refs != []:
                 entity_data["ext_refs"] = ext_refs
             if spans != []:
-                if len(spans)==1:
+                if len(spans) == 1:
                     entity_data["span"] = spans[0]
                 else:
                     entity_data["spans"] = spans
@@ -1250,7 +1250,9 @@ class NafDocument(etree._ElementTree):
                                 table, "table", attrib={
                                     "page": str(page_number+1),
                                     "order": str(pdf_table.__dict__["order"]),
-                                    "shape": str(pdf_table.__dict__["shape"])
+                                    "shape": str(pdf_table.__dict__["shape"]),
+                                    "_bbox": str(pdf_table.__dict__["_bbox"]),
+                                    "cols": str(pdf_table.__dict__["cols"])
                                 }
                             )
                             table_df = pdf_table.__dict__['df']
