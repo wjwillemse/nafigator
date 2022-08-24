@@ -316,13 +316,18 @@ class NafDocument(etree._ElementTree):
     @property
     def paragraphs(self):
         """Returns paragraphs of the NAF document as list of dicts"""
+
+        # return empty list if no para attributes are included
+        if any(["para" not in item.keys() for item in self.text]):
+            return []
+
         word2term = {
             item["id"]: term["id"] for term in self.terms for item in term["span"]
         }
         paragraphs = list()
         paragraph_list = list()
         sentence_list = list()
-        para_num = 0
+        para_num = 1
         pages = set()
         para = set()
         span = list()
@@ -362,7 +367,7 @@ class NafDocument(etree._ElementTree):
                 if item.get("sent", "0") not in sentence_list:
                     sentence_list.append(item.get("sent", "0"))
                 para_num += 1
-        if para_num > 1 or para_num == 0:
+        if para_num > 1:
             paragraphs.append(
                 {
                     "text": " ".join(paragraph_list),
