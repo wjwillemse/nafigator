@@ -26,3 +26,9 @@ History
 ------------------
 
 * Added sent ids to doc.sentences and doc.paragraphs
+
+0.1.47 (2022-8-22)
+------------------
+
+* Table extraction improvements 
+* Fix to align enumeration of sentences and paragraphs
