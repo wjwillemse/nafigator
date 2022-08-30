@@ -30,6 +30,11 @@ def normalize_term_text(term_text: str = ""):
     return term_text.lower().replace("’", "'").replace("‘", "'").replace("”", '"').replace("“", '"')
 
 
+def find_term_in_text(sub, full):
+    """ Faster variant than in utils.sublist_indices"""
+    return [list(range(idx, idx+len(sub))) for idx in range(len(full) - len(sub) + 1) if full[idx : idx + len(sub)] == sub]
+
+
 def process_termbase(doc: NafDocument = None, 
                      termbase: etree._ElementTree = None, 
                      remove_all_existing_terms: bool = True,
@@ -85,7 +90,8 @@ def process_termbase(doc: NafDocument = None,
                                 # otherwise the lowercase plain text is used
                                 sub = normalize_term_text(term_text).split(" ")
                                 full = [normalize_term_text(term['text']) for term in doc_terms]
-                            spans = [[term_ids[i] for i in item] for item in sublist_indices(sub, full)]
+                            spans = [[term_ids[i] for i in item] for item in find_term_in_text(sub, full)]
+
                             # spans contains all occurrences of the term in the document
                             for span in spans:
                                 ext_refs = [{"reference": concept_id}]

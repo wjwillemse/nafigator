@@ -32,3 +32,8 @@ History
 
 * Table extraction improvements 
 * Fix to align enumeration of sentences and paragraphs
+
+0.1.48 (2022-8-30)
+------------------
+
+* Added first version of nif conversion
