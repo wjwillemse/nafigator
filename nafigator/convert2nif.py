@@ -80,8 +80,12 @@ class NifContext(NifString):
                  anchorOf: str=None,
                  isString: str=None,
                  offsetBasedString: bool=True,
+                 firstSentence: str=None,
+                 lastSentence: str=None,
                  uri: str=None):
         self.isString = isString
+        self.firstSentence = firstSentence
+        self.lastSentence = lastSentence
         super().__init__(beginIndex=beginIndex, 
                          endIndex=endIndex, 
                          referenceContext=referenceContext, 
@@ -97,6 +101,11 @@ class NifContext(NifString):
             yield (self.uri, RDF.type, NIF.Context)
             if self.isString is not None:
                 yield (self.uri, NIF.isString, Literal(self.isString, datatype=XSD.string))
+            if self.firstSentence is not None:
+                yield (self.uri, NIF.firstSentence, self.firstSentence.uri)
+            if self.lastSentence is not None:
+                yield (self.uri, NIF.lastSentence, self.lastSentence.uri)
+
             for triple in super().triples():
                 yield triple
 
@@ -161,9 +170,13 @@ class NifSentence(NifStructure):
                  anchorOf: str=None,
                  nextSentence: str=None,
                  previousSentence: str=None,
+                 firstWord: str=None,
+                 lastWord: str=None,
                  uri: str=None):
         self.nextSentence = nextSentence
         self.previousSentence = previousSentence
+        self.firstWord = firstWord
+        self.lastWord = lastWord
         super().__init__(beginIndex=beginIndex, 
                          endIndex=endIndex, 
                          referenceContext=referenceContext,
@@ -183,6 +196,10 @@ class NifSentence(NifStructure):
                 yield (self.uri, NIF.nextSentence, self.nextSentence.uri)
             if self.previousSentence is not None:
                 yield (self.uri, NIF.previousSentence, self.previousSentence.uri)
+            if self.firstWord is not None:
+                yield (self.uri, NIF.firstWord, self.firstWord.uri)
+            if self.lastWord is not None:
+                yield (self.uri, NIF.lastWord, self.lastWord.uri)
 
 class NifParagraph(NifStructure):
 
@@ -209,32 +226,15 @@ class NifParagraph(NifStructure):
             for triple in super().triples():
                 yield triple
 
-# class NifTitle(NifStructure):
-
-#     def __init__(self, uri: str=None):
-#         super().__init__(uri)
-
-class NifWord(NifStructure):
+class NifPage(NifStructure):
 
     def __init__(self, 
                  beginIndex: int=None,
                  endIndex: int=None,
                  referenceContext: str=None,
                  offsetBasedString: bool=True,
-                 nifSentence: str=None,
                  anchorOf: str=None,
-                 lemma: str=None,
-                 pos: str=None,
-                 morphofeat:str=None,
-                 nextWord: str=None,
-                 previousWord: str=None,
                  uri: str=None):
-        self.nifSentence = nifSentence
-        self.lemma = lemma
-        self.pos = pos
-        self.morphofeat = morphofeat
-        self.nextWord = nextWord
-        self.previousWord = previousWord
         super().__init__(beginIndex=beginIndex, 
                          endIndex=endIndex, 
                          referenceContext=referenceContext,
@@ -247,9 +247,56 @@ class NifWord(NifStructure):
         Generates all the triples
         """
         if self.uri is not None:
+            yield (self.uri, RDF.type, NIF.Page)
+            for triple in super().triples():
+                yield triple
+
+# class NifTitle(NifStructure):
+
+#     def __init__(self, uri: str=None):
+#         super().__init__(uri)
+
+class NifWord(NifStructure):
+
+    def __init__(self, 
+                 beginIndex: int=None,
+                 endIndex: int=None,
+                 referenceContext: str=None,
+                 offsetBasedString: bool=True,
+                 nifsentence: str=None,
+                 anchorOf: str=None,
+                 lemma: str=None,
+                 pos: str=None,
+                 morphofeat:str=None,
+                 nextWord: str=None,
+                 previousWord: str=None,
+                 uri: str=None):
+        self.nifsentence = nifsentence
+        self.lemma = lemma
+        self.pos = pos
+        self.morphofeat = morphofeat
+        self.nextWord = nextWord
+        self.previousWord = previousWord
+        self.dependency = []
+        self.dependencyRelationType = None
+        super().__init__(beginIndex=beginIndex, 
+                         endIndex=endIndex, 
+                         referenceContext=referenceContext,
+                         offsetBasedString=offsetBasedString,
+                         anchorOf=anchorOf,
+                         uri=uri)
+
+    def add_dependency(self, dependency: str=None):
+        self.dependency.append(dependency)
+
+    def triples(self):
+        """
+        Generates all the triples
+        """
+        if self.uri is not None:
             yield (self.uri, RDF.type, NIF.Word)
-            if self.nifSentence is not None:
-                yield (self.uri, NIF.Sentence, self.nifSentence.uri)
+            if self.nifsentence is not None:
+                yield (self.uri, NIF.sentence, self.nifsentence.uri)
             for triple in super().triples():
                 yield triple
             if self.lemma is not None:
@@ -257,11 +304,15 @@ class NifWord(NifStructure):
             if self.pos is not None:
                 yield (self.uri, NIF.oliaLink, OLIA[self.pos])
             if self.morphofeat is not None:
-                yield (self.uri, NIF.morphofeat, Literal(self.morphofeat, datatype=XSD.string))
+              yield (self.uri, NIF.morphofeat, Literal(self.morphofeat, datatype=XSD.string))
             if self.nextWord is not None:
                 yield (self.uri, NIF.nextWord, self.nextWord.uri)
             if self.previousWord is not None:
                 yield (self.uri, NIF.previousWord, self.previousWord.uri)
+            if self.dependencyRelationType is not None:
+                yield (self.uri, NIF.dependencyRelationType, Literal(self.dependencyRelationType, datatype=XSD.string))
+            for dep in self.dependency:
+                yield (self.uri, NIF.dependency, dep.uri)
 
 class NifContextCollection(NifBase):
 
@@ -289,7 +340,6 @@ class naf2nif(object):
 
     def __init__(self,
                  uri: str=None,
-                 collection_uri: str=None,
                  doc: NafDocument=None):
         self.graph = Graph()
         self.graph.bind("nif", NIF)
@@ -302,11 +352,11 @@ class naf2nif(object):
         nif_context = NifContext(beginIndex=0,
                        endIndex=len(doc.raw),
                        isString=doc.raw,
-                       offsetBasedString=False,
+                       offsetBasedString=True,
                        uri=uri+"/"+doc_uuid)
         nif_context.referenceContext = nif_context
 
-        nif_collection = NifContextCollection(uri=collection_uri)
+        nif_collection = NifContextCollection(uri=uri+"/collection")
         nif_collection.add_context(nif_context)
 
         words = {word['id']: word for word in doc.text}
@@ -315,7 +365,8 @@ class naf2nif(object):
         nif_sentences = []
         nif_words = []
         nif_terms = []
-        for sentence in doc.sentences:
+        doc_sentences = doc.sentences
+        for sent_idx, sentence in enumerate(doc_sentences):
             beginIndex = int(words[sentence['span'][0]['id']]['offset'])
             endIndex = (int(words[sentence['span'][-1]['id']]['offset'])+
                        int(words[sentence['span'][-1]['id']]['length']))
@@ -330,7 +381,12 @@ class naf2nif(object):
             sentence['nif'] = nif_sentence
             nif_sentences.append(nif_sentence)
 
-            for word_id in sentence['span']:
+            if sent_idx == 0:
+                nif_context.firstSentence = nif_sentence
+            if sent_idx == len(doc_sentences) - 1:
+                nif_context.lastSentence = nif_sentence
+
+            for word_idx, word_id in enumerate(sentence['span']):
                 word = words[word_id['id']]
                 beginIndex = int(word['offset'])
                 endIndex = (int(word['offset'])+int(word['length']))
@@ -340,19 +396,25 @@ class naf2nif(object):
                                    referenceContext=nif_context,
                                    offsetBasedString=True,
                                    anchorOf=anchorOf,
-                                   nifSentence=nif_sentence,
+                                   nifsentence=nif_sentence,
                                    # annotation reference missing
                                    uri=uri+"/"+doc_uuid)
                 word['nif'] = nif_word
                 nif_words.append(nif_word)
 
-            # Add nextWord and previousWord to make graph traversable
-            for idx, word_id in enumerate(sentence['span']):
+            # Add nextWord and previousWord
+            for word_idx, word_id in enumerate(sentence['span']):
                 word = words[word_id['id']]
-                if idx < len(sentence['span']) - 1:
-                    word['nif'].nextWord = words[sentence['span'][idx + 1]['id']]['nif']
-                if idx > 0:
-                    word['nif'].previousWord = words[sentence['span'][idx - 1]['id']]['nif']
+                # add firstWord to sentence
+                if word_idx == 0:
+                    nif_sentence.firstWord = word['nif']
+                # add lastWord to sentence
+                if word_idx == len(sentence['span']) - 1:
+                    nif_sentence.lastWord = word['nif']
+                if word_idx < len(sentence['span']) - 1:
+                    word['nif'].nextWord = words[sentence['span'][word_idx + 1]['id']]['nif']
+                if word_idx > 0:
+                    word['nif'].previousWord = words[sentence['span'][word_idx - 1]['id']]['nif']
 
             for term in sentence['terms']:
                 term_words = [s['id'] for s in terms[term['id']]['span']]
@@ -363,6 +425,7 @@ class naf2nif(object):
                 term_pos = terms[term['id']].get('pos', None)
                 term_pos = mapobject("pos", term_pos.lower()).replace("olia:", "")
                 term_morphofeat = terms[term['id']].get('morphofeat', None)
+
                 nif_term = NifWord(beginIndex=beginIndex,
                                    endIndex=endIndex,
                                    offsetBasedString=True,
@@ -374,12 +437,55 @@ class naf2nif(object):
                 terms[term['id']]['nif'] = nif_term
                 nif_terms.append(nif_term)
 
+        # store nif_pages
+        nif_pages = []
+        page_number = int(doc.text[0]['page'])
+        page_start = int(doc.text[0]['offset'])
+        page_end = int(doc.text[0]['offset'])
+        for word in doc.text:
+            if int(word['page']) != page_number:
+                nif_page = NifPage(beginIndex=page_start,
+                                   endIndex=page_end,
+                                   referenceContext=nif_context,
+                                   offsetBasedString=True,
+                                   uri=uri+"/"+doc_uuid)
+                page_start = int(word['offset'])
+                page_end = int(word['offset']) + int(word['length'])
+                nif_pages.append(nif_page)
+                page_number += 1
+            page_end = int(word['offset']) + int(word['length'])
+        nif_page = NifPage(beginIndex=page_start,
+                           endIndex=page_end,
+                           referenceContext=nif_context,
+                           offsetBasedString=True,
+                           uri=uri+"/"+doc_uuid)
+        nif_pages.append(nif_page)
+
+        # add collection of sentences to nif:Context
+        seq_element = rdflib.term.BNode()
+        self.graph.add((nif_context.uri, NIF.hasSentences, seq_element))
+        rdflib.collection.Collection(self.graph, seq_element, [sentence['nif'].uri for sentence in doc_sentences])
+
+        # add collection of words to each nif:Sentence
+        for sentence in doc_sentences:
+            seq_element = rdflib.term.BNode()
+            self.graph.add((sentence['nif'].uri, NIF.hasWords, seq_element))
+            rdflib.collection.Collection(self.graph, seq_element, [words[word_id['id']]['nif'].uri for word_id in sentence['span']])
+
+        # Add dependencies:
+        for dep in doc.deps:
+            from_term = dep['from_term']
+            to_term = dep['to_term']
+            rfunc = dep['rfunc']
+            terms[from_term]['nif'].add_dependency(terms[to_term]['nif'])
+            terms[from_term]['nif'].dependencyRelationType = rfunc
+
         # Add nextSentence and previousSentence to make graph traversable
-        for idx, nif_sentence in enumerate(nif_sentences):
-            if idx < len(nif_sentences) - 1:
-                nif_sentence.nextSentence = nif_sentences[idx + 1]
-            if idx > 0:
-                nif_sentence.previousSentence = nif_sentences[idx - 1]
+        for sent_idx, nif_sentence in enumerate(nif_sentences):
+            if sent_idx < len(nif_sentences) - 1:
+                nif_sentence.nextSentence = nif_sentences[sent_idx + 1]
+            if sent_idx > 0:
+                nif_sentence.previousSentence = nif_sentences[sent_idx - 1]
 
         nif_paragraphs = []
         for paragraph in doc.paragraphs:
@@ -391,7 +497,6 @@ class naf2nif(object):
                                          endIndex=endIndex,
                                          referenceContext=nif_context,
                                          offsetBasedString=True,
-                                         anchorOf=anchorOf,
                                          # annotation reference missing
                                          uri=uri+"/"+doc_uuid)
             nif_paragraphs.append(nif_paragraph)
@@ -401,6 +506,10 @@ class naf2nif(object):
 
         for triple in nif_collection.triples():
             self.graph.add(triple)
+
+        for nif_page in nif_pages:
+            for triple in nif_page.triples():
+                self.graph.add(triple)
 
         for nif_sentence in nif_sentences:
             for triple in nif_sentence.triples():
@@ -414,108 +523,4 @@ class naf2nif(object):
             for triple in nif_word.triples():
                 self.graph.add(triple)
 
-#         lemon_header = LemonHeader(uri=uri+'/header',
-#                                    dct_type=dct_type,
-#                                    tbx_sourcedesc=tbx_sourcedesc)
 
-#         languages = set()
-
-#         lemon_concepts = list()
-#         lemon_entries = list()
-#         lemon_lexicons = dict()
-#         for concept in termbase.findall("text/body/conceptEntry", namespaces=NAMESPACES):
-
-#             concept_id = concept.attrib["id"]
-
-#             if "http" not in concept_id:
-
-#                 subjectField = None
-#                 for element in concept:
-#                     if element.tag==QName(name="descrip") and element.attrib.get("type", "")=="subjectField":
-#                         subjectField = element.text
-
-#                 lemon_concepts.append(LemonConcept(uri=uri+"/"+concept_id,
-#                                                    subjectField=subjectField))
-
-#                 references = []
-#                 for element in concept:
-#                     if element.tag==QName(name="ref"):
-#                         if element.attrib.get("match")=="fullMatch":
-#                             references.append(element.text)
-
-#                 for langSec in concept:
-#                     if langSec.tag==QName(name="langSec"):
-#                         lang = langSec.attrib.get(XML_LANG, None)
-
-#                         if lang not in lemon_lexicons.keys():
-#                             lemon_lexicons[lang] = LemonLexicon(uri=uri+"/lexicon/"+lang, language=lang)
-
-#                         for termSec in langSec:
-
-#                             lexicalEntry = LemonLexicalEntry(lexicon=lemon_lexicons[lang])
-
-#                             # set references for lexical senses
-#                             lexicalEntry.references = [uri+"/"+concept_id] + references
-
-#                             for element in termSec:
-#                                 if element.tag==QName(name="term"):
-#                                     lemon_entry_uri = uri+"/"+"+".join(element.text.split(" "))+"-"+lang
-#                                     lexicalEntry.set_uri(lemon_entry_uri)
-#                                     lexicalEntry.term = element.text
-#                                 elif element.tag==QName(name="termNote"):
-#                                     termnote_type = element.attrib.get("type", None)
-#                                     if termnote_type=="termType":
-#                                         lexicalEntry.termType = element.text
-#                                     elif termnote_type=="termLemma":
-#                                         lexicalEntry.termLemma = element.text
-#                                     elif termnote_type=="partOfSpeech":
-#                                         lexicalEntry.partOfSpeech = element.text
-#                                     # administrativeStatus not yet done
-#                                 elif element.tag==QName(name="descrip"):
-#                                     descrip_type = element.attrib.get("type", None)
-#                                     if descrip_type=="reliabilityCode":
-#                                         lexicalEntry.reliabilityCode = element.text
-#                                     else:
-#                                         logging.warning("descrip type not found: " + descrip_type)
-#                                 else:
-#                                     logging.warning("termSec element not found: " + element.tag)
-#                             lemon_entries.append(lexicalEntry)
-
-#                             components = lexicalEntry.term.split(" ")
-#                             if len(components) > 1:
-#                                 component_list = LemonComponentList(
-#                                     # uri=lexicalEntry.uri+"#ComponentList",
-#                                     uri=lexicalEntry.uri,
-#                                     lexicalEntry=lexicalEntry)
-#                                 for idx, component in enumerate(components):
-#                                     component_lexicalEntry = LemonLexicalEntry(
-#                                         uri=uri+"/"+component+"-"+lang,
-#                                         lexicon=lemon_lexicons[lang],
-#                                         term=component,
-#                                         partOfSpeech=lexicalEntry.partOfSpeech.split(", ")[idx] if lexicalEntry.partOfSpeech is not None else None)
-#                                     lemon_component = LemonComponent(
-#                                         uri=lexicalEntry.uri+"#component"+str(idx+1),
-#                                         term=component,
-#                                         lexicalEntry=component_lexicalEntry)
-#                                     component_list.components.append(lemon_component)
-#                                 lemon_entries.append(component_list)
-#                     elif langSec.tag not in [QName(name="descrip"), QName(name="ref")]:
-#                         logging.warning("conceptEntry element not found: " + langSec.tag)
-
-
-#         for triple in lemon_header.triples():
-#             self.graph.add(triple)
-
-#         for lexicon in lemon_lexicons.values():
-#             for triple in lexicon.triples():
-#                 self.graph.add(triple)
-
-#         for concept in lemon_concepts:
-#             for triple in concept.triples():
-#                 self.graph.add(triple)
-
-#         for entry in lemon_entries:
-#             for triple in entry.triples():
-#                 self.graph.add(triple)
-
-#         # to do: abbreviations

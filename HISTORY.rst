@@ -37,3 +37,9 @@ History
 ------------------
 
 * Added first version of nif conversion
+
+0.1.49 (2022-9-2)
+------------------
+
+* Improved version of nif conversion
+* Optimized TermbaseProcessor
