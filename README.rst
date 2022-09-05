@@ -276,13 +276,13 @@ Retrieve the recommendations with::
 
 
 Convert NAF to the NLP Interchange Format (NIF)
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+-----------------------------------------------
 
 The `NLP Interchange Format (NIF) <https://github.com/NLP2RDF/ontologies>` is an RDF/OWL-based format that aims to achieve interoperability between NLP tools.
 
 Here's an example::
 
-	doc = nafigator.NafDocument().open("..//data//example.naf.xml")
+  doc = nafigator.NafDocument().open("..//data//example.naf.xml")
 
   nif = nafigator.naf2nif(uri="https://mangosaurus.eu/rdf-data/nif-data/doc_1",
                           collection_uri="https://mangosaurus.eu/rdf-data/nif-data/collection",
@@ -294,7 +294,7 @@ This results in an object that contains the rdflib Graph and can be serialized w
 
 This results in the graph in turtle format. 
 
-The namespace definitions
+The prefixes and namespaces:
 
 ::
 
@@ -353,14 +353,22 @@ The nif:Word
 
 ::
 
-  <https://mangosaurus.eu/rdf-data/nif-data/doc_1#offset_0_3> a nif:OffsetBasedString,
+  <https://mangosaurus.eu/rdf-data/nif-data/3968fc96-5750-3fdb-be58-46f182762119#offset_0_3> a nif:OffsetBasedString,
           nif:Word ;
       nif:anchorOf "The"^^xsd:string ;
       nif:beginIndex "0"^^xsd:nonNegativeInteger ;
       nif:endIndex "3"^^xsd:nonNegativeInteger ;
       nif:lemma "the"^^xsd:string ;
-      nif:morphofeat "Definite=Def|PronType=Art"^^xsd:string ;
-      nif:nextWord <https://mangosaurus.eu/rdf-data/nif-data/doc_1#offset_4_13> ;
-      nif:oliaLink olia:Determiner ;
-      nif:referenceContext <https://mangosaurus.eu/rdf-data/nif-data/doc_1> ;
-      nif:sentence <https://mangosaurus.eu/rdf-data/nif-data/doc_1#offset_0_165> .
+      nif:nextWord <https://mangosaurus.eu/rdf-data/nif-data/3968fc96-5750-3fdb-be58-46f182762119#offset_4_13> ;
+      nif:oliaLink olia:Article,
+          olia:Definite,
+          olia:Determiner ;
+      nif:referenceContext <https://mangosaurus.eu/rdf-data/nif-data/3968fc96-5750-3fdb-be58-46f182762119#offset_0_265> ;
+      nif:sentence <https://mangosaurus.eu/rdf-data/nif-data/3968fc96-5750-3fdb-be58-46f182762119#offset_0_165> .
+
+Part of speech tags and morphological features are here combined: the part-of-speech tag is *olia:Determiner*. The morphological features are *olia:Article* (the pronType:Art in terms of Universal Dependencies) and *olia:Definite* (the Definite:Def in terms of Universal Dependencies).
+
+Changes to NIF
+~~~~~~~~~~~~~~
+
+Instead of the original RDF predicates *nif:word* and *nif:sentence* (used to link words to sentences and vice versa) I used predicates *nif:hasWord* and *nif:hasSentence* which point to a RDF collection (a linked list) of respectively word and sentences. The RDF collection maintains order of the elements and easy traversing. These predicates are not part of the original NIF ontology.

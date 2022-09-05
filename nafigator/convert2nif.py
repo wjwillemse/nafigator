@@ -267,14 +267,14 @@ class NifWord(NifStructure):
                  anchorOf: str=None,
                  lemma: str=None,
                  pos: str=None,
-                 morphofeat:str=None,
+                 morphofeats:list=[],
                  nextWord: str=None,
                  previousWord: str=None,
                  uri: str=None):
         self.nifsentence = nifsentence
         self.lemma = lemma
         self.pos = pos
-        self.morphofeat = morphofeat
+        self.morphofeats = morphofeats
         self.nextWord = nextWord
         self.previousWord = previousWord
         self.dependency = []
@@ -303,8 +303,9 @@ class NifWord(NifStructure):
                 yield (self.uri, NIF.lemma, Literal(self.lemma, datatype=XSD.string))
             if self.pos is not None:
                 yield (self.uri, NIF.oliaLink, OLIA[self.pos])
-            if self.morphofeat is not None:
-              yield (self.uri, NIF.morphofeat, Literal(self.morphofeat, datatype=XSD.string))
+            if self.morphofeats is not None and self.morphofeats != []:
+                for morphofeat in self.morphofeats:
+                    yield (self.uri, NIF.oliaLink, OLIA[morphofeat])
             if self.nextWord is not None:
                 yield (self.uri, NIF.nextWord, self.nextWord.uri)
             if self.previousWord is not None:
@@ -424,14 +425,28 @@ class naf2nif(object):
                 term_lemma = terms[term['id']].get('lemma', None)
                 term_pos = terms[term['id']].get('pos', None)
                 term_pos = mapobject("pos", term_pos.lower()).replace("olia:", "")
-                term_morphofeat = terms[term['id']].get('morphofeat', None)
+
+                term_morphofeats = []
+                morphofeats = terms[term['id']].get('morphofeat', None)
+                print(str(term['id']) + ": " + str(morphofeats)) 
+                if morphofeats is not None:
+                    for feat in morphofeats.split("|"):
+
+                        if (
+                            feat.split("=")[0] == "Poss" #in ["Foreign", "Reflex", "Poss", "Abbr"]
+                            and feat.split("=")[1] == "Yes"
+                        ):
+                            print("  " + str(feat))
+                            term_morphofeats.append("PossessivePronoun")
+                        else:
+                            term_morphofeats.append(mapobject(feat.split("=")[0], feat.split("=")[1]).replace("olia:", ""))
 
                 nif_term = NifWord(beginIndex=beginIndex,
                                    endIndex=endIndex,
                                    offsetBasedString=True,
                                    lemma=term_lemma,
                                    pos=term_pos,
-                                   morphofeat=term_morphofeat,
+                                   morphofeats=term_morphofeats,
                                    # annotation reference missing
                                    uri=uri+"/"+doc_uuid)
                 terms[term['id']]['nif'] = nif_term

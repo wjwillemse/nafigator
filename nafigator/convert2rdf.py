@@ -272,7 +272,7 @@ UD2OLIA_mappings = {
         "Ind": "olia:IndefinitePronoun",
         "Int": "olia:InterrogativePronoun",
         "Neg": None,
-        "Prs": "olia:PossessivePronoun",
+        "Prs": "olia:PersonalPronoun",
         "Rcp": "olia:ReciprocalPronoun",
         "Rel": "olia:RelativePronoun",
         "Tot": None,

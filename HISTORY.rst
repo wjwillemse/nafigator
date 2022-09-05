@@ -43,3 +43,10 @@ History
 
 * Improved version of nif conversion
 * Optimized TermbaseProcessor
+
+0.1.50 (2022-9-5)
+------------------
+
+* Morphological features in nif
+* Bugfix TermbaseProcessor
+# NIF example added to README.rst
