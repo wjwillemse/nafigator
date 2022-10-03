@@ -301,16 +301,17 @@ class NafDocument(etree._ElementTree):
                 last_sentence = [item["sent"]]
                 sent_num += 1
         if sent_num >= 1:
-            sentences.append(
-                {
-                    "text": " ".join(sentence_list),
-                    "para": list(para),
-                    "page": list(pages),
-                    "span": span,
-                    "terms": terms,
-                    "sent": last_sentence
-                }
-            )
+            if sentence_list != []:
+                sentences.append(
+                    {
+                        "text": " ".join(sentence_list),
+                        "para": list(para),
+                        "page": list(pages),
+                        "span": span,
+                        "terms": terms,
+                        "sent": last_sentence
+                    }
+                )
         return sentences
 
     @property
