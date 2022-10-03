@@ -102,21 +102,44 @@ class TermbaseProcessor(object):
 
                         # key for termbase dictionary is concatenated words
                         key = " ".join([d.get('lemma', 'text') for d in doc_terms[idx:idx+term_length]])
-                        ext_ref = self.termbase[language][term_length].get(key, None)
+
+                        # strange lemmatization error
+                        # der versicherungstechnischen Rückstellungen -> 
+                        # versicherungstechnischen Rückstellungen -> 
+                        if language=="de":
+                            if "versicherungstechnisch" in key:
+                                key = key.replace("versicherungstechnisch", "versicherungstechnische")
+                        print(key)
+                        ext_ref = self.termbase[language][term_length].get(key.lower(), None)
                         if  ext_ref is not None:
-                            span = [doc_terms[idx+s]['id'] for s in range(term_length)]
-                            ext_refs = [{"reference": ref} for ref in ext_ref]
                             entity_data = EntityElement(
                                 id="e"+str(num_entities+1),
                                 type="Term", # for now we introduce a new type
                                 status=None,
                                 source=None,
-                                span=span,
-                                ext_refs=ext_refs,
+                                span=[doc_terms[idx+s]['id'] for s in range(term_length)],
+                                ext_refs=[{"reference": ref} for ref in ext_ref],
                                 comment=[key],
                             )
                             num_entities += 1
                             entities_data.append(entity_data)
+                        else:
+                            for last_word_idx in range(2, len(doc_terms[idx+term_length-1]['lemma'])):
+                                last_word = doc_terms[idx+term_length-1]['lemma'][:last_word_idx]
+                                key = " ".join([d.get('lemma', 'text') for d in doc_terms[idx:idx+term_length-1]]+[doc_terms[idx+term_length-1]['lemma'][:last_word_idx]])
+                                ext_ref = self.termbase[language][term_length].get(key.lower(), None)
+                                if  ext_ref is not None:
+                                    entity_data = EntityElement(
+                                        id="e"+str(num_entities+1),
+                                        type="Term", # for now we introduce a new type
+                                        status=None,
+                                        source=None,
+                                        span=[doc_terms[idx+s]['id'] for s in range(term_length)],
+                                        ext_refs=[{"reference": ref} for ref in ext_ref],
+                                        comment=[key],
+                                    )
+                                    num_entities += 1
+                                    entities_data.append(entity_data)
 
         for entity_data in entities_data:
             doc.add_entity_element(data = entity_data,

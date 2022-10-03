@@ -300,7 +300,7 @@ class NafDocument(etree._ElementTree):
                 para.add(item.get("para", "0"))
                 last_sentence = [item["sent"]]
                 sent_num += 1
-        if sent_num > 1:
+        if sent_num >= 1:
             sentences.append(
                 {
                     "text": " ".join(sentence_list),

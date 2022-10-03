@@ -371,4 +371,4 @@ Part of speech tags and morphological features are here combined: the part-of-sp
 Changes to NIF
 ~~~~~~~~~~~~~~
 
-Instead of the original RDF predicates *nif:word* and *nif:sentence* (used to link words to sentences and vice versa) I used predicates *nif:hasWord* and *nif:hasSentence* which point to a RDF collection (a linked list) of respectively word and sentences. The RDF collection maintains order of the elements and easy traversing. These predicates are not part of the original NIF ontology.
+Instead of the original RDF predicates *nif:word* and *nif:sentence* (used to link words to sentences and vice versa) I used predicates *nif:hasWord* and *nif:hasSentence* which point to a RDF collection (a linked list) of respectively words and sentences. The RDF collection maintains order of the elements and easy traversing. These predicates are not part of the original NIF ontology.
