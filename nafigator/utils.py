@@ -21,6 +21,7 @@ import datetime
 from typing import Union
 import nafigator
 
+
 def dataframe2naf(
     df_meta: pd.DataFrame,
     overwrite_existing_naf: bool = False,
@@ -525,6 +526,7 @@ def glue_terms_separated_by_soft_hyphens(doc, language: str, nlp: dict):
 
     return doc
 
+
 def glue_terms_separated_by_hard_hyphens(doc, language: str, nlp: dict):
     """
     Glue terms that are separated by hard hyphens
@@ -747,3 +749,106 @@ def get_context_rows(ref_text: dict, naf_layer, context_range: int) -> str:
         result_w_context = result_w_context + naf_layer[idx]['text']
 
     return result_w_context
+
+
+def get_textlines(sent: dict, doc_words: dict, doc_formats, context_range: int) -> str:
+    """
+    Retrieves the textline where a sentence/paragraph has been found with option to also retreive the textlines before and after
+    Args:
+        sentence: sentence or a paragraph from the Naf.document
+        doc_words: dictionary contaning each word with the word ids as keys
+        doc_formats: formats layer of Naf.Document
+        context_range: amount of context lines around resulting textline
+    Returns:
+        result: result with surrounding context textlines in order (ascending)
+    """
+    # get the offsets of the words
+    offsets = [doc_words[item['id']]['offset'] for item in sent['span']]
+    # get the word lengths
+    lengths = [doc_words[item['id']]['length'] for item in sent['span']]
+    # get the offset of the start of the sentence
+    sent_start = int(offsets[0])
+    # get the offset of the end of the sentence
+    sent_end = int(offsets[-1])+int(lengths[-1])
+    found = False
+    result = ""
+    for idx, page in enumerate(doc_formats):
+        if not found:
+            # get the offset of the start of the page
+            page_start = int(page['offset'])
+            # get the offset of the end of the page
+            page_end = page_start + int(page['length'])
+            # check if the page number of the next page is not exceeding the number of pages in the document
+            if idx+1 < len(doc_formats):
+                # get the offset of the start of the next page
+                next_page_start = int(doc_formats[idx+1]['offset'])
+                # get the offset of the end of the next page
+                next_page_end = next_page_start + int(doc_formats[idx+1]['length'])
+            else:
+                # if the last page is reached, the end and start page numbers are reset
+                next_page_start = 0
+                next_page_end = 0
+
+            search_area = None
+            # check if the sentence is within the page
+            if page_start <= sent_start and page_end >= sent_end:
+                # retreive all the textlines on this page
+                search_area = page['textboxes']
+            # check if sentence spans over two pages
+            elif page_start <= sent_start and next_page_start > sent_start and next_page_end >= sent_end:
+                # retreive all textboxes of current page and next page
+                search_area = page['textboxes'] + doc_formats[idx+1]['textboxes']
+
+            if search_area is not None:
+                textlines = []
+                # loop over each textbox
+                for textbox in search_area:
+                    # loop over each textline
+                    for textline in textbox['textlines']:
+                        textline_text = ""
+                        for text in textline['texts']:
+                            # retreive the text of a texnline. If multiple texts these are joint
+                            textline_text += text['text']
+                        if textline_text != "":
+                            # add a tuple with info about the textline:
+                            # - the offset of the beginning of the textline text and
+                            # - the offset of the end of textline text
+                            # - the text of this textline
+                            textlines.append((int(textline['texts'][0]['offset']),
+                                              int(textline['texts'][-1]['offset'])+int(textline['texts'][-1]['length']),
+                                              textline_text))
+
+                # store indices of textlines that overlap with the sentence
+                sent_lines = []
+                for textline_idx, textline in enumerate(textlines):
+                    # the textline is around the sentence start
+                    if textline[0] <= sent_start and textline[1] > sent_start:
+                        sent_lines.append(textline_idx)
+                    # the textline is within the sentence
+                    elif textline[0] >= sent_start and textline[1] <= sent_end:
+                        sent_lines.append(textline_idx)
+                    # the texline is around the sentence end
+                    elif textline[0] <= sent_end and textline[1] > sent_end:
+                        sent_lines.append(textline_idx)
+
+                sent_lines_added = sent_lines.copy()
+                context_range = context_range + 1
+                sent_lines_added = []
+
+                # check if overlapping textlines were found
+                if len(sent_lines) > 0:
+                    for i in range(context_range):
+                        # check if previous i-th sentence is the first or later
+                        # then add index
+                        if sent_lines[0]-i >= 0:
+                            sent_lines_added.append(sent_lines[0]-i)
+                        # check if previous i-th sentence is the first or later
+                        # then add index
+                        if sent_lines[0]+i < len(textlines):
+                            sent_lines_added.append(sent_lines[0]+i)
+
+                sent_lines_added = sorted(list(set(sent_lines_added)))
+                # join all text based on the selected indices
+                result = "\n".join([textlines[line][2] for line in sent_lines_added])
+                found = True
+    return result
