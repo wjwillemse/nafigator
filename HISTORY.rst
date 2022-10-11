@@ -39,13 +39,13 @@ History
 * Added first version of nif conversion
 
 0.1.49 (2022-9-2)
-------------------
+-----------------
 
 * Improved version of nif conversion
 * Optimized TermbaseProcessor
 
 0.1.50 (2022-9-5)
-------------------
+-----------------
 
 * Morphological features in nif
 * Bugfix TermbaseProcessor
