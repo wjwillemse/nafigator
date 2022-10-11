@@ -52,6 +52,6 @@ History
 # NIF example added to README.rst
 
 0.1.51 (2022-10-11)
-------------------
+-------------------
 
 * Formats layer now contains a deep copy of pdfminer output in xml
