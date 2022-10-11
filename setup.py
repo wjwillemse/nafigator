@@ -31,6 +31,7 @@ setup(
         'Programming Language :: Python :: 3.8',
     ],
     description="Python package to convert spaCy and Stanza documents to NLP Annotation Format (NAF)",
+    long_description_content_type = 'text/x-rst',
     entry_points={
         'console_scripts': [
             'nafigator=nafigator.cli:main',
