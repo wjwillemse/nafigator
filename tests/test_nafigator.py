@@ -16,6 +16,18 @@ unittest.TestLoader.sortTestMethodsUsing = None
 class TestNafigator_pdf(unittest.TestCase):
     """Tests for `nafigator` package."""
 
+    def setUp(self):
+        # @TODO reuse in pdf tests
+        self.pdf_naf = parse2naf.generate_naf(
+            input="tests" + os.sep + "tests" + os.sep + "example.pdf",
+            engine="stanza",
+            language="en",
+            naf_version="v3.1",
+            dtd_validation=False,
+            params={},
+            nlp=None,
+        )
+
     def test_1_pdf_generate_naf(self):
         """ """
         tree = parse2naf.generate_naf(
@@ -28,7 +40,7 @@ class TestNafigator_pdf(unittest.TestCase):
             nlp=None,
         )
         assert (
-            tree.write("tests" + os.sep + "tests" + os.sep + "example.naf.xml") == None
+            tree.write("tests" + os.sep + "tests" + os.sep + "example.naf.xml") is None
         )
 
     def test_1_split_pre_linguistic(self):
@@ -43,7 +55,7 @@ class TestNafigator_pdf(unittest.TestCase):
             params={"linguistic_layers": []},
             nlp=None,
         )
-        tree.write(join("tests", "tests", "example_preprocess.naf.xml")) == None
+        tree.write(join("tests", "tests", "example_preprocess.naf.xml")) is None
 
         # start with saved document and process linguistic steps
         naf = NafDocument().open(join("tests", "tests", "example_preprocess.naf.xml"))
@@ -1189,6 +1201,8 @@ class TestNafigator_pdf(unittest.TestCase):
                 "page": "1",
                 "order": "1",
                 "shape": "(5, 4)",
+                "_bbox": "(68.14626360338573, 438.0, 472.704715840387, 664.56)",
+                "cols": "[(68.38246599153567, 155.2487061668682), (155.2487061668682, 318.17586457073764), (318.17586457073764, 419.1955018137848), (419.1955018137848, 472.5847400241838)]",
                 "table": [
                     {
                         "row": [
@@ -1241,6 +1255,8 @@ class TestNafigator_pdf(unittest.TestCase):
                 "page": "1",
                 "order": "2",
                 "shape": "(5, 4)",
+                "_bbox": "(68.14626360338573, 177.12, 472.704715840387, 403.91999999999996)",
+                "cols": "[(68.38246599153567, 155.2487061668682), (155.2487061668682, 318.17586457073764), (318.17586457073764, 419.1955018137848), (419.1955018137848, 472.5847400241838)]",
                 "table": [
                     {
                         "row": [
@@ -1290,6 +1306,28 @@ class TestNafigator_pdf(unittest.TestCase):
                 ]
             },
         ]
+
+    def test_13_formats_copy(self):
+        # @TODO: naf wordt nu meerdere keren de testen opgeroepen. Deze kan vooraf gedefinieerd worden.
+        # naf = NafDocument().open(join("tests", "tests", "example.naf.xml"))
+        actual = self.pdf_naf.formats_copy
+
+        # check formatting info stored in formats_copy
+        assert list(actual[0].keys()) == ['id', 'bbox', 'rotate', 'textboxes', 'layout']
+        # check info in textboxes
+        assert list(actual[0]["textboxes"][0]["textlines"][1]["texts"][0].keys()) == [
+            'font', 'bbox', 'colourspace', 'ncolour', 'size', 'text']
+        assert list(actual[0]["textboxes"][0]["textlines"][0].keys()) == ['bbox', 'texts']
+        assert list(actual[0]["textboxes"][0].keys()) == ['id', 'bbox', 'textlines']
+        assert actual[0]["textboxes"][0]["textlines"][0]["texts"][0]["text"] == 'T'
+        # check info in layout
+        assert list(actual[0]["layout"][0]['textgroup'][0]['textboxes'][1].keys()) == ['id', 'bbox', 'textbox']
+        assert list(actual[0]["layout"][0]['textgroup'][0].keys()) == ['bbox', 'textboxes']
+        assert list(actual[0]["layout"][0].keys()) == ['textgroup']
+        assert actual[0]["layout"][0]['textgroup'][0]['textboxes'][1] == {
+            'id': '1', 'bbox': '56.760,716.208,485.922,742.008', 'textbox': None}
+        # check the amount of characters in second line
+        assert len(actual[0]["textboxes"][0]["textlines"][1]["texts"]) == 78
 
     # def test_command_line_interface(self):
     #     """Test the CLI."""

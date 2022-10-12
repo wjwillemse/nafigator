@@ -18,6 +18,7 @@ from .utils import prepare_comment_text
 import datetime
 import logging
 import camelot
+from copy import deepcopy
 import re
 
 NAF_VERSION_TO_DTD = {
@@ -51,6 +52,7 @@ COMPONENT_OCCURRENCE_TAG = "component"
 
 RAW_LAYER_TAG = "raw"
 FORMATS_LAYER_TAG = "formats"
+FORMATS_LAYER_COPY_TAG = "formats_copy"
 NAF_HEADER = "nafHeader"
 
 SPAN_OCCURRENCE_TAG = "span"
@@ -374,6 +376,65 @@ class NafDocument(etree._ElementTree):
                 }
             )
         return paragraphs
+
+    @property
+    # @TODO: reduce complexity of code
+    def formats_copy(self):
+        """Returns formats_copy layer of the NAF document as list of dicts"""
+        pages = list()
+        for child in self.find(FORMATS_LAYER_COPY_TAG):
+            # transform the page elements
+            if child.tag == "page":
+                pages_data = dict(child.attrib)
+                textboxes = list()
+                layout = list()
+                # tranform the textbox elements
+                for child2 in child:
+                    # get textbox data
+                    if child2.tag == "textbox":
+                        textbox_data = dict(child2.attrib)
+                        textlines = list()
+                        # get textline data
+                        for child3 in child2:
+                            if child3.tag == "textline":
+                                textline_data = dict(child3.attrib)
+                                texts = list()
+                                # get text data
+                                for child4 in child3:
+                                    if child4.tag == "text":
+                                        text_data = dict(child4.attrib)
+                                        text_data["text"] = child4.text
+                                        texts.append(text_data)
+                                textline_data["texts"] = texts
+                                textlines.append(textline_data)
+                        textbox_data["textlines"] = textlines
+                        textboxes.append(textbox_data)
+
+                    # transform the layout element
+                    elif child2.tag == "layout":
+                        layout_data = dict(child2.attrib)
+                        textgroups = list()
+                        # get the textgroup data
+                        for child3 in child2:
+                            if child3.tag == "textgroup":
+                                textgroup_data = dict(child3.attrib)
+                                textboxes2 = list()
+                                # get the textbox data
+                                for child4 in child3:
+                                    if child4.tag == "textbox":
+                                        textbox2_data = dict(child4.attrib)
+                                        textbox2_data['textbox'] = child4.text
+                                        textboxes2.append(textbox2_data)
+                                textgroup_data['textboxes'] = textboxes2
+                                textgroups.append(textgroup_data)
+                        layout_data['textgroup'] = textgroups
+                        layout.append(layout_data)
+
+                pages_data["textboxes"] = textboxes
+                pages_data["layout"] = layout
+                pages.append(pages_data)
+
+                return pages
 
     @property
     def formats(self):
@@ -989,16 +1050,51 @@ class NafDocument(etree._ElementTree):
             )
             self.add_span_element(element=com, data=component)
 
-    def add_formats_element(self, source: str, formats: str, pdf_tables: camelot.core.TableList = None):
-        """ """
-
+    def add_formats_copy_element(self, source: str, formats: str):
+        """
+        adds a formats_copy layer containing a deep copy of the pdfminer.
+        Args:
+        source: document type (e.g. pdf or docx)
+        formats: raw output of pdfminer        
+        """
+        # @TODO: extend to other types of documents. Currently only for pdf documents available
         if source == "pdf":
-
+            # convert pdfminer output from string to xml
             formats = bytes(bytearray(formats, encoding="utf-8"))
             parser = etree.XMLParser(
                 ns_clean=True, recover=True, encoding="utf-8")
             formats_root = etree.fromstring(formats, parser=parser)
 
+            # add formatslayer to the Naf.Document if not already exist
+            layer = self.find(FORMATS_LAYER_COPY_TAG)
+
+            if layer is None:
+                layer = etree.SubElement(
+                    self.getroot(), QName(PREFIX_NAF_BASE, FORMATS_LAYER_COPY_TAG)
+                )
+
+            # add the pdfminer output as page elements
+            for page_element in formats_root:
+                layer.append(deepcopy(page_element))
+
+    def add_formats_element(self, source: str, formats: str, pdf_tables: camelot.core.TableList = None):
+        """
+        adds the formats layer.
+        Args
+        source: document type (e.g. pdf or docx)
+        formats: raw output of pdfminer
+        pdf_tables: raw output of camelot
+        """
+
+        if source == "pdf":
+
+            # convert pdfminer output from string to xml
+            formats = bytes(bytearray(formats, encoding="utf-8"))
+            parser = etree.XMLParser(
+                ns_clean=True, recover=True, encoding="utf-8")
+            formats_root = etree.fromstring(formats, parser=parser)
+
+            # add formatslayer to the Naf.Document if not already exist
             layer = self.find(FORMATS_LAYER_TAG)
             if layer is None:
                 layer = etree.SubElement(
