@@ -360,7 +360,7 @@ def chunks_for_doc(doc, params: dict):
     """Return chunks in doc as a generator"""
     for chunk in params["engine"].document_noun_chunks(doc):
         if chunk.root.head.pos_ == "ADP":
-            span = doc[chunk.start - 1 : chunk.end]
+            span = doc[chunk.start - 1: chunk.end]
             yield (span, "PP")
         yield (chunk, "NP")
 
@@ -521,6 +521,7 @@ def add_text_layer(params: dict):
     paragraphs_offset = None
     formats = root.find(FORMATS_LAYER_TAG)
     if formats is not None:
+        # calculate offsets
         pages_offset = [int(page.get("offset")) for page in formats]
         paragraphs_offset = [0] + [
             int(text.get("offset")) + len(text.text)
@@ -908,8 +909,11 @@ def add_formats_layer(params: dict):
         hostname=getfqdn(),
     )
     params["tree"].add_processor_element("formats", lp)
+    params["tree"].add_processor_element("formats_copy", lp)
 
     if "pdftoxml" in params.keys():
         params["tree"].add_formats_element("pdf", params["pdftoxml"], params.get("pdftotables", None))
+        params["tree"].add_formats_copy_element("pdf", params["pdftoxml"])
+
     elif "docxtoxml" in params.keys():
         params["tree"].add_formats_element("docx", params["docxtoxml"])
