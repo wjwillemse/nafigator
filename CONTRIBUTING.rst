@@ -107,6 +107,28 @@ Before you submit a pull request, check that it meets these guidelines:
 3. The pull request should work for Python 3.6, 3.7 and 3.8, and for PyPy. 
    Make sure that the tests pass for all supported Python versions.
 
+
+Pushing a new version to pypi.org
+---------------------------------
+
+If you want to upload a new version to pypi.org then take the following steps
+
+1. Merge pull requests with your changes
+2. If not yet done, update the version number in *setup.py* and *nafigator/__init__.py*
+3. If not yet done, update *HISTORY.rst* with your changes
+4. Build the new version with::
+
+  python setup.py bdist_wheel --universal
+
+5. Upload the new version::
+
+  twine upload dist/*
+
+6. If you get errors when uploading then you can find errors with::
+
+  twine check dist/nafigator-version-py2.py3-none-any.whl
+
+
 Tips
 ----
 
@@ -115,15 +137,3 @@ To run a subset of tests::
 
     $ python -m unittest tests.test_nafigator
 
-Deploying
----------
-
-A reminder for the maintainers on how to deploy.
-Make sure all your changes are committed (including an entry in HISTORY.rst).
-Then run::
-
-$ bump2version patch # possible: major / minor / patch
-$ git push
-$ git push --tags
-
-Travis will then deploy to PyPI if tests pass.
