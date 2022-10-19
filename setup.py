@@ -4,10 +4,10 @@
 
 from setuptools import setup, find_packages
 
-with open('README.rst') as readme_file:
+with open('README.rst', encoding="utf8") as readme_file:
     readme = readme_file.read()
 
-with open('HISTORY.rst') as history_file:
+with open('HISTORY.rst', encoding="utf8") as history_file:
     history = history_file.read()
 
 requirements = ['click>=7.0', 'pdfminer.six>=20200726', 'lxml', 'python-docx', 'folia', 'pandas', 'camelot-py>=0.10.1', 'opencv-python>=4.5.5.62', 'pdftopng>=0.2.3']
@@ -31,6 +31,7 @@ setup(
         'Programming Language :: Python :: 3.8',
     ],
     description="Python package to convert spaCy and Stanza documents to NLP Annotation Format (NAF)",
+    long_description_content_type = 'text/x-rst',
     entry_points={
         'console_scripts': [
             'nafigator=nafigator.cli:main',
@@ -47,6 +48,6 @@ setup(
     test_suite='tests',
     tests_require=test_requirements,
     url='https://github.com/denederlandschebank/nafigator',
-    version='0.1.46',
+    version='0.1.51',
     zip_safe=False,
 )

@@ -26,3 +26,32 @@ History
 ------------------
 
 * Added sent ids to doc.sentences and doc.paragraphs
+
+0.1.47 (2022-8-22)
+------------------
+
+* Table extraction improvements 
+* Fix to align enumeration of sentences and paragraphs
+
+0.1.48 (2022-8-30)
+------------------
+
+* Added first version of nif conversion
+
+0.1.49 (2022-9-2)
+-----------------
+
+* Improved version of nif conversion
+* Optimized TermbaseProcessor
+
+0.1.50 (2022-9-5)
+-----------------
+
+* Morphological features in nif
+* Bugfix TermbaseProcessor
+* NIF example added to README.rst
+
+0.1.51 (2022-10-11)
+-------------------
+
+* Formats layer now contains a deep copy of pdfminer output in xml

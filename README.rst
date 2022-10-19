@@ -275,66 +275,100 @@ Retrieve the recommendations with::
   doc.recommendations
 
 
-Convert NAF file to RDF in turtle syntax
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Convert NAF to the NLP Interchange Format (NIF)
+-----------------------------------------------
 
-Just run::
+The `NLP Interchange Format (NIF) <https://github.com/NLP2RDF/ontologies>` is an RDF/OWL-based format that aims to achieve interoperability between NLP tools.
 
-	python -m nafigator.convert2rdf
+Here's an example::
 
-No ontology or vocabulary of NAF exists yet. For now, we map xml tags and attributes to RDF predicates using provisional prefixes and namespaces, for example base attributes are mapped to the prefix naf-base.
+  doc = nafigator.NafDocument().open("..//data//example.naf.xml")
 
-Below are some excerpts with blank nodes.
+  nif = nafigator.naf2nif(uri="https://mangosaurus.eu/rdf-data/nif-data/doc_1",
+                          collection_uri="https://mangosaurus.eu/rdf-data/nif-data/collection",
+                          doc=doc)
 
-Definition of a document::
+This results in an object that contains the rdflib Graph and can be serialized with::
 
-  _:doc a naf-base:document ;
-      naf-base:hasHeader _:nafHeader ;
-      naf-base:hasPages ( _:page1 ) .
+  nif.graph.serialize(format="turtle"))
 
-From the nafHeader::
+This results in the graph in turtle format. 
 
-  _:nafHeader a naf-base:header ;
-      _:nafHeader a naf-base:header ;
+The prefixes and namespaces:
+
+::
+
+  @prefix dcterms: <http://purl.org/dc/terms/> .
+  @prefix nif: <http://persistence.uni-leipzig.org/nlp2rdf/ontologies/nif-core#> .
+  @prefix olia: <http://purl.org/olia/olia.owl#> .
+  @prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+
+The nif:ContextCollection
+
+::
+
+  <https://mangosaurus.eu/rdf-data/nif-data/collection> a nif:ContextCollection ;
+      nif:hasContext <https://mangosaurus.eu/rdf-data/nif-data/doc_1> ;
+      dcterms:conformsTo <http://persistence.uni-leipzig.org/nlp2rdf/ontologies/nif-core/2.1> .
+
+The nif:Context (a document)
+
+::
+
+  <https://mangosaurus.eu/rdf-data/nif-data/doc_1#offset_0_265> a nif:Context,
+          nif:String ;
+      nif:beginIndex "0"^^xsd:nonNegativeInteger ;
+      nif:endIndex "265"^^xsd:nonNegativeInteger ;
+      nif:hasSentences ( 
+        <https://mangosaurus.eu/rdf-data/nif-data/doc_1#offset_0_165> 
+        <https://mangosaurus.eu/rdf-data/nif-data/doc_1#offset_167_265> 
+      ) ;
+      nif:isString "The Nafigator package allows you to store NLP output from custom made Spacy and stanza  pipelines with (intermediate) results and all processing steps in one format.  Multiwords like in “we have set that out below” are recognized (depending on your NLP  processor)."^^xsd:string ;
+      nif:lastSentence <https://mangosaurus.eu/rdf-data/nif-data/doc_1#offset_167_265> ;
+      nif:firstSentence <https://mangosaurus.eu/rdf-data/nif-data/doc_1#offset_0_165> ;
+      nif:referenceContext <https://mangosaurus.eu/rdf-data/nif-data/doc_1> .
+
+The nif:Sentence
+
+::
+
+  <https://mangosaurus.eu/rdf-data/nif-data/doc_1#offset_0_165> a nif:OffsetBasedString,
+          nif:Paragraph,
+          nif:Sentence ;
+    nif:anchorOf "The Nafigator package allows you to store NLP output from custom made Spacy and stanza pipelines with ( intermediate ) results and all processing steps in one format ."^^xsd:string ;
+    nif:beginIndex "0"^^xsd:nonNegativeInteger ;
+    nif:endIndex "165"^^xsd:nonNegativeInteger ;
+    nif:firstWord <https://mangosaurus.eu/rdf-data/nif-data/doc_1#offset_0_3> ;
+    nif:hasWords ( 
+      <https://mangosaurus.eu/rdf-data/nif-data/doc_1#offset_0_3> 
+      <https://mangosaurus.eu/rdf-data/nif-data/doc_1#offset_4_13> 
       ...
-      naf-base:hasPublic [ 
-          dc:format "application/pdf"^^rdf:XMLLiteral ;
-          dc:uri "data/example.pdf"^^rdf:XMLLiteral 
-      ] .
+      <https://mangosaurus.eu/rdf-data/nif-data/doc_1#offset_164_165> 
+    ) ;
+    nif:lastWord <https://mangosaurus.eu/rdf-data/nif-data/doc_1#offset_164_165> ;
+    nif:nextSentence <https://mangosaurus.eu/rdf-data/nif-data/doc_1#offset_167_265> ;
+    nif:referenceContext <https://mangosaurus.eu/rdf-data/nif-data/doc_1> .
 
-A sentence::
+The nif:Word
 
-  _:sent1 a naf-base:sentence ;
-      naf-base:isPartOf _:para1, _:page1 ;
-      naf-base:hasSpan ( _:wf1 _:wf2 ...  _:wf29 ) .
+::
 
-A word::
+  <https://mangosaurus.eu/rdf-data/nif-data/3968fc96-5750-3fdb-be58-46f182762119#offset_0_3> a nif:OffsetBasedString,
+          nif:Word ;
+      nif:anchorOf "The"^^xsd:string ;
+      nif:beginIndex "0"^^xsd:nonNegativeInteger ;
+      nif:endIndex "3"^^xsd:nonNegativeInteger ;
+      nif:lemma "the"^^xsd:string ;
+      nif:nextWord <https://mangosaurus.eu/rdf-data/nif-data/3968fc96-5750-3fdb-be58-46f182762119#offset_4_13> ;
+      nif:oliaLink olia:Article,
+          olia:Definite,
+          olia:Determiner ;
+      nif:referenceContext <https://mangosaurus.eu/rdf-data/nif-data/3968fc96-5750-3fdb-be58-46f182762119#offset_0_265> ;
+      nif:sentence <https://mangosaurus.eu/rdf-data/nif-data/3968fc96-5750-3fdb-be58-46f182762119#offset_0_165> .
 
-  _:wf2 a naf-base:wordform ;
-      naf-base:hasText "Nafigator"^^rdf:XMLLiteral ;
-      naf-base:hasLength "9"^^xsd:integer ;
-      naf-base:hasOffset "4"^^xsd:integer ;
-      naf-base:isPartOf _:page1, 
-         _:para1, 
-         _:sent1.
+Part of speech tags and morphological features are here combined: the part-of-speech tag is *olia:Determiner*. The morphological features are *olia:Article* (the pronType:Art in terms of Universal Dependencies) and *olia:Definite* (the Definite:Def in terms of Universal Dependencies).
 
-A term::
+Changes to NIF
+~~~~~~~~~~~~~~
 
-  _:term2 a naf-base:term ;
-      naf-base:hasLemma "Nafigator"^^rdf:XMLLiteral ;
-      naf-base:hasNumber olia:Singular ;
-      naf-base:hasPos olia:ProperNoun ;
-      naf-base:hasSpan ( _:wf2 ) .
-      	
-
-An entity::
-
-  _:entity1 a naf-base:entity ;
-      naf-base:hasType naf-entity:product ;
-      naf-base:hasSpan ( _:term2 ) .
-
-A dependency::
-
-  _:term3 a naf-base:term ;
-      naf-rfunc:compound _:term2 ;
-      naf-rfunc:det _:term1 .
+Instead of the original RDF predicates *nif:word* and *nif:sentence* (used to link words to sentences and vice versa) I used predicates *nif:hasWord* and *nif:hasSentence* which point to a RDF collection (a linked list) of respectively words and sentences. The RDF collection maintains order of the elements and easy traversing. These predicates are not part of the original NIF ontology.
