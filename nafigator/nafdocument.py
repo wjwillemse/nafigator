@@ -1172,6 +1172,8 @@ class NafDocument(etree._ElementTree):
                             if len(textline) > 0:
                                 previous_text = textline[0].text
                                 previous_attrib = copy_dict(textline[0])
+                                if previous_text is None:
+                                    previous_text = ""
                                 for idx, char in enumerate(textline[1:]):
                                     bbox = char.attrib.get("bbox", None)
                                     if bbox is not None:
