@@ -1,11 +1,8 @@
 from nafigator.nafdocument import NafDocument
-from nafigator.postprocessor import TableFormatter, Highlighter
+from nafigator.postprocessor.tableformatter import TableFormatter
 import pandas as pd
 import numpy as np
 from pandas.testing import assert_frame_equal
-from lxml import etree
-import fitz
-import os
 import unittest
 
 unittest.TestLoader.sortTestMethodsUsing = None
@@ -234,65 +231,3 @@ class TestTableFormatter(unittest.TestCase):
                                                       5: np.nan},
                         'Rij 3': {1: 'Vijfde cell', 2: 'Zesde cell', 3: np.nan, 4: np.nan, 5: np.nan}}
         assert actual_h == exp_output_h
-
-
-class TestHighlighter(unittest.TestCase):
-    """
-    The basic class that inherits unittest.TestCase
-    """
-    doc = NafDocument().open('tests/tests/example.naf.xml')
-    highlighter = Highlighter('tests/tests/example.pdf', doc)
-
-    def test_highlight_box_in_pdf(self):
-        bbox = (203.963, 771.408, 221.964, 783.408)
-        path_highlighted_pdf = 'tests/tests/example_highlighted.pdf'
-        page_nr = 1
-        page_height = 841.920
-        origin_bl = True
-        self.highlighter.highlight_box_in_pdf(bbox, path_highlighted_pdf, page_nr, page_height, origin_bl)
-
-        # check if document has been highlighted and saved
-        filepath = "tests/tests/example_highlighted.pdf"
-        doc = fitz.open(filepath)
-        page = doc[0]
-
-        # list of words on page
-        wordlist = page.get_text("words")
-        # sort on ascending y, then x
-        wordlist.sort(key=lambda w: (w[3], w[0]))
-        annot = page.firstAnnot
-        # check which word corresponds with highlight in pdf
-        points = annot.vertices
-        r = fitz.Quad(points[0: 4]).rect
-        word = [w for w in wordlist if fitz.Rect(w[:4]).intersects(r)]
-        actual = word[0][4]
-        os.remove("tests/tests/example_highlighted.pdf")
-        assert actual == 'you'
-
-    def test_retreive_subelements_by_tag(self):
-        tag_path = "page/textbox/textline/text"
-        actual = self.highlighter.retreive_subelements_by_tag(self.highlighter.root_xml, tag_path)
-        assert len(actual) == 265
-        assert actual[14].attrib == {'font': 'CIDFont+F1', 'bbox': '127.419,771.408,133.419,783.408',
-                                     'colourspace': 'DeviceGray', 'ncolour': '(0.0, 0.0, 0.0)', 'size': '12.000'}
-        assert actual[14].text == 'p'
-
-    def test__get_char_bbox(self):
-        char_str = ('<text font="CIDFont+F1" bbox="56.760,771.408,64.080,783.408" colourspace="DeviceGray" '
-                    'ncolour="(0.0, 0.0, 0.0)" size="12.000">T</text>\n')
-        char_element = etree.fromstring(char_str)
-        actual = self.highlighter._get_char_bbox(char_element)
-        exp_output = (56.76, 771.408, 64.08, 783.408)
-        assert actual == exp_output
-
-    def test_get_word_bbox(self):
-        actual = self.highlighter.get_word_bbox(word_id='w5', page_nr=1)
-        exp_output = {'text': 'you', 'id': 'w5', 'sent': '1', 'para': '1', 'page': '1',
-                      'offset': '29', 'length': '3', 'bbox': (203.963, 771.408, 221.964, 783.408)}
-        exp_output_bbox_ru = self.highlighter.root_xml[0][0][0][29].attrib['bbox'].split(',')
-        exp_output_bbox_bl = self.highlighter.root_xml[0][0][0][31].attrib['bbox'].split(',')
-        assert actual == exp_output
-        assert exp_output['bbox'][0] == float(exp_output_bbox_ru[0])
-        assert exp_output['bbox'][3] == float(exp_output_bbox_ru[3])
-        assert exp_output['bbox'][1] == float(exp_output_bbox_bl[1])
-        assert exp_output['bbox'][2] == float(exp_output_bbox_bl[2])
