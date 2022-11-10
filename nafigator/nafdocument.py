@@ -1083,7 +1083,7 @@ class NafDocument(etree._ElementTree):
             for page_element in formats_root:
                 layer.append(deepcopy(page_element))
 
-    def add_formats_element(self, source: str, formats: str, pdf_tables: camelot.core.TableList = None):
+    def add_formats_element(self, source: str, formats: str, coordinates: bool, pdf_tables: camelot.core.TableList = None):
         """
         adds the formats layer.
         Args
@@ -1091,7 +1091,6 @@ class NafDocument(etree._ElementTree):
         formats: raw output of pdfminer
         pdf_tables: raw output of camelot
         """
-
         if source == "pdf":
 
             # convert pdfminer output from string to xml
@@ -1108,13 +1107,20 @@ class NafDocument(etree._ElementTree):
                 )
 
             def add_element(element, tag):
+                # create a filtered formats element
                 subelement = etree.SubElement(element, tag)
                 for item in element.attrib.keys():
-                    if item not in ["bbox", "colourspace", "ncolour"]:
-                        subelement.attrib[item] = element.attrib[item]
+                    if coordinates:
+                        if item not in ["colourspace", "ncolour"]:
+                            subelement.attrib[item] = element.attrib[item]
+                            print("test")
+                    else:
+                        if item not in ["bbox", "colourspace", "ncolour"]:
+                            subelement.attrib[item] = element.attrib[item]
                 return subelement
 
             def add_text_element(element, tag, text, attrib, offset):
+                # add text and attributes to element
                 if (text is not None) and (text.strip() != ""):
                     text_element = etree.SubElement(element, tag)
                     for item in attrib.keys():
@@ -1124,11 +1130,19 @@ class NafDocument(etree._ElementTree):
                     text_element.set("offset", str(offset))
 
             def copy_dict(element):
-                return {
-                    item: element.attrib[item]
-                    for item in element.keys()
-                    if item not in ["bbox", "colourspace", "ncolour"]
-                }
+                # filters element and convert into dictionary
+                if coordinates:
+                    return {
+                        item: element.attrib[item]
+                        for item in element.keys()
+                        if item not in ["colourspace", "ncolour"]
+                    }
+                else:
+                    return {
+                        item: element.attrib[item]
+                        for item in element.keys()
+                        if item not in ["bbox", "colourspace", "ncolour"]
+                    }
 
             def check_outside_table(char_coor, pdf_tables, page_nr: int = 1):
                 if char_coor is not None and pdf_tables is not None:
@@ -1161,6 +1175,8 @@ class NafDocument(etree._ElementTree):
                 first_char_on_page = True
                 previous_char_coor = None
                 page_length = 0
+                if coordinates:
+                    page_bbox = page.attrib["bbox"]
                 for page_item in page:
                     if page_item.tag == "textbox":
                         page_item_element = add_element(
@@ -1169,11 +1185,13 @@ class NafDocument(etree._ElementTree):
                             textline_element = add_element(
                                 page_item_element, textline.tag
                             )
+                            # check if textline contains characters
                             if len(textline) > 0:
                                 previous_text = textline[0].text
                                 previous_attrib = copy_dict(textline[0])
                                 if previous_text is None:
                                     previous_text = ""
+                                # get bbox of character to check if it is part of a table
                                 for idx, char in enumerate(textline[1:]):
                                     bbox = char.attrib.get("bbox", None)
                                     if bbox is not None:
@@ -1185,6 +1203,7 @@ class NafDocument(etree._ElementTree):
                                     outside = check_outside_table(
                                         char_coor, pdf_tables, page_number + 1)
                                     if outside:
+                                        # add character to text
                                         char_attrib = copy_dict(char)
                                         if previous_attrib == char_attrib:
                                             if char.text is not None:
@@ -1200,7 +1219,7 @@ class NafDocument(etree._ElementTree):
                                                 page_length += len(previous_text)
                                                 offset += len(previous_text)
 
-                                        else:  # -> previous_attrib != char_attrib
+                                        else:  # when format changes
 
                                             add_text_element(
                                                 textline_element,
@@ -1214,6 +1233,7 @@ class NafDocument(etree._ElementTree):
                                                 offset += len(previous_text)
                                             previous_text = char.text
                                             previous_attrib = char_attrib
+                                            # adds a textline element when last character is reached
                                             if idx == len(textline) - 1:
                                                 add_text_element(
                                                     textline_element,
@@ -1229,7 +1249,7 @@ class NafDocument(etree._ElementTree):
                                         previous_outside = True
 
                                     else:
-                                        # put text of table in text
+                                        # replace text with text of table
                                         if table_nr < len(pdf_tables):
 
                                             if previous_outside or (first_char_on_page and not previous_outside):
@@ -1369,6 +1389,8 @@ class NafDocument(etree._ElementTree):
 
                 page_element.set("length", str(page_length))
                 page_element.set("offset", str(offset - page_length))
+                if coordinates:
+                    page_element.set("bbox", page_bbox)
 
         elif source == "docx":
 

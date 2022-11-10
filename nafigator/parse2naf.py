@@ -306,6 +306,7 @@ def process_linguistic_layers(params: dict):
 
 def derive_text_from_formats_layer(params):
     """Derive the text from the xml formats layer"""
+    # @TODO: loops 2 times over this code while generating a naf file
     formats = params["tree"].find(FORMATS_LAYER_TAG)
     textline_separator = params["textline_separator"]
     if formats is not None:
@@ -326,10 +327,12 @@ def derive_text_from_formats_layer(params):
 
         text_spaces_added = [
             line[0]
+            # calculate the offset difference between end of word and start of next word
             + textline_separator * (text[idx + 1][1] - text[idx][1] - len(line[0]))
             for idx, line in enumerate(text)
             if idx < len(text) - 1
         ]
+        # add the last line
         if len(text) > 0:
             text_spaces_added.append(text[-1][0])
 
@@ -912,8 +915,10 @@ def add_formats_layer(params: dict):
     params["tree"].add_processor_element("formats_copy", lp)
 
     if "pdftoxml" in params.keys():
-        params["tree"].add_formats_element("pdf", params["pdftoxml"], params.get("pdftotables", None))
+        params["tree"].add_formats_element("pdf", params["pdftoxml"], params.get(
+            "incl_bbox", False), params.get("pdftotables", None))
         params["tree"].add_formats_copy_element("pdf", params["pdftoxml"])
 
     elif "docxtoxml" in params.keys():
-        params["tree"].add_formats_element("docx", params["docxtoxml"])
+        params["tree"].add_formats_element("docx", params["docxtoxml"], params.get(
+            "incl_bbox", False))
