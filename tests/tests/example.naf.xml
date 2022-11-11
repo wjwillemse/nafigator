@@ -1,31 +1,31 @@
 <?xml version='1.0' encoding='UTF-8'?>
 <NAF xmlns:dc="http://purl.org/dc/elements/1.1/" version="v3.1" xml:lang="en">
   <nafHeader>
-    <fileDesc creationtime="2022-10-12T09:41:47UTC" filename="tests/tests/example.pdf" filetype="application/pdf"/>
+    <fileDesc creationtime="2022-11-11T11:14:01UTC" filename="tests/tests/example.pdf" filetype="application/pdf"/>
     <public dc:uri="tests/tests/example.pdf" dc:format="application/pdf"/>
     <linguisticProcessors layer="formats">
-      <lp name="formats" version="nafigator" beginTimestamp="2022-10-12T09:41:47UTC" endTimestamp="2022-10-12T09:41:48UTC" hostname="hduerinck001.localdomain"/>
+      <lp name="formats" version="nafigator" beginTimestamp="2022-11-11T11:14:01UTC" endTimestamp="2022-11-11T11:14:01UTC" hostname="hduerinck001.localdomain"/>
     </linguisticProcessors>
     <linguisticProcessors layer="formats_copy">
-      <lp name="formats" version="nafigator" beginTimestamp="2022-10-12T09:41:47UTC" endTimestamp="2022-10-12T09:41:48UTC" hostname="hduerinck001.localdomain"/>
+      <lp name="formats" version="nafigator" beginTimestamp="2022-11-11T11:14:01UTC" endTimestamp="2022-11-11T11:14:01UTC" hostname="hduerinck001.localdomain"/>
     </linguisticProcessors>
     <linguisticProcessors layer="entities">
-      <lp name="entities" version="stanza_version-1.4.0" beginTimestamp="2022-10-12T09:41:50UTC" endTimestamp="2022-10-12T09:41:50UTC" hostname="hduerinck001.localdomain"/>
+      <lp name="entities" version="stanza_version-1.4.0" beginTimestamp="2022-11-11T11:14:04UTC" endTimestamp="2022-11-11T11:14:04UTC" hostname="hduerinck001.localdomain"/>
     </linguisticProcessors>
     <linguisticProcessors layer="text">
-      <lp name="text" version="stanza_version-1.4.0" model="/home/hmduerinck/stanza_resources/en/tokenize/combined.pt" beginTimestamp="2022-10-12T09:41:50UTC" endTimestamp="2022-10-12T09:41:50UTC" hostname="hduerinck001.localdomain"/>
+      <lp name="text" version="stanza_version-1.4.0" model="/home/hmduerinck/stanza_resources/en/tokenize/combined.pt" beginTimestamp="2022-11-11T11:14:04UTC" endTimestamp="2022-11-11T11:14:04UTC" hostname="hduerinck001.localdomain"/>
     </linguisticProcessors>
     <linguisticProcessors layer="terms">
-      <lp name="terms" version="stanza_version-1.4.0" model="/home/hmduerinck/stanza_resources/en/pos/combined.pt" beginTimestamp="2022-10-12T09:41:50UTC" endTimestamp="2022-10-12T09:41:50UTC" hostname="hduerinck001.localdomain"/>
+      <lp name="terms" version="stanza_version-1.4.0" model="/home/hmduerinck/stanza_resources/en/pos/combined.pt" beginTimestamp="2022-11-11T11:14:04UTC" endTimestamp="2022-11-11T11:14:04UTC" hostname="hduerinck001.localdomain"/>
     </linguisticProcessors>
     <linguisticProcessors layer="deps">
-      <lp name="deps" version="stanza_version-1.4.0" model="/home/hmduerinck/stanza_resources/en/depparse/combined.pt" beginTimestamp="2022-10-12T09:41:50UTC" endTimestamp="2022-10-12T09:41:50UTC" hostname="hduerinck001.localdomain"/>
+      <lp name="deps" version="stanza_version-1.4.0" model="/home/hmduerinck/stanza_resources/en/depparse/combined.pt" beginTimestamp="2022-11-11T11:14:04UTC" endTimestamp="2022-11-11T11:14:04UTC" hostname="hduerinck001.localdomain"/>
     </linguisticProcessors>
     <linguisticProcessors layer="multiwords">
-      <lp name="multiwords" version="stanza_version-1.4.0" model="/home/hmduerinck/stanza_resources/en/tokenize/combined.pt" beginTimestamp="2022-10-12T09:41:50UTC" endTimestamp="2022-10-12T09:41:50UTC" hostname="hduerinck001.localdomain"/>
+      <lp name="multiwords" version="stanza_version-1.4.0" model="/home/hmduerinck/stanza_resources/en/tokenize/combined.pt" beginTimestamp="2022-11-11T11:14:04UTC" endTimestamp="2022-11-11T11:14:04UTC" hostname="hduerinck001.localdomain"/>
     </linguisticProcessors>
     <linguisticProcessors layer="raw">
-      <lp name="raw" version="stanza_version-1.4.0" model="/home/hmduerinck/stanza_resources/en/tokenize/combined.pt" beginTimestamp="2022-10-12T09:41:50UTC" endTimestamp="2022-10-12T09:41:50UTC" hostname="hduerinck001.localdomain"/>
+      <lp name="raw" version="stanza_version-1.4.0" model="/home/hmduerinck/stanza_resources/en/tokenize/combined.pt" beginTimestamp="2022-11-11T11:14:04UTC" endTimestamp="2022-11-11T11:14:04UTC" hostname="hduerinck001.localdomain"/>
     </linguisticProcessors>
   </nafHeader>
   <formats>
