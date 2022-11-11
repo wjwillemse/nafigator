@@ -1089,6 +1089,8 @@ class NafDocument(etree._ElementTree):
         Args
         source: document type (e.g. pdf or docx)
         formats: raw output of pdfminer
+        coordinates: if True bbox information is added to the formats layer.
+            In that case the formats layer is generated at character level instead of textline.
         pdf_tables: raw output of camelot
         """
         if source == "pdf":

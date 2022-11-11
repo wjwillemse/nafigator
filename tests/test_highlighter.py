@@ -1,4 +1,3 @@
-# from nafigator.nafdocument import NafDocument
 from nafigator.postprocessor.highlighter import Highlighter
 from lxml import etree
 import fitz
