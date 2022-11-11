@@ -19,3 +19,4 @@ from .preprocessprocessor import *
 from .ocrprocessor import *
 from .lexnlp_annotations import *
 from .termbaseprocessor import *
+from .postprocessor import *

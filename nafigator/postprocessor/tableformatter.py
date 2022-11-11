@@ -131,7 +131,6 @@ class TableFormatter():
                     table2_cols_width = [col[1]-col[0] for col in ast.literal_eval(table2[1]['cols'])]
 
                 # Evaluate if the column widths of the two tables are similar
-                    print(table1_cols_width)
                     return(allclose(table1_cols_width,
                                     table2_cols_width,
                                     atol=3,
