@@ -2,7 +2,7 @@ from nafigator.postprocessor.highlighter import Highlighter
 from lxml import etree
 import fitz
 import os
-from nafigator import NafDocument, parse2naf
+from nafigator import NafDocument
 import unittest
 
 unittest.TestLoader.sortTestMethodsUsing = None
