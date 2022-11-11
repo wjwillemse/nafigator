@@ -1172,6 +1172,7 @@ class NafDocument(etree._ElementTree):
 
             offset = 0
             table_nr = 0
+            previous_outside = False
             for page_number, page in enumerate(formats_root):
                 page_element = add_element(layer, "page")
                 first_char_on_page = True
