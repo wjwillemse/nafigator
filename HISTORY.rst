@@ -56,7 +56,7 @@ History
 
 * Formats layer now contains a deep copy of pdfminer output in xml
 
-0.1.52 (2022-11-11)
+0.1.53 (2022-11-11)
 -------------------
 
 * Added coordinates to formats layer as an option
