@@ -6,6 +6,7 @@ from lxml import etree
 import logging
 import iribaker
 import uuid
+import unidecode
 
 from .nafdocument import NafDocument
 from .convert2rdf import UD2OLIA_mappings, mapobject
@@ -75,6 +76,27 @@ class NifString(NifBase):
                 yield (self.uri, NIF.referenceContext, self.referenceContext.uri)
             if self.anchorOf is not None:
                 yield (self.uri, NIF.anchorOf, Literal(self.anchorOf, datatype=XSD.string))
+                yield (self.uri, NIF.anchorOf_without_accents, Literal(self.delete_accents(self.anchorOf), datatype=XSD.string))
+                yield (self.uri, NIF.anchorOf_without_diacritics, Literal(self.delete_diacritics(self.anchorOf), datatype=XSD.string))
+
+    def delete_accents(self, s: str = None):
+        replacements = {
+            'ἒ': 'ἐ', 'ἓ': 'ἑ', 'ἔ': 'ἐ', 'ἕ': 'ἑ', 'έ': 'ε', 'ὲ': 'ε', 'έ': 'ε',
+            'ἂ': 'ἀ', 'ἃ': 'ἁ', 'ἄ': 'ἀ', 'ἅ': 'ἁ', 'ά': 'α', 'ὰ': 'α', 'ά': 'α',
+            'ᾂ': 'ᾀ', 'ᾄ': 'ᾀ', 'ᾃ': 'ᾁ', 'ᾅ': 'ᾁ', 'ᾲ': 'ᾳ', 'ᾴ': 'ᾳ',
+            'ί': 'ι', 'ἲ': 'ἰ', 'ἳ': 'ἱ', 'ἴ': 'ἰ', 'ἵ': 'ἱ', 'ῒ': 'ϊ', 'ΐ': 'ϊ', 'ὶ': 'ι', 'ί': 'ι',
+            'ή': 'η', 'ἢ': 'ἠ', 'ἣ': 'ἡ', 'ἤ': 'ἠ', 'ἥ': 'ἡ', 'ὴ': 'η', 'ή': 'η',
+            'ΰ': 'ϋ', 'ύ': 'υ', 'ὒ': 'ὐ', 'ὓ': 'ὑ', 'ὔ': 'ὐ', 'ὕ': 'ὑ', 'ὺ': 'υ', 'ύ': 'υ', 'ῢ': 'ϋ', 'ΰ': 'ϋ',
+            'ὢ': 'ὠ', 'ὣ': 'ὡ', 'ὤ': 'ὠ', 'ὥ': 'ὡ', 'ὼ': 'ω', 'ώ': 'ω',
+            'ό': 'ο', 'ὂ': 'ὀ', 'ὃ': 'ὁ', 'ὄ': 'ὀ', 'ὅ': 'ὁ', 'ὸ': 'ο', 'ό': 'ο',
+            'ᾢ': 'ᾠ', 'ᾣ': 'ᾡ', 'ᾤ': 'ᾠ', 'ᾥ': 'ᾡ', 'ῲ': 'ῳ', 'ῴ': 'ῳ'
+        }
+        for replacement in replacements.keys():
+            s = s.replace(replacement, replacements[replacement])
+        return s
+
+    def delete_diacritics(self, s: str = None):
+        return unidecode.unidecode(s)
 
 
 class NifContext(NifString):
@@ -110,6 +132,8 @@ class NifContext(NifString):
             for key in self.dublincore.keys():
                 if key=="uri":
                     yield (self.uri, DC.source, Literal(self.dublincore[key]))
+                elif key=="language":
+                    yield (self.uri, DC.language, Literal(self.dublincore[key]))
                 else:
                     yield (self.uri, DCTERMS[key], Literal(self.dublincore[key]))
             yield (self.uri, DCTERMS.identifier, Literal(self.uri.split("/")[-1]))
@@ -404,6 +428,7 @@ class naf2nif(object):
 
         nif_context.dublincore = {
             "uri": doc.header['public']['{http://purl.org/dc/elements/1.1/}uri'],
+            "language": doc.language,
             "format": doc.header['public']['{http://purl.org/dc/elements/1.1/}format'],
             "created": doc.header['fileDesc']['creationtime'],
             "provenance": doc.header['fileDesc']['filename']}

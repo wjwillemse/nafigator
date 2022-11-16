@@ -315,6 +315,8 @@ UD2OLIA_mappings = {
     "Tense": {
         "Pres": "olia:Present",
         "Past": "olia:Past",
+        "Fut": "olia:Future",
+        "Pqp": "olia:PluperfectTense"
     },
     "VerbForm": {
         "Inf": "olia:Infinitive",
@@ -322,12 +324,14 @@ UD2OLIA_mappings = {
         "Part": "olia:Participle",
         "Past": "olia:Past",
         "Ger": "olia:Gerund",
+        "Gdv": "olia:NonFiniteVerb" # (?)
     },
     "Case": {
         "Nom": "olia:Nominative",
         "Gen": "olia:Genitive",
         "Dat": "olia:DativeCase",
         "Acc": "olia:Accusative",
+        "Voc": "olia:VocativeCase"
     },
     "Degree": {
         "Pos": "olia:Positive",
@@ -347,11 +351,15 @@ UD2OLIA_mappings = {
     },
     "Voice": {
         "Pass": "olia:PassiveVoice",
+        "Act": "olia:ActiveVoice",
+        "Mid": "olia:MiddleVoice",
     },
     "Gender": {
         "Com": "olia:CommonGender",
         "Neut": "olia:Neuter",
         "Com,Neut": "olia:CommonGender",  # correct?
+        "Masc,Neut": "olia:CommonGender",  # correct?
+        "Fem,Masc": "olia:CommonGender",  # correct?
         "Fem": "olia:Feminine",
         "Masc": "olia:Masculine",
     },
@@ -398,7 +406,11 @@ UD2OLIA_mappings = {
         "Slng": "olia:SlangRegister",
         "Vrnc": None,
         "Vulg": "olia:VulgarRegister",
-    }
+    },
+    "Aspect": {
+        "Perf": "PerfectiveAspect",
+        "Imp": "ImperfectiveAspect"
+    },
 }
 
 
