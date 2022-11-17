@@ -63,3 +63,8 @@ History
 * Added highlighter feature for words
 * Separated TableFormatter and Highlighter into 2 different modules
 * Bugfix in formats layer
+
+0.1.54 (2022-11-17)
+-------------------
+
+* Bugfix requirements
