@@ -66,5 +66,8 @@ History
 
 0.1.54 (2022-11-17)
 -------------------
+* Added PyMuPDF to requirements
 
-* Bugfix requirements
+0.1.55 (2022-11-21)
+-------------------
+* Added iribaker and Unidecode to requirements

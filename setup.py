@@ -12,15 +12,15 @@ with open('HISTORY.rst', encoding="utf8") as history_file:
 
 requirements = ['click>=7.0', 'pdfminer.six>=20200726', 'lxml', 'python-docx', 'folia',
                 'pandas', 'camelot-py>=0.10.1', 'opencv-python>=4.5.5.62', 'pdftopng>=0.2.3', 'pdftopng == 0.2.3',
-                'PyMuPDF==1.16.14']
+                'PyMuPDF==1.16.14', 'iribaker==0.2', 'Unidecode==1.3.6']
 
 setup_requirements = ['click>=7.0', 'pdfminer.six>=20200726', 'lxml', 'python-docx',
                       'folia', 'pandas', 'camelot-py>=0.10.1', 'opencv-python>=4.5.5.62', 'pdftopng>=0.2.3',
-                      'PyMuPDF == 1.16.14']
+                      'PyMuPDF == 1.16.14', 'iribaker==0.2', 'Unidecode==1.3.6']
 
 test_requirements = ['click>=7.0', 'pdfminer.six>=20200726', 'lxml', 'python-docx', 'folia', 'pandas',
                      'stanza', 'spacy', 'deepdiff', 'camelot-py>=0.10.1', 'opencv-python>=4.5.5.62', 'pdftopng>=0.2.3',
-                     'PyMuPDF==1.16.14']
+                     'PyMuPDF==1.16.14', 'iribaker==0.2', 'Unidecode==1.3.6']
 
 setup(
     author="De Nederlandsche Bank",
@@ -54,6 +54,6 @@ setup(
     test_suite='tests',
     tests_require=test_requirements,
     url='https://github.com/denederlandschebank/nafigator',
-    version='0.1.54',
+    version='0.1.55',
     zip_safe=False,
 )
