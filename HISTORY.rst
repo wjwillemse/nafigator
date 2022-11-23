@@ -63,3 +63,11 @@ History
 * Added highlighter feature for words
 * Separated TableFormatter and Highlighter into 2 different modules
 * Bugfix in formats layer
+
+0.1.54 (2022-11-17)
+-------------------
+* Added PyMuPDF to requirements
+
+0.1.55 (2022-11-21)
+-------------------
+* Added iribaker and Unidecode to requirements
