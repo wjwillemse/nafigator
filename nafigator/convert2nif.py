@@ -76,8 +76,10 @@ class NifString(NifBase):
                 yield (self.uri, NIF.referenceContext, self.referenceContext.uri)
             if self.anchorOf is not None:
                 yield (self.uri, NIF.anchorOf, Literal(self.anchorOf, datatype=XSD.string))
-                yield (self.uri, NIF.anchorOf_without_accents, Literal(self.delete_accents(self.anchorOf), datatype=XSD.string))
-                yield (self.uri, NIF.anchorOf_without_diacritics, Literal(self.delete_diacritics(self.anchorOf), datatype=XSD.string))
+                # only for grc (greek classical) add two additional anchors
+                if self.referenceContext.dublincore.get('language', "en") == "grc":
+                    yield (self.uri, NIF.anchorOf_without_accents, Literal(self.delete_accents(self.anchorOf), datatype=XSD.string))
+                    yield (self.uri, NIF.anchorOf_without_diacritics, Literal(self.delete_diacritics(self.anchorOf), datatype=XSD.string))
 
     def delete_accents(self, s: str = None):
         replacements = {
@@ -96,7 +98,34 @@ class NifString(NifBase):
         return s
 
     def delete_diacritics(self, s: str = None):
-        return unidecode.unidecode(s)
+        replacements = {
+            'Ά': 'Α', 'Ᾰ': 'Α', 'Ᾱ': 'Α', 'Ὰ': 'Α', 'Ά': 'Α', 'Έ': 'Ε', 'Ὲ': 'Ε', 'Έ': 'Ε', 'Ή': 'Η', 'Ὴ': 'Η', 'Ή': 'Η', 'Ί': 'Ι', 'Ϊ': 'Ι', 'Ό': 'Ο', 'Ὸ': 'Ο', 'Ό': 'Ο', 'Ύ': 'Υ', 'Ϋ': 'Υ', 'Ώ': 'Ω', 
+            'ϓ': 'ϒ', 'ϔ': 'ϒ', 'Ὑ': 'ϒ', 'Ὓ': 'ϒ', 'Ὕ': 'ϒ', 'Ὗ': 'ϒ', 'Ῠ': 'ϒ', 'Ῡ': 'ϒ', 'Ὺ': 'ϒ', 'Ύ': 'ϒ', 
+            'ἀ': 'α', 'ἁ': 'α', 'ἂ': 'α', 'ἃ': 'α', 'ἄ': 'α', 'ἅ': 'α', 'ἆ': 'α', 'ἇ': 'α', 'ά': 'α', 'ὰ': 'α', 'ά': 'α', 'ᾰ': 'α', 'ᾱ': 'α', 'ᾶ': 'α', 
+            'Ἀ': 'Α', 'Ἁ': 'Α', 'Ἂ': 'Α', 'Ἃ': 'Α', 'Ἄ': 'Α', 'Ἅ': 'Α', 'Ἆ': 'Α', 'Ἇ': 'Α',
+            'ἐ': 'ε', 'ἑ': 'ε', 'ἒ': 'ε', 'ἓ': 'ε', 'ἔ': 'ε', 'ἕ': 'ε', 'έ': 'ε', 'ὲ': 'ε', 'έ': 'ε', 
+            'Ἐ': 'Ε', 'Ἑ': 'Ε', 'Ἒ': 'Ε', 'Ἓ': 'Ε', 'Ἔ': 'Ε', 'Ἕ': 'Ε',
+            'ἠ': 'η', 'ἡ': 'η', 'ἢ': 'η', 'ἣ': 'η', 'ἤ': 'η', 'ἥ': 'η', 'ἦ': 'η', 'ἧ': 'η', 'ή': 'η', 'ὴ': 'η', 'ή': 'η', 'ῆ': 'η',
+            'Ἠ': 'Η', 'Ἡ': 'Η', 'Ἢ': 'Η', 'Ἣ': 'Η', 'Ἤ': 'Η', 'Ἥ': 'Η', 'Ἦ': 'Η', 'Ἧ': 'Η',
+            'ἰ': 'ι', 'ἱ': 'ι', 'ἲ': 'ι', 'ἳ': 'ι', 'ἴ': 'ι', 'ἵ': 'ι', 'ἶ': 'ι', 'ἷ': 'ι', 'ΐ': 'ι', 'ϊ': 'ι', 'ί': 'ι', 'ὶ': 'ι', 'ί': 'ι', 'ῐ': 'ι', 'ῑ': 'ι', 'ῒ': 'ι', 'ΐ': 'ι', 'ῖ': 'ι', 'ῗ': 'ι',
+            'ΰ': 'υ', 'ϋ': 'υ', 'ύ': 'υ', 'ὐ': 'υ', 'ὑ': 'υ', 'ὒ': 'υ', 'ὓ': 'υ', 'ὔ': 'υ', 'ὕ': 'υ', 'ὖ': 'υ', 'ὗ': 'υ', 'ὺ': 'υ', 'ύ': 'υ', 'ῠ': 'υ', 'ῡ': 'υ', 'ῢ': 'υ', 'ΰ': 'υ', 'ῦ': 'υ', 'ῧ': 'υ', 
+            'ό': 'ο', 'ὀ': 'ο', 'ὁ': 'ο', 'ὂ': 'ο', 'ὃ': 'ο', 'ὄ': 'ο', 'ὅ': 'ο', 'ὸ': 'ο', 'ό': 'ο',
+            'ώ': 'ω', 'ὠ': 'ω', 'ὡ': 'ω', 'ὢ': 'ω', 'ὣ': 'ω', 'ὤ': 'ω', 'ὥ': 'ω', 'ὦ': 'ω', 'ὧ': 'ω', 'ὼ': 'ω', 'ώ': 'ω', 'ῶ': 'ω',
+            'Ἰ': 'Ι', 'Ἱ': 'Ι', 'Ἲ': 'Ι', 'Ἳ': 'Ι', 'Ἴ': 'Ι', 'Ἵ': 'Ι', 'Ἶ': 'Ι', 'Ἷ': 'Ι', 'Ῐ': 'Ι', 'Ῑ': 'Ι', 'Ὶ': 'Ι', 'Ί': 'Ι', 
+            'Ὀ': 'Ο', 'Ὁ': 'Ο', 'Ὂ': 'Ο', 'Ὃ': 'Ο', 'Ὄ': 'Ο', 'Ὅ': 'Ο', 
+            'Ὠ': 'Ω', 'Ὡ': 'Ω', 'Ὢ': 'Ω', 'Ὣ': 'Ω', 'Ὤ': 'Ω', 'Ὥ': 'Ω', 'Ὦ': 'Ω', 'Ὧ': 'Ω', 
+            'ᾀ': 'ᾳ', 'ᾁ': 'ᾳ', 'ᾂ': 'ᾳ', 'ᾃ': 'ᾳ', 'ᾄ': 'ᾳ', 'ᾅ': 'ᾳ', 'ᾆ': 'ᾳ', 'ᾇ': 'ᾳ', 'ᾲ': 'ᾳ', 'ᾴ': 'ᾳ', 'ᾷ': 'ᾳ',
+            'ᾈ': 'ᾼ', 'ᾉ': 'ᾼ', 'ᾊ': 'ᾼ', 'ᾋ': 'ᾼ', 'ᾌ': 'ᾼ', 'ᾍ': 'ᾼ', 'ᾎ': 'ᾼ', 'ᾏ': 'ᾼ',
+            'ᾐ': 'ῃ', 'ᾑ': 'ῃ', 'ᾒ': 'ῃ', 'ᾓ': 'ῃ', 'ᾔ': 'ῃ', 'ᾕ': 'ῃ', 'ᾖ': 'ῃ', 'ᾗ': 'ῃ', 'ῂ': 'ῃ', 'ῄ': 'ῃ', 'ῇ': 'ῃ',
+            'ᾘ': 'ῌ', 'ᾙ': 'ῌ', 'ᾚ': 'ῌ', 'ᾛ': 'ῌ', 'ᾜ': 'ῌ', 'ᾝ': 'ῌ', 'ᾞ': 'ῌ', 'ᾟ': 'ῌ', 
+            'ᾠ': 'ῳ', 'ᾡ': 'ῳ', 'ᾢ': 'ῳ', 'ᾣ': 'ῳ', 'ᾤ': 'ῳ', 'ᾥ': 'ῳ', 'ᾦ': 'ῳ', 'ᾧ': 'ῳ', 'ῲ': 'ῳ', 'ῴ': 'ῳ', 'ῷ': 'ῳ',
+            'ᾨ': 'ῼ', 'ᾩ': 'ῼ', 'ᾪ': 'ῼ', 'ᾫ': 'ῼ', 'ᾬ': 'ῼ', 'ᾭ': 'ῼ', 'ᾮ': 'ῼ', 'ᾯ': 'ῼ', 
+            'ῤ': 'ρ', 'ῥ': 'ρ',
+            'Ῥ': 'Ρ', 
+            'Ὼ': 'Ω', 'Ώ': 'Ω', 'ꭥ': 'Ω'}
+        for replacement in replacements.keys():
+            s = s.replace(replacement, replacements[replacement])
+        return s
 
 
 class NifContext(NifString):
@@ -360,6 +389,8 @@ class NifWord(NifStructure):
                 yield triple
             if self.lemma is not None:
                 yield (self.uri, NIF.lemma, Literal(self.lemma, datatype=XSD.string))
+                yield (self.uri, NIF.lemma_without_accents, Literal(self.delete_accents(self.lemma), datatype=XSD.string))
+                yield (self.uri, NIF.lemma_without_diacritics, Literal(self.delete_diacritics(self.lemma), datatype=XSD.string))
             if self.pos is not None:
                 yield (self.uri, NIF.oliaLink, OLIA[self.pos])
             if self.morphofeats is not None and self.morphofeats != []:
