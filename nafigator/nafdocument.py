@@ -1115,7 +1115,6 @@ class NafDocument(etree._ElementTree):
                     if coordinates:
                         if item not in ["colourspace", "ncolour"]:
                             subelement.attrib[item] = element.attrib[item]
-                            print("test")
                     else:
                         if item not in ["bbox", "colourspace", "ncolour"]:
                             subelement.attrib[item] = element.attrib[item]

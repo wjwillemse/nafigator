@@ -55,7 +55,12 @@ def convert_pdf(
         device = XMLConverter(rsrcmgr, retstr, codec=codec, laparams=laparams)
     else:
         raise ValueError("provide format, either text, html or xml!")
-    fp = open(path, "rb")
+
+    stream = params.get("stream", None)
+    if stream is not None:
+        fp = stream
+    else:
+        fp = open(path, "rb")
     interpreter = PDFPageInterpreter(rsrcmgr, device)
     maxpages = 0
     caching = True
@@ -72,7 +77,8 @@ def convert_pdf(
         interpreter.process_page(page)
         pages += 1
 
-    fp.close()
+    if stream is None:
+        fp.close()
     device.close()
 
     text = retstr.getvalue().decode()
@@ -120,10 +126,14 @@ def convert_docx(
     """
 
     if format == "text":
-        document = zipfile.ZipFile(path)
-        xml_content = document.read("word/document.xml")
-        document.close()
-        tree = XML(xml_content)
+        stream = params.get("stream", None)
+        if stream is not None:
+            document = zipfile.ZipFile(stream)
+        else:        
+            with open(path, "rb") as f:
+                document = zipfile.ZipFile(f)
+        text = document.read("word/document.xml")
+        tree = XML(text)
         paragraphs = []
         for paragraph in tree.iter(PARA):
             texts = [node.text for node in paragraph.iter(TEXT) if node.text]
@@ -132,10 +142,14 @@ def convert_docx(
         text = "\n\n".join(paragraphs)
 
     elif format == "xml":
-        with open(path, "rb") as f:
-            zip = zipfile.ZipFile(f)
-            text = zip.read("word/document.xml")
-            styles = zip.read("word/styles.xml")  # not used yet
+        stream = params.get("stream", None)
+        if stream is not None:
+            document = zipfile.ZipFile(stream)
+        else:        
+            with open(path, "rb") as f:
+                document = zipfile.ZipFile(f)
+        text = document.read("word/document.xml")
+        styles = document.read("word/styles.xml")  # not used yet
 
     params["docxto" + format] = text
 

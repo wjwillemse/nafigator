@@ -7,8 +7,11 @@ import click
 import logging
 import os
 import re
+import requests
+import io
 from datetime import datetime
 from socket import getfqdn
+
 
 from .nafdocument import NafDocument
 from .linguisticprocessor import stanzaProcessor
@@ -42,6 +45,7 @@ FORMATS_LAYER_TAG = "formats"
 
 def generate_naf(
     input: Union[str, NafDocument] = None,
+    stream: io.BytesIO = None,
     engine: str = None,
     language: str = None,
     naf_version: str = None,
@@ -74,6 +78,7 @@ def generate_naf(
 
     params = create_params(
         input=input,
+        stream=stream,
         engine=engine,
         language=language,
         naf_version=naf_version,
@@ -100,6 +105,7 @@ def generate_naf(
 
 def create_params(
     input: str = None,
+    stream: io.BytesIO = None,
     engine: str = None,
     language: str = None,
     naf_version: str = None,
@@ -126,6 +132,8 @@ def create_params(
         else:
             if "uri" not in params["public"].keys():
                 params["public"]["uri"] = input
+        if stream is not None:
+            params['stream'] = stream
 
         if os.path.splitext(input)[1].lower() == ".txt":
             params["fileDesc"]["filetype"] = "text/plain"
@@ -206,13 +214,23 @@ def process_preprocess_steps(params: dict):
     params["beginTimestamp_preprocess"] = datetime.now()
     input = params["fileDesc"]["filename"]
     if input[-3:].lower() == "txt":
-        with open(input, encoding="utf8") as f:
-            params["text"] = f.read()
+        stream = params.get("stream", None)
+        if stream is not None:
+            text = stream.read()
+        else:
+            with open(input, encoding="utf8") as f:
+                text = f.read()
+        params["text"] = text
     elif input[-4:].lower() == "html":
-        with open(input, encoding="utf8") as f:
-            utf8_parser = lxml.html.HTMLParser(encoding="utf-8")
-            doc = lxml.html.document_fromstring(bytes(f.read(), encoding='utf8'), parser=utf8_parser)
-            params["text"] = doc.text_content()
+        stream = params.get("stream", None)
+        if stream is not None:
+            text = stream.read()
+        else:
+            with open(input, encoding="utf8") as f:
+                text = f.read()
+        utf8_parser = lxml.html.HTMLParser(encoding="utf-8")
+        doc = lxml.html.document_fromstring(bytes(text, encoding='utf8'), parser=utf8_parser)
+        params["text"] = doc.text_content()
     elif input[-4:].lower() == "docx":
         convert_docx(input, format="xml", params=params)
         convert_docx(input, format="text", params=params)
@@ -912,13 +930,20 @@ def add_formats_layer(params: dict):
         hostname=getfqdn(),
     )
     params["tree"].add_processor_element("formats", lp)
-    params["tree"].add_processor_element("formats_copy", lp)
+    if params.get("include pdf xml", False):
+        params["tree"].add_processor_element("formats_copy", lp)
 
     if "pdftoxml" in params.keys():
-        params["tree"].add_formats_element("pdf", params["pdftoxml"], params.get(
-            "incl_bbox", False), params.get("pdftotables", None))
-        params["tree"].add_formats_copy_element("pdf", params["pdftoxml"])
+        params["tree"].add_formats_element(
+            source="pdf", 
+            formats=params["pdftoxml"], 
+            coordinates=params.get("incl_bbox", False), 
+            pdf_tables=params.get("pdftotables", None))
+        if params.get("include pdf xml", False):
+            params["tree"].add_formats_copy_element("pdf", params["pdftoxml"])
 
     elif "docxtoxml" in params.keys():
-        params["tree"].add_formats_element("docx", params["docxtoxml"], params.get(
-            "incl_bbox", False))
+        params["tree"].add_formats_element(
+            source="docx", 
+            formats=params["docxtoxml"], 
+            coordinates=params.get("incl_bbox", False))
