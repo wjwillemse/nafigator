@@ -74,7 +74,7 @@ History
 
 * Added iribaker and Unidecode to requirements
 
-0.1.56 (2022-11-30)
+0.1.57 (2022-11-30)
 -------------------
 
 * added possibility to use stream instead of opening a file
