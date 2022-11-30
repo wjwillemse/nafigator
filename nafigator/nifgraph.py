@@ -60,7 +60,7 @@ class NifGraph(rdflib.Graph):
             idx = result[0].n3(self.namespace_manager)
             col = result[1].n3(self.namespace_manager)
             if isinstance(result[2], rdflib.term.Literal):
-                val = result[2].value.toPython()
+                val = result[2].value
             else:
                 val = result[2].n3(self.namespace_manager)
             if ("dc:" in col or "dcterms:" in col):
