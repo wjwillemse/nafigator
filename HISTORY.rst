@@ -66,8 +66,17 @@ History
 
 0.1.54 (2022-11-17)
 -------------------
+
 * Added PyMuPDF to requirements
 
 0.1.55 (2022-11-21)
 -------------------
+
 * Added iribaker and Unidecode to requirements
+
+0.1.56 (2022-11-30)
+-------------------
+
+* added possibility to use stream instead of opening a file
+* added naf2nif function to convert naf to rdflid.Graph in NIF format 
+* added parameter "include pdf xml" to include the original xml output of pdfminer to the naf document
