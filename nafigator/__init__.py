@@ -13,6 +13,7 @@ from .parse2folia import *
 
 from .convert2rdf import *
 from .convert2nif import *
+from .nifgraph import *
 
 from .linguisticprocessor import *
 from .preprocessprocessor import *

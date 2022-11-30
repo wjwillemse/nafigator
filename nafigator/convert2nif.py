@@ -76,56 +76,11 @@ class NifString(NifBase):
                 yield (self.uri, NIF.referenceContext, self.referenceContext.uri)
             if self.anchorOf is not None:
                 yield (self.uri, NIF.anchorOf, Literal(self.anchorOf, datatype=XSD.string))
-                # only for grc (greek classical) add two additional anchors
-                if self.referenceContext.dublincore.get('language', "en") == "grc":
-                    yield (self.uri, NIF.anchorOf_without_accents, Literal(self.delete_accents(self.anchorOf), datatype=XSD.string))
-                    yield (self.uri, NIF.anchorOf_without_diacritics, Literal(self.delete_diacritics(self.anchorOf), datatype=XSD.string))
-
-    def delete_accents(self, s: str = None):
-        replacements = {
-            'ἒ': 'ἐ', 'ἓ': 'ἑ', 'ἔ': 'ἐ', 'ἕ': 'ἑ', 'έ': 'ε', 'ὲ': 'ε', 'έ': 'ε',
-            'ἂ': 'ἀ', 'ἃ': 'ἁ', 'ἄ': 'ἀ', 'ἅ': 'ἁ', 'ά': 'α', 'ὰ': 'α', 'ά': 'α',
-            'ᾂ': 'ᾀ', 'ᾄ': 'ᾀ', 'ᾃ': 'ᾁ', 'ᾅ': 'ᾁ', 'ᾲ': 'ᾳ', 'ᾴ': 'ᾳ',
-            'ί': 'ι', 'ἲ': 'ἰ', 'ἳ': 'ἱ', 'ἴ': 'ἰ', 'ἵ': 'ἱ', 'ῒ': 'ϊ', 'ΐ': 'ϊ', 'ὶ': 'ι', 'ί': 'ι',
-            'ή': 'η', 'ἢ': 'ἠ', 'ἣ': 'ἡ', 'ἤ': 'ἠ', 'ἥ': 'ἡ', 'ὴ': 'η', 'ή': 'η',
-            'ΰ': 'ϋ', 'ύ': 'υ', 'ὒ': 'ὐ', 'ὓ': 'ὑ', 'ὔ': 'ὐ', 'ὕ': 'ὑ', 'ὺ': 'υ', 'ύ': 'υ', 'ῢ': 'ϋ', 'ΰ': 'ϋ',
-            'ὢ': 'ὠ', 'ὣ': 'ὡ', 'ὤ': 'ὠ', 'ὥ': 'ὡ', 'ὼ': 'ω', 'ώ': 'ω',
-            'ό': 'ο', 'ὂ': 'ὀ', 'ὃ': 'ὁ', 'ὄ': 'ὀ', 'ὅ': 'ὁ', 'ὸ': 'ο', 'ό': 'ο',
-            'ᾢ': 'ᾠ', 'ᾣ': 'ᾡ', 'ᾤ': 'ᾠ', 'ᾥ': 'ᾡ', 'ῲ': 'ῳ', 'ῴ': 'ῳ'
-        }
-        for replacement in replacements.keys():
-            s = s.replace(replacement, replacements[replacement])
-        return s
-
-    def delete_diacritics(self, s: str = None):
-        replacements = {
-            'Ά': 'Α', 'Ᾰ': 'Α', 'Ᾱ': 'Α', 'Ὰ': 'Α', 'Ά': 'Α', 'Έ': 'Ε', 'Ὲ': 'Ε', 'Έ': 'Ε', 'Ή': 'Η', 'Ὴ': 'Η', 'Ή': 'Η', 'Ί': 'Ι', 'Ϊ': 'Ι', 'Ό': 'Ο', 'Ὸ': 'Ο', 'Ό': 'Ο', 'Ύ': 'Υ', 'Ϋ': 'Υ', 'Ώ': 'Ω', 
-            'ϓ': 'ϒ', 'ϔ': 'ϒ', 'Ὑ': 'ϒ', 'Ὓ': 'ϒ', 'Ὕ': 'ϒ', 'Ὗ': 'ϒ', 'Ῠ': 'ϒ', 'Ῡ': 'ϒ', 'Ὺ': 'ϒ', 'Ύ': 'ϒ', 
-            'ἀ': 'α', 'ἁ': 'α', 'ἂ': 'α', 'ἃ': 'α', 'ἄ': 'α', 'ἅ': 'α', 'ἆ': 'α', 'ἇ': 'α', 'ά': 'α', 'ὰ': 'α', 'ά': 'α', 'ᾰ': 'α', 'ᾱ': 'α', 'ᾶ': 'α', 
-            'Ἀ': 'Α', 'Ἁ': 'Α', 'Ἂ': 'Α', 'Ἃ': 'Α', 'Ἄ': 'Α', 'Ἅ': 'Α', 'Ἆ': 'Α', 'Ἇ': 'Α',
-            'ἐ': 'ε', 'ἑ': 'ε', 'ἒ': 'ε', 'ἓ': 'ε', 'ἔ': 'ε', 'ἕ': 'ε', 'έ': 'ε', 'ὲ': 'ε', 'έ': 'ε', 
-            'Ἐ': 'Ε', 'Ἑ': 'Ε', 'Ἒ': 'Ε', 'Ἓ': 'Ε', 'Ἔ': 'Ε', 'Ἕ': 'Ε',
-            'ἠ': 'η', 'ἡ': 'η', 'ἢ': 'η', 'ἣ': 'η', 'ἤ': 'η', 'ἥ': 'η', 'ἦ': 'η', 'ἧ': 'η', 'ή': 'η', 'ὴ': 'η', 'ή': 'η', 'ῆ': 'η',
-            'Ἠ': 'Η', 'Ἡ': 'Η', 'Ἢ': 'Η', 'Ἣ': 'Η', 'Ἤ': 'Η', 'Ἥ': 'Η', 'Ἦ': 'Η', 'Ἧ': 'Η',
-            'ἰ': 'ι', 'ἱ': 'ι', 'ἲ': 'ι', 'ἳ': 'ι', 'ἴ': 'ι', 'ἵ': 'ι', 'ἶ': 'ι', 'ἷ': 'ι', 'ΐ': 'ι', 'ϊ': 'ι', 'ί': 'ι', 'ὶ': 'ι', 'ί': 'ι', 'ῐ': 'ι', 'ῑ': 'ι', 'ῒ': 'ι', 'ΐ': 'ι', 'ῖ': 'ι', 'ῗ': 'ι',
-            'ΰ': 'υ', 'ϋ': 'υ', 'ύ': 'υ', 'ὐ': 'υ', 'ὑ': 'υ', 'ὒ': 'υ', 'ὓ': 'υ', 'ὔ': 'υ', 'ὕ': 'υ', 'ὖ': 'υ', 'ὗ': 'υ', 'ὺ': 'υ', 'ύ': 'υ', 'ῠ': 'υ', 'ῡ': 'υ', 'ῢ': 'υ', 'ΰ': 'υ', 'ῦ': 'υ', 'ῧ': 'υ', 
-            'ό': 'ο', 'ὀ': 'ο', 'ὁ': 'ο', 'ὂ': 'ο', 'ὃ': 'ο', 'ὄ': 'ο', 'ὅ': 'ο', 'ὸ': 'ο', 'ό': 'ο',
-            'ώ': 'ω', 'ὠ': 'ω', 'ὡ': 'ω', 'ὢ': 'ω', 'ὣ': 'ω', 'ὤ': 'ω', 'ὥ': 'ω', 'ὦ': 'ω', 'ὧ': 'ω', 'ὼ': 'ω', 'ώ': 'ω', 'ῶ': 'ω',
-            'Ἰ': 'Ι', 'Ἱ': 'Ι', 'Ἲ': 'Ι', 'Ἳ': 'Ι', 'Ἴ': 'Ι', 'Ἵ': 'Ι', 'Ἶ': 'Ι', 'Ἷ': 'Ι', 'Ῐ': 'Ι', 'Ῑ': 'Ι', 'Ὶ': 'Ι', 'Ί': 'Ι', 
-            'Ὀ': 'Ο', 'Ὁ': 'Ο', 'Ὂ': 'Ο', 'Ὃ': 'Ο', 'Ὄ': 'Ο', 'Ὅ': 'Ο', 
-            'Ὠ': 'Ω', 'Ὡ': 'Ω', 'Ὢ': 'Ω', 'Ὣ': 'Ω', 'Ὤ': 'Ω', 'Ὥ': 'Ω', 'Ὦ': 'Ω', 'Ὧ': 'Ω', 
-            'ᾀ': 'ᾳ', 'ᾁ': 'ᾳ', 'ᾂ': 'ᾳ', 'ᾃ': 'ᾳ', 'ᾄ': 'ᾳ', 'ᾅ': 'ᾳ', 'ᾆ': 'ᾳ', 'ᾇ': 'ᾳ', 'ᾲ': 'ᾳ', 'ᾴ': 'ᾳ', 'ᾷ': 'ᾳ',
-            'ᾈ': 'ᾼ', 'ᾉ': 'ᾼ', 'ᾊ': 'ᾼ', 'ᾋ': 'ᾼ', 'ᾌ': 'ᾼ', 'ᾍ': 'ᾼ', 'ᾎ': 'ᾼ', 'ᾏ': 'ᾼ',
-            'ᾐ': 'ῃ', 'ᾑ': 'ῃ', 'ᾒ': 'ῃ', 'ᾓ': 'ῃ', 'ᾔ': 'ῃ', 'ᾕ': 'ῃ', 'ᾖ': 'ῃ', 'ᾗ': 'ῃ', 'ῂ': 'ῃ', 'ῄ': 'ῃ', 'ῇ': 'ῃ',
-            'ᾘ': 'ῌ', 'ᾙ': 'ῌ', 'ᾚ': 'ῌ', 'ᾛ': 'ῌ', 'ᾜ': 'ῌ', 'ᾝ': 'ῌ', 'ᾞ': 'ῌ', 'ᾟ': 'ῌ', 
-            'ᾠ': 'ῳ', 'ᾡ': 'ῳ', 'ᾢ': 'ῳ', 'ᾣ': 'ῳ', 'ᾤ': 'ῳ', 'ᾥ': 'ῳ', 'ᾦ': 'ῳ', 'ᾧ': 'ῳ', 'ῲ': 'ῳ', 'ῴ': 'ῳ', 'ῷ': 'ῳ',
-            'ᾨ': 'ῼ', 'ᾩ': 'ῼ', 'ᾪ': 'ῼ', 'ᾫ': 'ῼ', 'ᾬ': 'ῼ', 'ᾭ': 'ῼ', 'ᾮ': 'ῼ', 'ᾯ': 'ῼ', 
-            'ῤ': 'ρ', 'ῥ': 'ρ',
-            'Ῥ': 'Ρ', 
-            'Ὼ': 'Ω', 'Ώ': 'Ω', 'ꭥ': 'Ω'}
-        for replacement in replacements.keys():
-            s = s.replace(replacement, replacements[replacement])
-        return s
+        
+                lang = self.referenceContext.dublincore.get('language', "en")
+                if lang == "grc":
+                    yield (self.uri, NIF.anchorOf_no_accents, Literal(delete_accents(s=self.anchorOf, lang=lang), datatype=XSD.string))
+                yield (self.uri, NIF.anchorOf_no_diacritics, Literal(delete_diacritics(s=self.anchorOf, lang=lang), datatype=XSD.string))
 
 
 class NifContext(NifString):
@@ -389,8 +344,10 @@ class NifWord(NifStructure):
                 yield triple
             if self.lemma is not None:
                 yield (self.uri, NIF.lemma, Literal(self.lemma, datatype=XSD.string))
-                yield (self.uri, NIF.lemma_without_accents, Literal(self.delete_accents(self.lemma), datatype=XSD.string))
-                yield (self.uri, NIF.lemma_without_diacritics, Literal(self.delete_diacritics(self.lemma), datatype=XSD.string))
+                lang = self.referenceContext.dublincore.get('language', "en")
+                if lang == "grc":
+                    yield (self.uri, NIF.lemma_no_accents, Literal(delete_accents(s=self.lemma, lang=lang), datatype=XSD.string))
+                yield (self.uri, NIF.lemma_no_diacritics, Literal(delete_diacritics(s=self.lemma, lang=lang), datatype=XSD.string))
             if self.pos is not None:
                 yield (self.uri, NIF.oliaLink, OLIA[self.pos])
             if self.morphofeats is not None and self.morphofeats != []:
@@ -427,22 +384,78 @@ class NifContextCollection(NifBase):
             for context in self.hasContext:
                 yield (self.uri, NIF.hasContext, context.uri)
 
+def delete_accents(s: str = None, lang: str = "en"):
+    if lang == "grc":
+        replacements = {
+            'ἒ': 'ἐ', 'ἓ': 'ἑ', 'ἔ': 'ἐ', 'ἕ': 'ἑ', 'έ': 'ε', 'ὲ': 'ε', 'έ': 'ε',
+            'ἂ': 'ἀ', 'ἃ': 'ἁ', 'ἄ': 'ἀ', 'ἅ': 'ἁ', 'ά': 'α', 'ὰ': 'α', 'ά': 'α',
+            'ᾂ': 'ᾀ', 'ᾄ': 'ᾀ', 'ᾃ': 'ᾁ', 'ᾅ': 'ᾁ', 'ᾲ': 'ᾳ', 'ᾴ': 'ᾳ',
+            'ί': 'ι', 'ἲ': 'ἰ', 'ἳ': 'ἱ', 'ἴ': 'ἰ', 'ἵ': 'ἱ', 'ῒ': 'ϊ', 'ΐ': 'ϊ', 'ὶ': 'ι', 'ί': 'ι',
+            'ή': 'η', 'ἢ': 'ἠ', 'ἣ': 'ἡ', 'ἤ': 'ἠ', 'ἥ': 'ἡ', 'ὴ': 'η', 'ή': 'η',
+            'ΰ': 'ϋ', 'ύ': 'υ', 'ὒ': 'ὐ', 'ὓ': 'ὑ', 'ὔ': 'ὐ', 'ὕ': 'ὑ', 'ὺ': 'υ', 'ύ': 'υ', 'ῢ': 'ϋ', 'ΰ': 'ϋ',
+            'ὢ': 'ὠ', 'ὣ': 'ὡ', 'ὤ': 'ὠ', 'ὥ': 'ὡ', 'ὼ': 'ω', 'ώ': 'ω',
+            'ό': 'ο', 'ὂ': 'ὀ', 'ὃ': 'ὁ', 'ὄ': 'ὀ', 'ὅ': 'ὁ', 'ὸ': 'ο', 'ό': 'ο',
+            'ᾢ': 'ᾠ', 'ᾣ': 'ᾡ', 'ᾤ': 'ᾠ', 'ᾥ': 'ᾡ', 'ῲ': 'ῳ', 'ῴ': 'ῳ'
+        }
+        for replacement in replacements.keys():
+            s = s.replace(replacement, replacements[replacement])
+    else:
+        s = unidecode(s)
+    return s
+
+def delete_diacritics(s: str = None, lang: str = "en"):
+    if lang == "grc":
+        replacements = {
+            'Ά': 'Α', 'Ᾰ': 'Α', 'Ᾱ': 'Α', 'Ὰ': 'Α', 'Ά': 'Α', 'Έ': 'Ε', 'Ὲ': 'Ε', 'Έ': 'Ε', 'Ή': 'Η', 'Ὴ': 'Η', 'Ή': 'Η', 'Ί': 'Ι', 'Ϊ': 'Ι', 'Ό': 'Ο', 'Ὸ': 'Ο', 'Ό': 'Ο', 'Ύ': 'Υ', 'Ϋ': 'Υ', 'Ώ': 'Ω', 
+            'ϓ': 'ϒ', 'ϔ': 'ϒ', 'Ὑ': 'ϒ', 'Ὓ': 'ϒ', 'Ὕ': 'ϒ', 'Ὗ': 'ϒ', 'Ῠ': 'ϒ', 'Ῡ': 'ϒ', 'Ὺ': 'ϒ', 'Ύ': 'ϒ', 
+            'ἀ': 'α', 'ἁ': 'α', 'ἂ': 'α', 'ἃ': 'α', 'ἄ': 'α', 'ἅ': 'α', 'ἆ': 'α', 'ἇ': 'α', 'ά': 'α', 'ὰ': 'α', 'ά': 'α', 'ᾰ': 'α', 'ᾱ': 'α', 'ᾶ': 'α', 
+            'Ἀ': 'Α', 'Ἁ': 'Α', 'Ἂ': 'Α', 'Ἃ': 'Α', 'Ἄ': 'Α', 'Ἅ': 'Α', 'Ἆ': 'Α', 'Ἇ': 'Α',
+            'ἐ': 'ε', 'ἑ': 'ε', 'ἒ': 'ε', 'ἓ': 'ε', 'ἔ': 'ε', 'ἕ': 'ε', 'έ': 'ε', 'ὲ': 'ε', 'έ': 'ε', 
+            'Ἐ': 'Ε', 'Ἑ': 'Ε', 'Ἒ': 'Ε', 'Ἓ': 'Ε', 'Ἔ': 'Ε', 'Ἕ': 'Ε',
+            'ἠ': 'η', 'ἡ': 'η', 'ἢ': 'η', 'ἣ': 'η', 'ἤ': 'η', 'ἥ': 'η', 'ἦ': 'η', 'ἧ': 'η', 'ή': 'η', 'ὴ': 'η', 'ή': 'η', 'ῆ': 'η',
+            'Ἠ': 'Η', 'Ἡ': 'Η', 'Ἢ': 'Η', 'Ἣ': 'Η', 'Ἤ': 'Η', 'Ἥ': 'Η', 'Ἦ': 'Η', 'Ἧ': 'Η',
+            'ἰ': 'ι', 'ἱ': 'ι', 'ἲ': 'ι', 'ἳ': 'ι', 'ἴ': 'ι', 'ἵ': 'ι', 'ἶ': 'ι', 'ἷ': 'ι', 'ΐ': 'ι', 'ϊ': 'ι', 'ί': 'ι', 'ὶ': 'ι', 'ί': 'ι', 'ῐ': 'ι', 'ῑ': 'ι', 'ῒ': 'ι', 'ΐ': 'ι', 'ῖ': 'ι', 'ῗ': 'ι',
+            'ΰ': 'υ', 'ϋ': 'υ', 'ύ': 'υ', 'ὐ': 'υ', 'ὑ': 'υ', 'ὒ': 'υ', 'ὓ': 'υ', 'ὔ': 'υ', 'ὕ': 'υ', 'ὖ': 'υ', 'ὗ': 'υ', 'ὺ': 'υ', 'ύ': 'υ', 'ῠ': 'υ', 'ῡ': 'υ', 'ῢ': 'υ', 'ΰ': 'υ', 'ῦ': 'υ', 'ῧ': 'υ', 
+            'ό': 'ο', 'ὀ': 'ο', 'ὁ': 'ο', 'ὂ': 'ο', 'ὃ': 'ο', 'ὄ': 'ο', 'ὅ': 'ο', 'ὸ': 'ο', 'ό': 'ο',
+            'ώ': 'ω', 'ὠ': 'ω', 'ὡ': 'ω', 'ὢ': 'ω', 'ὣ': 'ω', 'ὤ': 'ω', 'ὥ': 'ω', 'ὦ': 'ω', 'ὧ': 'ω', 'ὼ': 'ω', 'ώ': 'ω', 'ῶ': 'ω',
+            'Ἰ': 'Ι', 'Ἱ': 'Ι', 'Ἲ': 'Ι', 'Ἳ': 'Ι', 'Ἴ': 'Ι', 'Ἵ': 'Ι', 'Ἶ': 'Ι', 'Ἷ': 'Ι', 'Ῐ': 'Ι', 'Ῑ': 'Ι', 'Ὶ': 'Ι', 'Ί': 'Ι', 
+            'Ὀ': 'Ο', 'Ὁ': 'Ο', 'Ὂ': 'Ο', 'Ὃ': 'Ο', 'Ὄ': 'Ο', 'Ὅ': 'Ο', 
+            'Ὠ': 'Ω', 'Ὡ': 'Ω', 'Ὢ': 'Ω', 'Ὣ': 'Ω', 'Ὤ': 'Ω', 'Ὥ': 'Ω', 'Ὦ': 'Ω', 'Ὧ': 'Ω', 
+            'ᾀ': 'ᾳ', 'ᾁ': 'ᾳ', 'ᾂ': 'ᾳ', 'ᾃ': 'ᾳ', 'ᾄ': 'ᾳ', 'ᾅ': 'ᾳ', 'ᾆ': 'ᾳ', 'ᾇ': 'ᾳ', 'ᾲ': 'ᾳ', 'ᾴ': 'ᾳ', 'ᾷ': 'ᾳ',
+            'ᾈ': 'ᾼ', 'ᾉ': 'ᾼ', 'ᾊ': 'ᾼ', 'ᾋ': 'ᾼ', 'ᾌ': 'ᾼ', 'ᾍ': 'ᾼ', 'ᾎ': 'ᾼ', 'ᾏ': 'ᾼ',
+            'ᾐ': 'ῃ', 'ᾑ': 'ῃ', 'ᾒ': 'ῃ', 'ᾓ': 'ῃ', 'ᾔ': 'ῃ', 'ᾕ': 'ῃ', 'ᾖ': 'ῃ', 'ᾗ': 'ῃ', 'ῂ': 'ῃ', 'ῄ': 'ῃ', 'ῇ': 'ῃ',
+            'ᾘ': 'ῌ', 'ᾙ': 'ῌ', 'ᾚ': 'ῌ', 'ᾛ': 'ῌ', 'ᾜ': 'ῌ', 'ᾝ': 'ῌ', 'ᾞ': 'ῌ', 'ᾟ': 'ῌ', 
+            'ᾠ': 'ῳ', 'ᾡ': 'ῳ', 'ᾢ': 'ῳ', 'ᾣ': 'ῳ', 'ᾤ': 'ῳ', 'ᾥ': 'ῳ', 'ᾦ': 'ῳ', 'ᾧ': 'ῳ', 'ῲ': 'ῳ', 'ῴ': 'ῳ', 'ῷ': 'ῳ',
+            'ᾨ': 'ῼ', 'ᾩ': 'ῼ', 'ᾪ': 'ῼ', 'ᾫ': 'ῼ', 'ᾬ': 'ῼ', 'ᾭ': 'ῼ', 'ᾮ': 'ῼ', 'ᾯ': 'ῼ', 
+            'ῤ': 'ρ', 'ῥ': 'ρ',
+            'Ῥ': 'Ρ', 
+            'Ὼ': 'Ω', 'Ώ': 'Ω', 'ꭥ': 'Ω'}
+        for replacement in replacements.keys():
+            s = s.replace(replacement, replacements[replacement])
+    else:
+        s = unidecode(s)
+    return s
+
+
 class naf2nif(object):
 
     def __init__(self,
                  doc: NafDocument=None,
-                 uri: str=None,
+                 base_uri: str=None,
+                 base_prefix: str=None,
                  uri_format: str="offsetBasedString"):
 
         self.graph = Graph()
-        self.graph.bind("nif", NIF)
-        self.graph.bind("olia", "http://purl.org/olia/olia.owl#")
         self.graph.bind("itsrdf", ITSRDF)
         self.graph.bind("dcterms", DCTERMS)
         self.graph.bind("dc", DC)
+        self.graph.bind("nif", NIF)
+        self.graph.bind("olia", OLIA)
 
         doc_uri = doc.header['public']['{http://purl.org/dc/elements/1.1/}uri']
-        doc_uuid = str(uuid.uuid3(uuid.NAMESPACE_DNS, doc_uri))
+        doc_uuid = str(uuid.uuid3(uuid.NAMESPACE_DNS, doc_uri).hex)
+
+        self.graph.bind(base_prefix, base_uri)
 
         # create nif:context
         if doc.raw is None:
@@ -454,18 +467,20 @@ class naf2nif(object):
             endIndex=len(doc_raw),
             isString=doc_raw,
             uri_format=None,
-            uri=uri+"/"+doc_uuid)
+            uri=base_uri+doc_uuid)
         nif_context.referenceContext = nif_context
 
         nif_context.dublincore = {
-            "uri": doc.header['public']['{http://purl.org/dc/elements/1.1/}uri'],
+            "uri": doc.header['public'].get('{http://purl.org/dc/elements/1.1/}uri', ""),
+            "format": doc.header['public'].get('{http://purl.org/dc/elements/1.1/}format', ""),
+            "creator": doc.header['public'].get('{http://purl.org/dc/elements/1.1/}creator', ""),
+            "coverage": doc.header['public'].get('{http://purl.org/dc/elements/1.1/}coverage', ""),
             "language": doc.language,
-            "format": doc.header['public']['{http://purl.org/dc/elements/1.1/}format'],
             "created": doc.header['fileDesc']['creationtime'],
             "provenance": doc.header['fileDesc']['filename']}
 
         # create nif:collection (containing the context)
-        nif_collection = NifContextCollection(uri=uri+"/collection")
+        nif_collection = NifContextCollection(uri=base_uri+"collection")
         nif_collection.add_context(nif_context)
 
         # create nif:sentence and nif:word
@@ -489,7 +504,7 @@ class naf2nif(object):
                 uri_format=uri_format,
                 anchorOf=anchorOf,
                 # annotation reference missing
-                uri=uri+"/"+doc_uuid)
+                uri=base_uri+doc_uuid)
             sentence['nif'] = nif_sentence
             nif_sentences.append(nif_sentence)
 
@@ -511,7 +526,7 @@ class naf2nif(object):
                     anchorOf=anchorOf,
                     nifsentence=nif_sentence,
                     # annotation reference missing
-                    uri=uri+"/"+doc_uuid)
+                    uri=base_uri+doc_uuid)
                 word['nif'] = nif_word
                 nif_words.append(nif_word)
 
@@ -557,12 +572,13 @@ class naf2nif(object):
                 nif_term = NifWord(
                     beginIndex=beginIndex,
                     endIndex=endIndex,
+                    referenceContext=nif_context,
                     uri_format=uri_format,
                     lemma=term_lemma,
                     pos=term_pos,
                     morphofeats=term_morphofeats,
                     # annotation reference missing
-                    uri=uri+"/"+doc_uuid)
+                    uri=base_uri+doc_uuid)
                 terms[term['id']]['nif'] = nif_term
                 nif_terms.append(nif_term)
 
@@ -583,7 +599,7 @@ class naf2nif(object):
                     endIndex=page_end,
                     referenceContext=nif_context,
                     uri_format=uri_format,
-                    uri=uri+"/"+doc_uuid)
+                    uri=base_uri+doc_uuid)
                 page_start = int(word['offset'])
                 page_end = int(word['offset']) + int(word['length'])
                 nif_pages.append(nif_page)
@@ -594,7 +610,7 @@ class naf2nif(object):
             endIndex=page_end,
             referenceContext=nif_context,
             uri_format=uri_format,
-            uri=uri+"/"+doc_uuid)
+            uri=base_uri+doc_uuid)
         nif_pages.append(nif_page)
 
         # add collection of sentences to nif:Context
@@ -625,7 +641,7 @@ class naf2nif(object):
                 taClassRef=taClassRef,
                 anchorOf=anchorOf,
                 entityOccurrence=True,
-                uri=uri+"/"+doc_uuid)
+                uri=base_uri+doc_uuid)
             nif_phrases.append(nif_phrase)
 
         # Add dependencies:
@@ -663,7 +679,7 @@ class naf2nif(object):
                     referenceContext=nif_context,
                     uri_format=uri_format,
                     # annotation reference missing
-                    uri=uri+"/"+doc_uuid)
+                    uri=base_uri+doc_uuid)
                 nif_paragraphs.append(nif_paragraph)
 
         # store triples of all nif elements in graph
