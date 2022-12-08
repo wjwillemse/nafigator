@@ -84,3 +84,7 @@ History
 0.1.58 (2022-12-08)
 -------------------
 * version bump for new build to check if this solves the installation version of 0.1.57
+
+0.1.59 (2022-12-08)
+-------------------
+* Added PyMuPDF==1.21.0 to requirements
