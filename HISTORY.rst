@@ -80,3 +80,7 @@ History
 * added possibility to use stream instead of opening a file
 * added naf2nif function to convert naf to rdflid.Graph in NIF format 
 * added parameter "include pdf xml" to include the original xml output of pdfminer to the naf document
+
+0.1.58 (2022-12-08)
+-------------------
+* version bump for new build to check if this solves the installation version of 0.1.57
