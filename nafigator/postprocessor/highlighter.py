@@ -73,12 +73,12 @@ class Highlighter:
         page = doc[page_nr - 1]
         rectangle = [fitz.Quad((fitz.Point(x0, y0), fitz.Point(x1, y0),
                                 fitz.Point(x0, y1), fitz.Point(x1, y1)))]
-        page.add_highlight_annot(rectangle)
+        page.addHighlightAnnot(rectangle)
 
         try:
             doc.save(path_highlighted_pdf, garbage=4, deflate=True, clean=True)
             logging.info(f"Highlighted document {path_highlighted_pdf} saved succesfully.")
-        except(Exception):
+        except (Exception):
             logging.warning(f"Some issue occured. Highlighted {path_highlighted_pdf} document could not be saved.")
 
         return None
@@ -175,7 +175,7 @@ class Highlighter:
         for char in root_chars:
             if int(char.attrib["offset"]) == word_offset:
                 bbox_first_char = self._get_char_bbox(char)
-            elif int(char.attrib["offset"]) == word_offset + word_length - 1:
+            if int(char.attrib["offset"]) == word_offset + word_length - 1:
                 bbox_last_char = self._get_char_bbox(char)
 
         # convert to word coordinates
