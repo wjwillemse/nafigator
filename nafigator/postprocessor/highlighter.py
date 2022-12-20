@@ -78,7 +78,7 @@ class Highlighter:
         try:
             doc.save(path_highlighted_pdf, garbage=4, deflate=True, clean=True)
             logging.info(f"Highlighted document {path_highlighted_pdf} saved succesfully.")
-        except(Exception):
+        except (Exception):
             logging.warning(f"Some issue occured. Highlighted {path_highlighted_pdf} document could not be saved.")
 
         return None
