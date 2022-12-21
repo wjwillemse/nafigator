@@ -1488,14 +1488,14 @@ class TestUtils(unittest.TestCase):
 
     def test_dataframe2naf(self):
         """
-        This function evaluates metadata and reruns files with naf error. 
+        This function evaluates metadata and reruns files with naf error.
         Input:
             df_meta: the dataframe containing the meta data for the NAF files.
-            overwrite_existing_naf: if True then existing NAF files are overwritten (def test_ult = False)
-            rerun_files_with_naf_errors: if True then documents that produced NAF errors are run again (def test_ult = False)
-            engine: name of the NLP processor to be used (def test_ult = None)
+            overwrite_existing_naf: if True then existing NAF files are overwritten (default = False)
+            rerun_files_with_naf_errors: if True then documents that produced NAF errors are run again (default = False)
+            engine: name of the NLP processor to be used (default = None)
             naf_version: NAF version to be used
-            dtd_validation: perform validation of each NAF file (def test_ult = False)
+            dtd_validation: perform validation of each NAF file (default = False)
             params: additional parameters for NAF conversion
         Level: 0
         Scenarios:
