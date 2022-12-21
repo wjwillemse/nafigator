@@ -1486,9 +1486,9 @@ class TestUtils(unittest.TestCase):
 
         self.assertEqual(actual_text, expected_text)
 
-    def dataframe2naf(self):
+    def test_dataframe2naf(self):
         """
-        This function evaluates metadata and reruns files with naf error. 
+        This function evaluates metadata and reruns files with naf error.
         Input:
             df_meta: the dataframe containing the meta data for the NAF files.
             overwrite_existing_naf: if True then existing NAF files are overwritten (default = False)
@@ -1506,7 +1506,7 @@ class TestUtils(unittest.TestCase):
         """
         pass
 
-    def load_dtd(self):
+    def test_load_dtd(self):
         """
         This function loads dtd
         Input:
@@ -1517,7 +1517,7 @@ class TestUtils(unittest.TestCase):
         """
         pass
 
-    def time_in_correct_format(self):
+    def test_time_in_correct_format(self):
         """
         This function returns the current time (UTC) as a string
         Input:
@@ -1528,7 +1528,7 @@ class TestUtils(unittest.TestCase):
         """
         pass
 
-    def normalize_token_orth(self):
+    def test_normalize_token_orth(self):
         """
         This function normalizes the token text
         Input:
@@ -1540,7 +1540,7 @@ class TestUtils(unittest.TestCase):
         """
         pass
 
-    def prepare_comment_text(self):
+    def test_prepare_comment_text(self):
         """
         This function prepares comment text for xml
         Input:
@@ -1553,7 +1553,7 @@ class TestUtils(unittest.TestCase):
         """
         pass
 
-    def remove_illegal_chars(self):
+    def test_remove_illegal_chars(self):
         """
         This function removes illegal characters in text
         Input:
@@ -1565,7 +1565,7 @@ class TestUtils(unittest.TestCase):
         """
         pass
 
-    def remove_control_characters(self):
+    def test_remove_control_characters(self):
         """
         This function strips invalid XML characters that `lxml` cannot parse.
         Input:
@@ -1576,13 +1576,13 @@ class TestUtils(unittest.TestCase):
         """
         pass
 
-    def strip_illegal_xml_characters(self):
+    def test_strip_illegal_xml_characters(self):
         """
         This function compares the "invalid XML character range" numerically
         (needs to be unembedded - out of scope)
         Input:
             s
-            default
+            def test_ult
             base
         Level: 0
         Scenarios:
@@ -1591,7 +1591,7 @@ class TestUtils(unittest.TestCase):
         """
         pass
 
-    def sublist_indices(self):
+    def test_sublist_indices(self):
         """
         This function returns a list of indices of the full list that contain the sub list
         Input:
@@ -1605,7 +1605,7 @@ class TestUtils(unittest.TestCase):
         """
         pass
 
-    def remove_sublists(self):
+    def test_remove_sublists(self):
         """
         OUTDATED - CHECK TO REMOVE
         This function returns a list where all sublists are removed
@@ -1617,7 +1617,7 @@ class TestUtils(unittest.TestCase):
         """
         pass
 
-    def evaluate_sentence(self):
+    def test_evaluate_sentence(self):
         """
         OUTDATED - CHECK TO REMOVE
         This function evaluates a sentence on occurrence of mandatory terms and non occurrence of
@@ -1628,7 +1628,7 @@ class TestUtils(unittest.TestCase):
         """
         pass
 
-    def lemmatize(self):
+    def test_lemmatize(self):
         """
         OUTDATED - CHECK TO REMOVE
         This function lemmatizes text in onject
@@ -1646,7 +1646,7 @@ class TestUtils(unittest.TestCase):
         """
         pass
 
-    def lowercase(self):
+    def test_lowercase(self):
         """
         OUTDATED - CHECK TO REMOVE
         This function
@@ -1656,7 +1656,7 @@ class TestUtils(unittest.TestCase):
         """
         pass
 
-    def lemmatize_sentence(self):
+    def test_lemmatize_sentence(self):
         """
         OUTDATED - CHECK TO REMOVE
         This function lemmatizes a naf sentence
@@ -1669,7 +1669,7 @@ class TestUtils(unittest.TestCase):
         """
         pass
 
-    def glue_terms_separated_by_soft_hyphens(self):
+    def test_glue_terms_separated_by_soft_hyphens(self):
         """
         NOT BEING USED IN NAFIGATOR - CHECK USAGE OTHER PACKAGES
         This function glues terms that are separated by soft hyphens
@@ -1683,7 +1683,7 @@ class TestUtils(unittest.TestCase):
         """
         pass
 
-    def glue_terms_separated_by_hard_hyphens(self):
+    def test_glue_terms_separated_by_hard_hyphens(self):
         """
         NOT BEING USED IN NAFIGATOR - CHECK USAGE OTHER PACKAGES
         This function glues terms that are separated by hard hyphens
@@ -1697,7 +1697,7 @@ class TestUtils(unittest.TestCase):
         """
         pass
 
-    def glue_sentences_separated_by_colons(self):
+    def test_glue_sentences_separated_by_colons(self):
         """
         NOT BEING USED IN NAFIGATOR - CHECK USAGE OTHER PACKAGES
         This function glues sentences that are separated by colons
@@ -1711,7 +1711,7 @@ class TestUtils(unittest.TestCase):
         """
         pass
 
-    def get_context_rows(self):
+    def test_get_context_rows(self):
         """
         This function retrieves the line where word has been found with option to also retreive sentences/paragraphs
             before and after
@@ -1730,7 +1730,7 @@ class TestUtils(unittest.TestCase):
         """
         pass
 
-    def get_textlines(self):
+    def test_get_textlines(self):
         """
         test already written above. Move below to follow seem order as in utils.py
         This function
