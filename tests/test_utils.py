@@ -1,7 +1,7 @@
 import math
 from parameterized import parameterized
 import unittest
-from nafigator.utils import get_textlines
+from nafigator.utils import *
 
 
 unittest.TestLoader.sortTestMethodsUsing = None
@@ -1485,3 +1485,257 @@ class TestUtils(unittest.TestCase):
         actual_text = get_textlines(self.doc_sentences[idx_sentence], self.doc_words, self.doc_formats, context_range)
 
         self.assertEqual(actual_text, expected_text)
+
+    def dataframe2naf(self):
+        """
+        This function evaluates metadata and reruns files with naf error. 
+        Input:
+            df_meta: the dataframe containing the meta data for the NAF files.
+            overwrite_existing_naf: if True then existing NAF files are overwritten (default = False)
+            rerun_files_with_naf_errors: if True then documents that produced NAF errors are run again (default = False)
+            engine: name of the NLP processor to be used (default = None)
+            naf_version: NAF version to be used
+            dtd_validation: perform validation of each NAF file (default = False)
+            params: additional parameters for NAF conversion
+        Level: 0
+        Scenarios:
+            missing dc:language
+            missing dc:source
+            rerun_files_with_naf_errors True
+            overwrite_existing_naf True
+        """
+        pass
+
+    def load_dtd(self):
+        """
+        This function loads dtd
+        Input:
+            dtd_url: the location of the dtd file
+        Level: 0
+        Scenarios:
+            check if dtd has been loaded
+        """
+        pass
+
+    def time_in_correct_format(self):
+        """
+        This function returns the current time (UTC) as a string
+        Input:
+            datetime_obj: the input to be converted
+        Level: 0
+        Scenarios:
+            check if conversion is correctly done
+        """
+        pass
+
+    def normalize_token_orth(self):
+        """
+        This function normalizes the token text
+        Input:
+            orth: the token text to be normalized
+        Level: 1
+        Scenarios:
+            orth with \n
+            orth wihout \n
+        """
+        pass
+
+    def prepare_comment_text(self):
+        """
+        This function prepares comment text for xml
+        Input:
+            text: comment to be converted to xml comment
+        Level: 0
+        Scenarios:
+            text with --
+            text ending with -
+            text without -- or -
+        """
+        pass
+
+    def remove_illegal_chars(self):
+        """
+        This function removes illegal characters in text
+        Input:
+            text: string from which illegal characters need to be removed
+        Level: 0
+        Scenarios:
+            text is None
+            text contains an illegal character
+        """
+        pass
+
+    def remove_control_characters(self):
+        """
+        This function strips invalid XML characters that `lxml` cannot parse.
+        Input:
+            html: text from which control characters need to be removed
+        Level: 1
+        Scenarios:
+            text with a non-ascii character, such as an emoji
+        """
+        pass
+
+    def strip_illegal_xml_characters(self):
+        """
+        This function compares the "invalid XML character range" numerically
+        (needs to be unembedded - out of scope)
+        Input:
+            s
+            default
+            base
+        Level: 0
+        Scenarios:
+            n containing an invalid XML character range
+            n not containing an invalid XML character range
+        """
+        pass
+
+    def sublist_indices(self):
+        """
+        This function returns a list of indices of the full list that contain the sub list
+        Input:
+            sub: list of words to search in the full list
+            full: list of words in which the words of sublist are searched
+        Level: 0
+        Scenarios:
+            sub list with 2 different words
+            sub list with 1 word being found twice
+            sub list in which words of sublist do not occur
+        """
+        pass
+
+    def remove_sublists(self):
+        """
+        OUTDATED - CHECK TO REMOVE
+        This function returns a list where all sublists are removed
+        Input:
+            lst: list with lists
+        Level: 0
+        Scenarios:
+            see examples in function
+        """
+        pass
+
+    def evaluate_sentence(self):
+        """
+        OUTDATED - CHECK TO REMOVE
+        This function evaluates a sentence on occurrence of mandatory terms and non occurrence of
+        term to avoid
+        Input:
+        Level: 
+        Scenarios: 
+        """
+        pass
+
+    def lemmatize(self):
+        """
+        OUTDATED - CHECK TO REMOVE
+        This function lemmatizes text in onject
+        Input:
+            o: the object with text to be lemmatized
+            language: language used for lemmatization
+            nlp: dictionary of nlp processors
+        Level: 0
+        Scenarios:
+            string
+            list
+            dict
+            series
+            dataframe
+        """
+        pass
+
+    def lowercase(self):
+        """
+        OUTDATED - CHECK TO REMOVE
+        This function
+        Input:
+        Level:
+        Scenarios:
+        """
+        pass
+
+    def lemmatize_sentence(self):
+        """
+        OUTDATED - CHECK TO REMOVE
+        This function lemmatizes a naf sentence
+        Input:
+            sentence: dict of sentence (naf)
+            terms: list of terms dict (naf)
+        Level: 0
+        Scenarios:
+            sentence to be lemmatized
+        """
+        pass
+
+    def glue_terms_separated_by_soft_hyphens(self):
+        """
+        NOT BEING USED IN NAFIGATOR - CHECK USAGE OTHER PACKAGES
+        This function glues terms that are separated by soft hyphens
+        Input:
+            doc: the NafDocument
+            language: language used for lemmatization
+            nlp: dictionary of nlp processors
+        Level: 0
+        Scenarios:
+            NafDocument with soft hyphens
+        """
+        pass
+
+    def glue_terms_separated_by_hard_hyphens(self):
+        """
+        NOT BEING USED IN NAFIGATOR - CHECK USAGE OTHER PACKAGES
+        This function glues terms that are separated by hard hyphens
+        Input:
+            doc: the NafDocument
+            language: language used for lemmatization
+            nlp: dictionary of nlp processors
+        Level: 0
+        Scenarios:
+            NafDocument with hard hyphens
+        """
+        pass
+
+    def glue_sentences_separated_by_colons(self):
+        """
+        NOT BEING USED IN NAFIGATOR - CHECK USAGE OTHER PACKAGES
+        This function glues sentences that are separated by colons
+        Input:
+            doc: the NafDocument
+            language: language used for lemmatization
+            nlp: dictionary of nlp processors    
+        Level: 0
+        Scenarios:
+            NafDocument with colons
+        """
+        pass
+
+    def get_context_rows(self):
+        """
+        This function retrieves the line where word has been found with option to also retreive sentences/paragraphs
+            before and after
+        Input:
+            ref_text: a sentence or paragraph from the sentences or paragraphs layer as a dictionary to retrieve extra
+                context for
+            naf: a NafDocument.sentences or NafDocument.paragaphs (can be rewritten with search_level as extra input)
+            context_range: amount of context lines around ref_text
+        Level: 0
+        Scenarios:
+            context range = 0
+            context range = 2
+            sentence
+            paragraph
+
+        """
+        pass
+
+    def get_textlines(self):
+        """
+        test already written above. Move below to follow seem order as in utils.py
+        This function
+        Input:
+        Level:
+        Scenarios:
+        """
+        pass

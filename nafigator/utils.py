@@ -282,6 +282,7 @@ def remove_control_characters(html: str) -> str:
 
 def sublist_indices(sub, full):
     """
+    OUTDATED - CHECK TO REMOVE
     Returns a list of indices of the full list that contain the sub list
     :param sub: list
     :param full: list
