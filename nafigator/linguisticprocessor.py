@@ -125,7 +125,10 @@ if SPACY_IMPORTED:
             return token.pos_
 
         def token_lemma(self, token):
-            return token.lemma_
+            if token.lemma_ == None:
+                return token.text
+            else:
+                return token.lemma_
 
         def token_tag(self, token):
             return token.tag_
@@ -251,7 +254,10 @@ if STANZA_IMPORTED:
 
         def token_lemma(self, token):
             if len(token.words) > 0:
-                return token.words[0].lemma
+                if token.words[0].lemma == None:
+                    return token.words[0].text
+                else:
+                    return token.words[0].lemma
             else:
                 return ""
 
@@ -260,7 +266,7 @@ if STANZA_IMPORTED:
                 return token.words[0].feats
             else:
                 return ""
-                
+
         def entity_token_start(self, entity):
             return entity.tokens[0]
 

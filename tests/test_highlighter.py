@@ -29,7 +29,7 @@ class TestHighlighter(unittest.TestCase):
         page = doc[0]
 
         # list of words on page
-        wordlist = page.get_text("words")
+        wordlist = page.getText("words")
         # sort on ascending y, then x
         wordlist.sort(key=lambda w: (w[3], w[0]))
         annot = page.firstAnnot
