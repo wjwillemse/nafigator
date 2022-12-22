@@ -88,3 +88,9 @@ History
 0.1.59 (2022-12-08)
 -------------------
 * Added PyMuPDF==1.21.0 to requirements
+
+0.1.60 (2022-12-12)
+-------------------
+* Add outline unittests
+* Bugfix Lemma error
+* part 1 bugfix referencing error
