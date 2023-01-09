@@ -3,11 +3,8 @@
 """Main module."""
 
 import sys
-import click
 import logging
 import os
-import re
-import requests
 import io
 from datetime import datetime
 from socket import getfqdn
@@ -57,7 +54,7 @@ def generate_naf(
     if input is None:
         logging.error("input is none")
         return None
-    if isinstance(input, str) and not os.path.isfile(input):
+    if isinstance(input, str) and not os.path.isfile(input) and stream == None:
         logging.error("no or non-existing input specified")
         return None
     if engine is None:
@@ -121,6 +118,39 @@ def create_params(
     params["nlp"] = nlp
 
     if isinstance(input, str):
+        if "fileDesc" not in params.keys():
+            params["fileDesc"] = dict()
+        params["fileDesc"]["creationtime"] = datetime.now()
+        params["fileDesc"]["filename"] = input
+
+        if "public" not in params.keys():
+            params["public"] = dict()
+            params["public"]["uri"] = input
+        elif "uri" not in params["public"].keys():
+            params["public"]["uri"] = input
+        if stream is not None:
+            if not isinstance(stream, io.BytesIO):
+                stream = io.BytesIO(stream)
+            params['stream'] = stream
+
+        if os.path.splitext(input)[1].lower() == ".txt":
+            params["fileDesc"]["filetype"] = "text/plain"
+            params["public"]["format"] = "text/plain"
+        elif os.path.splitext(input)[1].lower() == ".html":
+            params["fileDesc"]["filetype"] = "text/html"
+            params["public"]["format"] = "text/html"
+        elif os.path.splitext(input)[1].lower() == ".pdf":
+            params["fileDesc"]["filetype"] = "application/pdf"
+            params["public"]["format"] = "application/pdf"
+        elif os.path.splitext(input)[1].lower() == ".docx":
+            params["fileDesc"][
+                "filetype"
+            ] = "application/vnd.openxmlformats-officedocument.wordprocessingml.document"
+            params["public"][
+                "format"
+            ] = "application/vnd.openxmlformats-officedocument.wordprocessingml.document"
+
+    if isinstance(input, bytes):
         if "fileDesc" not in params.keys():
             params["fileDesc"] = dict()
         params["fileDesc"]["creationtime"] = datetime.now()
@@ -935,15 +965,15 @@ def add_formats_layer(params: dict):
 
     if "pdftoxml" in params.keys():
         params["tree"].add_formats_element(
-            source="pdf", 
-            formats=params["pdftoxml"], 
-            coordinates=params.get("incl_bbox", False), 
+            source="pdf",
+            formats=params["pdftoxml"],
+            coordinates=params.get("incl_bbox", False),
             pdf_tables=params.get("pdftotables", None))
         if params.get("include pdf xml", False):
             params["tree"].add_formats_copy_element("pdf", params["pdftoxml"])
 
     elif "docxtoxml" in params.keys():
         params["tree"].add_formats_element(
-            source="docx", 
-            formats=params["docxtoxml"], 
+            source="docx",
+            formats=params["docxtoxml"],
             coordinates=params.get("incl_bbox", False))

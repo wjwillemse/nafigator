@@ -1,31 +1,28 @@
 <?xml version='1.0' encoding='UTF-8'?>
 <NAF xmlns:dc="http://purl.org/dc/elements/1.1/" version="v3.1" xml:lang="en">
   <nafHeader>
-    <fileDesc creationtime="2022-11-11T11:14:01UTC" filename="tests/tests/example.pdf" filetype="application/pdf"/>
+    <fileDesc creationtime="2023-01-05T16:33:43UTC" filename="tests/tests/example.pdf" filetype="application/pdf"/>
     <public dc:uri="tests/tests/example.pdf" dc:format="application/pdf"/>
     <linguisticProcessors layer="formats">
-      <lp name="formats" version="nafigator" beginTimestamp="2022-11-11T11:14:01UTC" endTimestamp="2022-11-11T11:14:01UTC" hostname="hduerinck001.localdomain"/>
-    </linguisticProcessors>
-    <linguisticProcessors layer="formats_copy">
-      <lp name="formats" version="nafigator" beginTimestamp="2022-11-11T11:14:01UTC" endTimestamp="2022-11-11T11:14:01UTC" hostname="hduerinck001.localdomain"/>
+      <lp name="formats" version="nafigator" beginTimestamp="2023-01-05T16:33:43UTC" endTimestamp="2023-01-05T16:33:43UTC" hostname="hduerinck001.localdomain"/>
     </linguisticProcessors>
     <linguisticProcessors layer="entities">
-      <lp name="entities" version="stanza_version-1.4.0" beginTimestamp="2022-11-11T11:14:04UTC" endTimestamp="2022-11-11T11:14:04UTC" hostname="hduerinck001.localdomain"/>
+      <lp name="entities" version="stanza_version-1.4.0" beginTimestamp="2023-01-05T16:33:45UTC" endTimestamp="2023-01-05T16:33:45UTC" hostname="hduerinck001.localdomain"/>
     </linguisticProcessors>
     <linguisticProcessors layer="text">
-      <lp name="text" version="stanza_version-1.4.0" model="/home/hmduerinck/stanza_resources/en/tokenize/combined.pt" beginTimestamp="2022-11-11T11:14:04UTC" endTimestamp="2022-11-11T11:14:04UTC" hostname="hduerinck001.localdomain"/>
+      <lp name="text" version="stanza_version-1.4.0" model="/home/hmduerinck/stanza_resources/en/tokenize/combined.pt" beginTimestamp="2023-01-05T16:33:45UTC" endTimestamp="2023-01-05T16:33:45UTC" hostname="hduerinck001.localdomain"/>
     </linguisticProcessors>
     <linguisticProcessors layer="terms">
-      <lp name="terms" version="stanza_version-1.4.0" model="/home/hmduerinck/stanza_resources/en/pos/combined.pt" beginTimestamp="2022-11-11T11:14:04UTC" endTimestamp="2022-11-11T11:14:04UTC" hostname="hduerinck001.localdomain"/>
+      <lp name="terms" version="stanza_version-1.4.0" model="/home/hmduerinck/stanza_resources/en/pos/combined.pt" beginTimestamp="2023-01-05T16:33:45UTC" endTimestamp="2023-01-05T16:33:45UTC" hostname="hduerinck001.localdomain"/>
     </linguisticProcessors>
     <linguisticProcessors layer="deps">
-      <lp name="deps" version="stanza_version-1.4.0" model="/home/hmduerinck/stanza_resources/en/depparse/combined.pt" beginTimestamp="2022-11-11T11:14:04UTC" endTimestamp="2022-11-11T11:14:04UTC" hostname="hduerinck001.localdomain"/>
+      <lp name="deps" version="stanza_version-1.4.0" model="/home/hmduerinck/stanza_resources/en/depparse/combined.pt" beginTimestamp="2023-01-05T16:33:45UTC" endTimestamp="2023-01-05T16:33:45UTC" hostname="hduerinck001.localdomain"/>
     </linguisticProcessors>
     <linguisticProcessors layer="multiwords">
-      <lp name="multiwords" version="stanza_version-1.4.0" model="/home/hmduerinck/stanza_resources/en/tokenize/combined.pt" beginTimestamp="2022-11-11T11:14:04UTC" endTimestamp="2022-11-11T11:14:04UTC" hostname="hduerinck001.localdomain"/>
+      <lp name="multiwords" version="stanza_version-1.4.0" model="/home/hmduerinck/stanza_resources/en/tokenize/combined.pt" beginTimestamp="2023-01-05T16:33:45UTC" endTimestamp="2023-01-05T16:33:45UTC" hostname="hduerinck001.localdomain"/>
     </linguisticProcessors>
     <linguisticProcessors layer="raw">
-      <lp name="raw" version="stanza_version-1.4.0" model="/home/hmduerinck/stanza_resources/en/tokenize/combined.pt" beginTimestamp="2022-11-11T11:14:04UTC" endTimestamp="2022-11-11T11:14:04UTC" hostname="hduerinck001.localdomain"/>
+      <lp name="raw" version="stanza_version-1.4.0" model="/home/hmduerinck/stanza_resources/en/tokenize/combined.pt" beginTimestamp="2023-01-05T16:33:45UTC" endTimestamp="2023-01-05T16:33:45UTC" hostname="hduerinck001.localdomain"/>
     </linguisticProcessors>
   </nafHeader>
   <formats>
@@ -48,296 +45,6 @@
       </textbox>
     </page>
   </formats>
-  <formats_copy><page id="1" bbox="0.000,0.000,595.320,841.920" rotate="0">
-<textbox id="0" bbox="56.760,757.608,501.861,783.408">
-<textline bbox="56.760,771.408,501.861,783.408">
-<text font="CIDFont+F1" bbox="56.760,771.408,64.080,783.408" colourspace="DeviceGray" ncolour="(0.0, 0.0, 0.0)" size="12.000">T</text>
-<text font="CIDFont+F1" bbox="64.090,771.408,70.091,783.408" colourspace="DeviceGray" ncolour="(0.0, 0.0, 0.0)" size="12.000">h</text>
-<text font="CIDFont+F1" bbox="70.091,771.408,75.407,783.408" colourspace="DeviceGray" ncolour="(0.0, 0.0, 0.0)" size="12.000">e</text>
-<text font="CIDFont+F1" bbox="75.417,771.408,78.417,783.408" colourspace="DeviceGray" ncolour="(0.0, 0.0, 0.0)" size="12.000"> </text>
-<text font="CIDFont+F1" bbox="78.417,771.408,87.081,783.408" colourspace="DeviceGray" ncolour="(0.0, 0.0, 0.0)" size="12.000">N</text>
-<text font="CIDFont+F1" bbox="87.177,771.408,92.494,783.408" colourspace="DeviceGray" ncolour="(0.0, 0.0, 0.0)" size="12.000">a</text>
-<text font="CIDFont+F1" bbox="92.504,771.408,96.500,783.408" colourspace="DeviceGray" ncolour="(0.0, 0.0, 0.0)" size="12.000">f</text>
-<text font="CIDFont+F1" bbox="96.344,771.408,99.668,783.408" colourspace="DeviceGray" ncolour="(0.0, 0.0, 0.0)" size="12.000">i</text>
-<text font="CIDFont+F1" bbox="99.678,771.408,105.678,783.408" colourspace="DeviceGray" ncolour="(0.0, 0.0, 0.0)" size="12.000">g</text>
-<text font="CIDFont+F1" bbox="105.678,771.408,110.994,783.408" colourspace="DeviceGray" ncolour="(0.0, 0.0, 0.0)" size="12.000">a</text>
-<text font="CIDFont+F1" bbox="111.005,771.408,114.329,783.408" colourspace="DeviceGray" ncolour="(0.0, 0.0, 0.0)" size="12.000">t</text>
-<text font="CIDFont+F1" bbox="114.339,771.408,120.339,783.408" colourspace="DeviceGray" ncolour="(0.0, 0.0, 0.0)" size="12.000">o</text>
-<text font="CIDFont+F1" bbox="120.339,771.408,124.335,783.408" colourspace="DeviceGray" ncolour="(0.0, 0.0, 0.0)" size="12.000">r</text>
-<text font="CIDFont+F1" bbox="124.419,771.408,127.419,783.408" colourspace="DeviceGray" ncolour="(0.0, 0.0, 0.0)" size="12.000"> </text>
-<text font="CIDFont+F1" bbox="127.419,771.408,133.419,783.408" colourspace="DeviceGray" ncolour="(0.0, 0.0, 0.0)" size="12.000">p</text>
-<text font="CIDFont+F1" bbox="133.419,771.408,138.736,783.408" colourspace="DeviceGray" ncolour="(0.0, 0.0, 0.0)" size="12.000">a</text>
-<text font="CIDFont+F1" bbox="138.746,771.408,144.062,783.408" colourspace="DeviceGray" ncolour="(0.0, 0.0, 0.0)" size="12.000">c</text>
-<text font="CIDFont+F1" bbox="144.072,771.408,150.072,783.408" colourspace="DeviceGray" ncolour="(0.0, 0.0, 0.0)" size="12.000">k</text>
-<text font="CIDFont+F1" bbox="149.952,771.408,155.269,783.408" colourspace="DeviceGray" ncolour="(0.0, 0.0, 0.0)" size="12.000">a</text>
-<text font="CIDFont+F1" bbox="155.279,771.408,161.279,783.408" colourspace="DeviceGray" ncolour="(0.0, 0.0, 0.0)" size="12.000">g</text>
-<text font="CIDFont+F1" bbox="161.399,771.408,166.715,783.408" colourspace="DeviceGray" ncolour="(0.0, 0.0, 0.0)" size="12.000">e</text>
-<text font="CIDFont+F1" bbox="166.725,771.408,169.725,783.408" colourspace="DeviceGray" ncolour="(0.0, 0.0, 0.0)" size="12.000"> </text>
-<text font="CIDFont+F1" bbox="169.725,771.408,175.042,783.408" colourspace="DeviceGray" ncolour="(0.0, 0.0, 0.0)" size="12.000">a</text>
-<text font="CIDFont+F1" bbox="175.052,771.408,178.376,783.408" colourspace="DeviceGray" ncolour="(0.0, 0.0, 0.0)" size="12.000">l</text>
-<text font="CIDFont+F1" bbox="178.292,771.408,181.616,783.408" colourspace="DeviceGray" ncolour="(0.0, 0.0, 0.0)" size="12.000">l</text>
-<text font="CIDFont+F1" bbox="181.626,771.408,187.626,783.408" colourspace="DeviceGray" ncolour="(0.0, 0.0, 0.0)" size="12.000">o</text>
-<text font="CIDFont+F1" bbox="187.626,771.408,196.291,783.408" colourspace="DeviceGray" ncolour="(0.0, 0.0, 0.0)" size="12.000">w</text>
-<text font="CIDFont+F1" bbox="196.293,771.408,200.961,783.408" colourspace="DeviceGray" ncolour="(0.0, 0.0, 0.0)" size="12.000">s</text>
-<text font="CIDFont+F1" bbox="200.963,771.408,203.963,783.408" colourspace="DeviceGray" ncolour="(0.0, 0.0, 0.0)" size="12.000"> </text>
-<text font="CIDFont+F1" bbox="203.963,771.408,209.963,783.408" colourspace="DeviceGray" ncolour="(0.0, 0.0, 0.0)" size="12.000">y</text>
-<text font="CIDFont+F1" bbox="209.963,771.408,215.963,783.408" colourspace="DeviceGray" ncolour="(0.0, 0.0, 0.0)" size="12.000">o</text>
-<text font="CIDFont+F1" bbox="215.963,771.408,221.964,783.408" colourspace="DeviceGray" ncolour="(0.0, 0.0, 0.0)" size="12.000">u</text>
-<text font="CIDFont+F1" bbox="221.964,771.408,224.964,783.408" colourspace="DeviceGray" ncolour="(0.0, 0.0, 0.0)" size="12.000"> </text>
-<text font="CIDFont+F1" bbox="224.964,771.408,228.288,783.408" colourspace="DeviceGray" ncolour="(0.0, 0.0, 0.0)" size="12.000">t</text>
-<text font="CIDFont+F1" bbox="228.298,771.408,234.298,783.408" colourspace="DeviceGray" ncolour="(0.0, 0.0, 0.0)" size="12.000">o</text>
-<text font="CIDFont+F1" bbox="234.418,771.408,237.418,783.408" colourspace="DeviceGray" ncolour="(0.0, 0.0, 0.0)" size="12.000"> </text>
-<text font="CIDFont+F1" bbox="237.418,771.408,242.086,783.408" colourspace="DeviceGray" ncolour="(0.0, 0.0, 0.0)" size="12.000">s</text>
-<text font="CIDFont+F1" bbox="241.978,771.408,245.302,783.408" colourspace="DeviceGray" ncolour="(0.0, 0.0, 0.0)" size="12.000">t</text>
-<text font="CIDFont+F1" bbox="245.458,771.408,251.459,783.408" colourspace="DeviceGray" ncolour="(0.0, 0.0, 0.0)" size="12.000">o</text>
-<text font="CIDFont+F1" bbox="251.459,771.408,255.455,783.408" colourspace="DeviceGray" ncolour="(0.0, 0.0, 0.0)" size="12.000">r</text>
-<text font="CIDFont+F1" bbox="255.455,771.408,260.771,783.408" colourspace="DeviceGray" ncolour="(0.0, 0.0, 0.0)" size="12.000">e</text>
-<text font="CIDFont+F1" bbox="260.615,771.408,263.615,783.408" colourspace="DeviceGray" ncolour="(0.0, 0.0, 0.0)" size="12.000"> </text>
-<text font="CIDFont+F1" bbox="263.615,771.408,272.280,783.408" colourspace="DeviceGray" ncolour="(0.0, 0.0, 0.0)" size="12.000">N</text>
-<text font="CIDFont+F1" bbox="272.376,771.408,279.696,783.408" colourspace="DeviceGray" ncolour="(0.0, 0.0, 0.0)" size="12.000">L</text>
-<text font="CIDFont+F1" bbox="279.706,771.408,286.378,783.408" colourspace="DeviceGray" ncolour="(0.0, 0.0, 0.0)" size="12.000">P</text>
-<text font="CIDFont+F1" bbox="285.826,771.408,288.826,783.408" colourspace="DeviceGray" ncolour="(0.0, 0.0, 0.0)" size="12.000"> </text>
-<text font="CIDFont+F1" bbox="288.826,771.408,294.826,783.408" colourspace="DeviceGray" ncolour="(0.0, 0.0, 0.0)" size="12.000">o</text>
-<text font="CIDFont+F1" bbox="294.826,771.408,300.827,783.408" colourspace="DeviceGray" ncolour="(0.0, 0.0, 0.0)" size="12.000">u</text>
-<text font="CIDFont+F1" bbox="300.827,771.408,304.151,783.408" colourspace="DeviceGray" ncolour="(0.0, 0.0, 0.0)" size="12.000">t</text>
-<text font="CIDFont+F1" bbox="304.161,771.408,310.161,783.408" colourspace="DeviceGray" ncolour="(0.0, 0.0, 0.0)" size="12.000">p</text>
-<text font="CIDFont+F1" bbox="310.161,771.408,316.161,783.408" colourspace="DeviceGray" ncolour="(0.0, 0.0, 0.0)" size="12.000">u</text>
-<text font="CIDFont+F1" bbox="316.161,771.408,319.485,783.408" colourspace="DeviceGray" ncolour="(0.0, 0.0, 0.0)" size="12.000">t</text>
-<text font="CIDFont+F1" bbox="319.495,771.408,322.495,783.408" colourspace="DeviceGray" ncolour="(0.0, 0.0, 0.0)" size="12.000"> </text>
-<text font="CIDFont+F1" bbox="322.615,771.408,326.612,783.408" colourspace="DeviceGray" ncolour="(0.0, 0.0, 0.0)" size="12.000">f</text>
-<text font="CIDFont+F1" bbox="326.612,771.408,330.608,783.408" colourspace="DeviceGray" ncolour="(0.0, 0.0, 0.0)" size="12.000">r</text>
-<text font="CIDFont+F1" bbox="330.452,771.408,336.452,783.408" colourspace="DeviceGray" ncolour="(0.0, 0.0, 0.0)" size="12.000">o</text>
-<text font="CIDFont+F1" bbox="336.452,771.408,345.776,783.408" colourspace="DeviceGray" ncolour="(0.0, 0.0, 0.0)" size="12.000">m</text>
-<text font="CIDFont+F1" bbox="345.786,771.408,348.787,783.408" colourspace="DeviceGray" ncolour="(0.0, 0.0, 0.0)" size="12.000"> </text>
-<text font="CIDFont+F1" bbox="348.907,771.408,354.223,783.408" colourspace="DeviceGray" ncolour="(0.0, 0.0, 0.0)" size="12.000">c</text>
-<text font="CIDFont+F1" bbox="354.307,771.408,360.307,783.408" colourspace="DeviceGray" ncolour="(0.0, 0.0, 0.0)" size="12.000">u</text>
-<text font="CIDFont+F1" bbox="360.307,771.408,364.975,783.408" colourspace="DeviceGray" ncolour="(0.0, 0.0, 0.0)" size="12.000">s</text>
-<text font="CIDFont+F1" bbox="364.977,771.408,368.301,783.408" colourspace="DeviceGray" ncolour="(0.0, 0.0, 0.0)" size="12.000">t</text>
-<text font="CIDFont+F1" bbox="368.311,771.408,374.311,783.408" colourspace="DeviceGray" ncolour="(0.0, 0.0, 0.0)" size="12.000">o</text>
-<text font="CIDFont+F1" bbox="374.191,771.408,383.516,783.408" colourspace="DeviceGray" ncolour="(0.0, 0.0, 0.0)" size="12.000">m</text>
-<text font="CIDFont+F1" bbox="383.526,771.408,386.526,783.408" colourspace="DeviceGray" ncolour="(0.0, 0.0, 0.0)" size="12.000"> </text>
-<text font="CIDFont+F1" bbox="386.526,771.408,395.850,783.408" colourspace="DeviceGray" ncolour="(0.0, 0.0, 0.0)" size="12.000">m</text>
-<text font="CIDFont+F1" bbox="395.860,771.408,401.176,783.408" colourspace="DeviceGray" ncolour="(0.0, 0.0, 0.0)" size="12.000">a</text>
-<text font="CIDFont+F1" bbox="401.187,771.408,407.187,783.408" colourspace="DeviceGray" ncolour="(0.0, 0.0, 0.0)" size="12.000">d</text>
-<text font="CIDFont+F1" bbox="407.307,771.408,412.623,783.408" colourspace="DeviceGray" ncolour="(0.0, 0.0, 0.0)" size="12.000">e</text>
-<text font="CIDFont+F1" bbox="412.633,771.408,415.633,783.408" colourspace="DeviceGray" ncolour="(0.0, 0.0, 0.0)" size="12.000"> </text>
-<text font="CIDFont+F1" bbox="415.513,771.408,420.181,783.408" colourspace="DeviceGray" ncolour="(0.0, 0.0, 0.0)" size="12.000">s</text>
-<text font="CIDFont+F1" bbox="420.183,771.408,426.184,783.408" colourspace="DeviceGray" ncolour="(0.0, 0.0, 0.0)" size="12.000">p</text>
-<text font="CIDFont+F1" bbox="426.304,771.408,431.620,783.408" colourspace="DeviceGray" ncolour="(0.0, 0.0, 0.0)" size="12.000">a</text>
-<text font="CIDFont+F1" bbox="431.630,771.408,439.622,783.408" colourspace="DeviceGray" ncolour="(0.0, 0.0, 0.0)" size="12.000">C</text>
-<text font="CIDFont+F1" bbox="439.430,771.408,445.430,783.408" colourspace="DeviceGray" ncolour="(0.0, 0.0, 0.0)" size="12.000">y</text>
-<text font="CIDFont+F1" bbox="445.550,771.408,448.551,783.408" colourspace="DeviceGray" ncolour="(0.0, 0.0, 0.0)" size="12.000"> </text>
-<text font="CIDFont+F1" bbox="448.551,771.408,453.867,783.408" colourspace="DeviceGray" ncolour="(0.0, 0.0, 0.0)" size="12.000">a</text>
-<text font="CIDFont+F1" bbox="453.877,771.408,459.877,783.408" colourspace="DeviceGray" ncolour="(0.0, 0.0, 0.0)" size="12.000">n</text>
-<text font="CIDFont+F1" bbox="459.877,771.408,465.877,783.408" colourspace="DeviceGray" ncolour="(0.0, 0.0, 0.0)" size="12.000">d</text>
-<text font="CIDFont+F1" bbox="465.877,771.408,468.878,783.408" colourspace="DeviceGray" ncolour="(0.0, 0.0, 0.0)" size="12.000"> </text>
-<text font="CIDFont+F1" bbox="468.878,771.408,473.546,783.408" colourspace="DeviceGray" ncolour="(0.0, 0.0, 0.0)" size="12.000">s</text>
-<text font="CIDFont+F1" bbox="473.548,771.408,476.872,783.408" colourspace="DeviceGray" ncolour="(0.0, 0.0, 0.0)" size="12.000">t</text>
-<text font="CIDFont+F1" bbox="476.882,771.408,482.198,783.408" colourspace="DeviceGray" ncolour="(0.0, 0.0, 0.0)" size="12.000">a</text>
-<text font="CIDFont+F1" bbox="482.208,771.408,488.208,783.408" colourspace="DeviceGray" ncolour="(0.0, 0.0, 0.0)" size="12.000">n</text>
-<text font="CIDFont+F1" bbox="488.208,771.408,493.525,783.408" colourspace="DeviceGray" ncolour="(0.0, 0.0, 0.0)" size="12.000">z</text>
-<text font="CIDFont+F1" bbox="493.535,771.408,498.851,783.408" colourspace="DeviceGray" ncolour="(0.0, 0.0, 0.0)" size="12.000">a</text>
-<text font="CIDFont+F1" bbox="498.861,771.408,501.861,783.408" colourspace="DeviceGray" ncolour="(0.0, 0.0, 0.0)" size="12.000"> </text>
-<text>
-</text>
-</textline>
-<textline bbox="56.760,757.608,416.969,769.608">
-<text font="CIDFont+F1" bbox="56.760,757.608,62.760,769.608" colourspace="DeviceGray" ncolour="(0.0, 0.0, 0.0)" size="12.000">p</text>
-<text font="CIDFont+F1" bbox="62.760,757.608,66.084,769.608" colourspace="DeviceGray" ncolour="(0.0, 0.0, 0.0)" size="12.000">i</text>
-<text font="CIDFont+F1" bbox="66.094,757.608,72.095,769.608" colourspace="DeviceGray" ncolour="(0.0, 0.0, 0.0)" size="12.000">p</text>
-<text font="CIDFont+F1" bbox="72.095,757.608,77.411,769.608" colourspace="DeviceGray" ncolour="(0.0, 0.0, 0.0)" size="12.000">e</text>
-<text font="CIDFont+F1" bbox="77.421,757.608,80.745,769.608" colourspace="DeviceGray" ncolour="(0.0, 0.0, 0.0)" size="12.000">l</text>
-<text font="CIDFont+F1" bbox="80.755,757.608,84.079,769.608" colourspace="DeviceGray" ncolour="(0.0, 0.0, 0.0)" size="12.000">i</text>
-<text font="CIDFont+F1" bbox="84.089,757.608,90.089,769.608" colourspace="DeviceGray" ncolour="(0.0, 0.0, 0.0)" size="12.000">n</text>
-<text font="CIDFont+F1" bbox="90.089,757.608,95.406,769.608" colourspace="DeviceGray" ncolour="(0.0, 0.0, 0.0)" size="12.000">e</text>
-<text font="CIDFont+F1" bbox="95.416,757.608,100.084,769.608" colourspace="DeviceGray" ncolour="(0.0, 0.0, 0.0)" size="12.000">s</text>
-<text font="CIDFont+F1" bbox="100.086,757.608,103.086,769.608" colourspace="DeviceGray" ncolour="(0.0, 0.0, 0.0)" size="12.000"> </text>
-<text font="CIDFont+F1" bbox="103.086,757.608,111.750,769.608" colourspace="DeviceGray" ncolour="(0.0, 0.0, 0.0)" size="12.000">w</text>
-<text font="CIDFont+F1" bbox="111.752,757.608,115.076,769.608" colourspace="DeviceGray" ncolour="(0.0, 0.0, 0.0)" size="12.000">i</text>
-<text font="CIDFont+F1" bbox="114.992,757.608,118.317,769.608" colourspace="DeviceGray" ncolour="(0.0, 0.0, 0.0)" size="12.000">t</text>
-<text font="CIDFont+F1" bbox="118.473,757.608,124.473,769.608" colourspace="DeviceGray" ncolour="(0.0, 0.0, 0.0)" size="12.000">h</text>
-<text font="CIDFont+F1" bbox="124.473,757.608,127.473,769.608" colourspace="DeviceGray" ncolour="(0.0, 0.0, 0.0)" size="12.000"> </text>
-<text font="CIDFont+F1" bbox="127.473,757.608,131.469,769.608" colourspace="DeviceGray" ncolour="(0.0, 0.0, 0.0)" size="12.000">(</text>
-<text font="CIDFont+F1" bbox="131.469,757.608,134.793,769.608" colourspace="DeviceGray" ncolour="(0.0, 0.0, 0.0)" size="12.000">i</text>
-<text font="CIDFont+F1" bbox="134.589,757.608,140.589,769.608" colourspace="DeviceGray" ncolour="(0.0, 0.0, 0.0)" size="12.000">n</text>
-<text font="CIDFont+F1" bbox="140.589,757.608,143.914,769.608" colourspace="DeviceGray" ncolour="(0.0, 0.0, 0.0)" size="12.000">t</text>
-<text font="CIDFont+F1" bbox="143.924,757.608,149.240,769.608" colourspace="DeviceGray" ncolour="(0.0, 0.0, 0.0)" size="12.000">e</text>
-<text font="CIDFont+F1" bbox="149.444,757.608,153.440,769.608" colourspace="DeviceGray" ncolour="(0.0, 0.0, 0.0)" size="12.000">r</text>
-<text font="CIDFont+F1" bbox="153.440,757.608,162.764,769.608" colourspace="DeviceGray" ncolour="(0.0, 0.0, 0.0)" size="12.000">m</text>
-<text font="CIDFont+F1" bbox="162.680,757.608,167.997,769.608" colourspace="DeviceGray" ncolour="(0.0, 0.0, 0.0)" size="12.000">e</text>
-<text font="CIDFont+F1" bbox="168.007,757.608,174.007,769.608" colourspace="DeviceGray" ncolour="(0.0, 0.0, 0.0)" size="12.000">d</text>
-<text font="CIDFont+F1" bbox="174.007,757.608,177.331,769.608" colourspace="DeviceGray" ncolour="(0.0, 0.0, 0.0)" size="12.000">i</text>
-<text font="CIDFont+F1" bbox="177.341,757.608,182.657,769.608" colourspace="DeviceGray" ncolour="(0.0, 0.0, 0.0)" size="12.000">a</text>
-<text font="CIDFont+F1" bbox="182.667,757.608,185.992,769.608" colourspace="DeviceGray" ncolour="(0.0, 0.0, 0.0)" size="12.000">t</text>
-<text font="CIDFont+F1" bbox="186.002,757.608,191.318,769.608" colourspace="DeviceGray" ncolour="(0.0, 0.0, 0.0)" size="12.000">e</text>
-<text font="CIDFont+F1" bbox="191.328,757.608,195.324,769.608" colourspace="DeviceGray" ncolour="(0.0, 0.0, 0.0)" size="12.000">)</text>
-<text font="CIDFont+F1" bbox="195.408,757.608,198.408,769.608" colourspace="DeviceGray" ncolour="(0.0, 0.0, 0.0)" size="12.000"> </text>
-<text font="CIDFont+F1" bbox="198.408,757.608,202.404,769.608" colourspace="DeviceGray" ncolour="(0.0, 0.0, 0.0)" size="12.000">r</text>
-<text font="CIDFont+F1" bbox="202.404,757.608,207.721,769.608" colourspace="DeviceGray" ncolour="(0.0, 0.0, 0.0)" size="12.000">e</text>
-<text font="CIDFont+F1" bbox="207.565,757.608,212.233,769.608" colourspace="DeviceGray" ncolour="(0.0, 0.0, 0.0)" size="12.000">s</text>
-<text font="CIDFont+F1" bbox="212.235,757.608,218.235,769.608" colourspace="DeviceGray" ncolour="(0.0, 0.0, 0.0)" size="12.000">u</text>
-<text font="CIDFont+F1" bbox="218.235,757.608,221.559,769.608" colourspace="DeviceGray" ncolour="(0.0, 0.0, 0.0)" size="12.000">l</text>
-<text font="CIDFont+F1" bbox="221.569,757.608,224.893,769.608" colourspace="DeviceGray" ncolour="(0.0, 0.0, 0.0)" size="12.000">t</text>
-<text font="CIDFont+F1" bbox="225.049,757.608,229.717,769.608" colourspace="DeviceGray" ncolour="(0.0, 0.0, 0.0)" size="12.000">s</text>
-<text font="CIDFont+F1" bbox="229.719,757.608,232.719,769.608" colourspace="DeviceGray" ncolour="(0.0, 0.0, 0.0)" size="12.000"> </text>
-<text font="CIDFont+F1" bbox="232.719,757.608,238.036,769.608" colourspace="DeviceGray" ncolour="(0.0, 0.0, 0.0)" size="12.000">a</text>
-<text font="CIDFont+F1" bbox="238.046,757.608,244.046,769.608" colourspace="DeviceGray" ncolour="(0.0, 0.0, 0.0)" size="12.000">n</text>
-<text font="CIDFont+F1" bbox="243.926,757.608,249.926,769.608" colourspace="DeviceGray" ncolour="(0.0, 0.0, 0.0)" size="12.000">d</text>
-<text font="CIDFont+F1" bbox="249.926,757.608,252.926,769.608" colourspace="DeviceGray" ncolour="(0.0, 0.0, 0.0)" size="12.000"> </text>
-<text font="CIDFont+F1" bbox="252.926,757.608,258.243,769.608" colourspace="DeviceGray" ncolour="(0.0, 0.0, 0.0)" size="12.000">a</text>
-<text font="CIDFont+F1" bbox="258.253,757.608,261.577,769.608" colourspace="DeviceGray" ncolour="(0.0, 0.0, 0.0)" size="12.000">l</text>
-<text font="CIDFont+F1" bbox="261.587,757.608,264.911,769.608" colourspace="DeviceGray" ncolour="(0.0, 0.0, 0.0)" size="12.000">l</text>
-<text font="CIDFont+F1" bbox="264.921,757.608,267.921,769.608" colourspace="DeviceGray" ncolour="(0.0, 0.0, 0.0)" size="12.000"> </text>
-<text font="CIDFont+F1" bbox="267.921,757.608,273.921,769.608" colourspace="DeviceGray" ncolour="(0.0, 0.0, 0.0)" size="12.000">p</text>
-<text font="CIDFont+F1" bbox="273.921,757.608,277.917,769.608" colourspace="DeviceGray" ncolour="(0.0, 0.0, 0.0)" size="12.000">r</text>
-<text font="CIDFont+F1" bbox="277.918,757.608,283.918,769.608" colourspace="DeviceGray" ncolour="(0.0, 0.0, 0.0)" size="12.000">o</text>
-<text font="CIDFont+F1" bbox="284.038,757.608,289.354,769.608" colourspace="DeviceGray" ncolour="(0.0, 0.0, 0.0)" size="12.000">c</text>
-<text font="CIDFont+F1" bbox="289.364,757.608,294.680,769.608" colourspace="DeviceGray" ncolour="(0.0, 0.0, 0.0)" size="12.000">e</text>
-<text font="CIDFont+F1" bbox="294.690,757.608,299.359,769.608" colourspace="DeviceGray" ncolour="(0.0, 0.0, 0.0)" size="12.000">s</text>
-<text font="CIDFont+F1" bbox="299.251,757.608,303.919,769.608" colourspace="DeviceGray" ncolour="(0.0, 0.0, 0.0)" size="12.000">s</text>
-<text font="CIDFont+F1" bbox="303.921,757.608,307.245,769.608" colourspace="DeviceGray" ncolour="(0.0, 0.0, 0.0)" size="12.000">i</text>
-<text font="CIDFont+F1" bbox="307.255,757.608,313.255,769.608" colourspace="DeviceGray" ncolour="(0.0, 0.0, 0.0)" size="12.000">n</text>
-<text font="CIDFont+F1" bbox="313.375,757.608,319.375,769.608" colourspace="DeviceGray" ncolour="(0.0, 0.0, 0.0)" size="12.000">g</text>
-<text font="CIDFont+F1" bbox="319.375,757.608,322.375,769.608" colourspace="DeviceGray" ncolour="(0.0, 0.0, 0.0)" size="12.000"> </text>
-<text font="CIDFont+F1" bbox="322.375,757.608,327.044,769.608" colourspace="DeviceGray" ncolour="(0.0, 0.0, 0.0)" size="12.000">s</text>
-<text font="CIDFont+F1" bbox="327.046,757.608,330.370,769.608" colourspace="DeviceGray" ncolour="(0.0, 0.0, 0.0)" size="12.000">t</text>
-<text font="CIDFont+F1" bbox="330.380,757.608,335.696,769.608" colourspace="DeviceGray" ncolour="(0.0, 0.0, 0.0)" size="12.000">e</text>
-<text font="CIDFont+F1" bbox="335.706,757.608,341.706,769.608" colourspace="DeviceGray" ncolour="(0.0, 0.0, 0.0)" size="12.000">p</text>
-<text font="CIDFont+F1" bbox="341.706,757.608,346.374,769.608" colourspace="DeviceGray" ncolour="(0.0, 0.0, 0.0)" size="12.000">s</text>
-<text font="CIDFont+F1" bbox="346.376,757.608,349.376,769.608" colourspace="DeviceGray" ncolour="(0.0, 0.0, 0.0)" size="12.000"> </text>
-<text font="CIDFont+F1" bbox="349.376,757.608,352.701,769.608" colourspace="DeviceGray" ncolour="(0.0, 0.0, 0.0)" size="12.000">i</text>
-<text font="CIDFont+F1" bbox="352.711,757.608,358.711,769.608" colourspace="DeviceGray" ncolour="(0.0, 0.0, 0.0)" size="12.000">n</text>
-<text font="CIDFont+F1" bbox="358.711,757.608,361.711,769.608" colourspace="DeviceGray" ncolour="(0.0, 0.0, 0.0)" size="12.000"> </text>
-<text font="CIDFont+F1" bbox="361.711,757.608,367.711,769.608" colourspace="DeviceGray" ncolour="(0.0, 0.0, 0.0)" size="12.000">o</text>
-<text font="CIDFont+F1" bbox="367.711,757.608,373.711,769.608" colourspace="DeviceGray" ncolour="(0.0, 0.0, 0.0)" size="12.000">n</text>
-<text font="CIDFont+F1" bbox="373.711,757.608,379.028,769.608" colourspace="DeviceGray" ncolour="(0.0, 0.0, 0.0)" size="12.000">e</text>
-<text font="CIDFont+F1" bbox="379.038,757.608,382.038,769.608" colourspace="DeviceGray" ncolour="(0.0, 0.0, 0.0)" size="12.000"> </text>
-<text font="CIDFont+F1" bbox="381.918,757.608,385.914,769.608" colourspace="DeviceGray" ncolour="(0.0, 0.0, 0.0)" size="12.000">f</text>
-<text font="CIDFont+F1" bbox="385.914,757.608,391.914,769.608" colourspace="DeviceGray" ncolour="(0.0, 0.0, 0.0)" size="12.000">o</text>
-<text font="CIDFont+F1" bbox="391.914,757.608,395.910,769.608" colourspace="DeviceGray" ncolour="(0.0, 0.0, 0.0)" size="12.000">r</text>
-<text font="CIDFont+F1" bbox="395.994,757.608,405.319,769.608" colourspace="DeviceGray" ncolour="(0.0, 0.0, 0.0)" size="12.000">m</text>
-<text font="CIDFont+F1" bbox="405.329,757.608,410.645,769.608" colourspace="DeviceGray" ncolour="(0.0, 0.0, 0.0)" size="12.000">a</text>
-<text font="CIDFont+F1" bbox="410.489,757.608,413.813,769.608" colourspace="DeviceGray" ncolour="(0.0, 0.0, 0.0)" size="12.000">t</text>
-<text font="CIDFont+F1" bbox="413.969,757.608,416.969,769.608" colourspace="DeviceGray" ncolour="(0.0, 0.0, 0.0)" size="12.000">.</text>
-<text>
-</text>
-</textline>
-</textbox>
-<textbox id="1" bbox="56.760,716.208,485.922,742.008">
-<textline bbox="56.760,730.008,485.922,742.008">
-<text font="CIDFont+F1" bbox="56.760,730.008,67.428,742.008" colourspace="DeviceGray" ncolour="(0.0, 0.0, 0.0)" size="12.000">M</text>
-<text font="CIDFont+F1" bbox="67.430,730.008,73.431,742.008" colourspace="DeviceGray" ncolour="(0.0, 0.0, 0.0)" size="12.000">u</text>
-<text font="CIDFont+F1" bbox="73.431,730.008,76.755,742.008" colourspace="DeviceGray" ncolour="(0.0, 0.0, 0.0)" size="12.000">l</text>
-<text font="CIDFont+F1" bbox="76.765,730.008,80.089,742.008" colourspace="DeviceGray" ncolour="(0.0, 0.0, 0.0)" size="12.000">t</text>
-<text font="CIDFont+F1" bbox="80.005,730.008,83.329,742.008" colourspace="DeviceGray" ncolour="(0.0, 0.0, 0.0)" size="12.000">i</text>
-<text font="CIDFont+F1" bbox="83.339,730.008,92.003,742.008" colourspace="DeviceGray" ncolour="(0.0, 0.0, 0.0)" size="12.000">w</text>
-<text font="CIDFont+F1" bbox="92.099,730.008,98.099,742.008" colourspace="DeviceGray" ncolour="(0.0, 0.0, 0.0)" size="12.000">o</text>
-<text font="CIDFont+F1" bbox="98.099,730.008,102.096,742.008" colourspace="DeviceGray" ncolour="(0.0, 0.0, 0.0)" size="12.000">r</text>
-<text font="CIDFont+F1" bbox="102.096,730.008,108.096,742.008" colourspace="DeviceGray" ncolour="(0.0, 0.0, 0.0)" size="12.000">d</text>
-<text font="CIDFont+F1" bbox="107.976,730.008,112.644,742.008" colourspace="DeviceGray" ncolour="(0.0, 0.0, 0.0)" size="12.000">s</text>
-<text font="CIDFont+F1" bbox="112.776,730.008,115.776,742.008" colourspace="DeviceGray" ncolour="(0.0, 0.0, 0.0)" size="12.000"> </text>
-<text font="CIDFont+F1" bbox="115.776,730.008,119.100,742.008" colourspace="DeviceGray" ncolour="(0.0, 0.0, 0.0)" size="12.000">l</text>
-<text font="CIDFont+F1" bbox="119.016,730.008,122.340,742.008" colourspace="DeviceGray" ncolour="(0.0, 0.0, 0.0)" size="12.000">i</text>
-<text font="CIDFont+F1" bbox="122.350,730.008,128.351,742.008" colourspace="DeviceGray" ncolour="(0.0, 0.0, 0.0)" size="12.000">k</text>
-<text font="CIDFont+F1" bbox="128.351,730.008,133.667,742.008" colourspace="DeviceGray" ncolour="(0.0, 0.0, 0.0)" size="12.000">e</text>
-<text font="CIDFont+F1" bbox="133.751,730.008,136.751,742.008" colourspace="DeviceGray" ncolour="(0.0, 0.0, 0.0)" size="12.000"> </text>
-<text font="CIDFont+F1" bbox="136.751,730.008,140.075,742.008" colourspace="DeviceGray" ncolour="(0.0, 0.0, 0.0)" size="12.000">i</text>
-<text font="CIDFont+F1" bbox="139.991,730.008,145.991,742.008" colourspace="DeviceGray" ncolour="(0.0, 0.0, 0.0)" size="12.000">n</text>
-<text font="CIDFont+F1" bbox="145.991,730.008,148.991,742.008" colourspace="DeviceGray" ncolour="(0.0, 0.0, 0.0)" size="12.000"> </text>
-<text font="CIDFont+F1" bbox="148.991,730.008,154.308,742.008" colourspace="DeviceGray" ncolour="(0.0, 0.0, 0.0)" size="12.000">“</text>
-<text font="CIDFont+F1" bbox="154.392,730.008,163.056,742.008" colourspace="DeviceGray" ncolour="(0.0, 0.0, 0.0)" size="12.000">w</text>
-<text font="CIDFont+F1" bbox="163.058,730.008,168.374,742.008" colourspace="DeviceGray" ncolour="(0.0, 0.0, 0.0)" size="12.000">e</text>
-<text font="CIDFont+F1" bbox="168.384,730.008,171.384,742.008" colourspace="DeviceGray" ncolour="(0.0, 0.0, 0.0)" size="12.000"> </text>
-<text font="CIDFont+F1" bbox="171.384,730.008,177.385,742.008" colourspace="DeviceGray" ncolour="(0.0, 0.0, 0.0)" size="12.000">h</text>
-<text font="CIDFont+F1" bbox="177.385,730.008,182.701,742.008" colourspace="DeviceGray" ncolour="(0.0, 0.0, 0.0)" size="12.000">a</text>
-<text font="CIDFont+F1" bbox="182.711,730.008,188.711,742.008" colourspace="DeviceGray" ncolour="(0.0, 0.0, 0.0)" size="12.000">v</text>
-<text font="CIDFont+F1" bbox="188.711,730.008,194.027,742.008" colourspace="DeviceGray" ncolour="(0.0, 0.0, 0.0)" size="12.000">e</text>
-<text font="CIDFont+F1" bbox="194.038,730.008,197.038,742.008" colourspace="DeviceGray" ncolour="(0.0, 0.0, 0.0)" size="12.000"> </text>
-<text font="CIDFont+F1" bbox="197.038,730.008,201.706,742.008" colourspace="DeviceGray" ncolour="(0.0, 0.0, 0.0)" size="12.000">s</text>
-<text font="CIDFont+F1" bbox="201.708,730.008,207.024,742.008" colourspace="DeviceGray" ncolour="(0.0, 0.0, 0.0)" size="12.000">e</text>
-<text font="CIDFont+F1" bbox="207.034,730.008,210.358,742.008" colourspace="DeviceGray" ncolour="(0.0, 0.0, 0.0)" size="12.000">t</text>
-<text font="CIDFont+F1" bbox="210.368,730.008,213.368,742.008" colourspace="DeviceGray" ncolour="(0.0, 0.0, 0.0)" size="12.000"> </text>
-<text font="CIDFont+F1" bbox="213.368,730.008,216.693,742.008" colourspace="DeviceGray" ncolour="(0.0, 0.0, 0.0)" size="12.000">t</text>
-<text font="CIDFont+F1" bbox="216.703,730.008,222.703,742.008" colourspace="DeviceGray" ncolour="(0.0, 0.0, 0.0)" size="12.000">h</text>
-<text font="CIDFont+F1" bbox="222.703,730.008,228.019,742.008" colourspace="DeviceGray" ncolour="(0.0, 0.0, 0.0)" size="12.000">a</text>
-<text font="CIDFont+F1" bbox="228.029,730.008,231.353,742.008" colourspace="DeviceGray" ncolour="(0.0, 0.0, 0.0)" size="12.000">t</text>
-<text font="CIDFont+F1" bbox="231.363,730.008,234.363,742.008" colourspace="DeviceGray" ncolour="(0.0, 0.0, 0.0)" size="12.000"> </text>
-<text font="CIDFont+F1" bbox="234.363,730.008,240.364,742.008" colourspace="DeviceGray" ncolour="(0.0, 0.0, 0.0)" size="12.000">o</text>
-<text font="CIDFont+F1" bbox="240.364,730.008,246.364,742.008" colourspace="DeviceGray" ncolour="(0.0, 0.0, 0.0)" size="12.000">u</text>
-<text font="CIDFont+F1" bbox="246.364,730.008,249.688,742.008" colourspace="DeviceGray" ncolour="(0.0, 0.0, 0.0)" size="12.000">t</text>
-<text font="CIDFont+F1" bbox="249.698,730.008,252.698,742.008" colourspace="DeviceGray" ncolour="(0.0, 0.0, 0.0)" size="12.000"> </text>
-<text font="CIDFont+F1" bbox="252.698,730.008,258.698,742.008" colourspace="DeviceGray" ncolour="(0.0, 0.0, 0.0)" size="12.000">b</text>
-<text font="CIDFont+F1" bbox="258.698,730.008,264.014,742.008" colourspace="DeviceGray" ncolour="(0.0, 0.0, 0.0)" size="12.000">e</text>
-<text font="CIDFont+F1" bbox="264.025,730.008,267.349,742.008" colourspace="DeviceGray" ncolour="(0.0, 0.0, 0.0)" size="12.000">l</text>
-<text font="CIDFont+F1" bbox="267.359,730.008,273.359,742.008" colourspace="DeviceGray" ncolour="(0.0, 0.0, 0.0)" size="12.000">o</text>
-<text font="CIDFont+F1" bbox="273.359,730.008,282.023,742.008" colourspace="DeviceGray" ncolour="(0.0, 0.0, 0.0)" size="12.000">w</text>
-<text font="CIDFont+F1" bbox="282.025,730.008,287.342,742.008" colourspace="DeviceGray" ncolour="(0.0, 0.0, 0.0)" size="12.000">”</text>
-<text font="CIDFont+F1" bbox="287.426,730.008,290.426,742.008" colourspace="DeviceGray" ncolour="(0.0, 0.0, 0.0)" size="12.000"> </text>
-<text font="CIDFont+F1" bbox="290.426,730.008,295.742,742.008" colourspace="DeviceGray" ncolour="(0.0, 0.0, 0.0)" size="12.000">a</text>
-<text font="CIDFont+F1" bbox="295.752,730.008,299.748,742.008" colourspace="DeviceGray" ncolour="(0.0, 0.0, 0.0)" size="12.000">r</text>
-<text font="CIDFont+F1" bbox="299.592,730.008,304.908,742.008" colourspace="DeviceGray" ncolour="(0.0, 0.0, 0.0)" size="12.000">e</text>
-<text font="CIDFont+F1" bbox="304.992,730.008,307.992,742.008" colourspace="DeviceGray" ncolour="(0.0, 0.0, 0.0)" size="12.000"> </text>
-<text font="CIDFont+F1" bbox="307.992,730.008,311.989,742.008" colourspace="DeviceGray" ncolour="(0.0, 0.0, 0.0)" size="12.000">r</text>
-<text font="CIDFont+F1" bbox="311.989,730.008,317.305,742.008" colourspace="DeviceGray" ncolour="(0.0, 0.0, 0.0)" size="12.000">e</text>
-<text font="CIDFont+F1" bbox="317.315,730.008,322.631,742.008" colourspace="DeviceGray" ncolour="(0.0, 0.0, 0.0)" size="12.000">c</text>
-<text font="CIDFont+F1" bbox="322.641,730.008,328.642,742.008" colourspace="DeviceGray" ncolour="(0.0, 0.0, 0.0)" size="12.000">o</text>
-<text font="CIDFont+F1" bbox="328.522,730.008,334.522,742.008" colourspace="DeviceGray" ncolour="(0.0, 0.0, 0.0)" size="12.000">g</text>
-<text font="CIDFont+F1" bbox="334.522,730.008,340.522,742.008" colourspace="DeviceGray" ncolour="(0.0, 0.0, 0.0)" size="12.000">n</text>
-<text font="CIDFont+F1" bbox="340.522,730.008,343.846,742.008" colourspace="DeviceGray" ncolour="(0.0, 0.0, 0.0)" size="12.000">i</text>
-<text font="CIDFont+F1" bbox="343.856,730.008,349.172,742.008" colourspace="DeviceGray" ncolour="(0.0, 0.0, 0.0)" size="12.000">z</text>
-<text font="CIDFont+F1" bbox="349.376,730.008,354.693,742.008" colourspace="DeviceGray" ncolour="(0.0, 0.0, 0.0)" size="12.000">e</text>
-<text font="CIDFont+F1" bbox="354.703,730.008,360.703,742.008" colourspace="DeviceGray" ncolour="(0.0, 0.0, 0.0)" size="12.000">d</text>
-<text font="CIDFont+F1" bbox="360.583,730.008,363.583,742.008" colourspace="DeviceGray" ncolour="(0.0, 0.0, 0.0)" size="12.000"> </text>
-<text font="CIDFont+F1" bbox="363.583,730.008,367.579,742.008" colourspace="DeviceGray" ncolour="(0.0, 0.0, 0.0)" size="12.000">(</text>
-<text font="CIDFont+F1" bbox="367.579,730.008,373.580,742.008" colourspace="DeviceGray" ncolour="(0.0, 0.0, 0.0)" size="12.000">d</text>
-<text font="CIDFont+F1" bbox="373.580,730.008,378.896,742.008" colourspace="DeviceGray" ncolour="(0.0, 0.0, 0.0)" size="12.000">e</text>
-<text font="CIDFont+F1" bbox="378.906,730.008,384.906,742.008" colourspace="DeviceGray" ncolour="(0.0, 0.0, 0.0)" size="12.000">p</text>
-<text font="CIDFont+F1" bbox="385.026,730.008,390.342,742.008" colourspace="DeviceGray" ncolour="(0.0, 0.0, 0.0)" size="12.000">e</text>
-<text font="CIDFont+F1" bbox="390.353,730.008,396.353,742.008" colourspace="DeviceGray" ncolour="(0.0, 0.0, 0.0)" size="12.000">n</text>
-<text font="CIDFont+F1" bbox="396.233,730.008,402.233,742.008" colourspace="DeviceGray" ncolour="(0.0, 0.0, 0.0)" size="12.000">d</text>
-<text font="CIDFont+F1" bbox="402.233,730.008,405.557,742.008" colourspace="DeviceGray" ncolour="(0.0, 0.0, 0.0)" size="12.000">i</text>
-<text font="CIDFont+F1" bbox="405.567,730.008,411.567,742.008" colourspace="DeviceGray" ncolour="(0.0, 0.0, 0.0)" size="12.000">n</text>
-<text font="CIDFont+F1" bbox="411.567,730.008,417.568,742.008" colourspace="DeviceGray" ncolour="(0.0, 0.0, 0.0)" size="12.000">g</text>
-<text font="CIDFont+F1" bbox="417.568,730.008,420.568,742.008" colourspace="DeviceGray" ncolour="(0.0, 0.0, 0.0)" size="12.000"> </text>
-<text font="CIDFont+F1" bbox="420.568,730.008,426.568,742.008" colourspace="DeviceGray" ncolour="(0.0, 0.0, 0.0)" size="12.000">o</text>
-<text font="CIDFont+F1" bbox="426.568,730.008,432.568,742.008" colourspace="DeviceGray" ncolour="(0.0, 0.0, 0.0)" size="12.000">n</text>
-<text font="CIDFont+F1" bbox="432.568,730.008,435.568,742.008" colourspace="DeviceGray" ncolour="(0.0, 0.0, 0.0)" size="12.000"> </text>
-<text font="CIDFont+F1" bbox="435.568,730.008,441.569,742.008" colourspace="DeviceGray" ncolour="(0.0, 0.0, 0.0)" size="12.000">y</text>
-<text font="CIDFont+F1" bbox="441.569,730.008,447.569,742.008" colourspace="DeviceGray" ncolour="(0.0, 0.0, 0.0)" size="12.000">o</text>
-<text font="CIDFont+F1" bbox="447.569,730.008,453.569,742.008" colourspace="DeviceGray" ncolour="(0.0, 0.0, 0.0)" size="12.000">u</text>
-<text font="CIDFont+F1" bbox="453.569,730.008,457.565,742.008" colourspace="DeviceGray" ncolour="(0.0, 0.0, 0.0)" size="12.000">r</text>
-<text font="CIDFont+F1" bbox="457.565,730.008,460.565,742.008" colourspace="DeviceGray" ncolour="(0.0, 0.0, 0.0)" size="12.000"> </text>
-<text font="CIDFont+F1" bbox="460.565,730.008,469.230,742.008" colourspace="DeviceGray" ncolour="(0.0, 0.0, 0.0)" size="12.000">N</text>
-<text font="CIDFont+F1" bbox="469.232,730.008,476.552,742.008" colourspace="DeviceGray" ncolour="(0.0, 0.0, 0.0)" size="12.000">L</text>
-<text font="CIDFont+F1" bbox="476.562,730.008,483.234,742.008" colourspace="DeviceGray" ncolour="(0.0, 0.0, 0.0)" size="12.000">P</text>
-<text font="CIDFont+F1" bbox="482.922,730.008,485.922,742.008" colourspace="DeviceGray" ncolour="(0.0, 0.0, 0.0)" size="12.000"> </text>
-<text>
-</text>
-</textline>
-<textline bbox="56.760,716.208,109.706,728.208">
-<text font="CIDFont+F1" bbox="56.760,716.208,62.760,728.208" colourspace="DeviceGray" ncolour="(0.0, 0.0, 0.0)" size="12.000">p</text>
-<text font="CIDFont+F1" bbox="62.760,716.208,66.756,728.208" colourspace="DeviceGray" ncolour="(0.0, 0.0, 0.0)" size="12.000">r</text>
-<text font="CIDFont+F1" bbox="66.756,716.208,72.757,728.208" colourspace="DeviceGray" ncolour="(0.0, 0.0, 0.0)" size="12.000">o</text>
-<text font="CIDFont+F1" bbox="72.757,716.208,78.073,728.208" colourspace="DeviceGray" ncolour="(0.0, 0.0, 0.0)" size="12.000">c</text>
-<text font="CIDFont+F1" bbox="78.157,716.208,83.473,728.208" colourspace="DeviceGray" ncolour="(0.0, 0.0, 0.0)" size="12.000">e</text>
-<text font="CIDFont+F1" bbox="83.483,716.208,88.151,728.208" colourspace="DeviceGray" ncolour="(0.0, 0.0, 0.0)" size="12.000">s</text>
-<text font="CIDFont+F1" bbox="88.043,716.208,92.712,728.208" colourspace="DeviceGray" ncolour="(0.0, 0.0, 0.0)" size="12.000">s</text>
-<text font="CIDFont+F1" bbox="92.714,716.208,98.714,728.208" colourspace="DeviceGray" ncolour="(0.0, 0.0, 0.0)" size="12.000">o</text>
-<text font="CIDFont+F1" bbox="98.714,716.208,102.710,728.208" colourspace="DeviceGray" ncolour="(0.0, 0.0, 0.0)" size="12.000">r</text>
-<text font="CIDFont+F1" bbox="102.710,716.208,106.706,728.208" colourspace="DeviceGray" ncolour="(0.0, 0.0, 0.0)" size="12.000">)</text>
-<text font="CIDFont+F1" bbox="106.706,716.208,109.706,728.208" colourspace="DeviceGray" ncolour="(0.0, 0.0, 0.0)" size="12.000">.</text>
-<text>
-</text>
-</textline>
-</textbox>
-<layout>
-<textgroup bbox="56.760,716.208,501.861,783.408">
-<textbox id="0" bbox="56.760,757.608,501.861,783.408"/>
-<textbox id="1" bbox="56.760,716.208,485.922,742.008"/>
-</textgroup>
-</layout>
-</page>
-</formats_copy>
   <entities>
     <entity id="e1" type="PRODUCT">
       <span>
