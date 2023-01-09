@@ -105,12 +105,11 @@ class NafDocument(etree._ElementTree):
         if isinstance(input, str):
             with open(input, "r", encoding="utf-8") as f:
                 self._setroot(etree.parse(f).getroot())
+        elif type(input) == bytes:
+            stream_data = io.BytesIO(input)
+            self._setroot(etree.parse(stream_data).getroot())
         else:
-            if type(input) == bytes:
-                stream_data = io.BytesIO(input)
-                self._setroot(etree.parse(stream_data).getroot())
-            else:
-                raise TypeError("invalid input, instead of bytes it is" + str(type(input)))
+            raise TypeError("invalid input, instead of bytes it is" + str(type(input)))
         return self
 
     def write(self, output: str) -> None:
