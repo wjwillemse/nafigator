@@ -20,7 +20,6 @@ import datetime
 import logging
 import camelot
 from copy import deepcopy
-import re
 import io
 
 NAF_VERSION_TO_DTD = {
@@ -97,7 +96,7 @@ class NafDocument(etree._ElementTree):
         """Function to open a NafDocument
 
         Args:
-            input: the location of the NafDocument to be opened
+            input: the location of the NafDocument to be opened or a bytes object containing the file content
 
         Returns:
             NafDocument: the NAF document that is opened
@@ -111,7 +110,7 @@ class NafDocument(etree._ElementTree):
                 stream_data = io.BytesIO(input)
                 self._setroot(etree.parse(stream_data).getroot())
             else:
-                logging.exception("invalid input, instead of bytes it is" + str(type(input)))
+                raise TypeError("invalid input, instead of bytes it is" + str(type(input)))
         return self
 
     def write(self, output: str) -> None:
@@ -126,12 +125,10 @@ class NafDocument(etree._ElementTree):
         """
         super().write(output, encoding="utf-8", pretty_print=True, xml_declaration=True)
 
-    def getstream(self):
+    def getstream(self) -> bytes:
         """
         Function to stream the NafDocument
-        Args:
-            output: stream of the NafDocument
-        Returns: Bytesstream
+        Returns: Bytesstream of the NafDocument
         """
         output = io.BytesIO()
         super().write(output, encoding="utf-8", pretty_print=True, xml_declaration=True)

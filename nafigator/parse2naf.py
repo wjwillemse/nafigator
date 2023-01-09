@@ -126,9 +126,8 @@ def create_params(
         if "public" not in params.keys():
             params["public"] = dict()
             params["public"]["uri"] = input
-        else:
-            if "uri" not in params["public"].keys():
-                params["public"]["uri"] = input
+        elif "uri" not in params["public"].keys():
+            params["public"]["uri"] = input
         if stream is not None:
             if not isinstance(stream, io.BytesIO):
                 stream = io.BytesIO(stream)
