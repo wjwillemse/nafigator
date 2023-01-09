@@ -3,6 +3,7 @@
 """naf document."""
 
 from lxml import etree
+from typing import Union
 from .const import ProcessorElement
 from .const import DependencyRelation
 from .const import WordformElement
@@ -19,7 +20,7 @@ import datetime
 import logging
 import camelot
 from copy import deepcopy
-import re
+import io
 
 NAF_VERSION_TO_DTD = {
     "v3": "data/naf_v3.dtd",
@@ -91,18 +92,24 @@ class NafDocument(etree._ElementTree):
         self.add_filedesc_element(params["fileDesc"])
         self.add_public_element(params["public"])
 
-    def open(self, input: str):
+    def open(self, input: Union[str, bytes]):
         """Function to open a NafDocument
 
         Args:
-            input: the location of the NafDocument to be opened
+            input: the location of the NafDocument to be opened or a bytes object containing the file content
 
         Returns:
             NafDocument: the NAF document that is opened
 
         """
-        with open(input, "r", encoding="utf-8") as f:
-            self._setroot(etree.parse(f).getroot())
+        if isinstance(input, str):
+            with open(input, "r", encoding="utf-8") as f:
+                self._setroot(etree.parse(f).getroot())
+        elif type(input) == bytes:
+            stream_data = io.BytesIO(input)
+            self._setroot(etree.parse(stream_data).getroot())
+        else:
+            raise TypeError("invalid input, instead of bytes or string it is" + str(type(input)))
         return self
 
     def write(self, output: str) -> None:
@@ -116,6 +123,15 @@ class NafDocument(etree._ElementTree):
 
         """
         super().write(output, encoding="utf-8", pretty_print=True, xml_declaration=True)
+
+    def getstream(self) -> bytes:
+        """
+        Function to stream the NafDocument
+        Returns: Bytesstream of the NafDocument
+        """
+        output = io.BytesIO()
+        super().write(output, encoding="utf-8", pretty_print=True, xml_declaration=True)
+        return output
 
     @property
     def version(self):
