@@ -1,6 +1,10 @@
-# coding: utf-8
+# -*- coding: utf-8 -*-
 
-"""Linguistic processor module."""
+"""Linguistic processor module.
+
+This module contains the linguistic classes for nafigator
+
+"""
 
 try:
     import spacy
@@ -19,27 +23,45 @@ except:
 if SPACY_IMPORTED:
 
     class spacyProcessor:
-        def __init__(
-            self,
-            nlp=None,
-            lang: str = None,
-        ):
+        def __init__(self, nlp=None, lang: str = None) -> None:
+            """Initialize spacy processor
 
+            Args:
+                nlp: optional NLP processor
+                lang: language
+            Returns:
+                None
+
+            """
+            self.lang = lang
             if nlp is None:
                 if lang == "en":
                     self.nlp = spacy.load("en_core_web_sm")
                 elif lang == "nl":
                     self.nlp = spacy.load("nl_core_web_sm")
             else:
-                self.nlp = nlp
-            self.lang = lang
+                if isinstance(nlp, dict):
+                    if lang in nlp.keys():
+                        self.nlp = nlp[lang]
+                    else:
+                        logging.error("Language not available in nlp dict parameter")
+                        self.nlp = None
+                else:
+                    self.nlp = nlp
             self.model_name = (
                 f'spaCy-model_{self.nlp.meta["lang"]}_{self.nlp.meta["name"]}'
             )
             self.model_version = f'spaCy_version-{spacy.__version__}__model_version-{self.nlp.meta["version"]}'
 
         def processor(self, name):
+            """Return processor of each pipeline element
 
+            Args:
+                name: name of processor
+            Returns:
+                dict: dictionary with name of processor
+
+            """
             processors = {proc_name: proc for proc_name, proc in self.nlp.pipeline}
 
             # where is the tokenizer object in spacy?
@@ -103,7 +125,10 @@ if SPACY_IMPORTED:
             return token.pos_
 
         def token_lemma(self, token):
-            return token.lemma_
+            if token.lemma_ == None:
+                return token.text
+            else:
+                return token.lemma_
 
         def token_tag(self, token):
             return token.tag_
@@ -222,13 +247,25 @@ if STANZA_IMPORTED:
             return token.start_char
 
         def token_pos(self, token):
-            return token.words[0].pos
+            if len(token.words) > 0:
+                return token.words[0].pos
+            else:
+                return ""
 
         def token_lemma(self, token):
-            return token.words[0].lemma
+            if len(token.words) > 0:
+                if token.words[0].lemma == None:
+                    return token.words[0].text
+                else:
+                    return token.words[0].lemma
+            else:
+                return ""
 
         def token_tag(self, token):
-            return token.words[0].feats
+            if len(token.words) > 0:
+                return token.words[0].feats
+            else:
+                return ""
 
         def entity_token_start(self, entity):
             return entity.tokens[0]

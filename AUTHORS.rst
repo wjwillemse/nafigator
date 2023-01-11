@@ -5,7 +5,7 @@ Credits
 Development Lead
 ----------------
 
-* Willem Jan Willemse <w.j.willemse@xs4all.nl>
+* Willem Jan Willemse <w.j.willemse@dnb.nl>
 
 Contributors
 ------------

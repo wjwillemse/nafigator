@@ -1,0 +1,136 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<NAF xmlns:dc="http://purl.org/dc/elements/1.1/" version="v3.1" xml:lang="nl">
+  <nafHeader>
+    <fileDesc creationtime="2022-08-23T14:06:34UTC" filename="tests/tests/test2_tabel.pdf" filetype="application/pdf"/>
+    <public dc:uri="tests/tests/test2_tabel.pdf" dc:format="application/pdf"/>
+    <linguisticProcessors layer="formats">
+      <lp name="formats" version="nafigator" beginTimestamp="2022-08-23T14:06:34UTC" endTimestamp="2022-08-23T14:06:48UTC" hostname="hduerinck001.localdomain"/>
+    </linguisticProcessors>
+    <linguisticProcessors layer="entities">
+      <lp name="entities" version="stanza_version-1.4.0" beginTimestamp="2022-08-23T14:07:01UTC" endTimestamp="2022-08-23T14:07:03UTC" hostname="hduerinck001.localdomain"/>
+    </linguisticProcessors>
+    <linguisticProcessors layer="text">
+      <lp name="text" version="stanza_version-1.4.0" model="/home/hmduerinck/stanza_resources/nl/tokenize/alpino.pt" beginTimestamp="2022-08-23T14:07:01UTC" endTimestamp="2022-08-23T14:07:03UTC" hostname="hduerinck001.localdomain"/>
+    </linguisticProcessors>
+    <linguisticProcessors layer="terms">
+      <lp name="terms" version="stanza_version-1.4.0" model="/home/hmduerinck/stanza_resources/nl/pos/alpino.pt" beginTimestamp="2022-08-23T14:07:01UTC" endTimestamp="2022-08-23T14:07:03UTC" hostname="hduerinck001.localdomain"/>
+    </linguisticProcessors>
+    <linguisticProcessors layer="deps">
+      <lp name="deps" version="stanza_version-1.4.0" model="/home/hmduerinck/stanza_resources/nl/depparse/alpino.pt" beginTimestamp="2022-08-23T14:07:01UTC" endTimestamp="2022-08-23T14:07:03UTC" hostname="hduerinck001.localdomain"/>
+    </linguisticProcessors>
+    <linguisticProcessors layer="multiwords">
+      <lp name="multiwords" version="stanza_version-1.4.0" model="/home/hmduerinck/stanza_resources/nl/tokenize/alpino.pt" beginTimestamp="2022-08-23T14:07:01UTC" endTimestamp="2022-08-23T14:07:03UTC" hostname="hduerinck001.localdomain"/>
+    </linguisticProcessors>
+    <linguisticProcessors layer="raw">
+      <lp name="raw" version="stanza_version-1.4.0" model="/home/hmduerinck/stanza_resources/nl/tokenize/alpino.pt" beginTimestamp="2022-08-23T14:07:01UTC" endTimestamp="2022-08-23T14:07:03UTC" hostname="hduerinck001.localdomain"/>
+    </linguisticProcessors>
+  </nafHeader>
+  <formats>
+    <page length="78" offset="0">
+      <textbox>
+        <textline>
+          <text font="BCDFEE+Calibri" size="11.040" length="26" offset="0">Test with an empty table  </text>
+        </textline>
+      </textbox>
+      <tables>
+        <table page="1" order="1" shape="(6, 4)" _bbox="(71.98548972188634, 607.68, 439.351438935913, 691.68)" cols="[(72.22356673216446, 163.88696493349457), (163.88696493349457, 255.7884401451028), (255.7884401451028, 347.4499637243047), (347.4499637243047, 439.2314631197098)]">
+          <row>
+            <index>0</index>
+            <cell></cell>
+            <cell></cell>
+            <cell></cell>
+            <cell></cell>
+          </row>
+          <row>
+            <index>1</index>
+            <cell></cell>
+            <cell></cell>
+            <cell></cell>
+            <cell></cell>
+          </row>
+          <row>
+            <index>2</index>
+            <cell></cell>
+            <cell></cell>
+            <cell></cell>
+            <cell></cell>
+          </row>
+          <row>
+            <index>3</index>
+            <cell></cell>
+            <cell></cell>
+            <cell></cell>
+            <cell></cell>
+          </row>
+          <row>
+            <index>4</index>
+            <cell></cell>
+            <cell></cell>
+            <cell></cell>
+            <cell></cell>
+          </row>
+          <row>
+            <index>5</index>
+            <cell></cell>
+            <cell></cell>
+            <cell></cell>
+            <cell></cell>
+          </row>
+        </table>
+      </tables>
+    </page>
+    <page length="5" offset="78">
+      <tables/>
+    </page>
+  </formats>
+  <text>
+    <wf id="w1" sent="1" para="1" page="1" offset="0" length="4"><![CDATA[Test]]></wf>
+    <wf id="w2" sent="1" para="1" page="1" offset="5" length="4"><![CDATA[with]]></wf>
+    <wf id="w3" sent="1" para="1" page="1" offset="10" length="2"><![CDATA[an]]></wf>
+    <wf id="w4" sent="1" para="1" page="1" offset="13" length="5"><![CDATA[empty]]></wf>
+    <wf id="w5" sent="1" para="1" page="1" offset="19" length="5"><![CDATA[table]]></wf>
+  </text>
+  <terms>
+    <term id="t1" type="open" lemma="Test" pos="SYM">
+      <span>
+        <!--Test-->
+        <target id="w1"/>
+      </span>
+    </term>
+    <term id="t2" type="open" lemma="with" pos="SYM">
+      <span>
+        <!--with-->
+        <target id="w2"/>
+      </span>
+    </term>
+    <term id="t3" type="open" lemma="an" pos="SYM">
+      <span>
+        <!--an-->
+        <target id="w3"/>
+      </span>
+    </term>
+    <term id="t4" type="open" lemma="empty" pos="SYM">
+      <span>
+        <!--empty-->
+        <target id="w4"/>
+      </span>
+    </term>
+    <term id="t5" type="open" lemma="table" pos="SYM">
+      <span>
+        <!--table-->
+        <target id="w5"/>
+      </span>
+    </term>
+  </terms>
+  <deps>
+    <!--fixed(Test,with)-->
+    <dep from_term="t1" to_term="t2" rfunc="fixed"/>
+    <!--fixed(Test,an)-->
+    <dep from_term="t1" to_term="t3" rfunc="fixed"/>
+    <!--fixed(Test,empty)-->
+    <dep from_term="t1" to_term="t4" rfunc="fixed"/>
+    <!--fixed(Test,table)-->
+    <dep from_term="t1" to_term="t5" rfunc="fixed"/>
+  </deps>
+  <raw><![CDATA[Test with an empty table]]></raw>
+</NAF>

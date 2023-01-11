@@ -3,19 +3,22 @@
 """Main module."""
 
 import sys
-import click
 import logging
 import os
-import re
+import io
 from datetime import datetime
 from socket import getfqdn
+
 
 from .nafdocument import NafDocument
 from .linguisticprocessor import stanzaProcessor
 from .linguisticprocessor import spacyProcessor
 from .preprocessprocessor import convert_pdf, convert_docx
+from .ocrprocessor import convert_ocr_pdf
+
 from lxml import etree
 import lxml.html
+from typing import Union
 
 from .const import ProcessorElement
 from .const import Entity
@@ -38,7 +41,8 @@ FORMATS_LAYER_TAG = "formats"
 
 
 def generate_naf(
-    input: str = None,
+    input: Union[str, NafDocument] = None,
+    stream: io.BytesIO = None,
     engine: str = None,
     language: str = None,
     naf_version: str = None,
@@ -47,14 +51,17 @@ def generate_naf(
     nlp=None,
 ):
     """Parse input file, generate and return NAF xml tree"""
-    if (input is None) or not (os.path.isfile(input)):
+    if input is None:
+        logging.error("input is none")
+        return None
+    if isinstance(input, str) and not os.path.isfile(input) and stream == None:
         logging.error("no or non-existing input specified")
         return None
     if engine is None:
         logging.error("no engine specified")
         return None
-    if language is None:
-        logging.error("no language specified")
+    if (language is None) and ("language_detector" not in params.keys()):
+        logging.error("no language or language detector specified")
         return None
     if naf_version is None:
         logging.error("no naf version specified")
@@ -68,6 +75,7 @@ def generate_naf(
 
     params = create_params(
         input=input,
+        stream=stream,
         engine=engine,
         language=language,
         naf_version=naf_version,
@@ -76,20 +84,25 @@ def generate_naf(
         nlp=nlp,
     )
 
-    params["tree"] = NafDocument()
-    params["tree"].generate(params)
+    if isinstance(input, NafDocument):
+        params["tree"] = input
+    else:
+        params["tree"] = NafDocument()
+        params["tree"].generate(params)
 
-    process_preprocess_steps(params)
+    if params["preprocess_layers"] != []:
+        process_preprocess_steps(params)
 
-    process_linguistic_steps(params)
-
-    evaluate_naf(params)
+    if params["linguistic_layers"] != []:
+        process_linguistic_steps(params)
+        evaluate_naf(params)
 
     return params["tree"]
 
 
 def create_params(
     input: str = None,
+    stream: io.BytesIO = None,
     engine: str = None,
     language: str = None,
     naf_version: str = None,
@@ -104,31 +117,70 @@ def create_params(
     params["engine_name"] = engine
     params["nlp"] = nlp
 
-    if "fileDesc" not in params.keys():
-        params["fileDesc"] = dict()
-    params["fileDesc"]["creationtime"] = datetime.now()
-    params["fileDesc"]["filename"] = input
+    if isinstance(input, str):
+        if "fileDesc" not in params.keys():
+            params["fileDesc"] = dict()
+        params["fileDesc"]["creationtime"] = datetime.now()
+        params["fileDesc"]["filename"] = input
 
-    if "public" not in params.keys():
-        params["public"] = dict()
-    params["public"]["uri"] = input
+        if "public" not in params.keys():
+            params["public"] = dict()
+            params["public"]["uri"] = input
+        elif "uri" not in params["public"].keys():
+            params["public"]["uri"] = input
+        if stream is not None:
+            if not isinstance(stream, io.BytesIO):
+                stream = io.BytesIO(stream)
+            params['stream'] = stream
 
-    if os.path.splitext(input)[1].lower() == ".txt":
-        params["fileDesc"]["filetype"] = "text/plain"
-        params["public"]["format"] = "text/plain"
-    elif os.path.splitext(input)[1].lower() == ".html":
-        params["fileDesc"]["filetype"] = "text/html"
-        params["public"]["format"] = "text/html"
-    elif os.path.splitext(input)[1].lower() == ".pdf":
-        params["fileDesc"]["filetype"] = "application/pdf"
-        params["public"]["format"] = "application/pdf"
-    elif os.path.splitext(input)[1].lower() == ".docx":
-        params["fileDesc"][
-            "filetype"
-        ] = "application/vnd.openxmlformats-officedocument.wordprocessingml.document"
-        params["public"][
-            "format"
-        ] = "application/vnd.openxmlformats-officedocument.wordprocessingml.document"
+        if os.path.splitext(input)[1].lower() == ".txt":
+            params["fileDesc"]["filetype"] = "text/plain"
+            params["public"]["format"] = "text/plain"
+        elif os.path.splitext(input)[1].lower() == ".html":
+            params["fileDesc"]["filetype"] = "text/html"
+            params["public"]["format"] = "text/html"
+        elif os.path.splitext(input)[1].lower() == ".pdf":
+            params["fileDesc"]["filetype"] = "application/pdf"
+            params["public"]["format"] = "application/pdf"
+        elif os.path.splitext(input)[1].lower() == ".docx":
+            params["fileDesc"][
+                "filetype"
+            ] = "application/vnd.openxmlformats-officedocument.wordprocessingml.document"
+            params["public"][
+                "format"
+            ] = "application/vnd.openxmlformats-officedocument.wordprocessingml.document"
+
+    if isinstance(input, bytes):
+        if "fileDesc" not in params.keys():
+            params["fileDesc"] = dict()
+        params["fileDesc"]["creationtime"] = datetime.now()
+        params["fileDesc"]["filename"] = input
+
+        if "public" not in params.keys():
+            params["public"] = dict()
+            params["public"]["uri"] = input
+        else:
+            if "uri" not in params["public"].keys():
+                params["public"]["uri"] = input
+        if stream is not None:
+            params['stream'] = stream
+
+        if os.path.splitext(input)[1].lower() == ".txt":
+            params["fileDesc"]["filetype"] = "text/plain"
+            params["public"]["format"] = "text/plain"
+        elif os.path.splitext(input)[1].lower() == ".html":
+            params["fileDesc"]["filetype"] = "text/html"
+            params["public"]["format"] = "text/html"
+        elif os.path.splitext(input)[1].lower() == ".pdf":
+            params["fileDesc"]["filetype"] = "application/pdf"
+            params["public"]["format"] = "application/pdf"
+        elif os.path.splitext(input)[1].lower() == ".docx":
+            params["fileDesc"][
+                "filetype"
+            ] = "application/vnd.openxmlformats-officedocument.wordprocessingml.document"
+            params["public"][
+                "format"
+            ] = "application/vnd.openxmlformats-officedocument.wordprocessingml.document"
 
     # set default linguistic parameters
     if "linguistic_layers" not in params.keys():
@@ -140,6 +192,8 @@ def create_params(
             "raw",
             "multiwords",
         ]
+    if "preprocess_layers" not in params.keys():
+        params["preprocess_layers"] = ["formats"]
     if params.get("cdata", None) is None:
         params["cdata"] = True
     if params.get("map_udpos2olia", None) is None:
@@ -150,6 +204,10 @@ def create_params(
         params["replace_hidden_characters"] = True
     if params.get("comments", None) is None:
         params["comments"] = True
+    if params.get("apply_ocr", None) is None:
+        params["apply_ocr"] = False
+    if params.get("textline_separator") is None:
+        params["textline_separator"] = " "
 
     return params
 
@@ -160,23 +218,11 @@ def evaluate_naf(params: dict):
     doc_text = params["engine"].document_text(params["doc"])
     raw = params["tree"].raw
     if len(raw) != len(doc_text):
-        logging.error(
-            "raw length ("
-            + str(len(raw))
-            + ") != doc length ("
-            + str(len(doc_text))
-            + ")"
-        )
+        logging.error(f"raw length ({len(raw)}) != doc length ({len(doc_text)})")
     # verify alignment between raw layer and text
-    text_to_use = params["text"]
+    text_to_use = derive_text_from_formats_layer(params)
     if len(raw) != len(text_to_use):
-        logging.error(
-            "raw length ("
-            + str(len(raw))
-            + ") != text to use ("
-            + str(len(text_to_use))
-            + ")"
-        )
+        logging.error(f"raw length ({len(raw)}) != text to use ({len(text_to_use)})")
     # verify alignment between raw layer and text layer
     for wf in params["tree"].text:
         start = int(wf.get("offset"))
@@ -184,19 +230,59 @@ def evaluate_naf(params: dict):
         token = raw[start:end]
         if wf.get("text", None) != token:
             logging.error(
-                "mismatch in alignment of wf element ["
-                + str(wf.get("text"))
-                + "] ("
-                + str(wf.get("id"))
-                + ") with raw layer text ["
-                + str(token)
-                + "] (expected length "
-                + str(wf.get("length"))
-                + ")"
+                f"mismatch in alignment of wf element [{wf.get('text')}]"
+                f"({wf.get('id')}) with raw layer text [{token}]"
+                f"(expected length {wf.get('length')})"
             )
     # validate naf tree
     if params["dtd_validation"]:
         params["tree"].validate()
+
+
+def process_preprocess_steps(params: dict):
+    """Perform preprocessor steps to generate text as input for linguistic layers"""
+    params["beginTimestamp_preprocess"] = datetime.now()
+    input = params["fileDesc"]["filename"]
+    if input[-3:].lower() == "txt":
+        stream = params.get("stream", None)
+        if stream is not None:
+            text = stream.read()
+        else:
+            with open(input, encoding="utf8") as f:
+                text = f.read()
+        params["text"] = text
+    elif input[-4:].lower() == "html":
+        stream = params.get("stream", None)
+        if stream is not None:
+            text = stream.read()
+        else:
+            with open(input, encoding="utf8") as f:
+                text = f.read()
+        utf8_parser = lxml.html.HTMLParser(encoding="utf-8")
+        doc = lxml.html.document_fromstring(bytes(text, encoding='utf8'), parser=utf8_parser)
+        params["text"] = doc.text_content()
+    elif input[-4:].lower() == "docx":
+        convert_docx(input, format="xml", params=params)
+        convert_docx(input, format="text", params=params)
+    elif input[-3:].lower() == "pdf":
+        if not params["apply_ocr"]:
+            convert_pdf(input, format="xml", params=params)
+            convert_pdf(input, format="text", params=params)
+        else:
+            params["text"] = convert_ocr_pdf(input, format="text", params=params)
+
+    params["endTimestamp_preprocess"] = datetime.now()
+
+    # derive preprocess layers from nlp output
+    process_preprocess_layers(params)
+
+
+def process_preprocess_layers(params: dict):
+    """Perform preprocess layers"""
+    layers = params["preprocess_layers"]
+
+    if "formats" in layers:
+        add_formats_layer(params)
 
 
 def norm_spaces(s):
@@ -205,42 +291,22 @@ def norm_spaces(s):
     # return " ".join((x for x in re.split(r"\s+", s) if x))
 
 
-def process_preprocess_steps(params: dict):
-    """Perform preprocessor steps to generate text as input for linguistic layers"""
-    input = params["fileDesc"]["filename"]
-    if input[-3:].lower() == "txt":
-        with open(input) as f:
-            params["text"] = f.read()
-    elif input[-4:].lower() == "html":
-        with open(input) as f:
-            doc = lxml.html.document_fromstring(f.read())
-            params["text"] = doc.text_content()
-    elif input[-4:].lower() == "docx":
-        convert_docx(input, format="xml", params=params)
-        convert_docx(input, format="text", params=params)
-        params["text"] = params["docxtotext"]
-    elif input[-3:].lower() == "pdf":
-        convert_pdf(input, format="xml", params=params)
-        convert_pdf(input, format="text", params=params)
-        params["text"] = params["pdftotext"]
-
-    text = params["text"].rstrip()
-    if params["replace_hidden_characters"]:
-        text_to_use = norm_spaces(text.translate(hidden_table))
-    else:
-        text_to_use = norm_spaces(text)
-
-    # if len(text) != len(text_to_use):
-    #     logging.error("len text != len text.translate")
-
-    params["text"] = text_to_use
-
-
 def process_linguistic_steps(params: dict):
     """Perform linguistic steps to generate linguistics layers"""
     engine_name = params["engine_name"]
     nlp = params["nlp"]
-    language = params["language"]
+
+    text = derive_text_from_formats_layer(params)
+
+    # determine language for nlp processor
+    if params["language"] is not None:
+        language = params["language"]
+    else:
+        language = params["language_detector"].detect(text)
+        params["tree"].set_language(language)
+        params["language"] = language
+
+    # create nlp processor
     if engine_name.lower() == "stanza":
         # check if installed
         params["engine"] = stanzaProcessor(nlp, language)
@@ -251,16 +317,12 @@ def process_linguistic_steps(params: dict):
         logging.error("unknown engine")
         return None
 
+    # execute nlp processor pipeline
     params["beginTimestamp"] = datetime.now()
-    params["doc"] = params["engine"].nlp(params["text"])
+    params["doc"] = params["engine"].nlp(text)
     params["endTimestamp"] = datetime.now()
 
-    if "pdftoxml" in params.keys():
-        add_formats_layer("pdf", params)
-
-    if "docxtoxml" in params.keys():
-        add_formats_layer("docx", params)
-
+    # derive naf layers from nlp output
     process_linguistic_layers(params)
 
 
@@ -290,6 +352,50 @@ def process_linguistic_layers(params: dict):
         add_raw_layer(params)
 
 
+def derive_text_from_formats_layer(params):
+    """Derive the text from the xml formats layer"""
+    # @TODO: loops 2 times over this code while generating a naf file
+    formats = params["tree"].find(FORMATS_LAYER_TAG)
+    textline_separator = params["textline_separator"]
+    if formats is not None:
+        text = []
+        for page in formats:
+            for textbox in page:
+                if textbox.tag == "textbox":
+                    for textline in textbox:
+                        for text_element in textline:
+                            text.append(
+                                (text_element.text, int(text_element.get("offset")))
+                            )
+                elif textbox.tag == "figure":
+                    for text_element in textbox:
+                        text.append(
+                            (text_element.text, int(text_element.get("offset")))
+                        )
+
+        text_spaces_added = [
+            line[0]
+            # calculate the offset difference between end of word and start of next word
+            + textline_separator * (text[idx + 1][1] - text[idx][1] - len(line[0]))
+            for idx, line in enumerate(text)
+            if idx < len(text) - 1
+        ]
+        # add the last line
+        if len(text) > 0:
+            text_spaces_added.append(text[-1][0])
+
+        text = "".join(text_spaces_added).rstrip()
+        if params["replace_hidden_characters"]:
+            text = norm_spaces(text.translate(hidden_table))
+        else:
+            text = norm_spaces(text)
+    else:
+        # html documents
+        text = params["text"]
+
+    return text
+
+
 def entities_generator(doc, params: dict):
     """Return entities in doc as a generator"""
     engine = params["engine"]
@@ -305,7 +411,7 @@ def chunks_for_doc(doc, params: dict):
     """Return chunks in doc as a generator"""
     for chunk in params["engine"].document_noun_chunks(doc):
         if chunk.root.head.pos_ == "ADP":
-            span = doc[chunk.start - 1 : chunk.end]
+            span = doc[chunk.start - 1: chunk.end]
             yield (span, "PP")
         yield (chunk, "NP")
 
@@ -466,14 +572,16 @@ def add_text_layer(params: dict):
     paragraphs_offset = None
     formats = root.find(FORMATS_LAYER_TAG)
     if formats is not None:
+        # calculate offsets
         pages_offset = [int(page.get("offset")) for page in formats]
         paragraphs_offset = [0] + [
             int(text.get("offset")) + len(text.text)
             for page in formats
             for textbox in page
+            if textbox.tag == "textbox"
             for textline in textbox
             for text in textline
-            if len(text.text.strip()) > 0 and text.text.strip()[-1] in [".", "?"]
+            if (len(text.text.strip()) > 0) and (text.text.strip()[-1] in [".", "?"])
         ]
 
     doc = params["doc"]
@@ -675,6 +783,8 @@ def create_separable_verb_lemma(verb, particle, language):
         lemma = particle + verb
     if language == "en":
         lemma = f"{verb}_{particle}"
+    else:
+        lemma = f"{verb}_{particle}"
     return lemma
 
 
@@ -700,7 +810,8 @@ def add_multiwords_layer(params: dict):
     supported_languages = {"nl", "en"}
     if params["language"] not in supported_languages:
         logging.info(
-            f"add_multi_words function only implemented for {supported_languages}, not for supplied {language}"
+            f"add_multi_words function only implemented for "
+            f"{supported_languages}, not for supplied {params['language']}"
         )
 
     tid_to_term = {
@@ -784,36 +895,35 @@ def add_raw_layer(params: dict):
 
     wordforms = params["tree"].text
 
-    delta = int(wordforms[0]["offset"])
-    tokens = [" " * delta + wordforms[0]["text"]]
+    if len(wordforms) > 0:
 
-    for prev_wf, cur_wf in zip(wordforms[:-1], wordforms[1:]):
-        prev_start = int(prev_wf["offset"])
-        prev_end = prev_start + int(prev_wf["length"])
-        cur_start = int(cur_wf["offset"])
-        delta = cur_start - prev_end
-        # no chars between two token (for example with a dot .)
-        if delta == 0:
-            leading_chars = ""
-        elif delta >= 1:
-            # 1 or more characters between tokens -> n spaces added
-            leading_chars = " " * delta
-        elif delta < 0:
-            logging.warning(
-                "please check the offsets of "
-                + str(prev_wf["text"])
-                + " and "
-                + str(cur_wf["text"])
-                + " (delta of "
-                + str(delta)
-                + ")"
-            )
-        tokens.append(leading_chars + cur_wf["text"])
+        delta = int(wordforms[0]["offset"])
+        tokens = [" " * delta + wordforms[0]["text"]]
 
-    if params["cdata"]:
-        raw_text = etree.CDATA("".join(tokens))
+        for prev_wf, cur_wf in zip(wordforms[:-1], wordforms[1:]):
+            prev_start = int(prev_wf["offset"])
+            prev_end = prev_start + int(prev_wf["length"])
+            cur_start = int(cur_wf["offset"])
+            delta = cur_start - prev_end
+            # no chars between two token (for example with a dot .)
+            if delta == 0:
+                leading_chars = ""
+            elif delta >= 1:
+                # 1 or more characters between tokens -> n spaces added
+                leading_chars = " " * delta
+            elif delta < 0:
+                logging.warning(
+                    f"please check the offsets of {prev_wf['text']} and "
+                    f"{cur_wf['text']} (delta of {delta})"
+                )
+            tokens.append(leading_chars + cur_wf["text"])
+
+        if params["cdata"]:
+            raw_text = etree.CDATA("".join(tokens))
+        else:
+            raw_text = "".join(tokens)
     else:
-        raw_text = "".join(tokens)
+        raw_text = ""
 
     raw_data = RawElement(text=raw_text)
 
@@ -838,21 +948,32 @@ def add_chunks_layer(params: dict):
         params["tree"].add_chunk_element(chunk_data, params["comments"])
 
 
-def add_formats_layer(source: str, params: dict):
+def add_formats_layer(params: dict):
     """Generate and add all format elements in document to formats layer"""
     lp = ProcessorElement(
         name="formats",
-        version=params["engine"].model_version,
+        version=f"nafigator",
         model=None,
         timestamp=None,
-        beginTimestamp=params["beginTimestamp"],
-        endTimestamp=params["endTimestamp"],
+        beginTimestamp=params["beginTimestamp_preprocess"],
+        endTimestamp=params["endTimestamp_preprocess"],
         hostname=getfqdn(),
     )
-
     params["tree"].add_processor_element("formats", lp)
+    if params.get("include pdf xml", False):
+        params["tree"].add_processor_element("formats_copy", lp)
 
-    if source == "pdf":
-        params["tree"].add_formats_element(source, params["pdftoxml"])
-    elif source == "docx":
-        params["tree"].add_formats_element(source, params["docxtoxml"])
+    if "pdftoxml" in params.keys():
+        params["tree"].add_formats_element(
+            source="pdf",
+            formats=params["pdftoxml"],
+            coordinates=params.get("incl_bbox", False),
+            pdf_tables=params.get("pdftotables", None))
+        if params.get("include pdf xml", False):
+            params["tree"].add_formats_copy_element("pdf", params["pdftoxml"])
+
+    elif "docxtoxml" in params.keys():
+        params["tree"].add_formats_element(
+            source="docx",
+            formats=params["docxtoxml"],
+            coordinates=params.get("incl_bbox", False))

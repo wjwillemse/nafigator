@@ -15,7 +15,7 @@ Types of Contributions
 Report Bugs
 ~~~~~~~~~~~
 
-Report bugs at https://github.com/wjwillemse/nafigator/issues.
+Report bugs at https://github.com/denederlandschebank/nafigator/issues.
 
 If you are reporting a bug, please include:
 
@@ -45,7 +45,7 @@ articles, and such.
 Submit Feedback
 ~~~~~~~~~~~~~~~
 
-The best way to send feedback is to file an issue at https://github.com/wjwillemse/nafigator/issues.
+The best way to send feedback is to file an issue at https://github.com/denederlandschebank/nafigator/issues.
 
 If you are proposing a feature:
 
@@ -96,15 +96,38 @@ Ready to contribute? Here's how to set up `nafigator` for local development.
 Pull Request Guidelines
 -----------------------
 
+We work with a main and a dev branch. To add new functionality, make a new branch, add the new functionality and submit a pull request to the dev branch. When needed we will merge the dev branch with the main branch and provide a new version of the package.
+
 Before you submit a pull request, check that it meets these guidelines:
 
 1. The pull request should include tests.
 2. If the pull request adds functionality, the docs should be updated. Put
    your new functionality into a function with a docstring, and add the
    feature to the list in README.rst.
-3. The pull request should work for Python 3.5, 3.6, 3.7 and 3.8, and for PyPy. Check
-   https://travis-ci.com/wjwillemse/nafigator/pull_requests
-   and make sure that the tests pass for all supported Python versions.
+3. The pull request should work for Python 3.6, 3.7 and 3.8, and for PyPy. 
+   Make sure that the tests pass for all supported Python versions.
+
+
+Pushing a new version to pypi.org
+---------------------------------
+
+If you want to upload a new version to pypi.org then take the following steps
+
+1. Merge pull requests with your changes
+2. If not yet done, update the version number in *setup.py* and *nafigator/__init__.py*
+3. If not yet done, update *HISTORY.rst* with your changes
+4. Build the new version with::
+
+  python setup.py bdist_wheel --universal
+
+5. Upload the new version::
+
+  twine upload dist/*
+
+6. If you get errors when uploading then you can find errors with::
+
+  twine check dist/nafigator-version-py2.py3-none-any.whl
+
 
 Tips
 ----
@@ -114,15 +137,3 @@ To run a subset of tests::
 
     $ python -m unittest tests.test_nafigator
 
-Deploying
----------
-
-A reminder for the maintainers on how to deploy.
-Make sure all your changes are committed (including an entry in HISTORY.rst).
-Then run::
-
-$ bump2version patch # possible: major / minor / patch
-$ git push
-$ git push --tags
-
-Travis will then deploy to PyPI if tests pass.

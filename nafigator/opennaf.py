@@ -26,20 +26,20 @@ def opennaf(input: str):
     # print(naf.text)
     # print(naf.terms)
 
-    entity_data = EntityElement(
-        id="test_id",
-        type="PERSON",
-        status=None,
-        source="source",
-        span=["t1"],
-        ext_refs=[
-            {"resource": "res", "reference": "https:ref"},
-            {"resource": "res2", "reference": "https:ref2"},
-        ],
-        comment=["comment"],
-    )
-    naf.add_entity_element(data=entity_data, naf_version="v3.1", comments=True)
-    # print(naf.entities)
+    # entity_data = EntityElement(
+    #     id="test_id",
+    #     type="PERSON",
+    #     status=None,
+    #     source="source",
+    #     span=["t1"],
+    #     ext_refs=[
+    #         {"resource": "res", "reference": "https:ref"},
+    #         {"resource": "res2", "reference": "https:ref2"},
+    #     ],
+    #     comment=["comment"],
+    # )
+    # naf.add_entity_element(data=entity_data, naf_version="v3.1", comments=True)
+    print(naf.entities)
 
     # print(naf.deps)
     # print(naf.formats)

@@ -6,9 +6,6 @@ nafigator
 .. image:: https://img.shields.io/pypi/v/nafigator.svg
         :target: https://pypi.python.org/pypi/nafigator
 
-.. image:: https://img.shields.io/travis/wjwillemse/nafigator.svg
-        :target: https://travis-ci.com/wjwillemse/nafigator
-
 .. image:: https://img.shields.io/badge/License-MIT-yellow.svg
         :target: https://opensource.org/licenses/MIT
         :alt: License: MIT
@@ -93,7 +90,7 @@ To install the package from Github
 
 ::
 
-    pip install -e git+https://github.com/wjwillemse/nafigator.git#egg=nafigator
+    pip install -e git+https://github.com/denederlandschebank/nafigator.git#egg=nafigator
 
 
 How to run
@@ -237,6 +234,22 @@ Output of doc.formats::
           {'font': 'CIDFont+F1', 'size': '12.000', 'length': '77', 'offset': '88', 'text': 'pipelines with (intermediate) results and all processing steps in one format.'
   ...
 
+Get all sentences in the document via::
+
+  doc.sentences
+
+Output of doc.sentences::
+
+  [
+    {'text': 'The Nafigator package allows you to store NLP output from custom made Spacy and stanza pipelines with ( intermediate ) results and all processing steps in one format .', 
+    'para': ['1'], 
+    'page': ['1'], 
+    'span': [{'id': 'w1'}, {'id': 'w2'}, {'id': 'w3'}, {'id': 'w4'}, {'id': 'w5'}, {'id': 'w6'}, {'id': 'w7'}, {'id': 'w8'}, {'id': 'w9'}, {'id': 'w10'}, {'id': 'w11'}, {'id': 'w12'}, {'id': 'w13'}, {'id': 'w14'}, {'id': 'w15'}, {'id': 'w16'}, {'id': 'w17'}, {'id': 'w18'}, {'id': 'w19'}, {'id': 'w20'}, {'id': 'w21'}, {'id': 'w22'}, {'id': 'w23'}, {'id': 'w24'}, {'id': 'w25'}, {'id': 'w26'}, {'id': 'w27'}, {'id': 'w28'}, {'id': 'w29'}], 
+    'terms': [{'id': 't1'}, {'id': 't2'}, {'id': 't3'}, {'id': 't4'}, {'id': 't5'}, {'id': 't6'}, {'id': 't7'}, {'id': 't8'}, {'id': 't9'}, {'id': 't10'}, {'id': 't11'}, {'id': 't12'}, {'id': 't13'}, {'id': 't14'}, {'id': 't15'}, {'id': 't16'}, {'id': 't17'}, {'id': 't18'}, {'id': 't19'}, {'id': 't20'}, {'id': 't21'}, {'id': 't22'}, {'id': 't23'}, {'id': 't24'}, {'id': 't25'}, {'id': 't26'}, {'id': 't27'}, {'id': 't28'}, {'id': 't29'}]}, 
+  ...
+
+Note that you get the word ids (the span) as well as the terms ids in the sentence.
+
 
 Adding new annotation layers
 ----------------------------
@@ -262,59 +275,100 @@ Retrieve the recommendations with::
   doc.recommendations
 
 
-Convert NAF file to RDF in turtle syntax
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Convert NAF to the NLP Interchange Format (NIF)
+-----------------------------------------------
 
-Just run::
+The `NLP Interchange Format (NIF) <https://github.com/NLP2RDF/ontologies>` is an RDF/OWL-based format that aims to achieve interoperability between NLP tools.
 
-	python -m nafigator.convert2rdf
+Here's an example::
 
-No ontology or vocabulary of NAF exists yet. For now, we map xml tags and attributes to RDF predicates using provisional prefixes and namespaces, for example base attributes are mapped to the prefix naf-base.
+  doc = nafigator.NafDocument().open("..//data//example.naf.xml")
 
-Below are some excerpts.
+  nif = nafigator.naf2nif(uri="https://mangosaurus.eu/rdf-data/nif-data/doc_1",
+                          collection_uri="https://mangosaurus.eu/rdf-data/nif-data/collection",
+                          doc=doc)
 
-From the nafHeader::
+This results in an object that contains the rdflib Graph and can be serialized with::
 
-	_:nafHeader
-	    naf-base:hasFileDesc [
-        	naf-fileDesc:hasCreationtime "2021-05-24T11:29:44UTC"^^xsd:dateTime ;
-        	naf-fileDesc:hasFilename "data/example.pdf"^^rdf:XMLLiteral ;
-        	naf-fileDesc:hasFiletype "application/pdf"^^rdf:XMLLiteral ;
-    	] ;
+  nif.graph.serialize(format="turtle"))
 
-A word::
+This results in the graph in turtle format. 
 
-	_:w1
-	    xl:type naf-base:wordform ;
-	    naf-base:hasText """The"""^^rdf:XMLLiteral ;
-	    naf-base:hasSent "1"^^xsd:integer ;
-	    naf-base:hasPage "1"^^xsd:integer ;
-	    naf-base:hasOffset "0"^^xsd:integer ;
-	    naf-base:hasLength "3"^^xsd:integer .
+The prefixes and namespaces:
 
-A term::
+::
 
-	_:t1
-	    xl:type naf-base:term ;
-	    naf-base:hasType naf-base:close ;
-	    naf-base:hasLemma "the" ;
-	    naf-base:hasPos <http://purl.org/olia/olia.owl#Determiner> ;
-	    naf-morphofeat:hasDefinite "Def" ;
-	    naf-morphofeat:hasPronType "Art" ;
-	    naf-base:hasSpan [
-        	naf-base:ref _:w1
-    	] .
+  @prefix dcterms: <http://purl.org/dc/terms/> .
+  @prefix nif: <http://persistence.uni-leipzig.org/nlp2rdf/ontologies/nif-core#> .
+  @prefix olia: <http://purl.org/olia/olia.owl#> .
+  @prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
 
-An entity::
+The nif:ContextCollection
 
-	_:e1
-	    xl:type naf-base:entity ;
-	    naf-base:hasType naf-entity:PRODUCT ;
-	    naf-base:hasSpan [
-        	naf-base:ref _:t2
-    	] .
+::
 
-A dependency::
+  <https://mangosaurus.eu/rdf-data/nif-data/collection> a nif:ContextCollection ;
+      nif:hasContext <https://mangosaurus.eu/rdf-data/nif-data/doc_1> ;
+      dcterms:conformsTo <http://persistence.uni-leipzig.org/nlp2rdf/ontologies/nif-core/2.1> .
 
-	_:t3 naf-rfunc:det _:t1
+The nif:Context (a document)
 
+::
+
+  <https://mangosaurus.eu/rdf-data/nif-data/doc_1#offset_0_265> a nif:Context,
+          nif:String ;
+      nif:beginIndex "0"^^xsd:nonNegativeInteger ;
+      nif:endIndex "265"^^xsd:nonNegativeInteger ;
+      nif:hasSentences ( 
+        <https://mangosaurus.eu/rdf-data/nif-data/doc_1#offset_0_165> 
+        <https://mangosaurus.eu/rdf-data/nif-data/doc_1#offset_167_265> 
+      ) ;
+      nif:isString "The Nafigator package allows you to store NLP output from custom made Spacy and stanza  pipelines with (intermediate) results and all processing steps in one format.  Multiwords like in “we have set that out below” are recognized (depending on your NLP  processor)."^^xsd:string ;
+      nif:lastSentence <https://mangosaurus.eu/rdf-data/nif-data/doc_1#offset_167_265> ;
+      nif:firstSentence <https://mangosaurus.eu/rdf-data/nif-data/doc_1#offset_0_165> ;
+      nif:referenceContext <https://mangosaurus.eu/rdf-data/nif-data/doc_1> .
+
+The nif:Sentence
+
+::
+
+  <https://mangosaurus.eu/rdf-data/nif-data/doc_1#offset_0_165> a nif:OffsetBasedString,
+          nif:Paragraph,
+          nif:Sentence ;
+    nif:anchorOf "The Nafigator package allows you to store NLP output from custom made Spacy and stanza pipelines with ( intermediate ) results and all processing steps in one format ."^^xsd:string ;
+    nif:beginIndex "0"^^xsd:nonNegativeInteger ;
+    nif:endIndex "165"^^xsd:nonNegativeInteger ;
+    nif:firstWord <https://mangosaurus.eu/rdf-data/nif-data/doc_1#offset_0_3> ;
+    nif:hasWords ( 
+      <https://mangosaurus.eu/rdf-data/nif-data/doc_1#offset_0_3> 
+      <https://mangosaurus.eu/rdf-data/nif-data/doc_1#offset_4_13> 
+      ...
+      <https://mangosaurus.eu/rdf-data/nif-data/doc_1#offset_164_165> 
+    ) ;
+    nif:lastWord <https://mangosaurus.eu/rdf-data/nif-data/doc_1#offset_164_165> ;
+    nif:nextSentence <https://mangosaurus.eu/rdf-data/nif-data/doc_1#offset_167_265> ;
+    nif:referenceContext <https://mangosaurus.eu/rdf-data/nif-data/doc_1> .
+
+The nif:Word
+
+::
+
+  <https://mangosaurus.eu/rdf-data/nif-data/3968fc96-5750-3fdb-be58-46f182762119#offset_0_3> a nif:OffsetBasedString,
+          nif:Word ;
+      nif:anchorOf "The"^^xsd:string ;
+      nif:beginIndex "0"^^xsd:nonNegativeInteger ;
+      nif:endIndex "3"^^xsd:nonNegativeInteger ;
+      nif:lemma "the"^^xsd:string ;
+      nif:nextWord <https://mangosaurus.eu/rdf-data/nif-data/3968fc96-5750-3fdb-be58-46f182762119#offset_4_13> ;
+      nif:oliaLink olia:Article,
+          olia:Definite,
+          olia:Determiner ;
+      nif:referenceContext <https://mangosaurus.eu/rdf-data/nif-data/3968fc96-5750-3fdb-be58-46f182762119#offset_0_265> ;
+      nif:sentence <https://mangosaurus.eu/rdf-data/nif-data/3968fc96-5750-3fdb-be58-46f182762119#offset_0_165> .
+
+Part of speech tags and morphological features are here combined: the part-of-speech tag is *olia:Determiner*. The morphological features are *olia:Article* (the pronType:Art in terms of Universal Dependencies) and *olia:Definite* (the Definite:Def in terms of Universal Dependencies).
+
+Changes to NIF
+~~~~~~~~~~~~~~
+
+Instead of the original RDF predicates *nif:word* and *nif:sentence* (used to link words to sentences and vice versa) I used predicates *nif:hasWord* and *nif:hasSentence* which point to a RDF collection (a linked list) of respectively words and sentences. The RDF collection maintains order of the elements and easy traversing. These predicates are not part of the original NIF ontology.
