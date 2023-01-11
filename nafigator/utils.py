@@ -747,7 +747,7 @@ def get_context_rows(ref_text: dict, naf_layer, context_range: int) -> str:
 
     result_w_context = ''
     for idx in context_idxs:
-        result_w_context = result_w_context + naf_layer[idx]['text']
+        result_w_context = result_w_context + ' ' + naf_layer[idx]['text']
 
     return result_w_context
 
